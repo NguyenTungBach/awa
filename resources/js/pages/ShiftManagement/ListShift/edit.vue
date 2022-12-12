@@ -1,0 +1,1611 @@
+<template>
+    <b-col>
+        <div class="list-shift">
+            <div class="list-shift__header">
+                <b-row>
+                    <b-col>
+                        <div class="zone-left">
+                            <div class="zone-title">
+                                <span
+                                    v-if="(selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
+                                    class="title-page"
+                                >
+                                    {{ $t("LIST_SHIFT.BUTTON_COURSE_BASE") }}
+                                </span>
+                                <span
+                                    v-else
+                                    class="title-page"
+                                >
+                                    {{ $t("LIST_SHIFT.TITLE_LIST_SHIFT") }}
+                                </span>
+                            </div>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+            <LineGray />
+            <div class="list-shift__control">
+                <b-row>
+                    <b-col>
+                        <div class="text-right">
+                            <b-button
+                                pill
+                                class="btn-return"
+                                @click="goToListShift()"
+                            >
+                                {{ $t("LIST_SHIFT.BUTTON_RETURN") }}
+                            </b-button>
+                            <b-button
+                                pill
+                                class="btn-save btn-color-active"
+                                @click="onClickSave()"
+                            >
+                                {{ $t("LIST_SHIFT.BUTTON_SAVE") }}
+                            </b-button>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+            <div class="list-shift__table">
+                <div class="zone-table">
+                    <b-table-simple
+                        v-show="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                        :key="reRenderTable"
+                        bordered
+                        no-border-collapse
+                    >
+                        <b-thead>
+                            <b-tr>
+                                <b-th
+                                    :colspan="3"
+                                    class="fix-header"
+                                />
+                                <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
+                                    <template v-for="(date, idx) in pickerWeek.listDate">
+                                        <b-th
+                                            :key="`date-${idx}`"
+                                            class="th-show-date"
+                                        >
+                                            <div>
+                                                {{ date.date }} ({{ getTextDay(date.text) }})
+                                            </div>
+                                        </b-th>
+                                    </template>
+                                </template>
+                                <template
+                                    v-if="
+                                        selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH
+                                    "
+                                >
+                                    <template v-for="date in pickerYearMonth.numberDate">
+                                        <b-th
+                                            :key="`date-${date}`"
+                                            class="th-show-date"
+                                        >
+                                            <div>
+                                                {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                            </div>
+                                        </b-th>
+                                    </template>
+                                </template>
+                            </b-tr>
+                            <b-tr>
+                                <b-th class="th-employee-number">
+                                    {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
+                                </b-th>
+                                <b-th class="th-flag">
+                                    {{ $t('LIST_SHIFT.TABLE_DRIVER_TYPE') }}
+                                </b-th>
+                                <b-th class="th-full-name">
+                                    {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
+                                </b-th>
+                                <template
+                                    v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
+                                >
+                                    <template v-for="idx in pickerWeek.listDate.length">
+                                        <b-th :key="`date-${idx}`">
+                                            <div v-if="listCalendar.length">
+                                                {{ listCalendar[idx - 1] || '' }}
+                                            </div>
+                                        </b-th>
+                                    </template>
+                                </template>
+                                <template
+                                    v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
+                                >
+                                    <template v-for="date in pickerYearMonth.numberDate">
+                                        <b-th :key="`date-${date}`">
+                                            <span>
+                                                {{ listCalendar[date - 1] }}
+                                            </span>
+                                        </b-th>
+                                    </template>
+                                </template>
+                            </b-tr>
+                        </b-thead>
+                        <b-tbody>
+                            <template
+                                v-for="(emp, idx) in listShift"
+                            >
+                                <b-tr :key="`emp-no-${idx + 1}`">
+                                    <b-td class="td-employee-number">
+                                        {{ emp.driver_code }}
+                                    </b-td>
+
+                                    <b-td class="td-flag text-center">
+                                        {{ $t(convertValueToText(optionsTypeDriver, emp.flag)) }}
+                                    </b-td>
+
+                                    <b-td class="td-full-name text-center">
+                                        {{ emp.driver_name }}
+                                    </b-td>
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
+                                    >
+                                        <template v-for="(date, idxDate) in pickerWeek.listDate">
+                                            <NodeListShift
+                                                :key="`date-${idxDate}`"
+                                                :idx-component="idxDate + 1"
+                                                :date="date.date"
+                                                :data-node="emp.shift_list[idxDate]"
+                                                :driver-code="emp.driver_code"
+                                                :driver-name="emp.driver_name"
+                                                :is-edit="true"
+                                                :start-date="emp.start_date"
+                                                :end-date="emp.end_date"
+                                            />
+                                        </template>
+                                    </template>
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
+                                    >
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <NodeListShift
+                                                :key="`date-${date}`"
+                                                :idx-component="date"
+                                                :date="date"
+                                                :data-node="emp.shift_list[date - 1]"
+                                                :driver-code="emp.driver_code"
+                                                :driver-name="emp.driver_name"
+                                                :is-edit="true"
+                                                :start-date="emp.start_date"
+                                                :end-date="emp.end_date"
+                                            />
+                                        </template>
+                                    </template>
+                                </b-tr>
+                            </template>
+                        </b-tbody>
+                    </b-table-simple>
+                </div>
+            </div>
+        </div>
+        <b-modal
+            id="modal-detail"
+            v-model="modalDetail"
+            body-class="modal-detail-node"
+            hide-header
+            hide-footer
+            static
+        >
+            <template #default>
+                <div class="detail-node">
+                    <div
+                        v-for="(item, idx) in nodeEmit.dataNode.value"
+                        :key="`item-detail-node-${idx}`"
+                        class="item-node"
+                    >
+                        <span class="type-node">
+                            {{ item.name }}
+                        </span>
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                            <b-col>
+                                <div class="item-time">
+                                    <span>始業時間: {{ item.start_time }}</span>
+                                </div>
+                            </b-col>
+                        </b-row>
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                            <b-col>
+                                <div class="item-time">
+                                    <span>終業時間: {{ item.end_time }}</span>
+                                </div>
+                            </b-col>
+                        </b-row>
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                            <b-col>
+                                <div class="item-time">
+                                    <span>休憩時間: {{ convertBreakTimeNumberToTime(item.break_time) }}</span>
+                                </div>
+                            </b-col>
+                        </b-row>
+                    </div>
+                </div>
+                <div class="modal-detail-node-control">
+                    <b-button
+                        pill
+                        @click="onClickCancelDetail()"
+                    >
+                        {{ $t('APP.TEXT_CLOSE') }}
+                    </b-button>
+                    <b-button
+                        pill
+                        class="btn-change"
+                        @click="onClickChangeNode"
+                    >
+                        {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
+                    </b-button>
+                </div>
+            </template>
+        </b-modal>
+        <b-modal
+            id="modal-edit"
+            v-model="modalEdit"
+            body-class="modal-edit-node"
+            scrollable
+            hide-header
+            hide-footer
+            hide-header-close
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+        >
+            <template #default>
+                <div class="edit-node">
+                    <span>シフトを選択</span>
+                </div>
+                <EditNodeListShift
+                    :list-select="listNodeEdit"
+                    :list-course="listCourse"
+                    :list-selected="listNodeEditSelected"
+                    @add="onAddNode"
+                    @edit="onEditNode"
+                    @remove="onRemoveNode"
+                    @dayoff="onSelectedDayOff"
+                    @change="onChangeNode"
+                />
+                <div class="edit-control">
+                    <b-button
+                        pill
+                        @click="onClickCancelEdit()"
+                    >
+                        {{ $t('APP.TEXT_CANCEL') }}
+                    </b-button>
+                    <b-button
+                        pill
+                        class="btn-save"
+                        @click="onClickSaveNode"
+                    >
+                        {{ $t("LIST_SHIFT.BUTTON_OK") }}
+                    </b-button>
+                </div>
+            </template>
+        </b-modal>
+    </b-col>
+</template>
+
+<script>
+import CONSTANT from '@/const';
+import LineGray from '@/components/LineGray';
+import { setLoading } from '@/utils/handleLoading';
+import { format2Digit } from '@/utils/generateTime';
+import { getCalendar } from '@/api/modules/calendar';
+import NodeListShift from '@/components/NodeListShift';
+import EditNodeListShift from '@/components/EditNodeListShift';
+import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
+import { getListShift, postUpdateCellShift } from '@/api/modules/shiftManagement';
+import { convertValueToText } from '@/utils/handleSelect';
+import { convertValueWhenNull } from '@/utils/handleListShift';
+import { convertBreakTimeNumberToTime, convertTextToSelectTime, getYearMonthFromDate, convertTimeCourse, formatArray2Time } from '@/utils/convertTime';
+import { getList } from '@/api/modules/courseManagement';
+import Notification from '@/toast/notification';
+import { validateEditShift } from './helper/validateEditShift';
+
+export default {
+	name: 'ListShift',
+	components: {
+		LineGray,
+		NodeListShift,
+		EditNodeListShift,
+	},
+
+	data() {
+		return {
+			CONSTANT,
+			selectWeekMonth: this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.WEEK,
+
+			selectTable: this.$store.getters.tableListShift || CONSTANT.LIST_SHIFT.SHIFT_TABLE,
+
+			modalDetail: false,
+			modalEdit: false,
+
+			listNodeEdit: [],
+			listNodeEditSelected: [],
+			listCalendar: [],
+
+			listShift: [],
+
+			nodeEmit: {
+				index: '',
+				date: '',
+				driverCode: '',
+				driverName: '',
+				dataNode: '',
+			},
+
+			listCourse: [],
+
+			listUpdate: [],
+
+			reRenderTable: 1,
+            courseDisabled: [],
+		};
+	},
+
+	computed: {
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
+
+		pickerWeek() {
+			return this.$store.getters.pickerWeek;
+		},
+
+		language() {
+			return this.$store.getters.language;
+		},
+
+		optionsTypeDriver() {
+			return CONSTANT.LIST_DRIVER.LIST_FLAG;
+		},
+
+		role() {
+			return this.$store.getters.profile.role;
+		},
+	},
+
+	watch: {
+		async pickerYearMonth() {
+			if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+				await this.handleGetListCalendar();
+			}
+		},
+
+		listUpdate: {
+			handler: function() {
+				this.setListUpdate(this.listUpdate);
+			},
+
+			deep: true,
+		},
+	},
+
+	created() {
+		this.initData();
+		this.createdEmit();
+	},
+
+	destroyed() {
+		this.destroyEmit();
+	},
+
+	methods: {
+		convertValueToText,
+		convertBreakTimeNumberToTime,
+		async initData() {
+			this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
+
+			setLoading(true);
+
+			await this.handleGetListCalendar();
+			await this.handleGetListShift();
+
+			setLoading(false);
+		},
+
+        handleGetAllCourseWork(idx = null) {
+            const result = [];
+
+            if (idx >= 0) {
+                const len =  this.listShift.length;
+                let idxDriver = 0;
+
+                while (idxDriver < len) {
+                    const arrValue = this.listShift[idxDriver].shift_list[idx].value;
+                    // console.log(`loop: ${idxDriver} - ${idx}`);
+
+                    const lenValue = arrValue.length;
+                    let idxValue = 0;
+
+                    while (idxValue < lenValue) {
+                        const TYPE = arrValue[idxValue].type;
+                        if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
+                            result.push(TYPE);
+                        }
+
+                        idxValue++;
+                    }
+
+                    idxDriver++;
+                }
+            }
+
+            // console.log(result);
+
+            return result;
+        },
+
+		createdEmit() {
+			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
+				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
+				await this.handleGetListCourse();
+
+				this.nodeEmit = data;
+
+				// check course choosed
+				// console.log('list shift: ', this.listShift);
+
+                // console.log(data);
+
+				const DATE_CHECK = data.dataNode.date;
+				const lenListUpdate = this.listUpdate.length;
+				let idxUpdate = 0;
+				let listCheck = [];
+
+				if (lenListUpdate > 0) {
+					while (idxUpdate < lenListUpdate) {
+						if (this.listUpdate[idxUpdate].date_edit === DATE_CHECK) {
+							listCheck.push(this.listUpdate[idxUpdate]);
+						}
+
+						idxUpdate++;
+					}
+				}
+
+				let listCourseTypeCheck = [];
+				let TYPE_CHECK = '';
+				idxUpdate = 0;
+				let idx = 0;
+				if (listCheck.length > 0) {
+					while (idxUpdate < listCheck.length) {
+						while (idx < listCheck[idxUpdate].shift_list_update.length) {
+							TYPE_CHECK = listCheck[idxUpdate].shift_list_update[idx].type;
+							listCourseTypeCheck.push(TYPE_CHECK);
+
+							idx++;
+						}
+
+						idx = 0;
+						idxUpdate++;
+					}
+
+					TYPE_CHECK = '';
+				}
+
+				TYPE_CHECK = '';
+				idxUpdate = 0;
+				idx = 0;
+				let INDEX_DATE_CHECK = -1;
+				if (this.listShift.length > 0) {
+					while (idx < this.listShift[0].shift_list.length) {
+						if (this.listShift[0].shift_list[idx].date === DATE_CHECK) {
+							INDEX_DATE_CHECK = idx;
+							break;
+						}
+
+						idx++;
+					}
+
+					idx = 0;
+					if (INDEX_DATE_CHECK !== -1) {
+						while (idxUpdate < this.listShift.length) {
+							if (this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length > 0) {
+								while (idx < this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length) {
+									TYPE_CHECK = this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value[idx].type;
+									listCourseTypeCheck.push(TYPE_CHECK);
+
+									idx++;
+								}
+							}
+
+							idx = 0;
+							idxUpdate++;
+						}
+					}
+				}
+
+				// check course choosed
+
+				this.listNodeEditSelected.length = 0;
+
+				const OLD_SELECTED = this.nodeEmit.dataNode.value || [];
+
+				const lenOldSelected = OLD_SELECTED.length;
+				let idxOldSelected = 0;
+
+				while (idxOldSelected < lenOldSelected) {
+					const OLD_DATA = {
+						type: null,
+						start_time: [null, null],
+						end_time: [null, null],
+						break_time: [null, null],
+					};
+
+					OLD_DATA.type = OLD_SELECTED[idxOldSelected].type;
+					OLD_DATA.start_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].start_time);
+					OLD_DATA.end_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].end_time);
+					OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
+
+					this.listNodeEditSelected.push(OLD_DATA);
+
+					idxOldSelected++;
+				}
+
+				const lenListSelected = this.listNodeEditSelected.length;
+				let idxListSelected = 0;
+
+				while (idxListSelected < lenListSelected) {
+					const SELECTED = this.listNodeEditSelected[idxListSelected];
+
+					const SELECTED_TYPE = SELECTED.type;
+					const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
+
+					if (FIND_SELECTED) {
+						const DATA_COURSE = {
+							flag: FIND_SELECTED.flag,
+							start_time: FIND_SELECTED.start_time,
+							end_time: FIND_SELECTED.end_time,
+							break_time: FIND_SELECTED.break_time,
+						};
+
+						this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
+					} else {
+						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: 'yes',
+								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+							};
+						} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: 'yes',
+								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+							};
+						} else {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: null,
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+						}
+					}
+
+					idxListSelected++;
+				}
+				//
+				// idx = 0;
+				// idxUpdate = 0;
+				// const lenCheck = listCourseTypeCheck.length;
+				// let listCourseCanChoose = [];
+
+				// if (lenCheck > 0) {
+				// 	while (idxUpdate < this.listCourse.length) {
+                //         let check = false;
+
+				// 		while (idx < lenCheck) {
+				// 			if (this.listCourse[idxUpdate].value === listCourseTypeCheck[idx]) {
+				// 				check = true;
+                //                 listCourseCanChoose.push({
+                //                     ...this.listCourse[idxUpdate],
+                //                     disabled: true
+                //                 });
+
+				// 				break;
+				// 			}
+
+				// 			idx++;
+				// 		}
+				// 		if (check === false) {
+                //             listCourseCanChoose.push({
+                //                 ...this.listCourse[idxUpdate],
+                //                 disabled: false
+                //             });
+				// 		}
+
+				// 		idx = 0;
+				// 		idxUpdate++;
+				// 	}
+				// }
+
+				// if (listCourseCanChoose.length > 0) {
+				// 	this.listCourse = JSON.parse(JSON.stringify(listCourseCanChoose));
+				// }
+
+                const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
+                this.courseDisabled = COURSE_DISABLED;
+
+                const lenCourse = this.listCourse.length;
+                let idxCourse = 0;
+
+                while (idxCourse < lenCourse) {
+                    if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
+                        this.listCourse[idx].disabled = true;
+                    } else {
+                        this.listCourse[idx].disabled = false;
+                    }
+
+                    idxCourse++;
+                }
+
+                // console.log(this.listCourse);
+
+
+				if (this.listNodeEditSelected.length > 0) {
+					this.modalDetail = true;
+				} else {
+					this.modalEdit = true;
+				}
+			});
+		},
+
+		destroyEmit() {
+			this.$bus.off('LIST_SHITF_CLICK_NODE');
+		},
+
+		async handleGetListCourse() {
+			try {
+				const { code, data } = await getList(CONSTANT.URL_API.GET_LIST_COURSE);
+
+				if (code === 200) {
+					this.listCourse = [];
+					const len = data.length;
+					let idx = 0;
+
+
+					while (idx < len) {
+						this.listCourse.push({
+							value: data[idx].course_code,
+							text: data[idx].course_name,
+							status: data[idx].status,
+							flag: data[idx].flag,
+							start_time: data[idx].start_time,
+							end_time: data[idx].end_time,
+							break_time: data[idx].break_time,
+							disabled: false,
+						});
+
+						idx++;
+					}
+				} else {
+					this.listCourse.length = 0;
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetListCalendar() {
+			try {
+				this.listCalendar = [];
+
+				let START_DATE = '';
+				let END_DATE = '';
+
+				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+					START_DATE = this.pickerWeek.listDate[0].text;
+					END_DATE =
+                            this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
+				}
+
+				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+					START_DATE = `${this.pickerYearMonth.year}-${format2Digit(
+						this.pickerYearMonth.month
+					)}-01`;
+					END_DATE = `${this.pickerYearMonth.year}-${format2Digit(
+						this.pickerYearMonth.month
+					)}-${this.pickerYearMonth.numberDate}`;
+				}
+
+				const CALENDAR = await getCalendar(CONSTANT.URL_API.GET_CALENDAR, {
+					start_date: START_DATE,
+					end_date: END_DATE,
+				});
+
+				if (CALENDAR.code === 200) {
+					const len = CALENDAR.data.length;
+					let idx = 0;
+
+					while (idx < len) {
+						this.listCalendar.push(CALENDAR.data[idx].rokuyou);
+
+						idx++;
+					}
+				}
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async handleGetListShift() {
+			try {
+				setLoading(true);
+				const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
+
+				const PARAMS = {
+					type: TYPE,
+				};
+
+				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+					const START = this.pickerWeek.start;
+					const END = this.pickerWeek.end;
+
+					PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
+					PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
+
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
+
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+					PARAMS.date = YEAR_MONTH;
+				}
+
+				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
+
+					const START = `${YEAR}-${format2Digit(MONTH)}-01`;
+					const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
+
+					PARAMS.start_date = START;
+					PARAMS.end_date = END;
+
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+					PARAMS.date = YEAR_MONTH;
+				}
+
+				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
+
+				if (code === 200) {
+					this.listShift = convertValueWhenNull(data);
+				} else {
+					this.listShift.length = 0;
+				}
+
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
+		getTextDayInWeek,
+		getTextDay,
+		goToListShift() {
+			this.$router.push({ name: 'ListShift' });
+		},
+
+		activeSelectWeekMonth(type) {
+			return this.selectWeekMonth === type
+				? 'btn-select-week-month active'
+				: 'btn-select-week-month';
+		},
+
+		activeSelectTable(table) {
+			return this.selectTable === table
+				? 'control-button-group active'
+				: 'control-button-group';
+		},
+
+		onClickSelectWeekMonth(type) {
+			if (
+				[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
+			) {
+				this.selectWeekMonth = type;
+			} else {
+				this.selectWeekMonth = CONSTANT.LIST_SHIFT.WEEK;
+			}
+		},
+
+		onClickSelectTable(table) {
+			if (
+				[
+					CONSTANT.LIST_SHIFT.SHIFT_TABLE,
+					CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY,
+					CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE,
+				].includes(table)
+			) {
+				this.selectTable = table;
+			} else {
+				this.selectTable = CONSTANT.LIST_SHIFT.SHIFT_TABLE;
+			}
+		},
+
+		onClickChangeNode() {
+			this.modalDetail = false;
+
+			this.modalEdit = true;
+		},
+
+		onAddNode() {
+			this.listNodeEditSelected.push({
+				type: null,
+				start_time: [null, null],
+				end_time: [null, null],
+				break_time: [null, null],
+				course: {
+					flag: null,
+					start_time: null,
+					end_time: null,
+					break_time: null,
+				},
+			});
+		},
+
+		onEditNode(data) {
+			const INDEX = data.index;
+			const KEY = data.key;
+			const VALUE = data.value;
+
+			this.listNodeEditSelected[INDEX][KEY] = VALUE;
+		},
+
+		onRemoveNode(idxRemove) {
+			this.listNodeEditSelected.splice(idxRemove, 1);
+		},
+
+		onClickSaveNode() {
+			const FILTER_LIST_SELECTED = this.handleFilterListSelected(this.listNodeEditSelected, [null]);
+
+			const VALIDATE = validateEditShift(FILTER_LIST_SELECTED);
+
+			if (VALIDATE.status) {
+				this.modalEdit = false;
+
+				const DRIVER_CODE = this.nodeEmit.driverCode;
+				const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
+
+				const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
+
+				let INDEX_CELL_OF_DRIVER = -1;
+
+				if (TYPE_TABLE === 'MONTH') {
+					INDEX_CELL_OF_DRIVER = this.nodeEmit.date - 1;
+				} else {
+					INDEX_CELL_OF_DRIVER = this.nodeEmit.index - 1;
+				}
+
+				const DATA_UPDATE = FILTER_LIST_SELECTED;
+
+				this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
+
+				const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+				this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
+
+				this.listNodeEditSelected.length = 0;
+			} else {
+				Notification.warning(this.$t(VALIDATE.message));
+			}
+		},
+
+		handleUpdateTable(listShift, idxOfDriver, idxCellOfDriver, dataUpdate) {
+			if (dataUpdate.length > 0) {
+				const LIST_TYPE_SELECTED = dataUpdate.map((item) => item.type);
+
+				const LIST_DAY_OFF = LIST_TYPE_SELECTED.filter((item) => (CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item));
+
+				if (LIST_DAY_OFF.length > 0) {
+					// console.log(listShift[idxOfDriver].shift_list);
+
+					listShift[idxOfDriver].shift_list[idxCellOfDriver].color = this.role === CONSTANT.ROLE.ADMIN ? CONSTANT.LIST_SHIFT.MAP_TYPE_COLOR_DAY_OFF[LIST_DAY_OFF[0]] : CONSTANT.LIST_SHIFT.COLOR_HOLIDAY;
+					listShift[idxOfDriver].shift_list[idxCellOfDriver].value = this.generateListValueDayOff(dataUpdate);
+				} else {
+					listShift[idxOfDriver].shift_list[idxCellOfDriver].color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
+					listShift[idxOfDriver].shift_list[idxCellOfDriver].value = this.generateListValueWork(dataUpdate);
+				}
+			}
+
+			this.handleReRenderTable();
+
+			return listShift;
+		},
+
+		generateListValueDayOff(dataUpdate) {
+			// console.log(dataUpdate);
+
+			const result = [];
+
+			const len = dataUpdate.length;
+			let idx = 0;
+
+			while (idx < len) {
+				result.push({
+					type: dataUpdate[idx].type,
+					name: this.role === CONSTANT.ROLE.ADMIN ? this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]) : this.$t(CONSTANT.LIST_SHIFT.TABLE_DATE_HOLIDAY),
+					course_status: null,
+					start_time: '09:00',
+					end_time: '18:00',
+					break_time: '0.00',
+				});
+
+				idx++;
+			}
+
+			return result;
+		},
+
+		generateListValueWork(dataUpdate) {
+			const result = [];
+
+			const len = dataUpdate.length;
+			let idx = 0;
+
+			while (idx < len) {
+				if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+					result.push({
+						type: dataUpdate[idx].type,
+						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_WAIT_BETWEEN_TASK),
+						course_status: null,
+						start_time: formatArray2Time(dataUpdate[idx].start_time),
+						end_time: formatArray2Time(dataUpdate[idx].end_time),
+						break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+					});
+				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+					result.push({
+						type: dataUpdate[idx].type,
+						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_LEADER_CHIEF),
+						course_status: null,
+						start_time: formatArray2Time(dataUpdate[idx].start_time),
+						end_time: formatArray2Time(dataUpdate[idx].end_time),
+						break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+					});
+				} else {
+					const COURSE = this.listCourse.findIndex((item) => item.value === dataUpdate[idx].type);
+
+					if (COURSE !== -1) {
+						result.push({
+							type: dataUpdate[idx].type,
+							name: this.listCourse[COURSE].text,
+							course_status: this.listCourse[COURSE].status,
+							start_time: formatArray2Time(dataUpdate[idx].start_time),
+							end_time: formatArray2Time(dataUpdate[idx].end_time),
+							break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+						});
+					} else {
+						result.push({
+							type: null,
+							name: null,
+							course_status: null,
+							start_time: null,
+							end_time: null,
+							break_time: null,
+						});
+					}
+				}
+
+				idx++;
+			}
+
+			return result;
+		},
+
+		handleReRenderTable() {
+			this.reRenderTable += 1;
+		},
+
+		findIndexOfDriverCode(list = [], driverCode = '') {
+			const len = list.length;
+			let idx = 0;
+
+			while (idx < len) {
+				if (list[idx].driver_code === driverCode) {
+					return idx;
+				}
+
+				idx++;
+			}
+
+			return -1;
+		},
+
+		async onClickSave() {
+			try {
+				if (this.listUpdate.length > 0) {
+					const DATA = this.handleInitDataUpdate(this.listUpdate);
+
+					const { code } = await postUpdateCellShift(CONSTANT.URL_API.POST_UPDATE_CELL_SHIFT, DATA);
+
+					if (code === 200) {
+						Notification.success(this.$t('MESSAGE_APP.LIST_SHIFT_UPDATE_SUCCESS'));
+					}
+
+					this.listUpdate.length = 0;
+
+					this.goToListShift();
+				} else {
+					Notification.success(this.$t('MESSAGE_APP.LIST_SHIFT_UPDATE_SUCCESS'));
+					this.goToListShift();
+				}
+			} catch (error) {
+				this.listUpdate.length = 0;
+				this.goToListShift();
+				console.log(error);
+			}
+		},
+
+		handleInitDataUpdate(listUpdate) {
+			if (listUpdate.length > 0) {
+				return {
+					date: getYearMonthFromDate(listUpdate[0].date_edit),
+					shift_list: listUpdate,
+				};
+			} else {
+				return {
+					date: null,
+					shift_list: [],
+				};
+			}
+		},
+
+		handleinitObjectUpdate(otherInfo, listSelected) {
+			const INIT_UPDATE = {
+				date_edit: otherInfo.dataNode.date,
+				driver_code: otherInfo.driverCode,
+				shift_list_update: [],
+			};
+
+			listSelected.forEach((item) => {
+				INIT_UPDATE.shift_list_update.push({
+					type: item.type,
+					start_time: formatArray2Time(item.start_time),
+					end_time: formatArray2Time(item.end_time),
+					break_time: convertTimeCourse(formatArray2Time(item.break_time)),
+				});
+			});
+
+			return INIT_UPDATE;
+		},
+
+		handleUpdateListUpdate(listUpdate, updateDayOff) {
+			if (listUpdate.length > 0) {
+				const IS_EXIT = this.handleCheckUpdateWithDataExit(listUpdate, updateDayOff);
+
+				if (IS_EXIT.status) {
+					listUpdate[IS_EXIT.index].shift_list_update = updateDayOff;
+				} else {
+					listUpdate.push(updateDayOff);
+				}
+			} else {
+				listUpdate.push(updateDayOff);
+			}
+
+			return listUpdate;
+		},
+
+		handleCheckUpdateWithDataExit(listUpdate, updateDayOff) {
+			const IS_EXIT = {
+				status: false,
+				index: null,
+			};
+
+			const DATE_EDIT = updateDayOff.date_edit;
+			const DRIVER_CODE = updateDayOff.driver_code;
+
+			const len = listUpdate.length;
+			let idx = 0;
+
+			while (idx < len) {
+				if (listUpdate[idx].date_edit === DATE_EDIT && listUpdate[idx].driver_code === DRIVER_CODE) {
+					IS_EXIT.status = true;
+					IS_EXIT.index = idx;
+
+					break;
+				}
+
+				idx++;
+			}
+
+			return IS_EXIT;
+		},
+
+		handleFilterListSelected(listUpdate, listFilter = [null]) {
+			const FILTER_LIST_SELECTED = listUpdate.filter((item) => {
+				return !listFilter.includes(item.type);
+			});
+
+			return FILTER_LIST_SELECTED;
+		},
+
+		setListUpdate(list) {
+			this.$store.dispatch('listShift/setListUpdate', list);
+		},
+
+		onSelectedDayOff(status) {
+			if (this.isCheckNullListSelected(this.listNodeEditSelected)) {
+				this.setDisabledListEdit(false, false);
+			} else {
+				if (status) {
+					this.setDisabledListEdit(false, true);
+				} else {
+					this.setDisabledListEdit(true, false);
+				}
+			}
+		},
+
+		isCheckNullListSelected(listSelected) {
+			const len = listSelected.length;
+			let idx = 0;
+
+			let total = 0;
+
+			while (idx < len) {
+				if (listSelected[idx].type === null) {
+					total = total + 1;
+				}
+
+				idx++;
+			}
+
+			return total === len;
+		},
+
+		setDisabledListEdit(valueDayoff, valueCourse) {
+			const lenDayOff = this.listNodeEdit.length;
+			let idxDayOff = 0;
+
+			while (idxDayOff < lenDayOff) {
+				if (([null, ...CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF]).includes(this.listNodeEdit[idxDayOff].value)) {
+					this.listNodeEdit[idxDayOff].disabled = valueDayoff;
+				}
+
+				idxDayOff++;
+			}
+
+			const lenCourse = this.listCourse.length;
+			let idxCourse = 0;
+
+			while (idxCourse < lenCourse) {
+                if (valueCourse) {
+                    this.listCourse[idxCourse].disabled = valueCourse;
+                } else {
+                    this.listCourse[idxCourse].disabled = (this.courseDisabled).includes(this.listCourse[idxCourse].value);
+                }
+
+				idxCourse++;
+			}
+
+			const lenNotDayOff = this.listNodeEdit.length;
+			let idxNotDayOff = 0;
+
+			while (idxNotDayOff < lenNotDayOff) {
+				if (!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(this.listNodeEdit[idxNotDayOff].value)) {
+					this.listNodeEdit[idxNotDayOff].disabled = valueCourse;
+				}
+
+				idxNotDayOff++;
+			}
+		},
+
+		onClickCancelDetail() {
+			this.modalDetail = false;
+		},
+
+		onClickCancelEdit() {
+			this.modalEdit = false;
+
+			this.listNodeEditSelected.length = 0;
+		},
+
+		onChangeNode(data) {
+			const value = data.value;
+
+			if (value) {
+				const idxChange = data.index;
+				const COURSE = this.listCourse.find((course) => course.value === value);
+
+				if (COURSE) {
+					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
+						this.listNodeEditSelected[idxChange].course = {
+							flag: null,
+							start_time: null,
+							end_time: null,
+							break_time: null,
+						};
+						this.listNodeEditSelected[idxChange].course_status = null;
+					} else {
+						this.listNodeEditSelected[idxChange].name = COURSE.course_name;
+						this.listNodeEditSelected[idxChange].start_time = convertTextToSelectTime(COURSE.start_time);
+						this.listNodeEditSelected[idxChange].end_time = convertTextToSelectTime(COURSE.end_time);
+						this.listNodeEditSelected[idxChange].break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(COURSE.break_time));
+						this.listNodeEditSelected[idxChange].course = {
+							flag: COURSE.flag,
+							start_time: COURSE.start_time,
+							end_time: COURSE.end_time,
+							break_time: COURSE.break_time,
+						};
+						this.listNodeEditSelected[idxChange].course_status = COURSE.status;
+					}
+				} else {
+					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
+						this.listNodeEditSelected[idxChange].course = {
+							flag: null,
+							start_time: null,
+							end_time: null,
+							break_time: null,
+						};
+						this.listNodeEditSelected[idxChange].course_status = null;
+					} else {
+						if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
+							this.listNodeEditSelected[idxChange].start_time = [null, null];
+							this.listNodeEditSelected[idxChange].end_time = [null, null];
+							this.listNodeEditSelected[idxChange].break_time = [null, null];
+							this.listNodeEditSelected[idxChange].course = {
+								flag: 'yes',
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+							this.listNodeEditSelected[idxChange].course_status = null;
+						} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
+							this.listNodeEditSelected[idxChange].start_time = [null, null];
+							this.listNodeEditSelected[idxChange].end_time = [null, null];
+							this.listNodeEditSelected[idxChange].break_time = [null, null];
+							this.listNodeEditSelected[idxChange].course = {
+								flag: 'yes',
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+							this.listNodeEditSelected[idxChange].course_status = null;
+						}
+					}
+				}
+			}
+		},
+	},
+};
+</script>
+
+<style lang="scss" scoped>
+	@import "@/scss/variables";
+
+	.list-shift {
+		&__header {
+			.zone-left {
+				display: flex;
+				height: 100%;
+				line-height: 48px;
+
+				.zone-title {
+					justify-content: left;
+					vertical-align: middle;
+
+					.title-page {
+						font-size: 25px;
+						font-weight: bold;
+					}
+				}
+
+				.zone-select-week-month {
+					margin: 0 20px;
+
+					.btn-select-week-month {
+						background-color: $white;
+						border-color: $main;
+						color: $main;
+						font-weight: 600;
+					}
+
+					.btn-select-week-month.active {
+						background-color: $main;
+						color: $white;
+					}
+				}
+			}
+
+			.zone-right {
+				display: flex;
+				justify-content: flex-end;
+
+				.item-function {
+					padding: 0 20px;
+
+					cursor: pointer;
+
+					.show-icon {
+						i {
+							font-size: 25px;
+							color: $dusty-gray;
+
+							display: flex;
+							align-items: center;
+							justify-content: center;
+
+							margin-bottom: 5px;
+						}
+					}
+
+					.show-text {
+						text-align: center;
+						font-weight: bold;
+						color: $dusty-gray;
+						font-size: 12px;
+					}
+
+					&:hover {
+						.show-icon {
+							i {
+								color: $di-serria;
+
+								display: flex;
+								align-items: center;
+								justify-content: center;
+
+								margin-bottom: 5px;
+							}
+						}
+
+						.show-text {
+							text-align: center;
+							font-weight: bold;
+							color: $di-serria;
+							font-size: 12px;
+						}
+					}
+				}
+			}
+		}
+
+		&__control {
+			margin-bottom: 10px;
+
+			.control-button-group {
+				background-color: $wild-sand;
+				color: $sirocco;
+
+				font-size: 12px;
+				min-width: 120px;
+
+				span {
+					font-weight: bold;
+				}
+			}
+
+			.control-button-group.active {
+				background-color: $main;
+				color: $white;
+			}
+
+			.btn-control {
+				line-height: 50px;
+
+				.btn-return {
+					color: $white;
+					font-weight: 600;
+
+					border-color: transparent;
+
+					&:hover {
+						opacity: 0.8;
+					}
+				}
+
+				.btn-save {
+					background-color: $main;
+					color: $white;
+					font-weight: 600;
+
+					border-color: transparent;
+
+					&:hover {
+						opacity: 0.8;
+					}
+				}
+			}
+		}
+
+		&__table {
+			height: calc(100vh - 235px);
+			overflow-y: auto;
+
+			table {
+					thead {
+						tr {
+							th {
+                                position: sticky;
+                                z-index: 9;
+
+								div {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+								}
+
+								background-color: $main;
+								color: $white;
+								text-align: center;
+                                vertical-align: middle;
+
+								padding: 5px 0;
+
+                                top: 0;
+							}
+
+                            th.fix-header {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 0;
+                            }
+
+							th.th-show-date {
+								padding: 5px 0;
+							}
+
+							th.th-employee-number {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 0;
+
+                                width: 150px;
+							}
+
+                            th.th-flag {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 200px;
+
+								width: 180px;
+                            }
+
+							th.th-full-name {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 400px;
+
+								width: 240px;
+							}
+						}
+
+                        tr:nth-child(2) {
+                            position: sticky;
+                            z-index: 10;
+                            top: 37px;
+                        }
+					}
+
+					tbody {
+						tr {
+							td {
+								text-align: center;
+								padding: 0;
+
+								min-width: 150px;
+                                min-height: 80px;
+							}
+
+							td.td-employee-number,
+                            td.td-flag,
+							td.td-full-name {
+								background-color: $sub-main;
+
+								font-weight: bold;
+
+								vertical-align: middle;
+
+                                padding: 5px;
+
+                                min-width: 200px;
+							}
+
+                            td.td-employee-number {
+                                position: sticky;
+                                z-index: 9;
+                                top: 0;
+                                left: 0;
+                            }
+
+                            td.td-flag {
+                                position: sticky;
+                                z-index: 9;
+                                top: 0;
+                                left: 200px;
+
+                                width: 200px;
+                            }
+
+                            td.td-full-name {
+                                position: sticky;
+                                z-index: 9;
+                                top: 0;
+                                left: 400px;
+                            }
+						}
+					}
+			}
+		}
+	}
+
+	.modal-detail-node {
+		.item-node {
+			text-align: center;
+			span.type-node {
+				font-size: 20px;
+				font-weight: bold;
+			}
+
+			.item-time {
+				margin: 5px 0;
+			}
+
+			margin-bottom: 20px;
+		}
+
+		.modal-detail-node-control {
+			text-align: center;
+
+			.btn-change {
+				min-width: 100px;
+				background-color: $main;
+				color: $white;
+				font-weight: 600;
+
+				border-color: transparent;
+
+				&:hover {
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+
+	.modal-edit-node {
+		padding: 10px;
+
+		.edit-node {
+			text-align: center;
+
+			span {
+				font-size: 20px;
+				font-weight: bold;
+			}
+		}
+
+		.edit-control {
+			margin-top: 30px;
+
+			text-align: center;
+
+			.btn-save {
+				min-width: 100px;
+				background-color: $main;
+				color: $white;
+				font-weight: 600;
+
+				border-color: transparent;
+
+				&:hover {
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+</style>

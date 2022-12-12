@@ -1,0 +1,49 @@
+<?php
+
+namespace Tests\Browser;
+
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\Dusk\Browser\Driver;
+use Tests\DuskTestCase;
+
+class LoginDriverTest extends DuskTestCase
+{
+    /**
+     * A scenario of automation test, try to login by super admin account
+     * After login, application will visit all page to check the response working well
+     * After visit all page by url, will move to page one by one by click.
+     * Almost done, LogOut is the last step
+     * @return void
+     */
+
+    public function testGeneral()
+    {
+        $this->browse(function ($browser) {
+            $browser->visit('/')->waitFor('.login-btn');
+            $this->validate($browser);
+            $this->loginDriverSuccess($browser);
+        });
+    }
+
+    public function validate($browser)
+    {
+        //wrong employee number or password
+        $browser->typeSlowly('#user_id', '223345')->typeSlowly('#password', 'abc12345678')
+            ->press('.login-btn')->waitFor('.toast-header')->assertSee('警告')
+            // password >4 charactor
+            ->press('.close')->typeSlowly('#user_id', '2233')->typeSlowly('#password', '123')
+            ->press('.login-btn')->waitFor('.toast-header')->assertSee('警告')
+            // password is null
+            ->press('.close')->typeSlowly('#user_id', '2233')->typeSlowly('#password', '')
+            ->press('.login-btn')->waitFor('.toast-header')->assertSee('警告');
+    }
+
+    public function loginDriverSuccess($browser)
+    {
+        $browser->visit('/')->waitFor('.login-btn')
+            ->typeSlowly('#user_id', '2233')
+            ->typeSlowly('#password', 'abc12345678')->press('.login-btn')
+            ->waitFor('.toast-header')->assertSee('成功')
+            ->assertSeeIn('.toast-header', '成功')->assertPathIs('/shift-management/list-shift');
+    }
+}
