@@ -3,9 +3,9 @@
         <b-container>
             <div class="login-container">
                 <div class="form-login">
-                    <img class="show-icon" :src="require('@/assets/images/char8_1.png')" alt="Icon">
+                    <!-- <img class="show-icon" :src="require('@/assets/images/char8_1.png')" alt="Icon"> -->
                     <div class="show-title">
-                        <img :src="require('@/assets/images/Global_Air_Cargo.png')" alt="Logo login">
+                        <!-- <img :src="require('@/assets/images/Global_Air_Cargo.png')" alt="Logo login"> -->
                         <h1 class="title-login">
                             {{ $t('LOGIN.TITLE_LOGIN') }}
                         </h1>
@@ -199,15 +199,12 @@ export default {
     width: 100%;
     height: 100vh;
     overflow: hidden;
-
-    background-color: $main;
-
+    background-color: $white;
     display: flex;
     align-items: center;
 
     .login-container {
-        background-color: $white;
-
+        background-color: $sub-main;
         border-color: $silver-chalice;
         border-style: solid;
         border-width: 2px;
@@ -237,19 +234,13 @@ export default {
 
             .show-title {
                 text-align: center;
-
-                img {
-                    width: 500px;
-                    margin-top: 100px;
-                }
-
                 h1.title-login {
                     font-family: $font-josefin-sans, 'sans-serif';
-
-                    font-size: 20px;
-                    font-weight: 400;
-                    color: $main;
-                    margin-top: 10px;
+                    width: 327px;
+                    font-size: 80px;
+                    font-weight: 300;
+                    color: $main-header;
+                    margin-top: 60px;
                 }
 
                 margin-bottom: 100px;
@@ -305,16 +296,14 @@ export default {
 
                 .btn-submit {
                     min-width: 200px;
-                    height: 50px;
+                    height: 70px;
+                    background: $main-header;
+                    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
                     border-radius: 50px;
-
-                    background-color: $main;
-
-                    font-size: 22px;
+                    font-size: 32px;
 
                     color: $white;
-
-                    border-color: unset;
+                    border: none;
 
                     font-family: $font-inter, 'sans-serif';
                     font-weight: 600;

@@ -41,7 +41,7 @@
                                 v-show="showControlTime"
                                 class="zone-select-week-month"
                             >
-                                <b-button-group>
+                                <!-- <b-button-group>
                                     <b-button
                                         :class="activeSelectWeekMonth(CONSTANT.LIST_SHIFT.WEEK)"
                                         @click="onClickSelectWeekMonth(CONSTANT.LIST_SHIFT.WEEK)"
@@ -54,7 +54,7 @@
                                     >
                                         {{ $t("LIST_SHIFT.BUTTON_MONTH") }}
                                     </b-button>
-                                </b-button-group>
+                                </b-button-group> -->
                             </div>
                             <div
                                 v-show="showControlTime"
@@ -76,7 +76,7 @@
                     >
                         <div v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE" class="zone-right">
                             <template v-if="!(isLoading.show)">
-                                <div
+                                <!-- <div
                                     v-if="hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                     v-show="showControlTime"
                                     class="item-function"
@@ -88,9 +88,9 @@
                                     <div class="show-text">
                                         <span>{{ $t("LIST_SHIFT.BUTTON_SHIFT_CREATION") }}</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </template>
-                            <div
+                            <!-- <div
                                 v-if="hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                 v-show="showControlTime"
                                 class="item-function"
@@ -102,8 +102,8 @@
                                 <div class="show-text">
                                     <span>{{ $t("LIST_SHIFT.BUTTON_VIEW_LOG") }}</span>
                                 </div>
-                            </div>
-                            <div
+                            </div> -->
+                            <!-- <div
                                 v-if="(hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH)"
                                 v-show="showControlTime"
                                 class="item-function"
@@ -115,7 +115,7 @@
                                 <div class="show-text">
                                     <span>{{ $t("LIST_SHIFT.BUTTON_ATMTC") }}</span>
                                 </div>
-                            </div>
+                            </div> -->
                             <div
                                 v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                 class="item-function btn-excel"
@@ -158,19 +158,19 @@
                                 >
                                     <span v-html="$t('LIST_SHIFT.BUTTON_SHIFT_TABLE')" />
                                 </b-button>
-                                <b-button
+                                <!-- <b-button
                                     :class="activeSelectTable(CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
                                     @click="onClickSelectTable(CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
                                 >
                                     <span v-html="$t('LIST_SHIFT.BUTTON_COURSE_BASE')" />
-                                </b-button>
-                                <b-button
+                                </b-button> -->
+                                <!-- <b-button
                                     :class="activeSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY)"
                                     @click="onClickSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY)"
                                 >
                                     <span v-html="$t('LIST_SHIFT.BUTTON_PRACTICAL_ACHIEVEMENTS_MONTHLY')" />
-                                </b-button>
-                                <b-button
+                                </b-button> -->
+                                <!-- <b-button
                                     v-if="false"
                                     :class="activeSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE)"
                                     @click="onClickSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE)"
@@ -178,7 +178,7 @@
                                     <span
                                         v-html="$t('LIST_SHIFT.BUTTON_PRACTICAL_PERFORMANCE_BY_CLOSING_DATE')"
                                     />
-                                </b-button>
+                                </b-button> -->
                                 <b-button
                                     :class="activeSelectTable(CONSTANT.LIST_SHIFT.SALARY_TABLE)"
                                     @click="onClickSelectTable(CONSTANT.LIST_SHIFT.SALARY_TABLE)"
@@ -557,6 +557,12 @@
                                     </b-th>
 
                                     <b-th rowspan="2" class="th-total">
+                                        {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                    </b-th>
+									<b-th rowspan="2" class="th-total">
+                                        {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                    </b-th>
+									<b-th rowspan="2" class="th-total">
                                         {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
                                     </b-th>
                                 </b-tr>
@@ -2962,7 +2968,8 @@ export default {
 				}
 			}
 			.button-text-left {
-				width: 358px;
+				width: 220px;
+				height: 52px;
 			}
 		}
 

@@ -28,54 +28,54 @@ const ShiftManagement = {
 			hidden: true,
 			component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/ShiftManagement/ListShift/edit.vue'),
 		},
-		{
-			path: 'list-course-base-edit',
-			name: 'ListCourseBaseEdit',
-			meta: {
-				title: 'ROUTER.LIST_SHIFT',
-				roles: ['admin'],
-			},
-			hidden: true,
-			component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/ShiftManagement/ListShift/CourseBase/edit.vue'),
-		},
-		{
-			path: 'list-day-off',
-			name: 'ListDayOff',
-			meta: {
-				title: 'ROUTER.LIST_DAY_OFF',
-				roles: ['admin'],
-			},
-			component: () => import(/* webpackChunkName: "List Day Off" */ '@/pages/ShiftManagement/ListDayOff/index.vue'),
-		},
-		{
-			path: 'list-day-off-edit',
-			name: 'ListDayOffEdit',
-			meta: {
-				title: 'ROUTER.LIST_DAY_OFF',
-				roles: ['admin'],
-			},
-			hidden: true,
-			component: () => import(/* webpackChunkName: "List Day Off Edit" */ '@/pages/ShiftManagement/ListDayOff/edit.vue'),
-		},
-		{
-			path: 'list-schedule',
-			name: 'ListSchedule',
-			meta: {
-				title: 'ROUTER.LIST_SCHEDULE',
-				roles: ['admin'],
-			},
-			component: () => import(/* webpackChunkName: "List Schedule" */ '@/pages/ShiftManagement/ListSchedule/index.vue'),
-		},
-		{
-			path: 'list-schedule-edit',
-			name: 'ListScheduleEdit',
-			meta: {
-				title: 'ROUTER.LIST_SCHEDULE',
-				roles: ['admin'],
-			},
-			hidden: true,
-			component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/ShiftManagement/ListSchedule/edit.vue'),
-		},
+		// {
+		// 	path: 'list-course-base-edit',
+		// 	name: 'ListCourseBaseEdit',
+		// 	meta: {
+		// 		title: 'ROUTER.LIST_SHIFT',
+		// 		roles: ['admin'],
+		// 	},
+		// 	hidden: true,
+		// 	component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/ShiftManagement/ListShift/CourseBase/edit.vue'),
+		// },
+		// {
+		// 	path: 'list-day-off',
+		// 	name: 'ListDayOff',
+		// 	meta: {
+		// 		title: 'ROUTER.LIST_DAY_OFF',
+		// 		roles: ['admin'],
+		// 	},
+		// 	component: () => import(/* webpackChunkName: "List Day Off" */ '@/pages/ShiftManagement/ListDayOff/index.vue'),
+		// },
+		// {
+		// 	path: 'list-day-off-edit',
+		// 	name: 'ListDayOffEdit',
+		// 	meta: {
+		// 		title: 'ROUTER.LIST_DAY_OFF',
+		// 		roles: ['admin'],
+		// 	},
+		// 	hidden: true,
+		// 	component: () => import(/* webpackChunkName: "List Day Off Edit" */ '@/pages/ShiftManagement/ListDayOff/edit.vue'),
+		// },
+	// 	{
+	// 		path: 'list-schedule',
+	// 		name: 'ListSchedule',
+	// 		meta: {
+	// 			title: 'ROUTER.LIST_SCHEDULE',
+	// 			roles: ['admin'],
+	// 		},
+	// 		component: () => import(/* webpackChunkName: "List Schedule" */ '@/pages/ShiftManagement/ListSchedule/index.vue'),
+	// 	},
+	// 	{
+	// 		path: 'list-schedule-edit',
+	// 		name: 'ListScheduleEdit',
+	// 		meta: {
+	// 			title: 'ROUTER.LIST_SCHEDULE',
+	// 			roles: ['admin'],
+	// 		},
+	// 		hidden: true,
+	// 		component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/ShiftManagement/ListSchedule/edit.vue'),
+	// 	},
 	],
 };
 
