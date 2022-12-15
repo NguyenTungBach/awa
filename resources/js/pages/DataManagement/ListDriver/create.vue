@@ -233,7 +233,7 @@
                                                     </b-col>
                                                 </b-row>
 
-                                                <b-row>
+                                                <!-- <b-row>
                                                     <b-col>
                                                         <label for="input-grade">
                                                             {{ $t('CREATE_DRIVER.GRADE') }}
@@ -251,7 +251,7 @@
                                                             {{ formatNumber(isForm.grade) }}
                                                         </div>
                                                     </b-col>
-                                                </b-row>
+                                                </b-row> -->
                                             </div>
                                             <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_WORKING_CONDITIONS') }}
@@ -368,36 +368,7 @@
                                     </b-row>
                                 </div>
                             </b-tab>
-                            <b-tab
-                                :title="$t('CREATE_DRIVER.TAB_TITLE_COURSE_INFORMATION')"
-                                :active="isTab === 'COURSE'"
-                                :disabled="true"
-                                class="title-tab"
-                                @click="onClickTab('COURSE')"
-                            >
-                                <div class="tab-content">
-                                    <div class="zone-table">
-                                        <b-table
-                                            :fields="fieldsListDriverCourse"
-                                            :items="listDriverCourse"
-                                            bordered
-                                            show-empty
-                                        >
-                                            <template #cell(delete)="scope">
-                                                <i
-                                                    class="fas fa-trash-alt"
-                                                    @click="handleDelete(scope.item)"
-                                                />
-                                            </template>
-                                            <template #empty>
-                                                <div class="text-center">
-                                                    {{ $t('APP.TABLE_NO_DATA') }}
-                                                </div>
-                                            </template>
-                                        </b-table>
-                                    </div>
-                                </div>
-                            </b-tab>
+                            
                         </b-tabs>
                     </div>
                 </div>

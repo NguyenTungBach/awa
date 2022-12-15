@@ -129,7 +129,7 @@ export default {
 .zone-navbar {
     display: inline-flex;
     width: 100%;
-    height: 70px;
+    height: 60px;
 
     background-color: $main-header;
 
@@ -175,7 +175,7 @@ export default {
                         align-items: center;
                         justify-content: center;
 
-                        line-height: 70px;
+                        line-height: 60px;
 
                         padding: 0 10px;
 
