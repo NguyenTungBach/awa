@@ -7,7 +7,7 @@
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('COURSE_DETAIL.TITLE_COURSE_DETAIL') }}
+                                    {{ $t('CUSTOMER_DETAIL.TITLE_CUSTOMER_DETAIL') }}
                                 </span>
                             </div>
                         </b-col>
@@ -48,7 +48,7 @@
                             >
                                 <div class="zone-avatar">
                                     <img
-                                        :src="require('@/assets/images/course_icon.png')"
+                                        :src="require('@/assets/images/customer_icon.png')"
                                         alt="Avatar course"
                                     >
                                 </div>
@@ -63,22 +63,22 @@
                                 <div class="zone-form">
                                     <div class="zone-form__header">
                                         <TitlePathForm>
-                                            {{ $t('COURSE_CREATE.FORM_BASIC_INFORMATION') }}
+                                            {{ $t('CUSTOMER_CREATE.FORM_BASIC_INFORMATION') }}
                                         </TitlePathForm>
                                     </div>
                                     <div class="zone-form__body">
-                                        <div class="item-form">
+                                        <!-- <div class="item-form">
                                             <DetailForm
-                                                :label="$t('COURSE_CREATE.EASY_TO_DISTINGUISH')"
+                                                :label="$t('CUSTOMER_CREATE.EASY_TO_DISTINGUISH')"
                                                 :value="formatFlagAndPot(isForm.flag, isForm.pot)"
                                             />
-                                        </div>
+                                        </div> -->
 
                                         <b-row>
                                             <b-col>
                                                 <div class="item-form">
                                                     <DetailForm
-                                                        :label="$t('COURSE_CREATE.COURSE_ID')"
+                                                        :label="$t('CUSTOMER_CREATE.COURSE_ID')"
                                                         :value="isForm.course_id"
                                                     />
                                                 </div>
@@ -89,7 +89,7 @@
                                             <b-col>
                                                 <div class="item-form">
                                                     <DetailForm
-                                                        :label="$t('COURSE_CREATE.COURSE_NAME')"
+                                                        :label="$t('CUSTOMER_CREATE.COURSE_NAME')"
                                                         :value="isForm.course_name"
                                                     />
                                                 </div>
@@ -97,138 +97,56 @@
                                         </b-row>
 
                                         <b-row>
-                                            <b-col
-                                                :cols="12"
-                                                :sm="12"
-                                                :md="12"
-                                                :lg="6"
-                                                :xl="6"
-                                            >
+                                            <b-col>
                                                 <div class="item-form">
+                                                    <!-- <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.CLOSING_DAY')"
+                                                        :value="isForm.course_name"
+                                                    /> -->
                                                     <DetailForm
-                                                        :label="$t('COURSE_CREATE.EXCLUSIVE')"
-                                                        :value="isForm.owner ? isForm.owner.driver.driver_name : ''"
-                                                    />
-                                                </div>
-                                            </b-col>
-
-                                            <b-col
-                                                :cols="12"
-                                                :sm="12"
-                                                :md="12"
-                                                :lg="6"
-                                                :xl="6"
-                                            >
-                                                <div class="item-form">
-                                                    <DetailForm
-                                                        :label="$t('COURSE_CREATE.COURSE_TYPE')"
-                                                        :value="isForm.group"
+                                                        :label="$t('CUSTOMER_CREATE.CLOSING_DAY')"
+                                                        :value="'末日'"
                                                     />
                                                 </div>
                                             </b-col>
                                         </b-row>
 
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.START_TIME')"
-                                                            :value="isForm.start_time"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.END_TIME')"
-                                                            :value="isForm.end_time"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.BREAK_TIME')"
-                                                            :value="isForm.break_time"
-                                                        />
-                                                    </div>
-                                                </b-col>
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.CLIENT_MANAGER')"
+                                                        :value="''"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.FATIGUE')"
-                                                            :value="isForm.point"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.START_DATE')"
-                                                            :value="isForm.start_date"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <DetailForm
-                                                            :label="$t('COURSE_CREATE.END_DATE')"
-                                                            :value="isForm.end_date"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT')"
+                                                        :value="''"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.CLIENT_EMAIL')"
+                                                        :value="''"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
                                         <div class="zone-form__header">
                                             <TitlePathForm>
-                                                {{ $t('COURSE_DETAIL.NOTE_DETAIL') }}
+                                                {{ $t('CUSTOMER_CREATE.NOTE') }}
                                             </TitlePathForm>
                                         </div>
                                         <div class="item-form">
