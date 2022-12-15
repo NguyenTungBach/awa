@@ -147,7 +147,7 @@ export default {
 		LOGOUT: 'Logout',
 	},
 	LOGIN: {
-		TITLE_LOGIN: 'AI shift generation system',
+		TITLE_LOGIN: 'LOGIN',
 		PLACEHOLDER_USER_ID: 'Crew ID',
 		PLACEHOLDER_USER_PASSWORD: 'Password',
 		BUTTON_LOGIN: 'Login',

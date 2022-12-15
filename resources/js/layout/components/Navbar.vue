@@ -129,9 +129,9 @@ export default {
 .zone-navbar {
     display: inline-flex;
     width: 100%;
-    height: 60px;
+    height: 70px;
 
-    background-color: $main;
+    background-color: $main-header;
 
     z-index: 10 !important;
 
@@ -144,12 +144,13 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100px;
-
-            margin: 10px;
+            width: 110px;
+            height: 40px;
+            margin: 10px 40px;
 
             img {
-                height: 45px;
+                height: 35px;
+                padding-right: 20px;
             }
         }
 
@@ -174,7 +175,7 @@ export default {
                         align-items: center;
                         justify-content: center;
 
-                        line-height: 60px;
+                        line-height: 70px;
 
                         padding: 0 10px;
 
@@ -185,7 +186,7 @@ export default {
                         &:hover {
                             text-decoration: none;
 
-                            background-color: $main;
+                            background-color: $main-header;
 
                             cursor: pointer;
                         }
@@ -203,7 +204,7 @@ export default {
                             }
 
                             li {
-                                background-color: $main;
+                                background-color: $main-header;
                                 width: 170px;
 
                                 border-top: 1px solid $white;
@@ -228,7 +229,7 @@ export default {
                                     &:hover {
                                         text-decoration: none;
 
-                                        background-color: $main;
+                                        background-color: $hover-list;
                                     }
 
                                 }
@@ -243,7 +244,7 @@ export default {
                                         z-index: 999 !important;
 
                                         li {
-                                            background-color: $main;
+                                            background-color: $hover-list;
 
                                             border-top: 1px solid $white;
                                             border-left: 1px solid $white;
@@ -271,7 +272,7 @@ export default {
                                                 &:hover {
                                                     text-decoration: none;
 
-                                                    background-color: $main;
+                                                    background-color: $hover-list;
                                                 }
 
                                             }
@@ -363,7 +364,7 @@ export default {
                     top: 60px;
 
                     width: 200px;
-                    background-color: $main;
+                    background-color: $main-header;
 
                     li {
                         width: 200px;
@@ -383,7 +384,7 @@ export default {
                         }
 
                         &:hover {
-                            background-color: $main;
+                            background-color: $hover-list;
                         }
                     }
                 }

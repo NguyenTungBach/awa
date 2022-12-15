@@ -108,25 +108,7 @@ const DataManagement = {
 					component: () => import(/* webpackChunkName: "Course Edit" */ '@/pages/DataManagement/ListCourse/edit.vue'),
 					hidden: true,
 				},
-				{
-					path: 'list-course-pattern',
-					name: 'ListCoursePattern',
-					meta: {
-						title: 'ROUTER.LIST_COURSE_PATTERN',
-						roles: ['admin'],
-					},
-					component: () => import(/* webpackChunkName: "List Course Pattern" */ '@/pages/DataManagement/ListCoursePattern/index.vue'),
-				},
-				{
-					path: 'edit-list-course-pattern',
-					name: 'EditListCoursePattern',
-					meta: {
-						title: 'ROUTER.LIST_COURSE_PATTERN',
-						roles: ['admin'],
-					},
-					component: () => import(/* webpackChunkName: "Edit List Course Pattern" */ '@/pages/DataManagement/ListCoursePattern/edit.vue'),
-					hidden: true,
-				},
+				
 			],
 		},
 		{
