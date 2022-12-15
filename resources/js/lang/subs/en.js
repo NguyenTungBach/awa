@@ -156,7 +156,7 @@ export default {
 		TITLE_EDIT_COURSE_BASE: 'Change driver run',
 		TITLE_LIST_SHIFT: 'List Shift',
 		TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE: 'Practical record table',
-		TABLE_SALARY: 'Salary table',
+		TABLE_SALARY: 'Sales amount table',
 		BUTTON_WEEK: 'Week',
 		BUTTON_MONTH: 'Month',
 
@@ -171,7 +171,7 @@ export default {
 		TITLE_COURSE_BASE: 'Course base',
 		BUTTON_PRACTICAL_ACHIEVEMENTS_MONTHLY: 'Practical achievements monthly',
 		BUTTON_PRACTICAL_PERFORMANCE_BY_CLOSING_DATE: 'Practical performance by closing date',
-		BUTTON_TABLE_SALARY: 'Salary table',
+		BUTTON_TABLE_SALES: 'Sales amount table',
 
 		BUTTON_RETURN: 'Return',
 		BUTTON_EDIT: 'Edit',
@@ -202,9 +202,9 @@ export default {
 		LABEL_CLOSING_TIME: 'Closing time: ',
 		LABEL_BREAK_TIME: 'Break time: ',
 
-		TABLE_DRIVER_CODE: 'Crew code',
-		TABLE_DRIVER_TYPE: 'Flag',
-		TABLE_DRIVER_NAME: 'Crew name',
+		TABLE_DRIVER_CODE: 'Customer ID',
+		TABLE_DRIVER_TYPE: 'Due date',
+		TABLE_DRIVER_NAME: 'Customer name',
 		TABLE_NUMBER_OF_PAID_HOLIDAYS: 'Number of paid holidays',
 		TABLE_TOTAL_TIME: 'Days can work',
 		TABLE_DRIVING_TIME: 'Working days',
@@ -237,7 +237,10 @@ export default {
 		MESSAGE_AI_SUCCESS: 'Shift table generation completed',
 		MESSAGE_AI_ERROR: 'Failed to generate shift table. <br />Check the error details in the execution history.',
 
-		SALARY_TOTAL: 'Total',
+		SALES_TOTAL: 'Total',
+		SALES_MONTH: 'Month ',
+		SALES_CLOSING_DATE: 'Closing date ',
+		SALES_INVOICE: 'Invoice ',
 		TABLE_COURSE_COURSE_ID: 'Course ID',
 		TABLE_COURSE_COURSE_GROUP: 'Group',
 		TABLE_COURSE_COURSE_NAME: 'Course name',

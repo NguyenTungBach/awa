@@ -34,11 +34,11 @@
                             <b-thead>
                                 <b-tr>
                                     <b-th
-                                        class="th-sort th-id th-course-id"
+                                        class="th-sort th-id th-course-id text-center"
                                         :rowspan="2"
                                         @click="onSortTable('course_code')"
                                     >
-                                        <b-row class="row-course-id">
+                                        <b-row class="row-course-id ">
                                             {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
@@ -59,12 +59,12 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-course-name"
+                                        class="th-sort th-name th-course-name"
                                         :rowspan="2"
                                         @click="onSortTable('course_name')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <b-row >
+                                            <b-col >
                                                 {{ $t('LIST_COURSE.TABLE_COURSE_NAME') }}
                                             </b-col>
                                             <b-col>
@@ -104,17 +104,7 @@
                                         {{ $t('LIST_COURSE.TABLE_DELETE') }}
                                     </b-th>
                                 </b-tr>
-                                <b-tr>
-                                    <b-th class="text-center th-time">
-                                        {{ $t('LIST_COURSE.TABLE_START_TIME') }}
-                                    </b-th>
-                                    <b-th class="text-center th-time">
-                                        {{ $t('LIST_COURSE.TABLE_CLOSING_TIME') }}
-                                    </b-th>
-                                    <b-th class="text-center th-time">
-                                        {{ $t('LIST_COURSE.TABLE_BREAK_TIME') }}
-                                    </b-th>
-                                </b-tr>
+                                
                             </b-thead>
                             <b-tbody>
                                 <template v-for="(course, idx) in listCourse">
@@ -125,15 +115,10 @@
                                         <b-td class="td-course-name">
                                             {{ course.course_name }}
                                         </b-td>
-                                        <b-td class="text-center">
+                                        <b-td :colspan="3" class="text-center td-control">
                                             {{ course.start_time }}
                                         </b-td>
-                                        <b-td class="text-center">
-                                            {{ course.end_time }}
-                                        </b-td>
-                                        <b-td class="text-center">
-                                            {{ course.break_time }}
-                                        </b-td>
+                                        
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-eye"
@@ -411,14 +396,16 @@ export default {
                                 }
 
                                 .row.row-course-id {
+                                 
                                     display: flex;
                                     flex-wrap: wrap;
                                     margin-right: -15px;
                                     margin-left: -6px;
                                 }
+                                
 
                                 th.th-id {
-                                    width: 121px;
+                                     width: 150px;
                                 }
 
                                 th.th-sort {
@@ -429,7 +416,9 @@ export default {
                                         opacity: 0.7;
                                     }
                                 }
-
+                                .th.th-name {
+                                    width: 250px;
+                                }
                                 th.th-time {
                                     width: 100px;
                                 }

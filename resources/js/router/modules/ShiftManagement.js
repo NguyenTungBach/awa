@@ -57,25 +57,25 @@ const ShiftManagement = {
 		// 	hidden: true,
 		// 	component: () => import(/* webpackChunkName: "List Day Off Edit" */ '@/pages/ShiftManagement/ListDayOff/edit.vue'),
 		// },
-	// 	{
-	// 		path: 'list-schedule',
-	// 		name: 'ListSchedule',
-	// 		meta: {
-	// 			title: 'ROUTER.LIST_SCHEDULE',
-	// 			roles: ['admin'],
-	// 		},
-	// 		component: () => import(/* webpackChunkName: "List Schedule" */ '@/pages/ShiftManagement/ListSchedule/index.vue'),
-	// 	},
-	// 	{
-	// 		path: 'list-schedule-edit',
-	// 		name: 'ListScheduleEdit',
-	// 		meta: {
-	// 			title: 'ROUTER.LIST_SCHEDULE',
-	// 			roles: ['admin'],
-	// 		},
-	// 		hidden: true,
-	// 		component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/ShiftManagement/ListSchedule/edit.vue'),
-	// 	},
+		{
+			path: 'list-schedule',
+			name: 'ListSchedule',
+			meta: {
+				title: 'ROUTER.LIST_SCHEDULE',
+				roles: ['admin'],
+			},
+			component: () => import(/* webpackChunkName: "List Schedule" */ '@/pages/ShiftManagement/ListSchedule/index.vue'),
+		},
+		{
+			path: 'list-schedule-edit',
+			name: 'ListScheduleEdit',
+			meta: {
+				title: 'ROUTER.LIST_SCHEDULE',
+				roles: ['admin'],
+			},
+			hidden: true,
+			component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/ShiftManagement/ListSchedule/edit.vue'),
+		},
 	],
 };
 

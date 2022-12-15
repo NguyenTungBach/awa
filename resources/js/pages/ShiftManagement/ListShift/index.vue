@@ -130,7 +130,7 @@
                             </div>
                         </div>
 
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE)" class="zone-right">
+                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -158,32 +158,12 @@
                                 >
                                     <span v-html="$t('LIST_SHIFT.BUTTON_SHIFT_TABLE')" />
                                 </b-button>
-                                <!-- <b-button
-                                    :class="activeSelectTable(CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
-                                    @click="onClickSelectTable(CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
-                                >
-                                    <span v-html="$t('LIST_SHIFT.BUTTON_COURSE_BASE')" />
-                                </b-button> -->
-                                <!-- <b-button
-                                    :class="activeSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY)"
-                                    @click="onClickSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY)"
-                                >
-                                    <span v-html="$t('LIST_SHIFT.BUTTON_PRACTICAL_ACHIEVEMENTS_MONTHLY')" />
-                                </b-button> -->
-                                <!-- <b-button
-                                    v-if="false"
-                                    :class="activeSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE)"
-                                    @click="onClickSelectTable(CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE)"
-                                >
-                                    <span
-                                        v-html="$t('LIST_SHIFT.BUTTON_PRACTICAL_PERFORMANCE_BY_CLOSING_DATE')"
-                                    />
-                                </b-button> -->
+                                
                                 <b-button
-                                    :class="activeSelectTable(CONSTANT.LIST_SHIFT.SALARY_TABLE)"
-                                    @click="onClickSelectTable(CONSTANT.LIST_SHIFT.SALARY_TABLE)"
+                                    :class="activeSelectTable(CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)"
+                                    @click="onClickSelectTable(CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)"
                                 >
-                                    <span v-html="$t('LIST_SHIFT.BUTTON_TABLE_SALARY')" />
+                                    <span v-html="$t('LIST_SHIFT.BUTTON_TABLE_SALES')" />
                                 </b-button>
                             </b-button-group>
                         </div>
@@ -217,16 +197,7 @@
                     </b-col>
                 </b-row>
             </div>
-            <!-- <h6
-                v-show="selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY"
-            >
-                1日〜末日までのデータを表示
-            </h6>
-            <h6
-                v-show="selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE"
-            >
-                前月21日〜20日までのデータを表示
-            </h6> -->
+            
             <div class="list-shift__table">
                 <b-overlay
                     :show="isLoading.show"
@@ -248,8 +219,9 @@
                     </template>
 
                     <div class="zone-table">
-                        <b-table-simple
-                            v-show="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+						<template v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE">
+                        	<b-table-simple
+                         
                             :key="`shift-table-${reRender}`"
                             bordered
                             no-border-collapse
@@ -398,150 +370,12 @@
                                     </tr>
                                 </template>
                             </b-tbody>
-                        </b-table-simple>
+                        	</b-table-simple>
 
-                        <!-- Table Course -->
-                        <b-table-simple
-                            v-show="selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE"
-                            :key="`course-table-${reRender}`"
-                            bordered
-                            no-border-collapse
-                        >
-                            <b-thead>
-                                <b-tr>
-                                    <b-th
-                                        :colspan="3"
-                                        class="fix-header"
-                                    />
-                                    <template
-                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                    >
-                                        <template v-for="(date, idx) in pickerWeek.listDate">
-                                            <b-th
-                                                :key="`date-${idx}`"
-                                                class="th-show-date"
-                                            >
-                                                <div>
-                                                    {{ date.date }} ({{ getTextDay(date.text) }})
-                                                </div>
-                                            </b-th>
-                                        </template>
-                                    </template>
-                                    <template
-                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                    >
-                                        <template v-for="date in pickerYearMonth.numberDate">
-                                            <b-th
-                                                :key="`date-${date}`"
-                                                class="th-show-date"
-                                            >
-                                                <div>
-                                                    {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                                </div>
-                                            </b-th>
-                                        </template>
-                                    </template>
-                                </b-tr>
-                                <b-tr>
-                                    <b-th
-                                        class="th-employee-number"
-                                        @click="onSortTableCourse('course_code')"
-                                    >
-                                        {{ $t("LIST_SHIFT.TABLE_COURSE_COURSE_ID") }}
-                                        <i
-                                            v-if="sortTableCourse.field === 'course_code' && sortTableCourse.type === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTableCourse.field === 'course_code' && sortTableCourse.type === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
-                                    <b-th
-                                        class="th-type-employee"
-                                        @click="onSortTableCourse('group')"
-                                    >
-                                        {{ $t('LIST_SHIFT.TABLE_COURSE_COURSE_GROUP') }}
-                                        <i
-                                            v-if="sortTableCourse.field === 'group' && sortTableCourse.type === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTableCourse.field === 'group' && sortTableCourse.type === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
-                                    <b-th class="th-full-name">
-                                        {{ $t("LIST_SHIFT.TABLE_COURSE_COURSE_NAME") }}
-                                    </b-th>
-                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
-                                        <template v-for="(date, idx) in pickerWeek.listDate">
-                                            <b-th :key="`date-${idx + 1}`">
-                                                <div v-if="listCalendar.length">
-                                                    {{ listCalendar[idx] || '' }}
-                                                </div>
-                                            </b-th>
-                                        </template>
-                                    </template>
-                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                        <template v-for="date in pickerYearMonth.numberDate">
-                                            <b-th :key="`date-${date}`">
-                                                <span>
-                                                    {{ listCalendar[date - 1] || '' }}
-                                                </span>
-                                            </b-th>
-                                        </template>
-                                    </template>
-                                </b-tr>
-                            </b-thead>
-                            <b-tbody v-if="listTableCourse.length > 0">
-                                <template
-                                    v-for="(course, idx) in listTableCourse"
-                                >
-                                    <tr :key="`course-no-${idx + 1}`">
-                                        <td class="td-employee-number">
-                                            {{ course.course_code }}
-                                        </td>
-                                        <b-td class="td-type-employee">
-                                            {{ course.group ? course.group : '-' }}
-                                        </b-td>
-                                        <td class="td-full-name text-center">
-                                            {{ course.course_name }}
-                                        </td>
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                        >
-                                            <template v-for="(date, idxDate) in pickerWeek.listDate">
-                                                <NodeCourseBase
-                                                    :key-render="idxDate"
-                                                    :item="course.shift_list[idxDate]"
-                                                />
-                                            </template>
-                                        </template>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                <NodeCourseBase
-                                                    :key-render="idxDate"
-                                                    :item="course.shift_list[idxDate]"
-                                                />
-                                            </template>
-                                        </template>
-                                    </tr>
-                                </template>
-                            </b-tbody>
-                        </b-table-simple>
-
+						</template>
                         <!-- Table Salary -->
                         <b-table-simple
-                            v-show="(selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE)"
+                            v-show="(selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)"
                             bordered
                             class="table-salary"
                             no-border-collapse
@@ -557,14 +391,15 @@
                                     </b-th>
 
                                     <b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                        {{ $t("LIST_SHIFT.SALES_MONTH") }}
                                     </b-th>
 									<b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                        {{ $t("LIST_SHIFT.SALES_CLOSING_DATE") }}
                                     </b-th>
 									<b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                        {{ $t("LIST_SHIFT.SALES_INVOICE") }}
                                     </b-th>
+									
                                 </b-tr>
 
                                 <b-tr>
@@ -627,587 +462,38 @@
                                         {{ driverSalary.driver_name }}
                                     </b-td>
 
-                                    <b-td v-for="salary in driverSalary.shift_list" :key="`salary-${salary.date}`">
-                                        {{ salary.value }}
+                                    <b-td v-for="salary in driverSalary.shift_list" :id="salary.date" :key="`salary-${salary.date}`">
+                                        {{ salary.value }} 
                                     </b-td>
 
                                     <b-td>
                                         {{ listTotalSalaryMonth[index].value }}
                                     </b-td>
+									<b-td>0</b-td>
+									<b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
                                 </b-tr>
                             </b-tbody>
                             <b-tbody>
                                 <b-tr>
                                     <b-td class="td-total" colspan="3">
                                         <span>
-                                            {{ $t("LIST_SHIFT.SALARY_TOTAL") }}
+                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
                                         </span>
                                     </b-td>
 
                                     <b-td v-for="total in listTotalSalaryDay" :key="`total-${total.id}`" class="text-center">
                                         {{ total.value }}
                                     </b-td>
+									<b-td>0</b-td>
+									<b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
                                 </b-tr>
                             </b-tbody>
                         </b-table-simple>
-
-                        <b-table-simple
-                            v-show="selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY"
-                            bordered
-                            class="table-practical-achievements-monthly"
-                            no-border-collapse
-                        >
-                            <b-thead>
-                                <b-tr>
-                                    <b-th class="text-center driver-code" @click="onSortTablePractical('sortby_code', 'pracitcalAchievementsTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
-                                        <i
-                                            v-if="sortTable.pracitcalAchievementsTable.sortBy === 'sortby_code' && sortTable.pracitcalAchievementsTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.pracitcalAchievementsTable.sortBy === 'sortby_code' && sortTable.pracitcalAchievementsTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
-                                    <b-th class="text-center driver-flag" @click="onSortTablePractical('sortby_driver_type', 'pracitcalAchievementsTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
-                                        <i
-                                            v-if="sortTable.pracitcalAchievementsTable.sortBy === 'sortby_driver_type' && sortTable.pracitcalAchievementsTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.pracitcalAchievementsTable.sortBy === 'sortby_driver_type' && sortTable.pracitcalAchievementsTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
-                                    <b-th class="text-center driver-name">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
-                                    </b-th>
-                                    <!-- <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_TOTAL_TIME") }}
-                                    </th> -->
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVING_TIME") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_OVER_TIME") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_NUMBER_OF_PAID_HOLIDAYS") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_WORKING_DAYS") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_DAY_OFF") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_PAID_HOLIDAYS") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_ONE_DAY_MAX_TOTAL_TIME") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_ONE_DAY_MAX_DRIVING_TIME") }}
-                                    </b-th>
-                                    <b-th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_FIFTEEN_HOURS_OVER_WORKING_DAYS") }}
-                                    </b-th>
-                                </b-tr>
-                            </b-thead>
-                            <b-tbody>
-                                <template v-for="(driver, idxDriver) in listPractical">
-                                    <b-tr :key="`row-${idxDriver + 1}`">
-                                        <b-td class="driver-code">
-                                            {{ driver.driver_code }}
-                                        </b-td>
-                                        <b-td class="driver-flag">
-                                            {{ $t(convertValueToText(optionsTypeDriver, driver.flag)) }}
-                                        </b-td>
-                                        <b-td class="driver-name text-center">
-                                            {{ driver.driver_name }}
-                                        </b-td>
-                                        <!-- <b-td>
-                                            {{ driver.reports.days_can_work }}
-                                        </b-td> -->
-                                        <b-td>
-                                            {{ driver.reports.working_days }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off_paid }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off_request }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.total_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.driving_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.break_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.over_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.point }}
-                                        </b-td>
-                                    </b-tr>
-                                </template>
-                                <template v-if="listPractical.length === 0">
-                                    <b-tr>
-                                        <b-td :colspan="11" class="table-empty ">
-                                            <div class="text-center">
-                                                {{ $t('APP.TABLE_NO_DATA') }}
-                                            </div>
-                                        </b-td>
-                                    </b-tr>
-                                </template>
-                            </b-tbody>
-                        </b-table-simple>
-                        <b-table-simple
-                            v-show="selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE"
-                            bordered
-                            class="table-practical-performance-by-closing-date"
-                            no-border-collapse
-                        >
-                            <b-thead>
-                                <b-tr>
-                                    <th class="text-center driver-code" @click="onSortTablePractical('sortby_code', 'pracitcalPerformanceTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
-                                        <i
-                                            v-if="sortTable.pracitcalPerformanceTable.sortBy === 'sortby_code' && sortTable.pracitcalPerformanceTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.pracitcalPerformanceTable.sortBy === 'sortby_code' && sortTable.pracitcalPerformanceTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </th>
-                                    <th class="text-center driver-flag" @click="onSortTablePractical('sortby_driver_type', 'pracitcalPerformanceTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
-                                        <i
-                                            v-if="sortTable.pracitcalPerformanceTable.sortBy === 'sortby_driver_type' && sortTable.pracitcalPerformanceTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.pracitcalPerformanceTable.sortBy === 'sortby_driver_type' && sortTable.pracitcalPerformanceTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </th>
-                                    <th class="text-center driver-name">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
-                                    </th>
-                                    <!-- <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_TOTAL_TIME") }}
-                                    </th> -->
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVING_TIME") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_OVER_TIME") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_NUMBER_OF_PAID_HOLIDAYS") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_WORKING_DAYS") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_DAY_OFF") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_PAID_HOLIDAYS") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_ONE_DAY_MAX_TOTAL_TIME") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_ONE_DAY_MAX_DRIVING_TIME") }}
-                                    </th>
-                                    <th class="text-center">
-                                        {{ $t("LIST_SHIFT.TABLE_FIFTEEN_HOURS_OVER_WORKING_DAYS") }}
-                                    </th>
-                                </b-tr>
-                            </b-thead>
-                            <b-tbody>
-                                <template v-for="(driver, idxDriver) in listPractical">
-                                    <b-tr :key="`row-${idxDriver + 1}`">
-                                        <b-td class="driver-code">
-                                            {{ driver.driver_code }}
-                                        </b-td>
-                                        <b-td class="driver-flag">
-                                            {{ $t(convertValueToText(optionsTypeDriver, driver.flag)) }}
-                                        </b-td>
-                                        <b-td class="driver-name text-center">
-                                            {{ driver.driver_name }}
-                                        </b-td>
-                                        <!-- <b-td>
-                                            {{ driver.reports.days_can_work }}
-                                        </b-td> -->
-                                        <b-td>
-                                            {{ driver.reports.working_days }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off_paid }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.days_off_request }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.total_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.driving_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.break_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.over_time }}
-                                        </b-td>
-                                        <b-td>
-                                            {{ driver.reports.point }}
-                                        </b-td>
-                                    </b-tr>
-                                </template>
-                                <template v-if="listPractical.length === 0">
-                                    <b-tr>
-                                        <b-td :colspan="11" class="table-empty ">
-                                            <div class="text-center">
-                                                {{ $t('APP.TABLE_NO_DATA') }}
-                                            </div>
-                                        </b-td>
-                                    </b-tr>
-                                </template>
-                            </b-tbody>
-                        </b-table-simple>
+					
                     </div>
                 </b-overlay>
             </div>
         </div>
-        <b-modal
-            id="modal-ai"
-            v-model="showModalAI"
-            body-class="modal-body-ai"
-            hide-footer
-            no-close-on-backdrop
-            static
-            @close="handleCloseModalAI"
-        >
-            <div class="text-center select-type-create-shift">
-                <div class="title-select-type-create-shift">
-                    <h4>
-                        シフト表生成期間を選択してください。
-                    </h4>
-                </div>
-                <div
-                    class="item-type-create-shift"
-                    @click="onSelectTypeCreateShift('MONTH')"
-                >
-                    {{ pickerYearMonth.textFull }}
-                </div>
-
-                <div
-                    class="item-type-create-shift"
-                    @click="onSelectTypeCreateShift('DAY')"
-                >
-                    期間を選択
-                </div>
-            </div>
-        </b-modal>
-
-        <b-modal
-            id="modal-confirm-ai-month"
-            v-model="showModalConfirmAIOfMonth"
-            body-class="modal-body-confirm-ai-month"
-            hide-header
-            hide-footer
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-            @close="handleCloseModalAI"
-        >
-            <div class="text-center body-item">
-                <h5 class="font-weight-bold">
-                    {{ `${pickerYearMonth.year}年${pickerYearMonth.month}月のシフト表を` }}
-                </h5>
-                <h5 class="font-weight-bold">
-                    {{ `生成してよろしいですか？` }}
-                </h5>
-            </div>
-            <div class="text-center">
-                <b-button
-                    pill
-                    class="mr-2 btn-modal"
-                    @click="handleCloseModalAIMonth()"
-                >
-                    キャンセル
-                </b-button>
-
-                <b-button
-                    pill
-                    class="btn-color-active btn-modal"
-                    @click="handleSubmitSendAI()"
-                >
-                    OK
-                </b-button>
-            </div>
-        </b-modal>
-
-        <b-modal
-            id="modal-confirm-ai-day"
-            v-model="showModalConfirmAIOfDay"
-            body-class="modal-body-confirm-ai-day"
-            hide-header
-            hide-footer
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-            @close="handleCloseModalAI"
-        >
-            <div class="body-item">
-                <div class="zone-calendar-multiple-week">
-                    <CalendarMonth @change="onChangeSelectedCalendarMonth" />
-                </div>
-            </div>
-
-            <div class="text-center">
-                <b-button
-                    pill
-                    class="mr-2 btn-modal"
-                    @click="handleCloseModalAIDay()"
-                >
-                    キャンセル
-                </b-button>
-
-                <b-button
-                    pill
-                    class="btn-color-active btn-modal"
-                    @click="handleSubmitSendAI()"
-                >
-                    OK
-                </b-button>
-            </div>
-        </b-modal>
-
-        <b-modal
-            id="modal-confirm-atmtc"
-            v-model="showModalATMTC"
-            body-class="modal-body-confirm-atmtc"
-            hide-header
-            hide-footer
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-            @close="handleCloseATMTC"
-        >
-            <div class="body-item">
-                <div class="zone-calendar-multiple-week">
-                    <CalendarFreeMonth @change="calendarFreeMonthChange" />
-                </div>
-            </div>
-
-            <div class="text-center">
-                <b-button
-                    pill
-                    class="mr-2 btn-modal"
-                    @click="handleCloseATMTC()"
-                >
-                    キャンセル
-                </b-button>
-
-                <b-button
-                    pill
-                    class="btn-color-active btn-modal"
-                    @click="handleSubmitSendATMTC()"
-                >
-                    OK
-                </b-button>
-            </div>
-        </b-modal>
-
-        <b-modal
-            id="modal-confirm-ai"
-            v-model="showModalConfirmAI"
-            body-class="modal-body-confirm-ai"
-            hide-header
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-        >
-            <span>{{ $t('LIST_SHIFT.MODAL_CONFIRM_AI', showMessageCheckDuplicate ) }}</span>
-
-            <template #modal-footer>
-                <b-button
-                    pill
-                    class="mr-2 btn-modal"
-                    @click="handleCloseModalConfirmAI()"
-                >
-                    {{ $t('LIST_SHIFT.MODAL_CONFIRM_AI_CANCEL') }}
-                </b-button>
-
-                <b-button
-                    pill
-                    class="btn-color-active btn-modal"
-                    @click="handleSubmitConfirmAI()"
-                >
-                    {{ $t('LIST_SHIFT.MODAL_CONFIRM_AI_OK') }}
-                </b-button>
-            </template>
-        </b-modal>
-
-        <b-modal
-            id="modal-log-ai"
-            v-model="showModalLogAI"
-            :title="$t('LIST_SHIFT.MODAL_TITLE_VIEW_LOG')"
-            body-class="modal-body-log-ai"
-            footer-class="modal-footer-log-ai"
-            hide-header-close
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-            show-empty
-            scrollable
-            size="xl"
-        >
-            <template #default>
-                <b-table
-                    bordered
-                    :fields="fieldsLogAI"
-                    :items="listLogAI"
-                    :busy="isLoadingLog"
-                >
-                    <template #cell(no)="no">
-                        {{ (no.index + 1) + ((paginationLogAI.current_page - 1) * 15) }}
-                    </template>
-
-                    <template #cell(status)="status">
-                        <div
-                            :class="{
-                                'duck-badge': true,
-                                'duck-badge-on': status.item.status === 'on',
-                                'duck-badge-error': status.item.status === 'error',
-                                'duck-badge-success': status.item.status === 'success',
-                                'duck-badge-check': status.item.status === 'check',
-                            }"
-                            @click="onClickViewDetailLogAI(status)"
-                        >
-                            {{ $t(`STATUS.${status.item.status}`) }}
-                        </div>
-                    </template>
-
-                    <template #cell(message)="message">
-                        <span
-                            :class="{
-                                'text-message': true,
-                                'text-message-on': message.item.status === 'on',
-                                'text-message-error': message.item.status === 'error',
-                                'text-message-success': message.item.status === 'success',
-                                'text-message-check': message.item.status === 'check',
-                            }"
-                        >{{ $t(convertStatusToText(message.item.status)) }}</span>
-                    </template>
-
-                    <template #empty>
-                        <div class="text-center">
-                            {{ $t('APP.TABLE_NO_DATA') }}
-                        </div>
-                    </template>
-
-                    <template #table-busy>
-                        <div class="text-center my-2">
-                            <b-spinner class="align-middle" />
-                        </div>
-                    </template>
-                </b-table>
-
-                <b-row v-if="paginationLogAI.total_records > paginationLogAI.per_page">
-                    <b-col>
-                        <b-pagination
-                            v-model="paginationLogAI.current_page"
-                            pills
-                            :total-rows="paginationLogAI.total_records"
-                            size="sm"
-                            align="right"
-                        />
-                    </b-col>
-                </b-row>
-            </template>
-
-            <template #modal-footer>
-                <b-button @click="onCloseViewLog()">
-                    {{ $t('APP.TEXT_CLOSE') }}
-                </b-button>
-            </template>
-        </b-modal>
-
-        <b-modal
-            id="modal-detail-log-ai"
-            v-model="showModalDetailLogAI"
-            :title="$t('LIST_SHIFT.MODAL_TITLE_DETAIL_VIEW_LOG')"
-            body-class="modal-body-detail-log-ai"
-            footer-class="modal-footer-detail-log-ai"
-            hide-header-close
-            no-close-on-esc
-            no-close-on-backdrop
-            static
-            show-empty
-            scrollable
-            size="lg"
-            centered
-        >
-            <template #default>
-                <div v-if="Array.isArray(listDetailLogAI)" class="show-list-message">
-                    <div class="text-right">
-                        <p class="text-total">
-                            {{ $t('LIST_SHIFT.TEXT_TOTAL_MESSAGE', { total: listDetailLogAI.length }) }}
-                        </p>
-                    </div>
-
-                    <div class="content-list-message">
-                        <div
-                            v-for="(message, idxMessage) in listDetailLogAI"
-                            :id="`message-${idxMessage + 1}`"
-                            :key="`message-${idxMessage + 1}`"
-                        >
-                            <span class="message-error">{{ message }}</span>
-                        </div>
-                    </div>
-                </div>
-            </template>
-
-            <template #modal-footer>
-                <b-button @click="onCloseDetailViewLog()">
-                    {{ $t('APP.TEXT_CLOSE') }}
-                </b-button>
-            </template>
-        </b-modal>
     </b-col>
 </template>
 
@@ -1294,15 +580,6 @@ export default {
 					sortType: null,
 				},
 
-				pracitcalAchievementsTable: {
-					sortBy: '',
-					sortType: '',
-				},
-
-				pracitcalPerformanceTable: {
-					sortBy: '',
-					sortType: '',
-				},
 			},
 
 			sortTableCourse: {
@@ -1314,36 +591,12 @@ export default {
 
 			optionsTypeDriver: CONSTANT.LIST_DRIVER.LIST_FLAG,
 
-			showModalConfirmAI: false,
 			typeCreateShift: null,
-			showModalConfirmAIOfMonth: false,
-			showModalConfirmAIOfDay: false,
+
 			selectedDayCreateShift: {
 				start: null,
 				end: null,
 			},
-
-			isCheckAi: null,
-			isAiResult: false,
-
-			showModalLogAI: false,
-			listLogAI: [],
-			isLoadingLog: false,
-			paginationLogAI: {
-				current_page: 1,
-				per_page: 15,
-				total_records: 0,
-			},
-
-			showModalDetailLogAI: false,
-			listDetailLogAI: [],
-
-			showModalATMTC: false,
-			pickerTimeATMTC: {
-				start: null,
-				end: null,
-			},
-
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
 		};
@@ -1391,17 +644,6 @@ export default {
 			return result;
 		},
 
-		fieldsLogAI() {
-			return [
-				{ key: 'no', label: this.$t('LIST_SHIFT.TABLE_TITLE_NO'), thClass: 'th-no' },
-				{ key: 'created_at', label: this.$t('LIST_SHIFT.TABLE_EXECUTION_DATE_AND_TIME'), thClass: 'th-execution-date-and-time' },
-				{ key: 'start_date', label: this.$t('LIST_SHIFT.TABLE_START_TIME'), thClass: 'th-start-time' },
-				{ key: 'end_date', label: this.$t('LIST_SHIFT.TABLE_END_TIME'), thClass: 'th-end-time' },
-				{ key: 'status', label: this.$t('LIST_SHIFT.TABLE_STATUS'), thClass: 'th-status' },
-				{ key: 'message', label: this.$t('LIST_SHIFT.TABLE_MESSAGE'), thClass: 'th-message' },
-			];
-		},
-
 		currentPageTableLogChange() {
 			return this.paginationLogAI.current_page;
 		},
@@ -1432,16 +674,8 @@ export default {
 				case CONSTANT.LIST_SHIFT.SHIFT_TABLE:
 					this.showControlTime = true;
 					break;
-				case CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE:
-					this.showControlTime = true;
-					break;
-				case CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY:
-					this.showControlTime = false;
-					break;
-				case CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE:
-					this.showControlTime = false;
-					break;
-				case CONSTANT.LIST_SHIFT.SALARY_TABLE:
+				
+				case CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE:
 					this.showControlTime = false;
 					break;
 			}
@@ -1457,15 +691,10 @@ export default {
 						setLoading(false);
 
 						break;
-					case CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY:
+					
+					case CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE:
 						setLoading(true);
-						await this.handleGetListPractical(false);
-						setLoading(false);
-
-						break;
-					case CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE:
-						setLoading(true);
-						await this.handleGetListPractical(true);
+						await this.handleGetTableSalary();
 						setLoading(false);
 
 						break;
@@ -1530,16 +759,7 @@ export default {
 			}
 		},
 
-		handleCloseModalAIMonth() {
-			this.typeCreateShift = null;
-			this.showModalConfirmAIOfMonth = false;
-		},
-
-		handleCloseModalAIDay() {
-			this.typeCreateShift = null;
-			this.showModalConfirmAIOfDay = false;
-		},
-
+		
 		onChangeSelectedCalendarMonth(value) {
 			this.selectedDayCreateShift = value;
 		},
@@ -1570,7 +790,7 @@ export default {
 					}
 				}
 
-				if (this.selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE) {
+				if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 					START_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
 					END_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-${this.pickerYearMonth.numberDate}`;
 				}
@@ -1649,6 +869,7 @@ export default {
 
 				if (code === 200) {
 					this.listShift = convertValueWhenNull(data);
+					
 					this.reloadTable();
 				}
 			} catch (error) {
@@ -1656,65 +877,7 @@ export default {
 			}
 		},
 
-		async handleGetTableCourse() {
-			try {
-				this.listTableCourse.length = 0;
-
-				const PARAMS = {
-					display: 1,
-				};
-
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-					const START = this.pickerWeek.start;
-					const END = this.pickerWeek.end;
-
-					PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
-					PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
-					PARAMS.type = 'week';
-
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
-
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-					PARAMS.date = YEAR_MONTH;
-				}
-
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
-
-					const START = `${YEAR}-${format2Digit(MONTH)}-01`;
-					const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-
-					PARAMS.start_date = START;
-					PARAMS.end_date = END;
-					PARAMS.type = 'month';
-
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-					PARAMS.date = YEAR_MONTH;
-				}
-
-				if (this.sortTableCourse.field) {
-					PARAMS.field = this.sortTableCourse.field;
-					PARAMS.sortby = this.sortTableCourse.type ? 'asc' : 'desc';
-				}
-
-				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-
-				console.log(data);
-
-				if (code === 200) {
-					this.listTableCourse = data;
-				} else {
-					this.listTableCourse = [];
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
-
+		
 		async handleGetTableSalary() {
 			try {
 				this.listSalary.length = 0;
@@ -1741,8 +904,9 @@ export default {
 				}
 
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-
+				console.log('get listSalary', data);
 				if (code === 200) {
+					console.log('get listSalary', data);
 					this.listSalary = data;
 					this.convertTotalSalary();
 				} else {
@@ -1843,7 +1007,7 @@ export default {
 						await this.handleGetListShift();
 					}
 
-					if (this.selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE) {
+					if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 						await this.handleGetTableSalary();
 					}
 					setLoading(false);
@@ -1867,7 +1031,7 @@ export default {
 						await this.handleGetListShift();
 					}
 
-					if (this.selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE) {
+					if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 						await this.handleGetTableSalary();
 					}
 					setLoading(false);
@@ -1891,143 +1055,7 @@ export default {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		},
 
-		handleClickATMTC() {
-			this.showModalATMTC = true;
-		},
-
-		handleCloseATMTC() {
-			this.showModalATMTC = false;
-			this.pickerTimeATMTC = {
-				start: null,
-				end: null,
-			};
-		},
-
-		calendarFreeMonthChange(time) {
-			this.pickerTimeATMTC = time;
-		},
-
-		handleSubmitSendATMTC() {
-			this.handleCloseATMTC();
-		},
-
-		handleClickSendAI() {
-			this.showModalAI = true;
-		},
-
-		handleCloseModalAI() {
-			this.showModalAI = false;
-			this.pickerWeekCreateShift = {
-				start: null,
-				end: null,
-			};
-		},
-
-		async handleSubmitSendAI() {
-			try {
-				if (this.typeCreateShift === 'DAY') {
-					if (!this.selectedDayCreateShift.start) {
-						Notification.warning(this.$t('MESSAGE_APP.LIST_SHIFT_VALIDATE_SELECTED_DATE'));
-
-						return;
-					}
-				}
-
-				this.showModalConfirmAIOfDay = false;
-				this.showModalConfirmAIOfMonth = false;
-
-				const PARAMS_CHECK_DATA_RESULT = {};
-
-				if (this.typeCreateShift === 'MONTH') {
-					PARAMS_CHECK_DATA_RESULT.date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}`;
-					PARAMS_CHECK_DATA_RESULT.start_date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
-					PARAMS_CHECK_DATA_RESULT.end_date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-				}
-
-				if (this.typeCreateShift === 'DAY') {
-					PARAMS_CHECK_DATA_RESULT.date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}`;
-					PARAMS_CHECK_DATA_RESULT.start_date = this.selectedDayCreateShift.start;
-					PARAMS_CHECK_DATA_RESULT.end_date = this.selectedDayCreateShift.end;
-				}
-
-				const CHECK_DATA_RESULT = await getCheckDataResult(CONSTANT.URL_API.POST_CHECK_DATA_RESULT, PARAMS_CHECK_DATA_RESULT);
-
-				if (CHECK_DATA_RESULT.code === 200) {
-					if (CHECK_DATA_RESULT.data.message === '選択されたシフトは既に作成されています。上書きしてシフトを作成しますか？') {
-						this.showModalAI = false;
-						this.showModalConfirmAI = true;
-					} else {
-						this.showModalAI = false;
-						this.handleSubmitConfirmAI();
-					}
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
-
-		handleCloseModalConfirmAI() {
-			this.showModalConfirmAI = false;
-		},
-
-		setPaddingShift(status = true) {
-			this.$store.dispatch('loading/setPaddingShift', status);
-		},
-
-		async handleSubmitConfirmAI() {
-			setLoading(true);
-
-			this.showModalConfirmAI = false;
-
-			if (this.typeCreateShift === 'DAY') {
-				if (!this.selectedDayCreateShift.start || !this.selectedDayCreateShift.end) {
-					Notification.warning(this.$t('MESSAGE_APP.LIST_SHIFT_VALIDATE_SELECTED_DATE'));
-
-					return;
-				}
-			}
-
-			this.showModalConfirmAIOfDay = false;
-			this.showModalConfirmAIOfMonth = false;
-
-			try {
-				const BODY_ADD_LIST_SHIFT = {};
-
-				if (this.typeCreateShift === 'MONTH') {
-					BODY_ADD_LIST_SHIFT.date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}`;
-					BODY_ADD_LIST_SHIFT.start_date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
-				}
-
-				if (this.typeCreateShift === 'DAY') {
-					BODY_ADD_LIST_SHIFT.date = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}`;
-					BODY_ADD_LIST_SHIFT.start_date = this.selectedDayCreateShift.start;
-				}
-
-				const ADD_LIST_SHIFT = await postAddListShift(CONSTANT.URL_API.POST_ADD_LIST_SHIFT, BODY_ADD_LIST_SHIFT);
-
-				if (ADD_LIST_SHIFT.code === 200) {
-					setLoading(false);
-					this.setPaddingShift(true);
-					this.handleCheckAi();
-				}
-			} catch (error) {
-				setLoading(false);
-				this.setPaddingShift(false);
-				console.log(error);
-			}
-
-			setLoading(false);
-		},
-
-		handleCheckAi() {
-			this.$bus.emit('TOSHIN_CHECK_AI');
-		},
-
-		getselectedYMD(value) {
-			this.pickerWeek = value;
-			this.$store.dispatch('app/setPickerWeek', value);
-		},
-
+		
 		getCalendarMultipleWeek(value) {
 			this.pickerWeekCreateShift = value;
 		},
@@ -2096,7 +1124,7 @@ export default {
 					CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE,
 					CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY,
 					CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE,
-					CONSTANT.LIST_SHIFT.SALARY_TABLE,
+					CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE,
 				].includes(table)
 			) {
 				if (hasRole(this.role)) {
@@ -2121,7 +1149,7 @@ export default {
 						setLoading(false);
 					}
 
-					if (table === CONSTANT.LIST_SHIFT.SALARY_TABLE) {
+					if (table === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 						setLoading(true);
 						await this.handleGetListCalendar();
 						await this.handleGetTableSalary();
@@ -2196,80 +1224,80 @@ export default {
 			}
 		},
 
-		async onSortTableCourse(col) {
-			switch (col) {
-				case 'course_code': {
-					if (this.sortTableCourse.field === 'course_code') {
-						if (this.sortTableCourse.type) {
-							this.sortTableCourse.type = !this.sortTableCourse.type;
-						} else {
-							this.sortTableCourse.type = true;
-						}
-					} else {
-						this.sortTableCourse.field = 'course_code';
-						this.sortTableCourse.type = true;
-					}
+		// async onSortTableCourse(col) {
+		// 	switch (col) {
+		// 		case 'course_code': {
+		// 			if (this.sortTableCourse.field === 'course_code') {
+		// 				if (this.sortTableCourse.type) {
+		// 					this.sortTableCourse.type = !this.sortTableCourse.type;
+		// 				} else {
+		// 					this.sortTableCourse.type = true;
+		// 				}
+		// 			} else {
+		// 				this.sortTableCourse.field = 'course_code';
+		// 				this.sortTableCourse.type = true;
+		// 			}
 
-					break;
-				}
+		// 			break;
+		// 		}
 
-				case 'group': {
-					if (this.sortTableCourse.field === 'group') {
-						if (this.sortTableCourse.type) {
-							this.sortTableCourse.type = !this.sortTableCourse.type;
-						} else {
-							this.sortTableCourse.type = true;
-						}
-					} else {
-						this.sortTableCourse.field = 'group';
-						this.sortTableCourse.type = true;
-					}
+		// 		case 'group': {
+		// 			if (this.sortTableCourse.field === 'group') {
+		// 				if (this.sortTableCourse.type) {
+		// 					this.sortTableCourse.type = !this.sortTableCourse.type;
+		// 				} else {
+		// 					this.sortTableCourse.type = true;
+		// 				}
+		// 			} else {
+		// 				this.sortTableCourse.field = 'group';
+		// 				this.sortTableCourse.type = true;
+		// 			}
 
-					break;
-				}
-			}
+		// 			break;
+		// 		}
+		// 	}
 
-			setLoading(true);
-			await this.handleGetTableCourse();
-			setLoading(false);
-		},
+		// 	setLoading(true);
+		// 	await this.handleGetTableCourse();
+		// 	setLoading(false);
+		// },
 
-		onSortTablePractical(col, table) {
-			switch (col) {
-				case 'sortby_code':
-					if (this.sortTable[table].sortBy === 'sortby_code') {
-						if (this.sortTable[table].sortType) {
-							this.sortTable[table].sortType = !this.sortTable[table].sortType;
-						} else {
-							this.sortTable[table].sortType = true;
-						}
-					} else {
-						this.sortTable[table].sortBy = 'sortby_code';
-						this.sortTable[table].sortType = true;
-					}
+		// onSortTablePractical(col, table) {
+		// 	switch (col) {
+		// 		case 'sortby_code':
+		// 			if (this.sortTable[table].sortBy === 'sortby_code') {
+		// 				if (this.sortTable[table].sortType) {
+		// 					this.sortTable[table].sortType = !this.sortTable[table].sortType;
+		// 				} else {
+		// 					this.sortTable[table].sortType = true;
+		// 				}
+		// 			} else {
+		// 				this.sortTable[table].sortBy = 'sortby_code';
+		// 				this.sortTable[table].sortType = true;
+		// 			}
 
-					break;
+		// 			break;
 
-				case 'sortby_driver_type':
-					if (this.sortTable[table].sortBy === 'sortby_driver_type') {
-						if (this.sortTable[table].sortType) {
-							this.sortTable[table].sortType = !this.sortTable[table].sortType;
-						} else {
-							this.sortTable[table].sortType = true;
-						}
-					} else {
-						this.sortTable[table].sortBy = 'sortby_driver_type';
-						this.sortTable[table].sortType = true;
-					}
+		// 		case 'sortby_driver_type':
+		// 			if (this.sortTable[table].sortBy === 'sortby_driver_type') {
+		// 				if (this.sortTable[table].sortType) {
+		// 					this.sortTable[table].sortType = !this.sortTable[table].sortType;
+		// 				} else {
+		// 					this.sortTable[table].sortType = true;
+		// 				}
+		// 			} else {
+		// 				this.sortTable[table].sortBy = 'sortby_driver_type';
+		// 				this.sortTable[table].sortType = true;
+		// 			}
 
-					break;
+		// 			break;
 
-				default:
-					console.log('Handle sort table faild');
+		// 		default:
+		// 			console.log('Handle sort table faild');
 
-					break;
-			}
-		},
+		// 			break;
+		// 	}
+		// },
 
 		onExportExcel() {
 			if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
@@ -2483,7 +1511,7 @@ export default {
 						console.log(err);
 					});
 			}
-			if (this.selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE) {
+			if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 				const sort = {
 					field: this.sortTable.salaryTable.sortBy,
 					sortby: this.sortTable.salaryTable.sortType,
