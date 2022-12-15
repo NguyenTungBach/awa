@@ -7,7 +7,7 @@
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('COURSE_EDIT.TITLE_COURSE_EDIT') }}
+                                    {{ $t('CUSTOMER_EDIT.TITLE_CUSTOMER_EDIT') }}
                                 </span>
                             </div>
                         </b-col>
@@ -63,42 +63,15 @@
                                 <div class="zone-form">
                                     <div class="zone-form__header">
                                         <TitlePathForm>
-                                            {{ $t('COURSE_EDIT.FORM_BASIC_INFORMATION') }}
+                                            {{ $t('CUSTOMER_CREATE.FORM_BASIC_INFORMATION') }}
                                         </TitlePathForm>
                                     </div>
 
                                     <div class="zone-form__body">
-                                        <div class="item-form">
-                                            <label for="input-course-easy-to-distinguish">
-                                                {{ $t('COURSE_CREATE.EASY_TO_DISTINGUISH') }}
-                                            </label>
-                                            <b-row>
-                                                <b-col>
-                                                    <b-form-checkbox
-                                                        id="input-course-flag"
-                                                        v-model="isForm.flag"
-                                                        value="yes"
-                                                        unchecked-value="no"
-                                                    >
-                                                        {{ $t('COURSE_CREATE.CHECKBOX_SPOT_FLIGHT') }}
-                                                    </b-form-checkbox>
-                                                </b-col>
-                                                <b-col>
-                                                    <b-form-checkbox
-                                                        id="input-course-pot"
-                                                        v-model="isForm.pot"
-                                                        value="yes"
-                                                        unchecked-value="no"
-                                                    >
-                                                        {{ $t('COURSE_CREATE.CHECKBOX_SHORT_FLIGHT') }}
-                                                    </b-form-checkbox>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
 
                                         <div class="item-form">
                                             <label for="input-course-id">
-                                                {{ $t('COURSE_EDIT.COURSE_ID') }}
+                                                {{ $t('CUSTOMER_CREATE.COURSE_ID') }}
                                                 <span class="text-danger">
                                                     *
                                                 </span>
@@ -117,7 +90,7 @@
 
                                         <div class="item-form">
                                             <label for="input-course-name">
-                                                {{ $t('COURSE_EDIT.COURSE_NAME') }}
+                                                {{ $t('CUSTOMER_CREATE.COURSE_NAME') }}
                                                 <span class="text-danger">
                                                     *
                                                 </span>
@@ -133,214 +106,110 @@
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
-                                                :lg="6"
-                                                :xl="6"
+                                                :lg="12"
+                                                :xl="11"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-exclusive">
-                                                        {{ $t('COURSE_CREATE.EXCLUSIVE') }}
+                                                    <label for="input-group-code">
+                                                        {{ $t('CUSTOMER_CREATE.CLOSING_DAY') }}
                                                     </label>
-                                                    <b-form-input
-                                                        id="input-exclusive"
-                                                        v-model="isForm.owner.driver.driver_name"
-                                                        disabled
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-form-select
+                                                        id="customer-closing-day"
+                                                        v-model="isForm.exclusive"
+                                                        :options="optionsClosingDay"
+                                                        :disabled="isLoading"
                                                     />
                                                 </div>
                                             </b-col>
-
                                             <b-col
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
-                                                :lg="6"
-                                                :xl="6"
+                                                :lg="12"
+                                                :xl="1"
+                                                style="bottom: -41px;"
+                                            >
+                                                <span class="text-closing-day">日</span>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-group-code">
-                                                        {{ $t('COURSE_CREATE.GROUP_CODE') }}
+                                                    <label for="input-course-id">
+                                                        {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
+                                                        <span class="text-danger">
+                                                            *
+                                                        </span>
                                                     </label>
                                                     <b-input-group>
-                                                        <SelectMultiple
-                                                            :options="optionsAZ"
-                                                            :value="isForm.group"
-                                                            :formatter="formatterAZ"
-                                                            @select="getSelectValueAZ"
+                                                        <b-form-input
+                                                            id="input-course-name"
+                                                            v-model="isForm.customer_manager"
                                                         />
                                                     </b-input-group>
                                                 </div>
                                             </b-col>
                                         </b-row>
 
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-start-time">
-                                                            {{ $t('COURSE_EDIT.START_TIME') }}
-                                                            <span class="text-danger">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <SelectMultiple
-                                                            :options="isForm.listTime"
-                                                            :value="isForm.start_time"
-                                                            :formatter="formatter"
-                                                            @select="getSelectStartTime"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-end-time">
-                                                            {{ $t('COURSE_EDIT.END_TIME') }}
-                                                            <span class="text-danger">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <SelectMultiple
-                                                            :options="isForm.listTime"
-                                                            :value="isForm.end_time"
-                                                            :formatter="formatter"
-                                                            @select="getSelectEndTime"
-                                                        />
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-break_time">
-                                                            {{ $t('COURSE_EDIT.BREAK_TIME') }}
-                                                            <span class="text-danger">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <SelectMultiple
-                                                            :options="isForm.listTime"
-                                                            :value="isForm.break_time"
-                                                            :formatter="formatter"
-                                                            @select="getSelectBreakTime"
-                                                        />
-                                                    </div>
-                                                </b-col>
-
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-fatigue">
-                                                            {{ $t('COURSE_CREATE.FATIGUE') }}
-                                                            <span class="text-danger">
-                                                                *
-                                                            </span>
-                                                        </label>
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="input-course-id">
+                                                        {{ $t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT') }}
+                                                        <span class="text-danger">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <b-input-group>
                                                         <b-form-input
-                                                            id="input-fatigue"
-                                                            v-model="isForm.point"
-                                                            type="number"
-                                                            @keydown.native="validInputFloat"
+                                                            id="input-course-name"
+                                                            v-model="isForm.customer_address"
                                                         />
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
-                                        <div class="item-form">
-                                            <b-row>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-start-date">
-                                                            {{ $t('COURSE_EDIT.START_DATE') }}
-                                                            <span class="text-danger">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <b-input-group class="mb-3">
-                                                            <b-form-input
-                                                                id="input-start-date"
-                                                                v-model="isForm.start_date"
-                                                                type="text"
-                                                                autocomplete="off"
-                                                            />
-                                                            <b-input-group-append>
-                                                                <b-form-datepicker
-                                                                    v-model="isForm.start_date"
-                                                                    button-only
-                                                                    right
-                                                                    :locale="language"
-                                                                    aria-controls="input-start-date"
-                                                                    hide-header
-                                                                    :is-r-t-l="false"
-                                                                    :label-help="$t('APP.LABLE_HELP_CALENDAR')"
-                                                                />
-                                                            </b-input-group-append>
-                                                        </b-input-group>
-                                                    </div>
-                                                </b-col>
-                                                <b-col
-                                                    :cols="12"
-                                                    :sm="12"
-                                                    :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
-                                                >
-                                                    <div class="item-form">
-                                                        <label for="input-end-date">
-                                                            {{ $t('COURSE_EDIT.END_DATE') }}
-                                                        </label>
-                                                        <b-input-group class="mb-3">
-                                                            <b-form-input
-                                                                id="input-end-date"
-                                                                v-model="isForm.end_date"
-                                                                type="text"
-                                                                autocomplete="off"
-                                                            />
-                                                            <b-input-group-append>
-                                                                <b-form-datepicker
-                                                                    v-model="isForm.end_date"
-                                                                    button-only
-                                                                    right
-                                                                    :locale="language"
-                                                                    aria-controls="input-end-date"
-                                                                    hide-header
-                                                                    :is-r-t-l="false"
-                                                                    :label-help="$t('APP.LABLE_HELP_CALENDAR')"
-                                                                />
-                                                            </b-input-group-append>
-                                                        </b-input-group>
-                                                    </div>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="input-course-id">
+                                                        {{ $t('CUSTOMER_CREATE.CLIENT_EMAIL') }}
+                                                        <span class="text-danger">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <b-input-group>
+                                                        <b-form-input
+                                                            id="input-course-name"
+                                                            v-model="isForm.customer_email"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row>
                                     </div>
                                 </div>
                             </b-col>
@@ -354,7 +223,7 @@
                                 :xl="12"
                             >
                                 <label for="input-notes">
-                                    {{ $t('COURSE_EDIT.NOTE') }}
+                                    {{ $t('CUSTOMER_CREATE.NOTE') }}
                                 </label>
                                 <b-form-textarea
                                     id="input-notes"
@@ -381,7 +250,7 @@ import { convertTimeCourse } from '@/utils/convertTime';
 import { convertBreakTimeNumberToTime, convertTimeToSelect, convertStingToSelect } from '@/utils/convertTime';
 import { validateCourse } from '@/utils/validateCRUD';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
-import SelectMultiple from '@/components/SelectMultiple';
+// import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
 
 export default {
@@ -389,39 +258,137 @@ export default {
 	components: {
 		LineGray,
 		TitlePathForm,
-		SelectMultiple,
+		// SelectMultiple,
 	},
 
 	data() {
 		return {
-			listAZ: [
-				'A',
-				'B',
-				'C',
-				'D',
-				'E',
-				'F',
-				'G',
-				'H',
-				'I',
-				'J',
-				'K',
-				'L',
-				'M',
-				'N',
-				'O',
-				'P',
-				'Q',
-				'R',
-				'S',
-				'T',
-				'U',
-				'V',
-				'W',
-				'X',
-				'Y',
-				'Z',
-			],
+            optionsClosingDay: [
+                {
+                    value: -1,
+                    text: '末日',
+                },
+                {
+                    value: 1,
+                    text: 1,
+                },
+                {
+                    value: 2,
+                    text: 2,
+                },
+                {
+                    value: 3,
+                    text: 3,
+                },
+                {
+                    value: 4,
+                    text: 4,
+                },
+                {
+                    value: 5,
+                    text: 5,
+                },
+                {
+                    value: 6,
+                    text: 6,
+                },
+                {
+                    value: 7,
+                    text: 7,
+                },
+                {
+                    value: 8,
+                    text: 8,
+                },
+                {
+                    value: 9,
+                    text: 9,
+                },
+                {
+                    value: 10,
+                    text: 10,
+                },
+                {
+                    value: 11,
+                    text: 11,
+                },
+                {
+                    value: 12,
+                    text: 12,
+                },
+                {
+                    value: 13,
+                    text: 13,
+                },
+                {
+                    value: 14,
+                    text: 14,
+                },
+                {
+                    value: 15,
+                    text: 15,
+                },
+                {
+                    value: 16,
+                    text: 16,
+                },
+                {
+                    value: 17,
+                    text: 17,
+                },
+                {
+                    value: 18,
+                    text: 18,
+                },
+                {
+                    value: 19,
+                    text: 19,
+                },
+                {
+                    value: 20,
+                    text: 20,
+                },
+                {
+                    value: 21,
+                    text: 21,
+                },
+                {
+                    value: 22,
+                    text: 22,
+                },
+                {
+                    value: 23,
+                    text: 23,
+                },
+                {
+                    value: 24,
+                    text: 24,
+                },
+                {
+                    value: 25,
+                    text: 25,
+                },
+                {
+                    value: 26,
+                    text: 26,
+                },
+                {
+                    value: 27,
+                    text: 27,
+                },
+                {
+                    value: 28,
+                    text: 28,
+                },
+                {
+                    value: 29,
+                    text: 29,
+                },
+                {
+                    value: 30,
+                    text: 30,
+                },
+            ],
 
 			optionsAZ: [],
 			idCourse: null,
@@ -432,6 +399,11 @@ export default {
 				course_id: '',
 				group: [null, null],
 				course_name: '',
+                // 
+				customer_manager: '',
+				customer_address: '',
+				customer_email: '',
+                //
 				start_time: [null, null],
 				end_time: [null, null],
 				break_time: [null, null],
@@ -732,6 +704,14 @@ export default {
                         .item-form {
                             margin-bottom: 10px;
                             font-size: 18px;
+                        }
+                        
+                        .text-closing-day {
+                            font-family: 'Inter';
+                            font-style: normal;
+                            font-weight: 400;
+                            font-size: 24px;
+                            line-height: 29px;
                         }
 
                         .select-multiple {
