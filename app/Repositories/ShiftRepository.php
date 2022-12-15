@@ -21,6 +21,7 @@ use App\Models\Course;
 use App\Models\CourseSchedule;
 use App\Models\DayOff;
 use App\Models\Driver;
+use App\Models\DriverCourse;
 use App\Models\ResultAI;
 use App\Models\Shift;
 use App\Repositories\Contracts\ShiftRepositoryInterface;
@@ -177,10 +178,37 @@ class ShiftRepository extends BaseRepository implements ShiftRepositoryInterface
                 }
                 $resultList[] = $item;
             }
+
             $driver['shift_list'] = $resultList;
-            unset($driver['day_off'], $driver['result_a_i'], $driver['driver_course']);
+            $driver['course_driver'] = $this->getDriverCouseInListtAI($courses,$driver['driver_course']);
+            unset($driver['day_off'], $driver['result_a_i'],$driver['driver_course']);
         }
         return $drivers;
+    }
+
+    private function getDriverCouseInListtAI($courseList,$driverCourses): array
+    {
+        $dataDriverCourse = [];
+        foreach ($driverCourses as $driverCourse){
+            if (!isset($courseList[$driverCourse['course_code']])) {
+                DriverCourse::where('course_code', $driverCourse['course_code'])->delete();
+                continue;
+            }
+            $infomationCourse = $courseList[$driverCourse['course_code']];
+            $dataDriverCourse[] = [
+                "id" => $driverCourse['id'],
+                "driver_code" => $driverCourse['driver_code'],
+                "course_code" => $driverCourse['course_code'],
+                "course_flag" => $infomationCourse['flag'],
+                "course_name" => $infomationCourse['course_name'],
+                "course_status" => $infomationCourse['status'],
+                "start_time" => $infomationCourse['start_time'],
+                "end_time" => $infomationCourse['end_time'],
+                "break_time" => $infomationCourse['break_time'],
+                "is_checked" => $driverCourse['is_checked'],
+            ];
+        }
+        return $dataDriverCourse;
     }
 
     private function getDataForCourseFromAI($courses, $startDate, $endDate, $addListDriverCanRun = true)
@@ -271,6 +299,9 @@ class ShiftRepository extends BaseRepository implements ShiftRepositoryInterface
                 $driver = $drivers[$item['driver']] ?? '';
                 if ($driver && strtotime($driver['end_date']) && strtotime($driver['end_date']) < strtotime($item['date'])) {
                     $item['color'] = '#C6C6C6';
+                }
+                if (!isset($item['status'])) {
+                    continue;
                 }
                 if ($item['status'] == 'off') {
                     $item['listDriverCanRun'] = [];
@@ -453,7 +484,7 @@ class ShiftRepository extends BaseRepository implements ShiftRepositoryInterface
     {
         $result = [];
         $dataConvert = [];
-        $files = \App\Models\File::orderByDesc('id')->whereIn('status', ['check','error', 'success'])->where(['type' => 'ai', 'file_name' => 'course.xlsx'])->paginate(15);
+        $files = \App\Models\File::orderByDesc('id')->whereIn('status', ['check','error', 'success'])->where(['type' => 'ai', 'file_name' => 'course.csv'])->paginate(15);
         foreach ($files as $keyFile => $valueFile) {
             $arrayTime = explode(',', $valueFile->date_time);
             $dataConvert[] = [

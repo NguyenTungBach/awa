@@ -41,7 +41,8 @@ class ShiftRequest extends FormRequest
                 "start_date" => "required|date|date_format:Y-m-d",
                 "end_date" => "required|date|date_format:Y-m-d|after_or_equal:start_date",
                 "date" => "nullable|date|date_format:Y-m",
-                // 'type' => ["required", Rule::in(['week', 'month'])],
+                'field' => 'nullable|in:driver_code,flag,course_code,group',
+                'sortby' => 'nullable|in:asc,desc',
             ];
         }
         if (Route::getCurrentRoute()->getActionMethod() == 'checkDataResult') {
