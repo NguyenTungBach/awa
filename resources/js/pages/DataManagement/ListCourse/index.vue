@@ -59,8 +59,8 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-course-name"
-                                        :rowspan="2"
+                                        class="th-sort th-name th-course-name"
+                                        :colspan="3"
                                         @click="onSortTable('course_name')"
                                     >
                                         <b-row >
