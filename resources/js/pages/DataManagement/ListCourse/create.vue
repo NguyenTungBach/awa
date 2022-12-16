@@ -83,7 +83,7 @@
                                                         </span>
                                                     </label>
                                                     <b-input-group>
-                                                        <b-form-input
+                                                        <!-- <b-form-input
                                                             id="input-course-id"
                                                             v-model="isForm.course_id"
                                                             type="text"
@@ -91,6 +91,14 @@
                                                             ondrop="return false;"
                                                             autocomplete="off"
                                                             @keydown.native="validInputCourseCode"
+                                                        /> -->
+                                                        <b-form-input
+                                                            id="input-course-id"
+                                                            v-model="isForm.course_id"
+                                                            type="text"
+                                                            onpaste="return false;"
+                                                            ondrop="return false;"
+                                                            autocomplete="off"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -124,11 +132,16 @@
                                                     <span class="text-danger">
                                                         *
                                                     </span>
-                                                    <b-form-select
+                                                    <!-- <b-form-select
                                                         id="customer-closing-day"
                                                         v-model="isForm.exclusive"
                                                         :options="optionsClosingDay"
                                                         :disabled="isLoading"
+                                                    /> -->
+                                                    <b-form-select
+                                                        id="customer-closing-day"
+                                                        v-model="isForm.exclusive"
+                                                        :options="optionsClosingDay"
                                                     />
                                                 </div>
                                             </b-col>
@@ -423,7 +436,7 @@ export default {
 
 	created() {
 		this.initData();
-		this.optionsAZ = this.genereateOptionAZ();
+		// this.optionsAZ = this.genereateOptionAZ();
 	},
 
 	methods: {
@@ -487,17 +500,17 @@ export default {
 
 		initBody() {
 			return {
-				flag: this.isForm.flag,
-				pot: this.isForm.pot,
+				// flag: this.isForm.flag,
+				// pot: this.isForm.pot,
 				course_code: this.isForm.course_id,
-				group: this.selectAZ ? (this.selectAZ).join('') : '',
+				// group: this.selectAZ ? (this.selectAZ).join('') : '',
 				course_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
-				start_time: this.formatter(this.isForm.start_time),
-				end_time: this.formatter(this.isForm.end_time),
-				break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
-				point: parseFloat(this.isForm.point + ''),
-				start_date: this.isForm.start_date,
-				end_date: this.isForm.end_date,
+				// start_time: this.formatter(this.isForm.start_time),
+				// end_time: this.formatter(this.isForm.end_time),
+				// break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
+				// point: parseFloat(this.isForm.point + ''),
+				// start_date: this.isForm.start_date,
+				// end_date: this.isForm.end_date,
 				note: this.isForm.note ? this.isForm.note.trim() : '',
 			};
 		},
@@ -512,9 +525,9 @@ export default {
 
 		async onClickSave() {
 			const BODY = this.initBody();
-			const VALIDATE = validateCourse(BODY);
+			// const VALIDATE = validateCourse(BODY);
 
-			if (VALIDATE.status) {
+			// if (VALIDATE.status) {
 				try {
 					setLoading(true);
 
@@ -531,40 +544,40 @@ export default {
 				} catch {
 					setLoading(false);
 				}
-			} else {
-				TOAST_COURSE_MANAGEMENT.validate(VALIDATE.message);
-			}
+			// } else {
+			// 	TOAST_COURSE_MANAGEMENT.exception();
+			// }
 		},
 
-		genereateOptionAZ() {
-			const len = this.listAZ.length;
+		// genereateOptionAZ() {
+		// 	const len = this.listAZ.length;
 
-			let idx = 0;
+		// 	let idx = 0;
 
-			const result = [];
+		// 	const result = [];
 
-			while (idx < len) {
-				result.push({
-					value: this.listAZ[idx],
-					text: this.listAZ[idx],
-					disabled: false,
-				});
+		// 	while (idx < len) {
+		// 		result.push({
+		// 			value: this.listAZ[idx],
+		// 			text: this.listAZ[idx],
+		// 			disabled: false,
+		// 		});
 
-				idx++;
-			}
+		// 		idx++;
+		// 	}
 
-			return [result, result];
-		},
+		// 	return [result, result];
+		// },
 
-		formatter(arr) {
-			for (let idx = 0; idx < arr.length; idx++) {
-				if (!arr[idx]) {
-					return arr.join('');
-				}
-			}
+		// formatter(arr) {
+		// 	for (let idx = 0; idx < arr.length; idx++) {
+		// 		if (!arr[idx]) {
+		// 			return arr.join('');
+		// 		}
+		// 	}
 
-			return arr.join(':');
-		},
+		// 	return arr.join(':');
+		// },
 
 		formatterAZ(arr) {
 			return arr.join('');
