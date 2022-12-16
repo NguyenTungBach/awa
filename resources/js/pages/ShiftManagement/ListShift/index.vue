@@ -2212,10 +2212,20 @@ export default {
 					tbody {
 						tr {
 							td {
-								text-align: center;
-								padding: 0;
+								// text-align: center;
+								// padding: 0;
 
-								min-width: 150px;
+								// min-width: 150px;
+								
+								&:nth-child(1),
+								&:nth-child(2),
+                                &:nth-child(3) {
+									background-color: $sub-main;
+
+									font-weight: bold;
+								}
+
+								padding: 5px;
 							}
 
 							td.td-employee-number,
