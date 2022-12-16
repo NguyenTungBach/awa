@@ -13,6 +13,7 @@ use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\ReportResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
@@ -154,11 +155,19 @@ class ReportController extends Controller
      */
     public function exportToExcel(Request $request)
     {
-        $sortByCode = isset($request['sortby_code']) ? strtolower($request['sortby_code']):'';
-        $sortByDriverType = isset($request['sortby_driver_type']) ? strtolower($request['sortby_driver_type']): '';
+        $validator = Validator::make($request->all(), [
+            'view_date' => 'required|date|date_format:Y-m',
+            'field' => 'nullable|in:driver_code,flag',
+            'sortby' => 'nullable|in:asc,desc',
+        ]);
+        if ($validator->fails()) {
+            return $this->responseJsonError(422, $validator->errors());
+        }
+        $field = $request['field'] ?? '';
+        $sortBy = $request['sortby'] ?? '';
         $viewDate = isset($request['view_date']) && strtotime($request['view_date']) ? strtotime($request['view_date']):strtotime(date('Y-m'));
 
-        return $this->repository->downloadFileExported($viewDate, $sortByCode, $sortByDriverType);
+        return $this->repository->downloadFileExported($viewDate, $field, $sortBy);
 
     }
 

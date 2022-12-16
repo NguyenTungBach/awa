@@ -62,9 +62,9 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         return $query->get();
     }
 
-    public static function syncData($startDate, $endDate, $sortByDriverCode = '', $sortByDriverType = '')
+    public static function syncData($startDate, $endDate, $field = '', $sortBy = '')
     {
-        $listDriver = self::getListDriver($startDate, $endDate, $sortByDriverCode, $sortByDriverType);
+        $listDriver = self::getListDriver($startDate, $endDate, $field, $sortBy);
 
         if (!$listDriver) {
             return ['empty' => 'Drivers not found'];
@@ -206,14 +206,8 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         return $times[0] + ($times[1]/60);
     }
 
-    public static function getListDriver($startDate, $endDate, $sortByCode = '', $sortByDriverType = '')
+    public static function getListDriver($startDate, $endDate, $fieldSort = '', $sortBy = '')
     {
-        if ($sortByCode && !in_array($sortByCode, ['asc', 'desc'])) {
-            $sortByCode = '';
-        }
-        if ($sortByDriverType && !in_array($sortByDriverType, ['asc', 'desc'])) {
-            $sortByDriverType = '';
-        }
         $query = Driver::select('id', 'driver_code', 'driver_name', 'flag', 'status', 'start_date', 'end_date', 'day_of_week')
             ->SelectRaw('IF( status = "off" OR end_date < ? OR end_date < ? , "yes", "no") AS highlight, IF( flag = "lead", 1, 0) AS flag_sorted', [
                 date('Y-m-d'),
@@ -228,25 +222,23 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             ->orderBy('highlight')
             ->orderBy('flag_sorted');
 
-        if($sortByCode) {
-            $query->orderBy('driver_code', $sortByCode);
+        if($fieldSort && $sortBy) {
+            $query->orderBy($fieldSort, $sortBy);
         }
 
-        if($sortByDriverType) {
-            $query->orderBy('flag', $sortByDriverType);
-        }
-        return $query->orderBy('id')->get();
+        return $query->get();
     }
 
     public function getList($request = [])
     {
-        $sortByCode = isset($request['sortby_code']) ? strtolower($request['sortby_code']) : '';
-        $sortByDriverType = isset($request['sortby_driver_type']) ? strtolower($request['sortby_driver_type']): '';
+        $field = $request['field'] ?? '';
+        $sortBy = $request['sortby'] ?? '';
         $viewDate = isset($request['view_date']) && strtotime($request['view_date']) ? strtotime($request['view_date']):strtotime(date('Y-m'));
 
         $startDate = \Carbon\Carbon::parse(date('Y-m-d', $viewDate))->startOfMonth();
         $endDate = \Carbon\Carbon::parse(date('Y-m-d', $viewDate))->endOfMonth();
-        $items = self::syncData($startDate, $endDate, $sortByCode, $sortByDriverType);
+        $items = self::syncData($startDate, $endDate, $field, $sortBy);
+
         if (isset($items['empty'])) {
             return ResponseService::responseData(CODE_SUCCESS, 'success', 'success', null);
         }
@@ -330,7 +322,7 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         }, $endDate);
     }
 
-    public function downloadFileExported($viewDate, $sortByCode, $sortByDriverType, $fileType = 'xlsx')
+    public function downloadFileExported($viewDate, $field = '', $sortBy = '', $fileType = 'xlsx')
     {
         $fileName = '実務実績月別_{' . date('Y', $viewDate) . '_' . date('m', $viewDate) . '}.' . $fileType;
         $statusView = null;
@@ -338,8 +330,8 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         $writeType = \Maatwebsite\Excel\Excel::XLSX;
         $requestParams = [
             'view_date' => date('Y-m', $viewDate),
-            'sortby_code' => $sortByCode,
-            'sortby_driver_type' => $sortByDriverType
+            'field' => $field,
+            'sortby' => $sortBy
         ];
 
         $list = self::getList($requestParams, 'yes');

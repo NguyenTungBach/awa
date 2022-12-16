@@ -8,14 +8,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShiftRequest;
-use App\Http\Resources\DriverResource;
 use App\Repositories\Contracts\ShiftRepositoryInterface;
 use App\Http\Resources\BaseResource;
-use App\Http\Resources\ShiftResource;
-use Carbon\Carbon;
-use Helper\ResponseService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class ShiftController extends Controller
@@ -378,7 +373,7 @@ class ShiftController extends Controller
      *     ),
      *   ),
      *   @OA\Parameter(
-     *     name="sortby_code",
+     *     name="field",
      *     in="query",
      *     required=false,
      *     @OA\Schema(
@@ -386,7 +381,7 @@ class ShiftController extends Controller
      *     ),
      *   ),
      *   @OA\Parameter(
-     *     name="sortby_driver_type",
+     *     name="sortby",
      *     in="query",
      *     required=false,
      *     @OA\Schema(
@@ -412,26 +407,14 @@ class ShiftController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required|date|date_format:Y-m',
-                'sortby_code' => 'nullable|in:asc,desc',
-                'sortby_driver_type' => 'nullable|in:asc,desc',
+            'field' => 'nullable|in:driver_code,flag',
+            'sortby' => 'nullable|in:asc,desc',
         ]);
         if ($validator->fails()) {
             return $this->responseJsonError(422, $validator->errors());
         }
-        $sortByCode = $request['sortby_code'] ?? '';
-        $sortByDriverType = $request['sortby_driver_type'] ?? '';
-        $sortBy = '';
-        $field = '';
-        if ($sortByCode) {
-            $sortBy = $sortByCode;
-            $field = 'driver_code';
-        }
-        if ($sortByDriverType) {
-            $sortBy = $sortByDriverType;
-            $field = 'flag';
-        }
-        $request['field'] = $field;
-        $request['sortby'] = $sortBy;
+        $request['field'] = $request['field'] ?? '';
+        $request['sortby'] = $request['sortby'] ?? '';
         $request['type'] = 'default-tab';
 
         return $this->repository->downloadFile($request);
@@ -497,7 +480,7 @@ class ShiftController extends Controller
                 'date' => 'required|date|date_format:Y-m',
                 'type' => 'required',
                 'sortby' => 'nullable|in:asc,desc',
-                'field' => 'nullable|exists:result_ais',
+                'field' => 'nullable',
             ]);
         if ($validator->fails()) {
             return $this->responseJsonError(422, $validator->errors());

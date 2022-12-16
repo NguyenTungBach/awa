@@ -53,14 +53,14 @@ class CourseScheduleController extends Controller
      *     ),
      *   ),
      *   @OA\Parameter(
-     *     name="sorttype_id",
+     *     name="field",
      *     in="query",
      *     @OA\Schema(
      *      type="string",
      *     ),
      *   ),
      *   @OA\Parameter(
-     *     name="sorttype_group",
+     *     name="sortby",
      *     in="query",
      *     @OA\Schema(
      *      type="string",
@@ -82,7 +82,6 @@ class CourseScheduleController extends Controller
      */
     public function index(CourseScheduleRequest $request)
     {
-
         $list = $this->repository->getList($request);
         if ($list['status'] != 'success') {
             return $this->responseJsonError($list['code'], $list['message']);
@@ -314,7 +313,7 @@ class CourseScheduleController extends Controller
      *   summary="Export CourseSchedule",
      *   operationId="course_schedule_export",
      *   @OA\Parameter(
-     *     name="sorttype_id",
+     *     name="field",
      *     in="query",
      *     required=false,
      *     @OA\Schema(
@@ -322,7 +321,7 @@ class CourseScheduleController extends Controller
      *     ),
      *   ),
      *   @OA\Parameter(
-     *     name="sorttype_group",
+     *     name="sortby",
      *     in="query",
      *     required=false,
      *     @OA\Schema(
@@ -353,12 +352,18 @@ class CourseScheduleController extends Controller
      */
     public function export(Request $request)
     {
-        $sortById = isset($request['sorttype_id']) && in_array(strtolower($request['sortby_id']), ['asc', 'desc']) ? strtolower($request['sortby_id']): '';
-        $sortByGroup = isset($request['sorttype_group']) && in_array(strtolower($request['sorttype_group']), ['asc', 'desc']) ? strtolower($request['sorttype_group']): '';
+        $validator = Validator::make($request->all(), [
+            'view_date' => 'sometimes|date|date_format:Y-m',
+            'field' => 'nullable|in:course_code,flag',
+            'sortby' => 'nullable|in:asc,desc'
+        ]);
+        if ($validator->fails()) {
+            return $this->responseJsonError(422, $validator->errors());
+        }
+        $field = $request['field'] ?? '';
+        $sortBy = $request['sortby'] ?? '';
         $viewDate = isset($request['view_date']) && strtotime($request['view_date']) ? strtotime($request['view_date']):strtotime(date('Y-m'));
         $newFile = isset($request['new-file']) ?? false;
-
-        return $this->repository->downloadFileExported($viewDate, $sortById, $sortByGroup, $newFile);
-        // return new CourseScheduleExport($sortById, $sortByGroup, $viewDate);
+        return $this->repository->downloadFileExported($viewDate, $field, $sortBy, $newFile);
     }
 }

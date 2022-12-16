@@ -28,28 +28,19 @@ class ReportRequest extends FormRequest
      */
     public function rules()
     {
+        $request = \Illuminate\Http\Request::all();
           switch (Route::getCurrentRoute()->getActionMethod()){
-                case 'update':
-                    return $this->getCustomRule();
-                case 'store':
-                    return $this->getCustomRule();
+                case 'index':
+                    return [
+                        'view_date' => 'required|date|date_format:Y-m',
+                        'field' => 'nullable|in:driver_code,flag',
+                        'sortby' => 'nullable|in:asc,desc',
+                        'status_view' => 'nullable|in:fix,month'
+                    ];
                 default:
                     return [];
           }
     }
-
-     public function getCustomRule(){
-        if(Route::getCurrentRoute()->getActionMethod() == 'update'){
-            return [
-
-            ];
-        }
-        if(Route::getCurrentRoute()->getActionMethod() == 'store'){
-            return  [
-
-            ];
-        }
-     }
 
     public function messages()
     {

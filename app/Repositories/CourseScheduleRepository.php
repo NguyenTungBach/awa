@@ -55,8 +55,8 @@ class CourseScheduleRepository extends BaseRepository implements CourseScheduleR
 
     public function getList($request = [])
     {
-        $sortTypeId = isset($request['sorttype_id']) && strtolower($request['sorttype_id']) ? strtolower($request['sorttype_id']):'';
-        $sortTypeGroup = isset($request['sorttype_group']) && strtolower($request['sorttype_group']) ? strtolower($request['sorttype_group']): '';
+        $field = $request['field'] ?? '';
+        $sortBy = $request['sortby'] ?? '';
         $viewDate = isset($request['view_date']) && strtotime($request['view_date']) ? strtotime($request['view_date']):strtotime(date('Y-m-d'));
         $onEdit = isset($request['edit']);
 
@@ -74,13 +74,9 @@ class CourseScheduleRepository extends BaseRepository implements CourseScheduleR
                     ->whereRaw('LAST_DAY(end_date) >= ?', [date('Y-m-d', $viewDate)]);
             });
 
-        if ($sortTypeId) {
-            $query->orderBy('course_code', $sortTypeId);
+        if ($field && $sortBy) {
+            $query->orderBy($field, $sortBy);
         }
-        if ($sortTypeGroup) {
-            $query->orderBy('group', $sortTypeGroup);
-        }
-
         $items = $query->get()->toArray();
 
         if (!$items) {

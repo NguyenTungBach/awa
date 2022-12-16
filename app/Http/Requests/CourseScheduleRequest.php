@@ -29,34 +29,16 @@ class CourseScheduleRequest extends FormRequest
     public function rules()
     {
           switch (Route::getCurrentRoute()->getActionMethod()){
-                case 'update':
-                    return $this->getCustomRule();
-                case 'store':
-                    return $this->getCustomRule();
                 case 'index':
-                    return $this->getCustomRule();
+                    return  [
+                        'view_date' => 'sometimes|date|date_format:Y-m',
+                        'field' => 'nullable|in:course_code,flag',
+                        'sortby' => 'nullable|in:asc,desc'
+                    ];
                 default:
                     return [];
           }
     }
-
-     public function getCustomRule(){
-        if(Route::getCurrentRoute()->getActionMethod() == 'update'){
-            return [
-
-            ];
-        }
-        if(Route::getCurrentRoute()->getActionMethod() == 'store'){
-            return  [
-
-            ];
-        }
-        if(Route::getCurrentRoute()->getActionMethod() == 'index'){
-            return  [
-                'view_date' => 'sometimes|date|date_format:Y-m',
-            ];
-        }
-     }
 
     public function messages()
     {

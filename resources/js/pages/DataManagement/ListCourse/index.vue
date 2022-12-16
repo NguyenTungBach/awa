@@ -86,10 +86,31 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        :colspan="3"
-                                        class="text-center"
+                                        class="th-sort th-closing-day"
+                                        :rowspan="2"
+                                        @click="onSortTable('closing_day')"
                                     >
-                                        {{ $t('LIST_COURSE.TABLE_OPERATIONAL_INFORMATION') }}
+                                        <b-row >
+                                            <b-col >
+                                                {{ $t('LIST_COURSE.TABLE_OPERATIONAL_INFORMATION') }}
+                                            </b-col>
+                                            <b-col>
+                                                <div class="text-right">
+                                                    <i
+                                                        v-if="sortTable.sortBy === 'closing_day' && sortTable.sortType === true"
+                                                        class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'closing_day' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
                                     </b-th>
                                     <b-th
                                         :rowspan="2"
@@ -116,7 +137,8 @@
                                             {{ course.course_name }}
                                         </b-td>
                                         <b-td :colspan="3" class="text-center td-control">
-                                            {{ course.start_time }}
+                                            <!-- {{ course.start_time }} -->
+                                            末日
                                         </b-td>
                                         
                                         <b-td class="text-center td-control">
@@ -281,6 +303,20 @@ export default {
 						}
 					} else {
 						this.sortTable.sortBy = 'course_name';
+						this.sortTable.sortType = true;
+					}
+
+					break;
+
+				case 'closing_day':
+					if (this.sortTable.sortBy === 'closing_day') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'closing_day';
 						this.sortTable.sortType = true;
 					}
 

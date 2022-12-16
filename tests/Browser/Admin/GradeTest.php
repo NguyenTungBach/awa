@@ -3,18 +3,20 @@
 namespace Tests\Browser\Admin;
 
 use Carbon\Carbon;
+use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use function Symfony\Component\String\s;
 
-class CourseTab extends DuskTestCase
+class GradeTest extends DuskTestCase
 {
     use withFaker;
     private $currentDate;
     private $resultToCheck;
 
-    public function testCourseTab()
+    public function testGradeTab()
     {
         $this->browse(function ($browser) {
             $this->loginAdmin($browser);
@@ -30,11 +32,11 @@ class CourseTab extends DuskTestCase
             $browser->pause(5000);
 
             // go to course tab to see list courses
-            $this->goShiftTab($browser, 2);
+            $this->goShiftTab($browser, 4);
 
             $this->seeList($browser, [
-                'シフト表',
-                'コース ID', 'グループ', 'コース名'
+                '人件費表',
+                'Crew番号', 'Crew区分', 'Crew名'
             ]);
 
             // press go to previous month
@@ -46,162 +48,41 @@ class CourseTab extends DuskTestCase
                     ->mouseover('.picker-month-year__next')->pause(500)->press('.picker-month-year__next')->pause(3000);
 
             // sort fields
-            $this->sortFields($browser, 2);
+            $this->sortFields($browser, 3);
 
             $browser->pause(3000);
 
-            // go to edit course tab
-            $object = 'course-tab';
+            $browser->mouseover('.btn-excel')->pause(500)->press('.btn-excel')->pause(3000);
 
-            $this->goToEdit($browser, $object);
-
-            //back tab default to check date edited
-            $this->goShiftTab($browser);
-
-            if ($this->resultToCheck && $this->resultToCheck['name'] && $this->resultToCheck['textInElement']) {
-                $table = 'table:nth-child(1)';
-                $trs = $browser->pause(5000)->elements( $table . " tbody tr");
-                foreach ($trs as $k => $tr) {
-                    $row = $k + 1;
-                    $nameRow = $table . " tbody tr:nth-child($row) td:nth-child(3)";
-
-                    if ($browser->element($nameRow)) {
-                        $browser->scrollIntoView($nameRow);
-
-                        if ($browser->text($nameRow) != $this->resultToCheck['textInElement']) {
-                            continue;
-                        }
-                        $colElement =  $table . " tbody tr:nth-child($row)" . $this->resultToCheck['day'];
-                        $browser->pause(5000);
-                        $browser->assertSeeIn($colElement,  $this->resultToCheck['name']);
-                        break;
-                    } else {
-                        dd("not found {$nameRow}");
-                    }
-                }
-            }
-
-            $browser->pause(3000);
-
-            // go to edit again one code has been run by an other Crew
-            $this->goShiftTab($browser, 2);
-
-            $this->goToEdit($browser, $object);
-
-            // back to shift first tab to check Crew just changed
-            $this->goShiftTab($browser);
-
-            if ($this->resultToCheck && $this->resultToCheck['name'] && $this->resultToCheck['textInElement']) {
-                $table = 'table:nth-child(1)';
-                $trs = $browser->pause(5000)->elements( $table . " tbody tr");
-                foreach ($trs as $k => $tr) {
-                    $row = $k + 1;
-                    $nameRow = $table . " tbody tr:nth-child($row) td:nth-child(3)";
-
-                    if ($browser->element($nameRow)) {
-                        $browser->scrollIntoView($nameRow);
-
-                        if ($browser->text($nameRow) != $this->resultToCheck['textInElement']) {
-                            continue;
-                        }
-                        $colElement =  $table . " tbody tr:nth-child($row)" . $this->resultToCheck['day'];
-                        $browser->pause(5000);
-                        $browser->assertSeeIn($colElement,  $this->resultToCheck['name']);
-                        break;
-                    } else {
-                        dd("Fail: not found {$nameRow}");
-                    }
-                }
-            }
-
-            // go to edit again one code has been run by an other Crew
-            $this->goShiftTab($browser, 2);
-
-            $this->pressEditButton($browser);
-
-            $rowNumber = 1;
-            $rowElement = "tbody tr:nth-child($rowNumber)";
-            if ($browser->element($rowElement)) {
-                $code = '';
-                $name = '';
-                if ($browser->element($rowElement . " td:nth-child(1)")) {
-                    $code = $browser->text($rowElement . " td:nth-child(1)");
-                }
-                if ($browser->element($rowElement . " td:nth-child(3)")) {
-                    $name = $browser->text($rowElement . " td:nth-child(3)");
-                }
+            $trs = "table:nth-child(3) tbody tr";
+            $trArr = $browser->elements($trs);
+            if ($trArr) {
+                $result = [];
+                $browser->pause(5000);
                 $daysInMonth = Carbon::parse($this->currentDate)->daysInMonth;
-                $colEdited = '';
-                $day = '';
-                // search empty cell to edit
-                for ($col = 4; $col <= $daysInMonth + 3; $col ++) {
-                    $day = " td:nth-child($col)";
-                    $column = $rowElement . $day;
-                    if ($browser->element($column)) {
-                        $firstDiv = $column . " .node-course-base";
-                        if ($browser->element($firstDiv)) {
-                            if ($browser->text($firstDiv) != '-') {
-                                $colEdited = $column;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if ($colEdited) {
-                    $browser->press($colEdited);
-
-                    $wrapCheckbox = "#select-day-off";
-
-                    $browser->waitFor($wrapCheckbox);
-
-                    if ($browser->elements($wrapCheckbox . " .custom-radio")) {
-                        $checkboxes = $browser->elements($wrapCheckbox . " .custom-radio");
-                        $checkboxSelected = 1;
-
-                        $checkboxElement = $wrapCheckbox . " .custom-radio:nth-child($checkboxSelected) label";
-                        $spanElement = $checkboxElement ." span";
-                        if ($browser->element($spanElement)) {
-                            $driverName = $browser->text($spanElement);
-                        }
-
-                        $browser->pause(3000)->scrollIntoView($checkboxElement)->press($checkboxElement);
-                        $browser->pause(3000)->scrollIntoView('.zone-save .btn-save')->press('.zone-save .btn-save');
-
-                        $this->resultToCheck = [
-                            'code' => $code,
-                            'name' => $name,
-                            'element' => 'table:nth-child(2) ' . $colEdited . " .node-course-base",
-                            'textInElement' => $driverName ?? '-',
-                            'day' => $day
-                        ];
-                        $browser->press('.list-shift__control .btn-save')->pause(4000);
-
-                        $this->seeList($browser, $this->resultToCheck);
-                    }
-                }
-            }
-
-            // back to shift first tab to check Crew just changed
-            $this->goShiftTab($browser);
-            if ($this->resultToCheck && $this->resultToCheck['name'] && $this->resultToCheck['textInElement']) {
-                $table = 'table:nth-child(1)';
-                $trs = $browser->pause(5000)->elements( $table . " tbody tr");
-                foreach ($trs as $k => $tr) {
+                foreach ($trArr as $k => $it) {
                     $row = $k + 1;
-                    $nameRow = $table . " tbody tr:nth-child($row) td:nth-child(3)";
+                    $tds = $trs . ":nth-child($row) td";
+                    if (!$browser->element($tds . ":nth-child(1)"))  {
+                        continue;
+                    }
+                    $browser->scrollIntoView($tds . ":first-child");
+                    $code = $browser->text($tds . ":nth-child(1)");
+                    $tdArr = $browser->elements($tds);
 
-                    if ($browser->element($nameRow)) {
-                        $browser->scrollIntoView($nameRow);
-                        $browser->pause(500);
-                        if ($browser->text($nameRow) != $this->resultToCheck['textInElement']) {
-                            continue;
+                    foreach ($tdArr as $k_td => $td) {
+                        $col = $k_td + 1;
+                        $browser->pause(100);
+                        $browser->scrollIntoView($tds . ":nth-child($col)");
+                        if ($col > 3 && $col < $daysInMonth + 4) {
+                            $result[$code][] = $td->getText();
                         }
-                        $colElement =  $table . " tbody tr:nth-child($row)" . $this->resultToCheck['day'];
-                        $browser->pause(5000);
-                        $browser->assertSeeIn($colElement,  '');
-                        break;
-                    } else {
-                        dd("Fail: not found {$nameRow}");
+
+                        if ($col == $daysInMonth + 4 ) {
+                            $browser->assertSeeIn($tds . ":nth-child($col)", array_sum($result[$code]));
+                            $browser->pause(2000);
+                            break;
+                        }
                     }
                 }
             }
@@ -400,16 +281,17 @@ class CourseTab extends DuskTestCase
     public function scrollToViewTable($browser, $tableIndex = 1) {
         $table = "table:nth-child($tableIndex)";
         $trs = $table . " tbody tr";
+        $browser->pause(2000);
         if ($browser->elements($trs)) {
             $pause = 30;
-            foreach ($browser->elements($trs) as $k => $tr) {
-                $row = $k + 1;
-                $browser->pause($pause);
-                if ($browser->element($trs . ":nth-child($row)")) {
-                    $browser->scrollIntoView($trs . ":nth-child($row)");
-                }
-
-            }
+            // foreach ($browser->elements($trs) as $k => $tr) {
+            //     $row = $k + 1;
+            //     $browser->pause($pause);
+            //     if ($browser->element($trs . ":nth-child($row)")) {
+            //         $browser->scrollIntoView($trs . ":nth-child($row)");
+            //     }
+            //
+            // }
             foreach ($browser->elements($trs) as $k => $tr) {
                 $row = $k + 1;
                 $browser->pause($pause);
