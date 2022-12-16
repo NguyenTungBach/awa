@@ -267,8 +267,14 @@ export default {
 		TITLE_LIST_SCHEDULE: 'List Schedule',
 
 		TABLE_COURSE_ID: 'Course ID',
-		TABLE_COURSE_NAME: 'Course name',
-		TABLE_COURSE_GROUP_CODE: 'Group Code',
+		TABLE_COURSE_DATE: 'Date',
+		TABLE_COURSE_NAME :'Course name',
+		TABLE_CUSTUM_NAME: 'Customer name',
+		TABLE_DEPATURE_PLACE: 'Depature place',
+		TABLE_FREIGHT_COST: 'Freight cost',
+		TABLE_ARRIVAL_PLACE: 'Arrival place',
+		TABLE_FILL: 'Fill',
+		TABLE_COURSE_GROUP_CODE: 'グループ',
 	},
 
 	LIST_DRIVER: {
