@@ -59,7 +59,7 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-course-name"
                                         :rowspan="2"
                                         @click="onSortTable('course_name')"
                                     >
@@ -416,9 +416,7 @@ export default {
                                         opacity: 0.7;
                                     }
                                 }
-                                .th.th-name {
-                                    width: 250px;
-                                }
+                               
                                 th.th-time {
                                     width: 100px;
                                 }

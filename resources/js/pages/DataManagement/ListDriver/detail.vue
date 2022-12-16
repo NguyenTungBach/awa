@@ -159,7 +159,7 @@
                                                     </b-col>
                                                 </b-row>
 
-                                                <div class="item-form">
+                                                <!-- <div class="item-form">
                                                     <b-row>
                                                         <b-col>
                                                             <DetailForm
@@ -168,7 +168,7 @@
                                                             />
                                                         </b-col>
                                                     </b-row>
-                                                </div>
+                                                </div> -->
                                             </div>
 
                                             <TitlePathForm :add-class="['margin-title-form']">
@@ -227,7 +227,7 @@
                                     </b-row>
                                 </div>
                             </b-tab>
-                            <b-tab
+                            <!-- <b-tab
                                 :title="$t('CREATE_DRIVER.TAB_TITLE_COURSE_INFORMATION')"
                                 :active="isTab === 'COURSE'"
                                 :disabled="isDisableTabCourse"
@@ -260,7 +260,7 @@
                                         </b-table>
                                     </div>
                                 </div>
-                            </b-tab>
+                            </b-tab> -->
                         </b-tabs>
                     </div>
                 </div>

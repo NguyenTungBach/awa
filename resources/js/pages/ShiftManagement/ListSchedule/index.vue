@@ -6,7 +6,9 @@
                     <b-row>
                         <b-col>
                             <div class="zone-title">
-                                <span class="title-page">
+                                <span class="title-page"
+                                
+                                >
                                     {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
                                 </span>
                             </div>
@@ -14,7 +16,9 @@
                         <b-col>
                             <div class="zone-item">
                                 <div class="zone-title">
-                                <span class="title-edit">
+                                <span class="title-edit"
+                                @click="goToCreateSchedule()"
+                                >
                                     {{ $t('APP.BUTTON_SIGN_UP') }}
                                 </span>
                             </div>
@@ -29,7 +33,7 @@
                 <div class="page-schedule__header">
                     <b-row>
                         <b-col>
-                            <div class="zone-title">
+                            <div class="zone-title">                                
                                 <span class="title-page">
                                     {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
                                 </span>
@@ -95,7 +99,7 @@
                                         :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
+                                            {{ $t('LIST_SCHEDULE.TABLE_COURSE_DATE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -109,7 +113,7 @@
                                         :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
+                                            {{ $t('LIST_SCHEDULE.TABLE_COURSE_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -122,7 +126,7 @@
                                     <b-th                                        
                                     >
                                         <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
+                                            {{ $t('LIST_SCHEDULE.TABLE_CUSTUM_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -135,7 +139,7 @@
                                     <b-th                                        
                                     >
                                         <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
+                                            {{ $t('LIST_SCHEDULE.TABLE_DEPATURE_PLACE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -149,7 +153,7 @@
                                         :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
+                                            {{ $t('LIST_SCHEDULE.TABLE_ARRIVAL_PLACE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -163,7 +167,7 @@
                                         :rowspan="2"
                                         class="text-center th-control"
                                     >
-                                        {{ $t('LIST_COURSE.TABLE_DETAIL') }}
+                                        {{ $t('LIST_SCHEDULE.TABLE_FREIGHT_COST') }}
                                     </b-th>
                                     <b-th
                                         :rowspan="2"
@@ -173,6 +177,42 @@
                                     </b-th>
                                 </b-tr>
                             </b-thead>
+                            <b-tbody>
+                                <template>
+                                    <b-tr>
+                                        <b-td>
+                                            <b-form-checkbox
+                                                id="checkbox-2"
+                                                v-model="status"
+                                                name="checkbox-1"
+                                                value="accepted"
+                                                unchecked-value="not_accepted"
+                                            >
+                                            </b-form-checkbox>
+                                        </b-td>
+                                        <b-td class="text-center">
+                                            2022/12/2
+                                        </b-td>
+                                        <b-td class="text-center">テストコース2</b-td>
+                                        <b-td class="text-center">B商事</b-td>
+                                        <b-td class="text-center">B商事</b-td>
+                                        <b-td class="text-center">B商事</b-td>
+                                        <b-td class="text-center">55.000</b-td>
+                                        <b-td class="text-center td-control">
+                                            <i
+                                                class="fas fa-eye"
+                                                @click="onClickDetail()"
+                                            />
+                                        </b-td>
+                                        <b-td class="text-center td-control">
+                                            <i
+                                                class="fas fa-trash-alt"
+                                                @click="onClickDelete()"
+                                            />
+                                        </b-td>
+                                    </b-tr>
+                                </template>
+                            </b-tbody>
                             
                         </b-table-simple>
                     </div>
@@ -208,7 +248,15 @@ export default {
 	data() {
 		return {
 			
-	}}
+	}},
+    methods: {
+        goToCreateSchedule() {
+			this.$router.push({ name: 'ListScheduleCreate' });
+		},
+        onClickDetail(){
+            this.$router.push({ name: 'ListScheduleDatail' });
+        }
+    }
 	
 }
 </script>
@@ -216,12 +264,10 @@ export default {
 <style lang="scss" scoped>
     @import '@/scss/variables';
     .container{
-        max-width: 1500px;
-        .zone-table{
-            margin-top: 25px;
-            
-        }
+        max-width: 1500px !important;
+        
     }
+    
     .page-schedule {
         &__header {
             .zone-title {
@@ -262,13 +308,27 @@ export default {
                 }
                 .title-edit{
                 background-color: $main-header;
-                font-size: 28px;
+                font-size: 18px;
                 border-radius: 30px;
                 color: $white;
-                padding: 4px 12px;
+                padding: 6px 10px;
+                &:hover {
+                        opacity: 0.8;
+                        cursor: pointer;
+                    }
             }
             }
             
+        }
+        &__body{
+            .zone-table{
+            margin-top: 25px;
+                &__head{
+                    background: $main;
+                    color: $white;
+                    font-weight: 700;
+           } 
+        }
         }
     }
 </style>
