@@ -12,12 +12,12 @@
                                 >
                                     {{ $t('CREATE_DRIVER.TITLE_CREATE_DRIVER') }}
                                 </span>
-                                <span
+                                <!-- <span
                                     v-show="isTab === 'COURSE'"
                                     class="title-page"
                                 >
                                     {{ $t('CREATE_DRIVER.TITLE_EMPLOYEE_DETAILS') }}
-                                </span>
+                                </span> -->
                             </div>
                         </b-col>
                     </b-row>

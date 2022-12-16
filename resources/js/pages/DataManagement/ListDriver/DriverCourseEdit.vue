@@ -244,7 +244,7 @@
                                                     </b-col>
                                                 </b-row>
 
-                                                <b-row>
+                                                <!-- <b-row>
                                                     <b-col>
                                                         <label for="input-grade">
                                                             {{ $t('CREATE_DRIVER.GRADE') }}
@@ -262,7 +262,7 @@
                                                             {{ formatNumber(isForm.grade) }}
                                                         </div>
                                                     </b-col>
-                                                </b-row>
+                                                </b-row> -->
                                             </div>
                                             <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_WORKING_CONDITIONS') }}
@@ -374,7 +374,7 @@
                                     </b-row>
                                 </div>
                             </b-tab>
-                            <b-tab
+                            <!-- <b-tab
                                 :title="$t('CREATE_DRIVER.TAB_TITLE_COURSE_INFORMATION')"
                                 :active="isTab === 'COURSE'"
                                 :disabled="isDisableTabCourse"
@@ -390,7 +390,7 @@
                                         />
                                     </div>
                                 </div>
-                            </b-tab>
+                            </b-tab> -->
                         </b-tabs>
                     </div>
                 </div>
