@@ -102,9 +102,9 @@ export default {
 		LIST_SCHEDULE: '運行情報',
 		DATA_MANAGEMENT: 'データ管理',
 		LIST_DRIVER: '従業員情報',
-		LIST_COURSE: 'コース情報',
+		LIST_COURSE: '荷主情報',
 		LIST_COURSE_PATTERN: 'コース組み合わせ表',
-		LIST_USER: '荷主情報',
+		LIST_USER: 'ユーザー情報',
 	},
 	LAYOUT: {
 		LOGOUT: 'ログアウト',
