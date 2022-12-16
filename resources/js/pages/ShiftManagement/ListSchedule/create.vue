@@ -412,11 +412,7 @@ export default {
                     .date{
                         padding: 0;
                     }
-                    .timepicker{
-                        color: rgb(141, 135, 135);
-                        background-color: #fff;
-                        border-left: none;
-                    }
+                   
                 }
             }
     }
