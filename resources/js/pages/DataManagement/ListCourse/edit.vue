@@ -532,7 +532,7 @@ export default {
 		initBody() {
 			return {
 				flag: this.isForm.flag,
-				// pot: this.isForm.pot,
+				pot: this.isForm.pot,
 				course_code: this.isForm.course_id,
 				group: this.isForm.group ? (this.isForm.group).join('') : '',
 				course_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
