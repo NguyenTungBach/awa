@@ -78,24 +78,25 @@ const LIST_DAY_OFF = [
 		text: TEXT_DATE_PAID,
 		disabled: false,
 	},
-	{
-		value: 'R',
-		text: 'LIST_SHIFT.SELECT_LEADER_CHIEF',
-		disabled: false,
-	},
-	{
-		value: 'S-1',
-		text: 'LIST_SHIFT.SELECT_WAIT',
-		disabled: false,
-	},
-	{
-		value: 'S-2',
-		text: 'LIST_SHIFT.SELECT_WAIT_BETWEEN_TASK',
-		disabled: false,
-	},
+	// {
+	// 	value: 'R',
+	// 	text: 'LIST_SHIFT.SELECT_LEADER_CHIEF',
+	// 	disabled: false,
+	// },
+	// {
+	// 	value: 'S-1',
+	// 	text: 'LIST_SHIFT.SELECT_WAIT',
+	// 	disabled: false,
+	// },
+	// {
+	// 	value: 'S-2',
+	// 	text: 'LIST_SHIFT.SELECT_WAIT_BETWEEN_TASK',
+	// 	disabled: false,
+	// },
 ];
 
-const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
+// const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
+const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4'];
 
 export default {
 	WEEK,

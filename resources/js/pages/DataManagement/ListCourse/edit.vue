@@ -76,7 +76,7 @@
                                                     *
                                                 </span>
                                             </label>
-                                            <b-form-input
+                                            <!-- <b-form-input
                                                 id="input-course-id"
                                                 v-model="isForm.course_id"
                                                 type="text"
@@ -85,6 +85,15 @@
                                                 autocomplete="off"
                                                 disabled
                                                 @keydown.native="validInputCourseCode"
+                                            /> -->
+                                            <b-form-input
+                                                id="input-course-id"
+                                                v-model="isForm.course_id"
+                                                type="text"
+                                                onpaste="return false;"
+                                                ondrop="return false;"
+                                                autocomplete="off"
+                                                disabled
                                             />
                                         </div>
 
@@ -120,7 +129,6 @@
                                                         id="customer-closing-day"
                                                         v-model="isForm.exclusive"
                                                         :options="optionsClosingDay"
-                                                        :disabled="isLoading"
                                                     />
                                                 </div>
                                             </b-col>
@@ -248,7 +256,7 @@ import TitlePathForm from '@/components/TitlePathForm';
 import { getCourse, putCourse } from '@/api/modules/courseManagement';
 import { convertTimeCourse } from '@/utils/convertTime';
 import { convertBreakTimeNumberToTime, convertTimeToSelect, convertStingToSelect } from '@/utils/convertTime';
-import { validateCourse } from '@/utils/validateCRUD';
+// import { validateCourse } from '@/utils/validateCRUD';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
@@ -452,7 +460,7 @@ export default {
 
 	created() {
 		this.initData();
-		this.optionsAZ = this.genereateOptionAZ();
+		// this.optionsAZ = this.genereateOptionAZ();
 	},
 
 	methods: {
@@ -585,11 +593,15 @@ export default {
 			}
 		},
 
+        // onClickSaveCourse() {
+        //     this.goToDetail();
+        //     TOAST_COURSE_MANAGEMENT.success();
+        // },
 		async onClickSaveCourse() {
 			const BODY = this.initBody();
-			const VALIDATE = validateCourse(BODY);
+			// const VALIDATE = validateCourse(BODY);
 
-			if (VALIDATE.status) {
+			// if (VALIDATE.status) {
 				try {
 					await this.$store.dispatch('course/setWarningNotSave', false)
 						.then(async() => {
@@ -610,9 +622,9 @@ export default {
 				} catch {
 					setLoading(false);
 				}
-			} else {
-				TOAST_COURSE_MANAGEMENT.validate(VALIDATE.message);
-			}
+			// } else {
+			// 	TOAST_COURSE_MANAGEMENT.validate(VALIDATE.message);
+			// }
 		},
 
 		onClickReturn() {
@@ -623,25 +635,25 @@ export default {
 			this.$router.push({ name: 'CourseEdit', params: { id: this.idCourse }});
 		},
 
-		genereateOptionAZ() {
-			const len = this.listAZ.length;
+		// genereateOptionAZ() {
+		// 	const len = this.listAZ.length;
 
-			let idx = 0;
+		// 	let idx = 0;
 
-			const result = [];
+		// 	const result = [];
 
-			while (idx < len) {
-				result.push({
-					value: this.listAZ[idx],
-					text: this.listAZ[idx],
-					disabled: false,
-				});
+		// 	while (idx < len) {
+		// 		result.push({
+		// 			value: this.listAZ[idx],
+		// 			text: this.listAZ[idx],
+		// 			disabled: false,
+		// 		});
 
-				idx++;
-			}
+		// 		idx++;
+		// 	}
 
-			return [result, result];
-		},
+		// 	return [result, result];
+		// },
 
 		formatter(arr) {
 			for (let idx = 0; idx < arr.length; idx++) {
