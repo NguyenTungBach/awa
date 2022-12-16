@@ -254,7 +254,7 @@ export default {
 			this.$router.push({ name: 'ListScheduleCreate' });
 		},
         onClickDetail(){
-            this.$router.push({ name: 'ListScheduleDatail' });
+            this.$router.push({ name: 'ListScheduleDetail' });
         }
     }
 	
