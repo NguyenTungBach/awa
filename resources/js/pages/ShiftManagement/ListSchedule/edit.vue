@@ -277,7 +277,7 @@
                                             type="text"
                                            
                                         />
-                                        円
+                                        <span> 円</span>
                                     </b-input-group>
                                     
                                 </b-col>
@@ -350,7 +350,7 @@ export default {
 
 	methods: {
         onClickReturn() {
-			this.$router.push({ name: 'ListSchedule' });
+			this.$router.push({ name: 'ListScheduleDetail' });
 		},
     }
 	

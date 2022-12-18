@@ -224,15 +224,36 @@ export default {
 		TABLE_FILL: 'フィルタ',
 		TABLE_COURSE_GROUP_CODE: 'グループ',
 	},
+
 	CREATE_SCHEDULE: {
 		TITLE_CREATE_SCHEDULE:'運行情報新規登録',
-		SHIP_DATE:'運行',
+		BASIC_INFORMATION: '基本情報',
+		SHIP_DATE:'運行日',
 		COURSE_NAME:'運行名',
 		START_TIME:'始業時間',
 		END_TIME:' 終業時間',
 		BREAK_TIME:'休憩時間',
-		
+		CUSTUM_NAME: '荷主名',
+		DEPATURE_PLACE: '発地',
+		ARRIVAL_PLACE: '着地',
+		FREIGHT_COST: '運賃',
+		NOTE: 'メモ:',
 	},
+	DETAIL_SCHEDULE: {
+		TITLE_DETAIL_SCHEDULE: '運行情報詳細',
+		BASIC_INFORMATION: '基本情報',
+		SHIP_DATE:'運行日',
+		COURSE_NAME :'運行名',
+		START_TIME:'始業時間',
+		END_TIME:' 終業時間',
+		BREAK_TIME:'休憩時間',
+		CUSTUM_NAME: '荷主名',
+		DEPATURE_PLACE: '発地',
+		ARRIVAL_PLACE: '着地',
+		FREIGHT_COST: '運賃',
+		NOTE: 'メモ:',
+	},
+
 	LIST_DRIVER: {
 		TITLE_LIST_DRIVER: '従業員情報',
 		BUTTON_SIGN_UP: '新規登録',

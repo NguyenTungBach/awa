@@ -33,10 +33,12 @@
                 <div class="page-schedule__header">
                     <b-row>
                         <b-col>
-                            <div class="zone-title">                                
+                            <div class="zone-title"> 
+                                <div class="zone-title__left"> </div>                            
                                 <span class="title-page">
-                                    {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
+                                    {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}  
                                 </span>
+                                <div class="zone-title__right">  </div>
                             </div>
                         </b-col>
                         <b-col>
@@ -247,7 +249,14 @@ export default {
 
 	data() {
 		return {
-			
+		selected: null,
+        options: [
+          { value: null, text: 'Please select an option' },
+          { value: 'a', text: 'This is First option' },
+          { value: 'b', text: 'Selected Option' },
+          { value: { C: '3PO' }, text: 'This is an option with object value' },
+          { value: 'd', text: 'This one is disabled', disabled: true }
+        ]
 	}},
     methods: {
         goToCreateSchedule() {
@@ -271,10 +280,28 @@ export default {
     .page-schedule {
         &__header {
             .zone-title {
+                display: flex;
                 .title-page {
                     font-size: 25px;
                 }
+                &__left {
+                background: $gray;
+                width: 60px;
+                height: 2px;
+                margin: 19px 0;
+                margin-right: 10px;
+                }
+                &__right {
+                background: $gray;
+                width: 60px;
+                height: 2px;
+                margin: 19px 0;
+                margin-left: 10px;
+                }
+                &__select{width: 100px;
+                border: none;}
             }
+            
 
             .zone-item {
                 display: flex;
