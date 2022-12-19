@@ -432,7 +432,7 @@ export default {
                                 }
 
                                 .row.row-course-id {
-                                 
+                                    
                                     display: flex;
                                     flex-wrap: wrap;
                                     margin-right: -15px;

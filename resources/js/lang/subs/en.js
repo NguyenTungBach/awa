@@ -277,8 +277,32 @@ export default {
 		TABLE_COURSE_GROUP_CODE: 'グループ',
 	},
 	CREATE_SCHEDULE: {
-		TITLE_CREATE_SCHEDULE:''
-		
+		TITLE_CREATE_SCHEDULE:'Create schedule',
+		BASIC_INFORMATION: 'Basic information',
+		SHIP_DATE:'Ship date',
+		COURSE_NAME:'Name',
+		START_TIME:'Start time',
+		END_TIME:' End time',
+		BREAK_TIME:'Break time',
+		CUSTUM_NAME: 'Custum name',
+		DEPATURE_PLACE: 'Depature place',
+		ARRIVAL_PLACE: 'Arrival place',
+		FREIGHT_COST: 'Freight cost',
+		NOTE: 'Note:',
+	},
+	DETAIL_SCHEDULE: {
+		TITLE_DETAIL_SCHEDULE: 'Service information details',
+		BASIC_INFORMATION: 'Basic information',
+		SHIP_DATE:'Ship date',
+		COURSE_NAME :'Name',
+		START_TIME:'Start time',
+		END_TIME:' End time',
+		BREAK_TIME:'Break time',
+		CUSTUM_NAME: 'Custum name',
+		DEPATURE_PLACE: 'Depature place',
+		ARRIVAL_PLACE: 'Arrival place',
+		FREIGHT_COST: 'Freight cost',
+		NOTE: 'Note:',
 	},
 
 	LIST_DRIVER: {
