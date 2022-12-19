@@ -134,11 +134,12 @@
                                             {{ course.course_code }}
                                         </b-td>
                                         <b-td class="td-course-name">
-                                            {{ course.course_name }}
+                                            <!-- {{ course.course_name }} -->
+                                            ABC company
                                         </b-td>
                                         <b-td :colspan="3" class="text-center td-control">
                                             <!-- {{ course.start_time }} -->
-                                            末日
+                                            25 日
                                         </b-td>
                                         
                                         <b-td class="text-center td-control">
@@ -432,7 +433,7 @@ export default {
                                 }
 
                                 .row.row-course-id {
-                                    
+                                 
                                     display: flex;
                                     flex-wrap: wrap;
                                     margin-right: -15px;

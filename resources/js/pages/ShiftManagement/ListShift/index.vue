@@ -455,7 +455,8 @@
                                     </b-td>
 
                                     <b-td class="td-type-employee">
-                                        {{ $t(convertValueToText(optionsTypeDriver, driverSalary.flag)) }}
+										25 日 
+                                        <!-- {{ $t(convertValueToText(optionsTypeDriver, driverSalary.flag)) }} -->
                                     </b-td>
 
                                     <b-td class="td-full-name text-center">

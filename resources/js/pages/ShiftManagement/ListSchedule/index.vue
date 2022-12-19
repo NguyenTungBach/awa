@@ -81,21 +81,22 @@
                             no-border-collapse>
                             <b-thead class="zone-table__head">
                                 <b-tr >
-                                    <b-th>
+                                    <b-th class="th-control">
                                         <b-form-checkbox
                                             id="checkbox-1"
                                             v-model="status"
                                             name="checkbox-1"
                                             value="accepted"
                                             unchecked-value="not_accepted"
-                                            class="text-center td-control"
+                                            class="text-center "
                                             >
                                         </b-form-checkbox>
                                     </b-th>
                                     <b-th                                        
                                         :rowspan="2"
+                                        class="row-date"
                                     >
-                                        <b-row class="row-course-id">
+                                        <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_COURSE_DATE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
@@ -162,7 +163,7 @@
                                     </b-th>
                                     <b-th                                        
                                         :rowspan="2"
-                                       
+                                        class="row-freight-cost"
                                     >
                                         <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_FREIGHT_COST') }}
@@ -208,8 +209,8 @@
                                         </b-td>
                                         <b-td class="text-center">テストコース2</b-td>
                                         <b-td class="text-center">B商事</b-td>
-                                        <b-td class="text-center">B商事</b-td>
-                                        <b-td class="text-center">B商事</b-td>
+                                        <b-td class="text-center">徳島港</b-td>
+                                        <b-td class="text-center">高松港</b-td>
                                         <b-td class="text-center">55.000</b-td>
                                         <b-td class="text-center td-control">
                                             <i
@@ -241,9 +242,9 @@
                                 </b-col>
                             </b-row>
                             <template #modal-footer>
-                                <div class="w-100">
+                                <div class="w-100 text-center">
                                 <b-button
-                                    variant="primary"
+                                    
                                     size="sm"
                                     class="float-center"
                                     @click="show=false"
@@ -325,7 +326,6 @@ export default {
     @import '@/scss/variables';
     .container{
         max-width: 1500px !important;
-        font-size: 18px;
     }
     
     .page-schedule {
@@ -438,6 +438,12 @@ export default {
                                     height: 41px;
                                     background-color: $main;
                                     color: $white;
+                                }
+                                th.row-date {
+                                   width: 65px;
+                                }
+                                th.row-freight-cost {
+                                    width: 115px;
                                 }
 
                                 .row.row-course-id {
