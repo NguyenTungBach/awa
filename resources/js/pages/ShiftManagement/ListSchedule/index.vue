@@ -34,10 +34,18 @@
                     <b-row>
                         <b-col>
                             <div class="zone-title"> 
-                                <div class="zone-title__left"> </div>                            
-                                <span class="title-page">
+                                <div class="zone-title__left"> </div> 
+                                <div class="customselect">
+                                    <select>
+                                    <option>{{ $t('LIST_SCHEDULE.TABLE_FILL') }} </option>
+                                    <option>2001</option>
+                                    <option>2002</option>
+                                    </select>
+                                </div>
+                                <!-- <b-form-select v-model="selected" :options="options" class="zone-title__option"></b-form-select>                            -->
+                                <!-- <span class="title-page">
                                     {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}  
-                                </span>
+                                </span> -->
                                 <div class="zone-title__right">  </div>
                             </div>
                         </b-col>
@@ -72,7 +80,7 @@
                             bordered
                             no-border-collapse>
                             <b-thead class="zone-table__head">
-                                <b-tr>
+                                <b-tr >
                                     <b-th>
                                         <b-form-checkbox
                                             id="checkbox-1"
@@ -80,22 +88,9 @@
                                             name="checkbox-1"
                                             value="accepted"
                                             unchecked-value="not_accepted"
+                                            class="text-center td-control"
                                             >
                                         </b-form-checkbox>
-                                    </b-th>
-                                    <b-th                                        
-                                        :rowspan="2"
-                                    >
-                                        <b-row class="row-course-id">
-                                            {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
                                     </b-th>
                                     <b-th                                        
                                         :rowspan="2"
@@ -126,6 +121,7 @@
                                         </b-row>
                                     </b-th>
                                     <b-th                                        
+                                        :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_CUSTUM_NAME') }}
@@ -152,10 +148,24 @@
                                         </b-row>
                                     </b-th>
                                     <b-th                                        
-                                        :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_ARRIVAL_PLACE') }}
+                                            <b-col class="icon-sorts">
+                                                <div class="text-right">
+                                                    <i
+                                                        class="fad fa-sort-up icon-sort"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                    </b-th>
+                                    <b-th                                        
+                                        :rowspan="2"
+                                       
+                                    >
+                                        <b-row class="row-course-id ">
+                                            {{ $t('LIST_SCHEDULE.TABLE_FREIGHT_COST') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
@@ -169,7 +179,7 @@
                                         :rowspan="2"
                                         class="text-center th-control"
                                     >
-                                        {{ $t('LIST_SCHEDULE.TABLE_FREIGHT_COST') }}
+                                        {{ $t('LIST_SCHEDULE.TABLE_TITLE_DETAIL') }}
                                     </b-th>
                                     <b-th
                                         :rowspan="2"
@@ -189,6 +199,7 @@
                                                 name="checkbox-1"
                                                 value="accepted"
                                                 unchecked-value="not_accepted"
+                                                class="text-center td-control"
                                             >
                                             </b-form-checkbox>
                                         </b-td>
@@ -280,6 +291,7 @@ export default {
     .page-schedule {
         &__header {
             .zone-title {
+                margin-top: 25px;
                 display: flex;
                 .title-page {
                     font-size: 25px;
@@ -288,18 +300,34 @@ export default {
                 background: $gray;
                 width: 60px;
                 height: 2px;
-                margin: 19px 0;
+                margin: 17px 0;
                 margin-right: 10px;
                 }
                 &__right {
                 background: $gray;
                 width: 60px;
                 height: 2px;
-                margin: 19px 0;
+                margin: 17px 0;
                 margin-left: 10px;
                 }
-                &__select{width: 100px;
-                border: none;}
+                // &__option{
+                //     width: 150px;
+                //     border: none;
+                // }
+                .customselect {
+                    overflow: hidden;
+
+                    border: none;
+                }
+
+                .customselect select {
+                    border:none;
+                    // -moz-appearance: none;
+                    -webkit-appearance: none;
+                    // appearance: none;
+                    outline: none;
+                    font-size: 20px;
+                    }
             }
             
 
@@ -350,11 +378,89 @@ export default {
         &__body{
             .zone-table{
             margin-top: 25px;
-                &__head{
-                    background: $main;
-                    color: $white;
-                    font-weight: 700;
-           } 
+        //         &__head{
+        //             background: $main;
+        //             color: $white;
+        //             font-weight: 700;
+        //    }
+           ::v-deep {
+                    table {
+                        thead {
+                            tr {
+                                position: sticky;
+                                top: 0;
+                                z-index: 8;
+
+                                th {
+                                    vertical-align: middle;
+                                
+                                    min-width: 65px;
+                                    height: 41px;
+                                    background-color: $main;
+                                    color: $white;
+                                }
+
+                                .row.row-course-id {
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    margin: auto;
+                                    margin-right: -15px;
+
+                                }
+                                
+
+                                th.th-id {
+                                     width: 150px;
+                                }
+
+                                th.th-sort {
+                                    cursor: pointer;
+
+                                    i.icon-sort-default {
+                                        color: $white;
+                                        opacity: 0.7;
+                                    }
+                                }
+                               
+                                th.th-time {
+                                    width: 100px;
+                                }
+
+                                th.th-control {
+                                    width: 15px;
+                                }
+                            }
+
+                            tr:nth-child(2) {
+                                position: sticky;
+                                top: 49.5px;
+                                z-index: 9;
+                            }
+                        }
+
+                        tbody {
+                            tr {
+
+                                td {
+                                    vertical-align: middle;
+                                }
+
+                                td.td-control {
+                                    i {
+                                        color: $dusty-gray;
+                                        font-size: 24;
+
+                                        cursor: pointer;
+                                    }
+                                }
+                            }
+
+                            tr.flag {
+                                background-color: $swiss-coffee;
+                            }
+                        }
+                    }
+                } 
         }
         }
     }
