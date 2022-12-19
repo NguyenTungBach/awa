@@ -305,7 +305,9 @@ export default {
 		FREIGHT_COST: 'Freight cost',
 		NOTE: 'Note:',
 	},
-
+	EDIT_SCHEDULE: {
+		TITLE_EDIT_SCHEDULE: 'Operation information editing',
+	},
 	LIST_DRIVER: {
 		TITLE_LIST_DRIVER: 'List Driver',
 

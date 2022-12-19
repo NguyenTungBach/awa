@@ -256,6 +256,10 @@ export default {
 		NOTE: 'メモ:',
 	},
 
+	EDIT_SCHEDULE: {
+		TITLE_EDIT_SCHEDULE: '運行情報編集',
+	},
+
 	LIST_DRIVER: {
 		TITLE_LIST_DRIVER: '従業員情報',
 		BUTTON_SIGN_UP: '新規登録',
