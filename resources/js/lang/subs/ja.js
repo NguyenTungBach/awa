@@ -223,6 +223,8 @@ export default {
 		TABLE_ARRIVAL_PLACE: '着地',
 		TABLE_FILL: 'フィルタ',
 		TABLE_COURSE_GROUP_CODE: 'グループ',
+		TABLE_TITLE_DETAIL: '詳細',
+		TABLE_TITLE_DELETE: '削除',
 	},
 
 	CREATE_SCHEDULE: {

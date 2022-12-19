@@ -274,6 +274,7 @@ export default {
 		TABLE_FREIGHT_COST: 'Freight cost',
 		TABLE_ARRIVAL_PLACE: 'Arrival place',
 		TABLE_FILL: 'Fill',
+		TABLE_TITLE_DETAIL:'Detail',
 		TABLE_COURSE_GROUP_CODE: 'グループ',
 	},
 	CREATE_SCHEDULE: {
