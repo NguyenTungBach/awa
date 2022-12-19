@@ -48,7 +48,7 @@
                             >
                                 <div class="zone-avatar">
                                     <img
-                                        :src="require('@/assets/images/course_icon.png')"
+                                        :src="require('@/assets/images/customer_icon.png')"
                                         alt="Avatar course"
                                     >
                                 </div>
