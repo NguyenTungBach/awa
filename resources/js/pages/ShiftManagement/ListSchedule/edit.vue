@@ -7,7 +7,7 @@
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('CREATE_SCHEDULE.TITLE_CREATE_SCHEDULE') }}
+                                    {{ $t('EDIT_SCHEDULE.TITLE_EDIT_SCHEDULE') }}
                                 </span>
                             </div>
                         </b-col>
@@ -277,7 +277,7 @@
                                             type="text"
                                            
                                         />
-                                        <span> 円</span>
+                                        <span class="freight-cost"> 円</span>
                                     </b-input-group>
                                     
                                 </b-col>
@@ -385,7 +385,7 @@ export default {
                 border: 1px solid $geyser;
                 margin-top: 10px;
                 padding: 20px;
-
+                font-size: 18px;
                 .zone-avatar {
                     height: 100%;
 
@@ -412,6 +412,10 @@ export default {
                     }
                     .date{
                         padding: 0;
+                    }
+                    .freight-cost{
+                        margin-left: 10px;
+                        margin-top: 6px;
                     }
                    
                 }

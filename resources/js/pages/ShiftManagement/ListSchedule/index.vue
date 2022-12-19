@@ -230,7 +230,42 @@
                         </b-table-simple>
                     </div>
                 </div>
+                <template>
+                    <div>
+                        <b-modal v-model="modalShow">
+                            <div class="text-center">配車情報データを取り込む</div><br/>
+                            <b-row class="modal-show-file">
+                                <b-col cols="3">ファイル</b-col>
+                                <b-col>
+                                    <b-form-file v-model="file" ref="file-input" placeholder="ファイルを選択" class="mb-2"></b-form-file>
+                                </b-col>
+                            </b-row>
+                            <template #modal-footer>
+                                <div class="w-100">
+                                <b-button
+                                    variant="primary"
+                                    size="sm"
+                                    class="float-center"
+                                    @click="show=false"
+                                >
+                                    test
+                                </b-button>
+                                <b-button
+                                    variant="primary"
+                                    size="sm"
+                                    class="float-center"
+                                    @click="show=false"
+                                >
+                                    test
+                                </b-button>
+                                </div>
+                            </template>
+
+                        </b-modal>
+                    </div>
+                </template>
             </div>
+
         </b-container>  
     </b-col>
     
@@ -267,7 +302,9 @@ export default {
           { value: 'b', text: 'Selected Option' },
           { value: { C: '3PO' }, text: 'This is an option with object value' },
           { value: 'd', text: 'This one is disabled', disabled: true }
-        ]
+        ],
+        modalShow: false,
+        file: null
 	}},
     methods: {
         goToCreateSchedule() {
@@ -275,6 +312,9 @@ export default {
 		},
         onClickDetail(){
             this.$router.push({ name: 'ListScheduleDetail' });
+        },
+        handleClickImport(){
+            this.modalShow = !this.modalShow
         }
     }
 	
@@ -285,7 +325,7 @@ export default {
     @import '@/scss/variables';
     .container{
         max-width: 1500px !important;
-        
+        font-size: 18px;
     }
     
     .page-schedule {
@@ -462,6 +502,7 @@ export default {
                     }
                 } 
         }
+        
         }
     }
 </style>

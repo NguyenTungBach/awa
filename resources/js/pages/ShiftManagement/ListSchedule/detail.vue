@@ -246,6 +246,7 @@ export default {
                 border: 1px solid $geyser;
                 margin-top: 15px;
                 padding: 20px;
+                font-size: 18px;
                 .zone-avatar {
                     height: 100%;
 
