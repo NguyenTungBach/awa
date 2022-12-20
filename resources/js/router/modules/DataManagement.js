@@ -59,7 +59,7 @@ const DataManagement = {
 			component: () => import(/* webpackChunkName: "Driver Edit" */ '@/pages/DataManagement/ListDriver/edit.vue'),
 		},
 		{
-			path: 'list-course',
+			path: 'consignor',
 			name: 'LayoutCourse',
 			meta: {
 				title: 'ROUTER.LIST_COURSE',
