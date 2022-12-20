@@ -109,8 +109,9 @@
                                     </b-th>
                                     <b-th                                        
                                         :rowspan="2"
+                                        class="row-couse-name"
                                     >
-                                        <b-row class="row-course-id">
+                                        <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_COURSE_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
@@ -191,8 +192,8 @@
                                 </b-tr>
                             </b-thead>
                             <b-tbody>
-                                <template>
-                                    <b-tr>
+                                <template v-for= "(schedule, idx) in listSchedule">
+                                    <b-tr :key="`schedule-number-${idx + 1}`">
                                         <b-td>
                                             <b-form-checkbox
                                                 id="checkbox-2"
@@ -205,13 +206,13 @@
                                             </b-form-checkbox>
                                         </b-td>
                                         <b-td class="text-center">
-                                            2022/12/2
+                                            {{schedule.date}}
                                         </b-td>
-                                        <b-td class="text-center">テストコース2</b-td>
-                                        <b-td class="text-center">B商事</b-td>
-                                        <b-td class="text-center">徳島港</b-td>
-                                        <b-td class="text-center">高松港</b-td>
-                                        <b-td class="text-center">55.000</b-td>
+                                        <b-td class="text-center">{{schedule.courseName}}</b-td>
+                                        <b-td class="text-center">{{schedule.customerName}}</b-td>
+                                        <b-td class="text-center">{{schedule.depaturePlace}}</b-td>
+                                        <b-td class="text-center">{{schedule.arrivalPlace}}</b-td>
+                                        <b-td class="text-center">{{schedule.freightCost}}</b-td>
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-eye"
@@ -231,43 +232,69 @@
                         </b-table-simple>
                     </div>
                 </div>
-                <template>
-                    <div>
-                        <b-modal v-model="modalShow">
-                            <div class="text-center">配車情報データを取り込む</div><br/>
-                            <b-row class="modal-show-file">
-                                <b-col cols="3">ファイル</b-col>
-                                <b-col>
-                                    <b-form-file v-model="file" ref="file-input" placeholder="ファイルを選択" class="mb-2"></b-form-file>
-                                </b-col>
-                            </b-row>
-                            <template #modal-footer>
-                                <div class="w-100 text-center">
-                                <b-button
-                                    
-                                    size="sm"
-                                    class="float-center"
-                                    @click="show=false"
-                                >
-                                    test
-                                </b-button>
-                                <b-button
-                                    variant="primary"
-                                    size="sm"
-                                    class="float-center"
-                                    @click="show=false"
-                                >
-                                    test
-                                </b-button>
-                                </div>
-                            </template>
-
-                        </b-modal>
-                    </div>
-                </template>
             </div>
-
         </b-container>  
+        <b-modal
+        id="modal-import"
+        v-model="showModalImport"
+        body-class="modal-import"
+        hide-header
+        hide-footer
+        no-close-on-esc
+        no-close-on-backdrop
+        static
+        @close="handleCloseModalImport"
+    >
+        <div class="text-center">
+            <h5 class="font-weight-bold">
+                配車情報データを取り込む
+            </h5>
+        </div>
+        <div class="body-item">
+            <b-row>
+                <b-col cols="3">
+                    <span class="lable-show-file-name">ファイル</span>
+                </b-col>
+
+                <b-col cols="9">
+                    <b-form-file
+                        id="import-file"
+                        ref="importFile"
+                        v-model="fileImport"
+                        plain
+                        type="file"
+                        name="import-file"
+                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    />
+
+                    <div class="show-file-name" @click="onClickImportFile()">
+                        <span v-if="!fileImport">ファイルを選択</span>
+                        <span v-else>{{ fileImport.name }}</span>
+                    </div>
+                </b-col>
+            </b-row>
+        </div>
+        <div v-show="messageValidateImport" class="text-center message-error-import-file">
+            <span class="text-danger font-weight-bold">{{ messageValidateImport }}</span>
+        </div>
+        <div class="text-center">
+            <b-button
+                pill
+                class="mr-2"
+                @click="handleCloseModalImport()"
+            >
+                キャンセル
+            </b-button>
+
+            <b-button
+                pill
+                class="btn-color-active-import"
+                @click="handleSaveModalImport()"
+            >
+                取り込み
+            </b-button>
+        </div>
+        </b-modal>
     </b-col>
     
 </template>
@@ -304,8 +331,28 @@ export default {
           { value: { C: '3PO' }, text: 'This is an option with object value' },
           { value: 'd', text: 'This one is disabled', disabled: true }
         ],
-        modalShow: false,
-        file: null
+        showModalImport: false,
+        file: null,
+        listSchedule: [
+            {
+                id: 1,
+                date: '2022/12/05',
+                courseName: 'テストコース2',
+                customerName: 'B商事',
+                depaturePlace: '徳島港',
+                arrivalPlace: '高松港',
+                freightCost: '500000',
+            },
+            {
+                id: 2,
+                date: '2022/12/25',
+                courseName: 'テストコース2',
+                customerName: 'B商事',
+                depaturePlace: '徳島港',
+                arrivalPlace: '高松港',
+                freightCost: '500000',
+            }
+        ],
 	}},
     methods: {
         goToCreateSchedule() {
@@ -315,8 +362,68 @@ export default {
             this.$router.push({ name: 'ListScheduleDetail' });
         },
         handleClickImport(){
-            this.modalShow = !this.modalShow
-        }
+            this.showModalImport = true;
+        },
+        async handleSaveModalImport() {
+			try {
+				setLoading(true);
+
+				if (!this.messageValidateImport) {
+					this.showModalImport = false;
+
+					const URL = CONSTANT.URL_API.POST_IMPORT_COURSE_SCHEDULE;
+
+					const YEAR = this.pickerYearMonth.year || null;
+					const MONTH = this.pickerYearMonth.month || null;
+
+					const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
+					const PARAMS = {
+						for_date: YEAR_MONTH,
+					};
+
+					const DATA = new FormData();
+					DATA.append('file', this.fileImport);
+
+					const { code } = await postImportFile(URL, DATA, PARAMS);
+
+					if (code === 200) {
+						this.fileImport = null;
+
+						TOAST_SCHEDULE_SHIFT.importSuccess();
+						this.resetImportFile();
+						await this.initData();
+					}
+				}
+
+				setLoading(false);
+			} catch (error) {
+				const ERROR_CODE = error.response.data.code;
+				const DATA_ERROR = error.response.data.data_error;
+				const ERROR_CONTENT = error.response.data.message_content;
+
+				this.fileImport = null;
+
+				if (ERROR_CODE === 422 && ERROR_CONTENT === 'codes not imported') {
+					await this.initData();
+
+					this.listCourseImportFaild = DATA_ERROR;
+					this.showModalImportFaild = true;
+				}
+
+				setLoading(false);
+			}
+		},
+        onClickImportFile() {
+			this.$refs.importFile.$el.click();
+		},
+
+		resetImportFile() {
+			this.$refs.importFile.reset();
+		},
+        handleCloseModalImport() {
+			this.showModalImport = false;
+			this.resetImportFile();
+		},
     }
 	
 }
@@ -443,9 +550,8 @@ export default {
                                    width: 65px;
                                 }
                                 th.row-freight-cost {
-                                    width: 115px;
+                                    width: 150px;
                                 }
-
                                 .row.row-course-id {
                                     display: flex;
                                     flex-wrap: wrap;
@@ -508,7 +614,46 @@ export default {
                     }
                 } 
         }
-        
+        }
+        &__modal {
+
+            .btn-file{
+                border-radius: 40px;
+            }
+        }
+    }
+    .modal-import {
+        .body-item {
+            margin-top: 40px;
+            margin-bottom: 40px;
+
+            .lable-show-file-name {
+                line-height: 50px;
+            }
+
+            .show-file-name {
+                width: 100%;
+                min-height: 50px;
+                border: 1px solid $black;
+
+                padding: 10px 0;
+
+                text-align: center;
+
+                span {
+                    color: #C0C0C0;
+                }
+
+                cursor: pointer;
+            }
+
+            #import-file {
+                display: none;
+            }
+        }
+
+        .message-error-import-file {
+            margin-bottom: 30px;
         }
     }
 </style>
