@@ -473,7 +473,7 @@ export default {
 		USER_AUTHORITY: 'ユーザー権限',
 		DETAIL: '詳細',
 		DELETE: '削除',
-		ROLE_DRIVER: 'Crew',
+		ROLE_DRIVER: 'ドライバー',
 		ROLE_SYSTEM_ADMINISTRATOR: 'システム管理者',
 		TEXT_CONFIRM_DELETE: '本当に削除しますか？',
 		TEXT_CONFIRM: '確認',
