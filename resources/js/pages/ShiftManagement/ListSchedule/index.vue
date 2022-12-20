@@ -84,12 +84,11 @@
                                     <b-th class="th-control">
                                         <b-form-checkbox
                                             id="checkbox-1"
-                                            v-model="status"
                                             name="checkbox-1"
-                                            value="accepted"
-                                            unchecked-value="not_accepted"
-                                            class="text-center "
-                                            >
+                                            class="text-center"
+                                            v-model="checked_all"
+                                            @change="checkboxAll"
+                                        >
                                         </b-form-checkbox>
                                     </b-th>
                                     <b-th                                        
@@ -192,18 +191,13 @@
                                 </b-tr>
                             </b-thead>
                             <b-tbody>
-                                <template v-for= "(schedule, idx) in listSchedule">
+                                <template v-for="(schedule, idx) in listSchedule">
                                     <b-tr :key="`schedule-number-${idx + 1}`">
                                         <b-td>
                                             <b-form-checkbox
-                                                id="checkbox-2"
-                                                v-model="status"
-                                                name="checkbox-1"
-                                                value="accepted"
-                                                unchecked-value="not_accepted"
+                                                :checked="handleShowCheckbox(schedule.id)"
                                                 class="text-center td-control"
-                                            >
-                                            </b-form-checkbox>
+                                            />
                                         </b-td>
                                         <b-td class="text-center">
                                             {{schedule.date}}
@@ -332,6 +326,8 @@ export default {
           { value: 'd', text: 'This one is disabled', disabled: true }
         ],
         showModalImport: false,
+        checked_all: false,
+        checkselec : [],
         file: null,
         listSchedule: [
             {
@@ -347,14 +343,38 @@ export default {
                 id: 2,
                 date: '2022/12/25',
                 courseName: 'テストコース2',
-                customerName: 'B商事',
-                depaturePlace: '徳島港',
+                customerName: 'E商事',
+                depaturePlace: 'B商事',
                 arrivalPlace: '高松港',
-                freightCost: '500000',
+                freightCost: '650000',
             }
         ],
+        fileImport: null,
+        messageValidateImport: null,
+        showModalImportFaild: false,
+        listCourseImportFaild: [],
 	}},
     methods: {
+        checkboxAll(){
+            if (this.checked_all) {
+                this.checkselec = [];
+
+                const len = this.listSchedule.length;
+                let idx = 0;
+
+                while (idx < len) {
+                    this.checkselec.push(this.listSchedule[idx].id);
+
+                    idx++;
+                }
+            } else {
+                this.checkselec = [];
+            }
+        },
+
+        handleShowCheckbox(id) {
+            return this.checkselec.includes(id);
+        },
         goToCreateSchedule() {
 			this.$router.push({ name: 'ListScheduleCreate' });
 		},
