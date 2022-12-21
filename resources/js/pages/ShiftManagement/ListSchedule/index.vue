@@ -222,7 +222,7 @@
                                     </b-tr>
                                 </template>
                             </b-tbody>
-                            
+                         
                         </b-table-simple>
                     </div>
                 </div>
@@ -241,7 +241,7 @@
     >
         <div class="text-center">
             <h5 class="font-weight-bold">
-                配車情報データを取り込む
+                運行情報データを取り込む
             </h5>
         </div>
         <div class="body-item">
