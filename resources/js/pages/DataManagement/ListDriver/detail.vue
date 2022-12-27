@@ -185,7 +185,7 @@
                                                     </div>
                                                 </b-col>
                                             </b-row>
-                                            <b-row>
+                                            <!-- <b-row>
                                                 <b-col>
                                                     <div class="item-form">
                                                         <DetailForm
@@ -194,7 +194,7 @@
                                                         />
                                                     </div>
                                                 </b-col>
-                                            </b-row>
+                                            </b-row> -->
 
                                             <TitlePathForm :add-class="['margin-title-form']">
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_RETIREMENT_DATE') }}

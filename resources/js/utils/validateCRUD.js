@@ -61,12 +61,12 @@ function validateUser(user, list = ['user_code', 'user_name', 'password', 'role'
 }
 
 function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'day_of_week', 'working_time', 'note']) {
+// function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'working_time', 'note']) {
 	if (
 		!driver.driver_code && list.includes('driver_code') ||
         !driver.driver_name && list.includes('driver_name') ||
         !driver.start_date && list.includes('start_date') ||
         !driver.birth_day && list.includes('birth_day') ||
-        !driver.grade && list.includes('grade') ||
         !driver.working_day && list.includes('working_day')
 	) {
 		return {
@@ -82,12 +82,12 @@ function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 's
 		};
 	}
 
-	if (!validateGrade(driver.grade) && list.includes('grade')) {
-		return {
-			status: false,
-			message: 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_GRADE',
-		};
-	}
+	// if (!validateGrade(driver.grade) && list.includes('grade')) {
+	// 	return {
+	// 		status: false,
+	// 		message: 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_GRADE',
+	// 	};
+	// }
 
 	if (!validUsername(driver.driver_name) && !(driver.driver_name.length >= 1 && driver.driver_name.length <= 20) && list.includes('driver_name')) {
 		return {

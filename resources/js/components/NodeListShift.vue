@@ -169,6 +169,7 @@ export default {
 				driverName: this.driverName,
 				dataNode: this.dataNode,
 			};
+            console.log('data node: ', DATA);
 
 			this.$bus.emit('LIST_SHITF_CLICK_NODE', DATA);
 		},

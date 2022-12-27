@@ -261,8 +261,8 @@
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
-                                                    :lg="4"
-                                                    :xl="4"
+                                                    :lg="12"
+                                                    :xl="12"
                                                 >
                                                     <div class="item-form">
                                                         <label for="input-available-days">
@@ -280,7 +280,7 @@
                                                         </b-input-group>
                                                     </div>
                                                 </b-col>
-                                                <b-col
+                                                <!-- <b-col
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
@@ -307,7 +307,7 @@
                                                             />
                                                         </b-form-group>
                                                     </div>
-                                                </b-col>
+                                                </b-col> -->
                                             </b-row>
                                             <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_RETIREMENT_DATE') }}
@@ -479,45 +479,45 @@ export default {
 		},
 
 		selectedAvailableDays() {
-			const DAY_WORK = this.isForm.availableDays ? parseInt(this.isForm.availableDays) : 0;
-			const DAY_OFF = this.isForm.seletedDateInWeek.length;
+			// const DAY_WORK = this.isForm.availableDays ? parseInt(this.isForm.availableDays) : 0;
+			// const DAY_OFF = this.isForm.seletedDateInWeek.length;
 
-			const TOTAL = DAY_WORK + DAY_OFF;
+			// const TOTAL = DAY_WORK + DAY_OFF;
 
-			if (TOTAL > 7) {
-				this.isForm.seletedDateInWeek.length = 0;
+			// if (TOTAL > 7) {
+			// 	this.isForm.seletedDateInWeek.length = 0;
 
-				const len = this.isForm.optionsDateInWeek.length;
-				let idx = 0;
+			// 	const len = this.isForm.optionsDateInWeek.length;
+			// 	let idx = 0;
 
-				while (idx < len) {
-					this.isForm.optionsDateInWeek[idx].disabled = false;
+			// 	while (idx < len) {
+			// 		this.isForm.optionsDateInWeek[idx].disabled = false;
 
-					idx++;
-				}
-			} else if (TOTAL === 7) {
-				const len = this.isForm.optionsDateInWeek.length;
-				let idx = 0;
+			// 		idx++;
+			// 	}
+			// } else if (TOTAL === 7) {
+			// 	const len = this.isForm.optionsDateInWeek.length;
+			// 	let idx = 0;
 
-				while (idx < len) {
-					if (!(this.isForm.seletedDateInWeek.includes(this.isForm.optionsDateInWeek[idx].value))) {
-						this.isForm.optionsDateInWeek[idx].disabled = true;
-					}
+			// 	while (idx < len) {
+			// 		if (!(this.isForm.seletedDateInWeek.includes(this.isForm.optionsDateInWeek[idx].value))) {
+			// 			this.isForm.optionsDateInWeek[idx].disabled = true;
+			// 		}
 
-					idx++;
-				}
-			} else {
-				const len = this.isForm.optionsDateInWeek.length;
-				let idx = 0;
+			// 		idx++;
+			// 	}
+			// } else {
+			// 	const len = this.isForm.optionsDateInWeek.length;
+			// 	let idx = 0;
 
-				while (idx < len) {
-					this.isForm.optionsDateInWeek[idx].disabled = false;
+			// 	while (idx < len) {
+			// 		this.isForm.optionsDateInWeek[idx].disabled = false;
 
-					idx++;
-				}
-			}
+			// 		idx++;
+			// 	}
+			// }
 
-			this.reRender += 1;
+			// this.reRender += 1;
 		},
 
 		selectedDateInWeek() {

@@ -123,7 +123,7 @@
                                                 :sm="12"
                                                 :md="12"
                                                 :lg="12"
-                                                :xl="11"
+                                                :xl="12"
                                             >
                                                 <div class="item-form">
                                                     <label for="input-group-code">
@@ -138,14 +138,21 @@
                                                         :options="optionsClosingDay"
                                                         :disabled="isLoading"
                                                     /> -->
-                                                    <b-form-select
+                                                    <b-input-group :append="$t('CREATE_DRIVER.DAY')">
+                                                        <b-form-select
+                                                            id="customer-closing-day"
+                                                            v-model="isForm.exclusive"
+                                                            :options="optionsClosingDay"
+                                                        />
+                                                    </b-input-group>
+                                                    <!-- <b-form-select
                                                         id="customer-closing-day"
                                                         v-model="isForm.exclusive"
                                                         :options="optionsClosingDay"
-                                                    />
+                                                    /> -->
                                                 </div>
                                             </b-col>
-                                            <b-col
+                                            <!-- <b-col
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
@@ -154,7 +161,7 @@
                                                 style="bottom: -41px;"
                                             >
                                                 <span class="text-closing-day">日</span>
-                                            </b-col>
+                                            </b-col> -->
                                         </b-row>
 
                                         <b-row>

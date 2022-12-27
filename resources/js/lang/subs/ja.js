@@ -161,6 +161,9 @@ export default {
 		LABEL_CLOSING_TIME: '終業時間: ',
 		LABEL_BREAK_TIME: '休憩時間: ',
 
+		HALF_DAY_OF: '半休',
+		LABOUR: '手間',
+
 		TABLE_DRIVER_CODE: '荷主番号',
 		TABLE_DRIVER_TYPE: '締日',
 		TABLE_DRIVER_NAME: '荷主名',
