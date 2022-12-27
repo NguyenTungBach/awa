@@ -198,6 +198,7 @@
                         <span class="type-node">
                             {{ item.name }}
                         </span>
+                        <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
                         <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">
@@ -205,6 +206,7 @@
                                 </div>
                             </b-col>
                         </b-row>
+                        <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
                         <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">
@@ -212,6 +214,7 @@
                                 </div>
                             </b-col>
                         </b-row>
+                        <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
                         <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">

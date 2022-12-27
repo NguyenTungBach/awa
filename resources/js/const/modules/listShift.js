@@ -152,4 +152,5 @@ export default {
 
 	LIST_DAY_OFF,
 	LIST_VALUE_DAY_OFF,
+	LIST_VALUE_HALF_DAY_OFF,
 };
