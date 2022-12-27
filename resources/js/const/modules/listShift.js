@@ -29,6 +29,8 @@ const TEXT_DATE_LEADER_CHIEF = 'LIST_SHIFT.TABLE_DATE_LEADER_CHIEF';
 const TEXT_DATE_WAIT = 'LIST_SHIFT.TABLE_DATE_WAIT';
 const TEXT_DATE_WAIT_BETWEEN_TASK = 'LIST_SHIFT.TABLE_DATE_WAIT_BETWEEN_TASK';
 
+const TEXT_HALF_DAY_OF = 'LIST_SHIFT.HALF_DAY_OF';
+
 const MAP_TYPE_COLOR_DAY_OFF = {
 	[DATE_HOLIDAY]: COLOR_HOLIDAY,
 	[DATE_FIXED_DAY_OFF]: COLOR_FIXED_DAY_OFF,
@@ -63,11 +65,11 @@ const LIST_DAY_OFF = [
 		text: TEXT_DATE_HOLIDAY,
 		disabled: false,
 	},
-	{
-		value: 'D-2',
-		text: TEXT_DATE_FIXED_DAY_OFF,
-		disabled: false,
-	},
+	// {
+	// 	value: 'D-2',
+	// 	text: TEXT_DATE_FIXED_DAY_OFF,
+	// 	disabled: false,
+	// },
 	{
 		value: 'D-3',
 		text: TEXT_DATE_DAY_OFF_REQUEST,
@@ -96,7 +98,17 @@ const LIST_DAY_OFF = [
 ];
 
 // const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
-const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4'];
+const LIST_VALUE_DAY_OFF = ['D-1', 'D-3', 'D-4'];
+
+const HALF_DAY_OF = [
+	{
+		value: 'H-0',
+		text: TEXT_HALF_DAY_OF,
+		disabled: false,
+	}
+];
+const LIST_VALUE_HALF_DAY_OFF = ['H-0'];
+
 
 export default {
 	WEEK,
@@ -132,8 +144,11 @@ export default {
 	TEXT_DATE_LEADER_CHIEF,
 	TEXT_DATE_WAIT,
 	TEXT_DATE_WAIT_BETWEEN_TASK,
+	TEXT_HALF_DAY_OF,
 
 	WAINT_AI_CREATE_SHIFT_TABLE,
+
+	HALF_DAY_OF,
 
 	LIST_DAY_OFF,
 	LIST_VALUE_DAY_OFF,

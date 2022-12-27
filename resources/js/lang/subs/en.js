@@ -190,6 +190,9 @@ export default {
 		TABLE_DATE_WAIT: 'Wait',
 		TABLE_DATE_WAIT_BETWEEN_TASK: 'Wait between task',
 
+		HALF_DAY_OF: 'Half Day Off',
+		LABOUR: 'Labour',
+
 		SELECT_WAIT: 'Wait',
 		SELECT_WAIT_BETWEEN_TASK: 'Wait between task',
 		SELECT_LEADER_CHIEF: 'Leader/Chief',

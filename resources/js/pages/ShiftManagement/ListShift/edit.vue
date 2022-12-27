@@ -198,21 +198,21 @@
                         <span class="type-node">
                             {{ item.name }}
                         </span>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">
                                     <span>始業時間: {{ item.start_time }}</span>
                                 </div>
                             </b-col>
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">
                                     <span>終業時間: {{ item.end_time }}</span>
                                 </div>
                             </b-col>
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
                             <b-col>
                                 <div class="item-time">
                                     <span>休憩時間: {{ convertBreakTimeNumberToTime(item.break_time) }}</span>
@@ -256,6 +256,7 @@
                 </div>
                 <EditNodeListShift
                     :list-select="listNodeEdit"
+					:half-day-off="halfDayOff"
                     :list-course="listCourse"
                     :list-selected="listNodeEditSelected"
                     @add="onAddNode"
@@ -312,6 +313,7 @@ export default {
 	data() {
 		return {
 			CONSTANT,
+			halfDayOff: [],
 			selectWeekMonth: this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.WEEK,
 
 			selectTable: this.$store.getters.tableListShift || CONSTANT.LIST_SHIFT.SHIFT_TABLE,
@@ -394,6 +396,7 @@ export default {
 		convertBreakTimeNumberToTime,
 		async initData() {
 			this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
+			this.halfDayOff = CONSTANT.LIST_SHIFT.HALF_DAY_OF;
 
 			setLoading(true);
 
@@ -657,11 +660,23 @@ export default {
 		},
 
 		async handleGetListCourse() {
+			const LABOUR = {
+				value: 'L-0',
+				text: this.$t("LIST_SHIFT.LABOUR"),
+				flag: 'yes',
+				status: 'on',
+				start_time: '',
+				end_time: '',
+				break_time: '',
+				disabled: false,
+			};
 			try {
 				const { code, data } = await getList(CONSTANT.URL_API.GET_LIST_COURSE);
 
 				if (code === 200) {
 					this.listCourse = [];
+
+					this.listCourse.push(LABOUR);
 					const len = data.length;
 					let idx = 0;
 
@@ -863,6 +878,7 @@ export default {
 			const FILTER_LIST_SELECTED = this.handleFilterListSelected(this.listNodeEditSelected, [null]);
 
 			const VALIDATE = validateEditShift(FILTER_LIST_SELECTED);
+			console.log('validate: ', VALIDATE);
 
 			if (VALIDATE.status) {
 				this.modalEdit = false;
@@ -896,6 +912,7 @@ export default {
 		handleUpdateTable(listShift, idxOfDriver, idxCellOfDriver, dataUpdate) {
 			if (dataUpdate.length > 0) {
 				const LIST_TYPE_SELECTED = dataUpdate.map((item) => item.type);
+				console.log('LIST_TYPE_SELECTED: ', LIST_TYPE_SELECTED);
 
 				const LIST_DAY_OFF = LIST_TYPE_SELECTED.filter((item) => (CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item));
 
@@ -946,7 +963,12 @@ export default {
 			let idx = 0;
 
 			while (idx < len) {
-				if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+				if (dataUpdate[idx].type === 'H-0') {
+					result.push({
+						type: dataUpdate[idx].type,
+						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF)
+					});
+				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
 					result.push({
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_WAIT_BETWEEN_TASK),

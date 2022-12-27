@@ -276,8 +276,8 @@
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
-                                                    :lg="4"
-                                                    :xl="4"
+                                                    :lg="12"
+                                                    :xl="12"
                                                 >
                                                     <div class="item-form">
                                                         <label for="input-available-days">
@@ -295,7 +295,7 @@
                                                         </b-input-group>
                                                     </div>
                                                 </b-col>
-                                                <b-col
+                                                <!-- <b-col
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
@@ -322,7 +322,7 @@
                                                             />
                                                         </b-form-group>
                                                     </div>
-                                                </b-col>
+                                                </b-col> -->
                                             </b-row>
                                             <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_RETIREMENT_DATE') }}

@@ -28,6 +28,15 @@
                             </b-form-select-option>
 
                             <b-form-select-option
+                                v-for="(item, idx) in halfDayOff"
+                                :key="`select-halfdayoff-${idx + 1}`"
+                                :value="item.value"
+                                :disabled="item.disabled"
+                            >
+                                {{ $t(item.text) }}
+                            </b-form-select-option>
+
+                            <b-form-select-option
                                 v-for="(course, idxCourse) in listCourse"
                                 :key="`select-course-${idxCourse + 1}`"
                                 :value="course.value"
@@ -94,7 +103,8 @@
                                 </b-row>
                             </div>
                         </div>
-                        <div v-if="itemEdit.course.flag !== 'yes'">
+                        <!-- <div v-if="itemEdit.course.flag !== 'yes'"> -->
+                        <div v-if="itemEdit.course.flag === 'no'">
                             <div class="item-time text-center">
                                 <span>
                                     <b>始業時間: </b>{{ itemEdit.course.start_time }}
@@ -140,6 +150,12 @@ export default {
 	},
 
 	props: {
+        halfDayOff: {
+			type: Array,
+			default: () => {
+				return [];
+			},
+        },
 		listSelect: {
 			type: Array,
 			default: () => {
