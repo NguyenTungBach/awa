@@ -33,13 +33,13 @@ function checkRequiredEditShift(listUpdate = []) {
 						message: 'MESSAGE_APP.LIST_SHIFT_VALIDATE_REQUIRED_TIME',
 					};
 				}
-	
+
 				const FLAG = ITEM.course.flag;
 				if (FLAG === 'yes') {
 					const START_TIME = ITEM.start_time;
 					const END_TIME = ITEM.end_time;
 					const BREAK_TIME = ITEM.break_time;
-	
+
 					if ((START_TIME).includes(null) || (END_TIME).includes(null) || (BREAK_TIME).includes(null)) {
 						return {
 							status: false,
@@ -50,7 +50,7 @@ function checkRequiredEditShift(listUpdate = []) {
 					const START_TIME = ITEM.course.start_time;
 					const END_TIME = ITEM.course.end_time;
 					const BREAK_TIME = convertBreakTimeNumberToTime(ITEM.course.break_time);
-	
+
 					if (START_TIME === null || END_TIME === null || BREAK_TIME === null) {
 						return {
 							status: false,
@@ -152,13 +152,13 @@ function checkTimeEditShift(listUpdate = []) {
 				const START_TIME = (ITEM.start_time).join(':');
 				const END_TIME = (ITEM.end_time).join(':');
 				const BREAK_TIME = (ITEM.break_time).join(':');
-	
+
 				const VALIDATE = validateStartEndBreakTimeListShift(START_TIME, END_TIME, BREAK_TIME);
-	
+
 				if (VALIDATE.status === false) {
 					return VALIDATE;
 				}
-	
+
 				if (VALIDATE.status) {
 					isPass = isPass + 1;
 				}
@@ -167,13 +167,13 @@ function checkTimeEditShift(listUpdate = []) {
 					const START_TIME = (ITEM.start_time).join(':');
 					const END_TIME = (ITEM.end_time).join(':');
 					const BREAK_TIME = (ITEM.break_time).join(':');
-	
+
 					const VALIDATE = validateStartEndBreakTimeListShift(START_TIME, END_TIME, BREAK_TIME);
-	
+
 					if (VALIDATE.status === false) {
 						return VALIDATE;
 					}
-	
+
 					if (VALIDATE.status) {
 						isPass = isPass + 1;
 					}
@@ -181,13 +181,13 @@ function checkTimeEditShift(listUpdate = []) {
 					const START_TIME = ITEM.course.start_time;
 					const END_TIME = ITEM.course.end_time;
 					const BREAK_TIME = ITEM.course.break_time;
-	
+
 					const VALIDATE = validateStartEndBreakTimeListShift(START_TIME, END_TIME, BREAK_TIME);
-	
+
 					if (VALIDATE.status === false) {
 						return VALIDATE;
 					}
-	
+
 					if (VALIDATE.status) {
 						isPass = isPass + 1;
 					}
@@ -269,7 +269,7 @@ function validateDuplicateTime(listUpdate = []) {
 
 		const END = listUpdate[idx];
 		const START = listUpdate[idxCompare];
-		
+
 		if (END.type !== 'H-0' && START.type !== 'H-0') {
 			let END_TIME = null;
 			let START_TIME = null;

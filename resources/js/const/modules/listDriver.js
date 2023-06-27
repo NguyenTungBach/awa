@@ -17,6 +17,10 @@ const LIST_FLAG = [
 		value: 'part',
 		text: 'CREATE_DRIVER.PART_TIME',
 	},
+	{
+		value: 'associate',
+		text: 'CREATE_DRIVER.ASSOCIATE_COMPANY',
+	},
 ];
 
 const LIST_WORKING_TIME = [

@@ -7,6 +7,7 @@ import PageNotFound from './modules/PageNotFound';
 import Login from './modules/Login';
 import ShiftManagement from './modules/ShiftManagement';
 import DataManagement from './modules/DataManagement';
+import CashManagement from './modules/CashManagement';
 import Dev from './modules/Dev';
 
 export const constantRoutes = [
@@ -17,6 +18,7 @@ export const constantRoutes = [
 export const asyncRoutes = [
 	ShiftManagement,
 	DataManagement,
+	CashManagement,
 	{
 		path: '/',
 		name: 'Dashboard',

@@ -164,8 +164,8 @@
                                                         :cols="12"
                                                         :sm="12"
                                                         :md="12"
-                                                        :lg="6"
-                                                        :xl="6"
+                                                        :lg="12"
+                                                        :xl="12"
                                                     >
                                                         <label for="input-date-hire-date">
                                                             {{ $t('CREATE_DRIVER.HIRE_DATE') }}
@@ -196,7 +196,7 @@
                                                             </b-input-group-append>
                                                         </b-input-group>
                                                     </b-col>
-                                                    <b-col
+                                                    <!-- <b-col
                                                         :cols="12"
                                                         :sm="12"
                                                         :md="12"
@@ -230,7 +230,7 @@
                                                                 />
                                                             </b-input-group-append>
                                                         </b-input-group>
-                                                    </b-col>
+                                                    </b-col> -->
                                                 </b-row>
 
                                                 <!-- <b-row>
@@ -253,7 +253,7 @@
                                                     </b-col>
                                                 </b-row> -->
                                             </div>
-                                            <TitlePathForm>
+                                            <!-- <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_WORKING_CONDITIONS') }}
                                             </TitlePathForm>
                                             <b-row>
@@ -308,7 +308,23 @@
                                                         </b-form-group>
                                                     </div>
                                                 </b-col> -->
-                                            </b-row>
+                                            <!-- </b-row> -->
+                                            <div class="item-form">
+                                                <b-row>
+                                                    <b-col>
+                                                        <label for="input-character">
+                                                            {{ $t('CREATE_DRIVER.CHARACTER') }}
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+                                                        </label>
+                                                        <b-form-input
+                                                            id="input-character"
+                                                            v-model="isForm.character"
+                                                        />
+                                                    </b-col>
+                                                </b-row>
+                                            </div>
                                             <TitlePathForm>
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_RETIREMENT_DATE') }}
                                             </TitlePathForm>
@@ -317,8 +333,8 @@
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
-                                                    :lg="6"
-                                                    :xl="6"
+                                                    :lg="12"
+                                                    :xl="12"
                                                 >
                                                     <div class="item-form">
                                                         <b-input-group class="mb-3">
@@ -368,7 +384,7 @@
                                     </b-row>
                                 </div>
                             </b-tab>
-                            
+
                         </b-tabs>
                     </div>
                 </div>
@@ -408,6 +424,7 @@ export default {
 				typeDriver: null,
 				employeeNumber: '',
 				fullname: '',
+                character: '',
 				hireDate: '',
 				dateOfBirth: '',
 				grade: null,

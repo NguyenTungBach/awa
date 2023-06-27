@@ -137,15 +137,15 @@
                                                         :cols="12"
                                                         :sm="12"
                                                         :md="12"
-                                                        :lg="6"
-                                                        :xl="6"
+                                                        :lg="12"
+                                                        :xl="12"
                                                     >
                                                         <DetailForm
                                                             :label="$t('CREATE_DRIVER.HIRE_DATE')"
                                                             :value="isForm.hireDate"
                                                         />
                                                     </b-col>
-                                                    <b-col
+                                                    <!-- <b-col
                                                         :cols="12"
                                                         :sm="12"
                                                         :md="12"
@@ -156,7 +156,7 @@
                                                             :label="$t('CREATE_DRIVER.DATE_OF_BIRTH')"
                                                             :value="isForm.dateOfBirth"
                                                         />
-                                                    </b-col>
+                                                    </b-col> -->
                                                 </b-row>
 
                                                 <!-- <div class="item-form">
@@ -170,8 +170,18 @@
                                                     </b-row>
                                                 </div> -->
                                             </div>
+                                            <div class="item-form">
+                                                <b-row>
+                                                    <b-col>
+                                                        <DetailForm
+                                                            :label="$t('CREATE_DRIVER.CHARACTER')"
+                                                            :value="isForm.character"
+                                                        />
+                                                    </b-col>
+                                                </b-row>
+                                            </div>
 
-                                            <TitlePathForm :add-class="['margin-title-form']">
+                                            <!-- <TitlePathForm :add-class="['margin-title-form']">
                                                 {{ $t('CREATE_DRIVER.FORM_PATH_WORKING_CONDITIONS') }}
                                             </TitlePathForm>
 
@@ -184,7 +194,7 @@
                                                         />
                                                     </div>
                                                 </b-col>
-                                            </b-row>
+                                            </b-row> -->
                                             <!-- <b-row>
                                                 <b-col>
                                                     <div class="item-form">
@@ -304,6 +314,7 @@ export default {
 				typeDriver: null,
 				employeeNumber: '',
 				fullname: '',
+                character: '',
 				hireDate: '',
 				dateOfBirth: '',
 				grade: null,
