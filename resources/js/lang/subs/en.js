@@ -287,6 +287,7 @@ export default {
 		TABLE_COURSE_GROUP_CODE: 'グループ',
 	},
 	CREATE_SCHEDULE: {
+		FEE_INFORMATION: 'Fee information',
 		TITLE_CREATE_SCHEDULE: 'Create schedule',
 		BASIC_INFORMATION: 'Basic information',
 		COOPERATING_COMPANY_PAYMENT_AMOUNT: 'cooperating company payment amount',
@@ -307,7 +308,13 @@ export default {
 	},
 	DETAIL_SCHEDULE: {
 		TITLE_DETAIL_SCHEDULE: 'Service information details',
+		FEE_INFORMATION: 'Fee information',
 		BASIC_INFORMATION: 'Basic information',
+		COOPERATING_COMPANY_PAYMENT_AMOUNT: 'cooperating company payment amount',
+		HIGHT_WAY: 'hight way',
+		EXPENSES: 'expenses',
+		BONUS_TARGET: 'bonus target',
+		BONUS_AMOUNT: 'bonus amount',
 		SHIP_DATE: 'Ship date',
 		COURSE_NAME: 'Name',
 		START_TIME: 'Start time',
@@ -538,7 +545,7 @@ export default {
 
 	CUSTOMER_CREATE: {
 		TITLE_CUSTOMER_CREATE: 'Create Customer',
-
+		POST_CODE: 'Post Code',
 		FORM_BASIC_INFORMATION: 'Basic information',
 		COURSE_ID: 'Customer ID',
 		COURSE_NAME: 'Customer name',
@@ -584,6 +591,55 @@ export default {
 		TEXT_CONFIRM_DELETE: 'Are you sure you want to delete this user?',
 		TEXT_CONFIRM: 'Confirm',
 		TEXT_CANCEL: 'Cancel',
+	},
+	LIST_CASH: {
+		TITLE_LIST_CASH: 'Deposit information list',
+		TABLE_CASH_ID: 'Shipper ID',
+		TABLE_CASH_NAME: 'Shipper Name',
+		TABLE_CASH_BALANCE_AT_END_OF_PREVIOUS_MONTH: 'balance at end of previous month',
+		TABLE_CASH_ACCOUNTS_RECEIVABLE: 'Accounts receivable',
+		TABLE_TOTAL_ACCOUNTS_RECEIVABLE: 'Total accounts receivable',
+		TABLE_MONTHLY_DEPOSIT_AMOUNT: 'Monthly deposit amount',
+		TABLE_CURRENT_MONTH_BALANCE: 'current month balance',
+		TABLE_DETAIL: 'Detail',
+
+		TITLE_CASH_DETAIL: 'Deposit Information Details',
+		FORM_BASIC_INFORMATION: 'Shipper information',
+		DEPOSIT_INFORMATION: 'Deposit information',
+
+		TABLE_NO: 'No',
+		TABLE_DATE: 'Date',
+		TABLE_DEPOSIT_AMOUNT: 'Deposit Amount',
+		TABLE_PAYMENT_METHOD: 'Payment Method',
+		TABLE_REMARKS: 'Remarks',
+		TABLE_TOTAL: 'Total deposit amount for the current month',
+
+		TITLE_CASH_CREATE: 'Deposit information Registration',
+
+		PAYMENT_DAY: 'Payment Day',
+
+		TITLE_LIST_CASH_DISBURSEMENT: 'Withdrawal information list',
+		TABLE_CASH_DISBURSEMENT_ID: 'Subcontractor ID',
+		TABLE_CASH_DISBURSEMENT_NAME: 'Cooperating company name',
+		TABLE_CASH_DISBURSEMENT_BALANCE_AT_END_OF_PREVIOUS_MONTH: 'Balance at end of previous month',
+		TABLE_CASH_DISBURSEMENT_ACCOUNTS_RECEIVABLE: 'Accounts payable for the current month',
+		TABLE_CASH_DISBURSEMENT_TOTAL_ACCOUNTS_RECEIVABLE: 'Total payable',
+		TABLE_CASH_DISBURSEMENT_MONTHLY_DEPOSIT_AMOUNT: 'Withdrawal amount for the current month',
+		TABLE_CASH_DISBURSEMENT_CURRENT_MONTH_BALANCE: 'Current month balance',
+
+		FORM_CASH_DISBURSEMENT_BASIC_INFORMATION: 'Cooperating company information',
+		CASH_DISBURSEMENT_DEPOSIT_INFORMATION: 'Withdrawal information',
+		TITLE_CASH_DISBURSEMENT_DETAIL: 'Withdrawal Information Details',
+		TABLE_CASH_DISBURSEMENT_NO: 'No.',
+		TABLE_CASH_DISBURSEMENT_DATE: 'Date',
+		TABLE_CASH_DISBURSEMENT_DEPOSIT_AMOUNT: 'Withdrawal amount',
+		TABLE_CASH_DISBURSEMENT_PAYMENT_METHOD: 'Withdrawal method',
+		TABLE_CASH_DISBURSEMENT_REMARKS: 'Remarks',
+		TABLE_CASH_DISBURSEMENT_TOTAL: 'Withdrawal amount for the current month',
+
+		TITLE_CASH_DISBURSEMENT_CREATE: 'Withdrawal information registration',
+		CASH_DISBURSEMENT_PAYMENT_DAY: 'Withdrawal date',
+		NOTE_CASH_DISBURSEMENT: 'remarks',
 	},
 	CREATE_USER: {
 		TITLE_CREATE_USER: 'Create User',

@@ -126,6 +126,17 @@
                                             <b-col>
                                                 <div class="item-form">
                                                     <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.POST_CODE')"
+                                                        :value="''"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT')"
                                                         :value="''"
                                                     />
@@ -334,7 +345,7 @@ export default {
                 .zone-form {
                     &__body {
                         .item-form {
-                            margin-bottom: 10px;
+                            margin: 20px 0;
                             font-size: 18px;
                         }
                     }

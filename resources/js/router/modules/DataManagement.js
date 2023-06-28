@@ -108,7 +108,7 @@ const DataManagement = {
 					component: () => import(/* webpackChunkName: "Course Edit" */ '@/pages/DataManagement/ListCourse/edit.vue'),
 					hidden: true,
 				},
-				
+
 			],
 		},
 		{

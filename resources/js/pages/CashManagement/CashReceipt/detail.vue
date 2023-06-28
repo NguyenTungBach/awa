@@ -1,0 +1,326 @@
+<template>
+    <b-col>
+        <b-container>
+            <div class="page-cash-detail">
+                <div class="page-cash-detail__header">
+                    <b-row>
+                        <b-col>
+                            <div class="zone-title">
+                                <span class="title-page">
+                                    {{ $t('LIST_CASH.TITLE_CASH_DETAIL') }}
+                                </span>
+                            </div>
+                        </b-col>
+                    </b-row>
+                    <LineGray />
+                </div>
+                <div class="page-cash-detail__body">
+                    <div class="body-control">
+                        <b-row>
+                            <b-col>
+                                <div class="zone-control text-right">
+                                    <b-button
+                                        pill
+                                        class="btn-return"
+                                        @click="onClickReturn()"
+                                    >
+                                        {{ $t('APP.BUTTON_RETURN') }}
+                                    </b-button>
+                                    <b-button
+                                        pill
+                                        class="btn-edit btn-color-active"
+                                        @click="onClickCreate()"
+                                    >
+                                        {{ $t('APP.BUTTON_EDIT') }}
+                                    </b-button>
+                                </div>
+                            </b-col>
+                        </b-row>
+                    </div>
+                    <div class="body-form">
+                        <b-row>
+                            <b-col
+                                :cols="12"
+                                :sm="12"
+                                :md="12"
+                                :lg="4"
+                                :xl="4"
+                            >
+                                <div class="zone-avatar">
+                                    <img :src="require('@/assets/images/Cash_icon.png')" alt="Avatar course">
+                                </div>
+                            </b-col>
+                            <b-col
+                                :cols="12"
+                                :sm="12"
+                                :md="12"
+                                :lg="8"
+                                :xl="8"
+                            >
+                                <div class="zone-form">
+                                    <div class="zone-form__header">
+                                        <TitlePathForm>
+                                            {{ $t('LIST_CASH.FORM_BASIC_INFORMATION') }}
+                                        </TitlePathForm>
+                                    </div>
+                                    <div class="zone-form__body">
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_CASH_ID')"
+                                                        :value="isForm.course_id"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_CASH_NAME')"
+                                                        :value="isForm.course_name"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_CURRENT_MONTH_BALANCE')"
+                                                        :value="isForm.course_current_month_balance"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_CASH_BALANCE_AT_END_OF_PREVIOUS_MONTH')"
+                                                        :value="isForm.course_balance_at_end_of_previous_month"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_CASH_ACCOUNTS_RECEIVABLE')"
+                                                        :value="isForm.course_accounts_receivable"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('LIST_CASH.TABLE_TOTAL_ACCOUNTS_RECEIVABLE')"
+                                                        :value="isForm.course_total_account_receivable"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                    </div>
+                                    <div class="zone-form__footer">
+                                        <TitlePathForm>
+                                            {{ $t('LIST_CASH.DEPOSIT_INFORMATION') }}
+                                        </TitlePathForm>
+                                    </div>
+                                </div>
+                            </b-col>
+                            <b-col
+                                :cols="12"
+                                :sm="12"
+                                :md="12"
+                                :lg="8"
+                                :xl="8"
+                                class="ml-auto"
+                            >
+                                <div class="table_detail_cash">
+                                    <b-table-simple>
+                                        <b-thead>
+                                            <b-tr>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="2"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_NO') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="2"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_DATE') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="2"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_DEPOSIT_AMOUNT') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="2"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_PAYMENT_METHOD') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-remarks"
+                                                    :colspan="4"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_REMARKS') }}
+                                                </b-th>
+                                            </b-tr>
+                                        </b-thead>
+                                        <b-tbody>
+                                            <template v-for="(course, idx) in listCashDeital">
+                                                <b-tr :key="`item-cash-${idx + 1}`">
+                                                    <b-td class="td-cash-id" :colspan="2">
+                                                        {{ course.no }}
+                                                    </b-td>
+                                                    <b-td class="td-cash-name" :colspan="2">
+                                                        {{ course.date }}
+                                                    </b-td>
+                                                    <b-td class="td-cash-balance" :colspan="2">
+                                                        {{ course.deposit_amount }}
+                                                    </b-td>
+                                                    <b-td class="td-cash-account-receiable" :colspan="2">
+                                                        {{ course.payment_method }}
+                                                    </b-td>
+                                                    <b-td class="td-cash-total-account-receiable" :colspan="4">
+                                                        {{ course.remarks }}
+                                                    </b-td>
+                                                </b-tr>
+                                            </template>
+                                            <b-tr>
+                                                <b-th :colspan="4">
+                                                    {{ $t('LIST_CASH.TABLE_TOTAL') }}
+                                                </b-th>
+                                                <b-td>
+                                                    {{ isForm.total }}
+                                                </b-td>
+                                            </b-tr>
+                                        </b-tbody>
+                                    </b-table-simple>
+                                </div>
+                            </b-col>
+                        </b-row>
+                    </div>
+                </div>
+            </div>
+        </b-container>
+    </b-col>
+</template>
+<script>
+import LineGray from '@/components/LineGray';
+import DetailForm from '@/components/DetailForm';
+import TitlePathForm from '@/components/TitlePathForm';
+export default {
+	name: 'CashDetail',
+	components: {
+		LineGray,
+		TitlePathForm,
+		DetailForm,
+	},
+
+	data() {
+		return {
+			idCash: null,
+			isForm: {
+				course_id: '',
+				course_name: '',
+				course_current_month_balance: '',
+				course_balance_at_end_of_previous_month: '',
+				course_accounts_receivable: '',
+				course_total_account_receivable: '',
+				total: '122.55',
+			},
+
+			listCashDeital: [
+				{
+					no: 1,
+					date: '22/1/2019',
+					deposit_amount: '122,33',
+					payment_method: '233,22',
+					remarks: '331,31',
+				},
+				{
+					no: 2,
+					date: '15/3/2020',
+					deposit_amount: '155,33',
+					payment_method: '144,22',
+					remarks: '331,31',
+				},
+			],
+		};
+	},
+
+	methods: {
+		onClickReturn() {
+			this.$router.push({ name: 'ListCashReceipt' });
+		},
+
+		onClickCreate() {
+			this.$router.push({ name: 'ListCashReceiptCreate', params: { id: this.idCash }});
+		},
+	},
+};
+</script>
+<style lang="scss" scoped>
+    @import '@/scss/variables';
+
+    .page-cash-detail {
+        &__body {
+            .body-form {
+                border: 1px solid $geyser;
+                margin-top: 10px;
+                padding: 20px;
+
+                .zone-avatar {
+                    height: 100%;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    vertical-align: middle;
+
+                    img {
+                        height: 270px;
+                    }
+                }
+
+                .zone-form {
+                    &__body {
+                        .item-form {
+                            margin: 20px 0;
+                            font-size: 18px;
+                        }
+                    }
+                    .zone-form__footer {
+                        margin-top: 40px;
+                    }
+                }
+                .table_detail_cash {
+                    margin-top: 40px;
+                    th {
+                        border: 1px solid rgb(211, 211, 211);
+                        // border-left: 1px solid gray;
+                    }
+                    td {
+                        border: 1px solid rgb(211, 211, 211);
+                        // border-left: 1px solid gray;
+                    }
+                    .th-remarks {
+                                min-width: 200px;
+                            }
+                }
+            }
+        }
+    }
+</style>

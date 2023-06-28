@@ -65,7 +65,6 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.SHIP_DATE')"
-                                           
                                         />
                                     </b-col>
                                 </b-row>
@@ -104,7 +103,6 @@
                                     >
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.END_TIME')"
-                                        
                                         />
                                     </b-col>
                                     <b-col
@@ -117,7 +115,6 @@
                                     >
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.BREAK_TIME')"
-                                        
                                         />
                                     </b-col>
                                 </b-row>
@@ -142,6 +139,11 @@
                                         />
                                     </b-col>
                                 </b-row>
+                            </div>
+                            <TitlePathForm>
+                                {{ $t('DETAIL_SCHEDULE.FEE_INFORMATION') }}
+                            </TitlePathForm>
+                            <div>
                                 <b-row class="item-form">
                                     <b-col>
                                         <DetailForm
@@ -149,7 +151,41 @@
                                         />
                                     </b-col>
                                 </b-row>
-                                
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT')"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.HIGHT_WAY')"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.EXPENSES')"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.BONUS_TARGET')"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.BONUS_AMOUNT')"
+                                        />
+                                    </b-col>
+                                </b-row>
                             </div>
 
                             <TitlePathForm class="item-not">
@@ -158,63 +194,64 @@
 
                         </b-col>
                     </b-row>
-                   
+
                 </div>
 
             </div>
-        </b-container>    
+        </b-container>
     </b-col>
 </template>
 
 <script>
-import CONSTANT from '@/const';
+// import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
-import { setLoading } from '@/utils/handleLoading';
-import { format2Digit } from '@/utils/generateTime';
-import NodeSchedule from '@/components/NodeSchedule';
-import { cleanObject } from '@/utils/handleObject';
-import { getCalendar } from '@/api/modules/calendar';
-import { getNumberDate, getTextDay } from '@/utils/convertTime';
-import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
-import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
-import { validateSizeFile, validateFileCSV } from '@/utils/validate';
-import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
+// import { setLoading } from '@/utils/handleLoading';
+// import { format2Digit } from '@/utils/generateTime';
+// import NodeSchedule from '@/components/NodeSchedule';
+// import { cleanObject } from '@/utils/handleObject';
+// import { getCalendar } from '@/api/modules/calendar';
+// import { getNumberDate, getTextDay } from '@/utils/convertTime';
+// import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
+// import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
+// import { validateSizeFile, validateFileCSV } from '@/utils/validate';
+// import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 import DetailForm from '@/components/DetailForm';
 export default {
 	name: 'ListSchedule',
 	components: {
 		LineGray,
-		NodeSchedule,
-        TitlePathForm,
-        DetailForm,
+		// NodeSchedule,
+		TitlePathForm,
+		DetailForm,
 	},
 
 	data() {
-		return {}
+		return {};
 	},
 
 	computed: {
-		
+
 	},
 
 	watch: {
-			
+
 	},
 
 	created() {
-		
+
 	},
 
 	methods: {
-        onClickReturn() {
+		onClickReturn() {
 			this.$router.push({ name: 'ListSchedule' });
 		},
-        onClickEdit(){
-            this.$router.push({ name: 'ListScheduleEdit' });
-        }
-    }
-	
+
+		onClickEdit(){
+			this.$router.push({ name: 'ListScheduleEdit' });
+		},
+	},
+
 };
 </script>
 
@@ -260,7 +297,7 @@ export default {
                     }
                 }
                 .item-form{
-                    margin-top: 20px;
+                    margin-top: 40px;
                 }
                 .item-not{
                     margin: 40px 0;

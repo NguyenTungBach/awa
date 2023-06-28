@@ -354,10 +354,15 @@
                                         </span>
                                     </label>
                                     <b-input-group class="mb-3">
-                                        <b-form-input
+                                        <!-- <b-form-input
                                             type="text"
                                         />
-                                        <span class="freight-cost"> 円 </span>
+                                        <span class="freight-cost"> 円 </span> -->
+                                        <b-form-select
+                                            v-model="bunus_target" :options="bunusTargetOptions"
+                                            :text-field="'text'"
+                                            :value-field="'rate'" size="xl"
+                                        />
                                     </b-input-group>
 
                                 </b-col>
@@ -391,8 +396,9 @@
                             :cols="12"
                             :sm="12"
                             :md="12"
-                            :lg="12"
-                            :xl="12"
+                            :lg="8"
+                            :xl="8"
+                            class="ml-auto"
                         >
                             <label for="input-notes">
                                 {{ $t('CREATE_SCHEDULE.NOTE') }}
@@ -435,7 +441,14 @@ export default {
 	},
 
 	data() {
-		return {};
+		return {
+			bunus_target: '',
+			bunusTargetOptions: [
+				{ value: 'a', text: 'ボーナス対象者' },
+				{ value: 'b', text: 'ボーナス対象者' },
+				{ value: 'c', text: 'ボーナス対象者' },
+			],
+		};
 	},
 
 	computed: {

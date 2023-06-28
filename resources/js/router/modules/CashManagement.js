@@ -29,7 +29,7 @@ const CashManagement = {
 			component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/CashManagement/CashReceipt/create.vue'),
 		},
 		{
-			path: 'list-cash-receipt-detail',
+			path: 'list-cash-receipt-detail/:id',
 			name: 'ListCashReceiptDetail',
 			meta: {
 				title: 'ROUTER.LIST_CASH_RECEIPT',
@@ -38,16 +38,16 @@ const CashManagement = {
 			hidden: true,
 			component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/CashManagement/CashReceipt/detail.vue'),
 		},
-		{
-			path: 'list-cash-receipt-edit',
-			name: 'ListCashReceiptEdit',
-			meta: {
-				title: 'ROUTER.LIST_CASH_RECEIPT',
-				roles: ['admin'],
-			},
-			hidden: true,
-			component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/CashManagement/CashReceipt/edit.vue'),
-		},
+		// {
+		// 	path: 'list-cash-receipt-edit',
+		// 	name: 'ListCashReceiptEdit',
+		// 	meta: {
+		// 		title: 'ROUTER.LIST_CASH_RECEIPT',
+		// 		roles: ['admin'],
+		// 	},
+		// 	hidden: true,
+		// 	component: () => import(/* webpackChunkName: "List Shift Edit" */ '@/pages/CashManagement/CashReceipt/edit.vue'),
+		// },
 		{
 			path: 'list-cash-disbursement',
 			name: 'ListCashDisbursement',
