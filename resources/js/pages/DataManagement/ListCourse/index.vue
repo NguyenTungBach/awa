@@ -63,8 +63,8 @@
                                         :colspan="3"
                                         @click="onSortTable('course_name')"
                                     >
-                                        <b-row >
-                                            <b-col >
+                                        <b-row>
+                                            <b-col>
                                                 {{ $t('LIST_COURSE.TABLE_COURSE_NAME') }}
                                             </b-col>
                                             <b-col>
@@ -90,8 +90,8 @@
                                         :rowspan="2"
                                         @click="onSortTable('closing_day')"
                                     >
-                                        <b-row >
-                                            <b-col >
+                                        <b-row>
+                                            <b-col>
                                                 {{ $t('LIST_COURSE.TABLE_OPERATIONAL_INFORMATION') }}
                                             </b-col>
                                             <b-col>
@@ -125,7 +125,7 @@
                                         {{ $t('LIST_COURSE.TABLE_DELETE') }}
                                     </b-th>
                                 </b-tr>
-                                
+
                             </b-thead>
                             <b-tbody>
                                 <template v-for="(course, idx) in listCourse">
@@ -141,7 +141,7 @@
                                             <!-- {{ course.start_time }} -->
                                             25 日
                                         </b-td>
-                                        
+
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-eye"
@@ -433,13 +433,12 @@ export default {
                                 }
 
                                 .row.row-course-id {
-                                 
+
                                     display: flex;
                                     flex-wrap: wrap;
                                     margin-right: -15px;
                                     margin-left: -6px;
                                 }
-                                
 
                                 th.th-id {
                                      width: 150px;
@@ -453,7 +452,7 @@ export default {
                                         opacity: 0.7;
                                     }
                                 }
-                               
+
                                 th.th-time {
                                     width: 100px;
                                 }

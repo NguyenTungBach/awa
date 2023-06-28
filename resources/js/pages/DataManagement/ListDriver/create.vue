@@ -280,7 +280,7 @@
                                                         </b-input-group>
                                                     </div>
                                                 </b-col>
-                                                <!-- <b-col
+                                                <b-col
                                                     :cols="12"
                                                     :sm="12"
                                                     :md="12"
@@ -307,8 +307,8 @@
                                                             />
                                                         </b-form-group>
                                                     </div>
-                                                </b-col> -->
-                                            <!-- </b-row> -->
+                                                </b-col>
+                                            </b-row> -->
                                             <div class="item-form">
                                                 <b-row>
                                                     <b-col>
@@ -424,7 +424,7 @@ export default {
 				typeDriver: null,
 				employeeNumber: '',
 				fullname: '',
-                character: '',
+				character: '',
 				hireDate: '',
 				dateOfBirth: '',
 				grade: null,

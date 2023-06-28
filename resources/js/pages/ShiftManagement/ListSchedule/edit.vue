@@ -59,7 +59,7 @@
                         >
                             <div class="zone-form">
                                 <TitlePathForm>
-                                                {{ $t('CREATE_SCHEDULE.BASIC_INFORMATION') }}
+                                    {{ $t('CREATE_SCHEDULE.BASIC_INFORMATION') }}
                                 </TitlePathForm>
                                 <b-col
                                     :cols="12"
@@ -78,13 +78,11 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
                                         <b-input-group-append>
                                             <b-form-datepicker
                                                 button-only
                                                 right
-                                                
                                             />
                                         </b-input-group-append>
                                     </b-input-group>
@@ -106,91 +104,86 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
-                                        
+
                                     </b-input-group>
                                 </b-col>
                                 <b-row>
                                     <b-col
-                                    :cols="12"
-                                    :sm="12"
-                                    :md="12"
-                                    :lg="6"
-                                    :xl="6"
-                                >
-                                    <label for="input-date-date-of-birth">
-                                        {{ $t('CREATE_SCHEDULE.START_TIME') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
-                                    </label>
-                                    <b-input-group class="mb-3">
-                                        <b-form-input
-                                            type="text"
-                                        
-                                        />
-                                        <b-input-group-append>
-                                            <b-form-timepicker
-                                                button-only
-                                                right
-                                                
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="6"
+                                        :xl="6"
+                                    >
+                                        <label for="input-date-date-of-birth">
+                                            {{ $t('CREATE_SCHEDULE.START_TIME') }}
+                                            <span class="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <b-input-group class="mb-3">
+                                            <b-form-input
+                                                type="text"
                                             />
-                                        </b-input-group-append>
-                                    </b-input-group>
-                                </b-col>
-                                <b-col
-                                    :cols="12"
-                                    :sm="12"
-                                    :md="12"
-                                    :lg="6"
-                                    :xl="6"
-                                >
-                                    <label for="input-date-date-of-birth">
-                                        {{ $t('CREATE_SCHEDULE.END_TIME') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
-                                    </label>
-                                    <b-input-group class="mb-3">
-                                        <b-form-input
-                                            type="text"
-                                        
-                                        />
-                                        <b-input-group-append>
-                                            <b-form-timepicker
-                                                button-only
-                                                right                                                                                         />
-                                        </b-input-group-append>
-                                    </b-input-group>
-                                </b-col>
-                                <b-col
-                                    :cols="12"
-                                    :sm="12"
-                                    :md="12"
-                                    :lg="6"
-                                    :xl="6"
-                                >
-                                    <label for="input-date-date-of-birth">
-                                        {{ $t('CREATE_SCHEDULE.BREAK_TIME') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
-                                    </label>
-                                    <b-input-group class="mb-3">
-                                        <b-form-input
-                                            type="text"
-                                        
-                                        />
-                                        <b-input-group-append>
-                                            <b-form-timepicker
-                                                button-only
-                                                right
-                                                
+                                            <b-input-group-append>
+                                                <b-form-timepicker
+                                                    button-only
+                                                    right
+                                                />
+                                            </b-input-group-append>
+                                        </b-input-group>
+                                    </b-col>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="6"
+                                        :xl="6"
+                                    >
+                                        <label for="input-date-date-of-birth">
+                                            {{ $t('CREATE_SCHEDULE.END_TIME') }}
+                                            <span class="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <b-input-group class="mb-3">
+                                            <b-form-input
+                                                type="text"
                                             />
-                                        </b-input-group-append>
-                                    </b-input-group>
-                                </b-col>
+                                            <b-input-group-append>
+                                                <b-form-timepicker
+                                                    button-only
+                                                    right
+                                                />
+                                            </b-input-group-append>
+                                        </b-input-group>
+                                    </b-col>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="6"
+                                        :xl="6"
+                                    >
+                                        <label for="input-date-date-of-birth">
+                                            {{ $t('CREATE_SCHEDULE.BREAK_TIME') }}
+                                            <span class="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <b-input-group class="mb-3">
+                                            <b-form-input
+                                                type="text"
+                                            />
+                                            <b-input-group-append>
+                                                <b-form-timepicker
+                                                    button-only
+                                                    right
+                                                />
+                                            </b-input-group-append>
+                                        </b-input-group>
+                                    </b-col>
                                 </b-row>
                                 <b-col
                                     :cols="12"
@@ -209,9 +202,8 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
-                                        
+
                                     </b-input-group>
                                 </b-col>
                                 <b-col
@@ -231,9 +223,8 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
-                                        
+
                                     </b-input-group>
                                 </b-col>
                                 <b-col
@@ -253,11 +244,13 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
-                                        
+
                                     </b-input-group>
                                 </b-col>
+                                <TitlePathForm>
+                                    {{ $t('CREATE_SCHEDULE.FEE_INFORMATION') }}
+                                </TitlePathForm>
                                 <b-col
                                     :cols="12"
                                     :sm="12"
@@ -275,11 +268,124 @@
                                     <b-input-group class="mb-3">
                                         <b-form-input
                                             type="text"
-                                           
                                         />
                                         <span class="freight-cost"> 円</span>
                                     </b-input-group>
-                                    
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-cooperating-company-payment-amount">
+                                        {{ $t('CREATE_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            type="text"
+                                        />
+                                        <span class="freight-cost"> 円 </span>
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-hight-way">
+                                        {{ $t('CREATE_SCHEDULE.HIGHT_WAY') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            type="text"
+                                        />
+                                        <span class="freight-cost"> 円 </span>
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-expenses">
+                                        {{ $t('CREATE_SCHEDULE.EXPENSES') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            type="text"
+                                        />
+                                        <span class="freight-cost"> 円 </span>
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-bunus-targer">
+                                        {{ $t('CREATE_SCHEDULE.BONUS_TARGET') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <!-- <b-form-input
+                                            type="text"
+                                        />
+                                        <span class="freight-cost"> 円 </span> -->
+                                        <b-form-select
+                                            v-model="bunus_target" :options="bunusTargetOptions"
+                                            :text-field="'text'"
+                                            :value-field="'rate'" size="xl"
+                                        />
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-bunus-amount">
+                                        {{ $t('CREATE_SCHEDULE.BONUS_AMOUNT') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            type="text"
+                                        />
+                                        <span class="freight-cost"> 円 </span>
+                                    </b-input-group>
+
                                 </b-col>
                             </div>
                         </b-col>
@@ -303,57 +409,63 @@
                         </b-col>
                     </b-row>
                 </div>
-
             </div>
-        </b-container>    
+        </b-container>
     </b-col>
 </template>
 
 <script>
-import CONSTANT from '@/const';
+// import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
-import { setLoading } from '@/utils/handleLoading';
-import { format2Digit } from '@/utils/generateTime';
-import NodeSchedule from '@/components/NodeSchedule';
-import { cleanObject } from '@/utils/handleObject';
-import { getCalendar } from '@/api/modules/calendar';
-import { getNumberDate, getTextDay } from '@/utils/convertTime';
-import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
-import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
-import { validateSizeFile, validateFileCSV } from '@/utils/validate';
-import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
+// import { setLoading } from '@/utils/handleLoading';
+// import { format2Digit } from '@/utils/generateTime';
+// import NodeSchedule from '@/components/NodeSchedule';
+// import { cleanObject } from '@/utils/handleObject';
+// import { getCalendar } from '@/api/modules/calendar';
+// import { getNumberDate, getTextDay } from '@/utils/convertTime';
+// import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
+// import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
+// import { validateSizeFile, validateFileCSV } from '@/utils/validate';
+// import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 
 export default {
 	name: 'ListSchedule',
 	components: {
 		LineGray,
-		NodeSchedule,
-        TitlePathForm,
+		// NodeSchedule,
+		TitlePathForm,
 	},
 
 	data() {
-		return {}
+		return {
+			bunus_target: '',
+			bunusTargetOptions: [
+				{ value: 'a', text: 'ボーナス対象者' },
+				{ value: 'b', text: 'ボーナス対象者' },
+				{ value: 'c', text: 'ボーナス対象者' },
+			],
+		};
 	},
 
 	computed: {
-		
+
 	},
 
 	watch: {
-			
+
 	},
 
 	created() {
-		
+
 	},
 
 	methods: {
-        onClickReturn() {
+		onClickReturn() {
 			this.$router.push({ name: 'ListScheduleDetail' });
 		},
-    }
-	
+	},
+
 };
 </script>
 
@@ -417,7 +529,7 @@ export default {
                         margin-left: 10px;
                         margin-top: 6px;
                     }
-                   
+
                 }
             }
     }

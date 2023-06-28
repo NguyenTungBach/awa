@@ -314,7 +314,7 @@ export default {
 				typeDriver: null,
 				employeeNumber: '',
 				fullname: '',
-                character: '',
+				character: '',
 				hireDate: '',
 				dateOfBirth: '',
 				grade: null,

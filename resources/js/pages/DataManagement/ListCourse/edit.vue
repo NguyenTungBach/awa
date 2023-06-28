@@ -119,7 +119,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-group-code">
+                                                    <label for="customer-closing-day">
                                                         {{ $t('CUSTOMER_CREATE.CLOSING_DAY') }}
                                                     </label>
                                                     <span class="text-danger">
@@ -160,7 +160,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-clineManager">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
                                                         <span class="text-danger">
                                                             *
@@ -168,7 +168,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-clineManager"
                                                             v-model="isForm.customer_manager"
                                                         />
                                                     </b-input-group>
@@ -185,7 +185,32 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-postCode">
+                                                        {{ $t('CUSTOMER_CREATE.POST_CODE') }}
+                                                        <span class="text-danger">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <b-input-group>
+                                                        <b-form-input
+                                                            id="input-course-postCode"
+                                                            v-model="isForm.customer_postCode"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="input-course-addressOfClient">
                                                         {{ $t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT') }}
                                                         <span class="text-danger">
                                                             *
@@ -193,7 +218,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-addressOfClient"
                                                             v-model="isForm.customer_address"
                                                         />
                                                     </b-input-group>
@@ -210,7 +235,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-email">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_EMAIL') }}
                                                         <span class="text-danger">
                                                             *
@@ -218,7 +243,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-email"
                                                             v-model="isForm.customer_email"
                                                         />
                                                     </b-input-group>
@@ -278,132 +303,132 @@ export default {
 
 	data() {
 		return {
-            optionsClosingDay: [
-                {
-                    value: -1,
-                    text: '末日',
-                },
-                {
-                    value: 1,
-                    text: 1,
-                },
-                {
-                    value: 2,
-                    text: 2,
-                },
-                {
-                    value: 3,
-                    text: 3,
-                },
-                {
-                    value: 4,
-                    text: 4,
-                },
-                {
-                    value: 5,
-                    text: 5,
-                },
-                {
-                    value: 6,
-                    text: 6,
-                },
-                {
-                    value: 7,
-                    text: 7,
-                },
-                {
-                    value: 8,
-                    text: 8,
-                },
-                {
-                    value: 9,
-                    text: 9,
-                },
-                {
-                    value: 10,
-                    text: 10,
-                },
-                {
-                    value: 11,
-                    text: 11,
-                },
-                {
-                    value: 12,
-                    text: 12,
-                },
-                {
-                    value: 13,
-                    text: 13,
-                },
-                {
-                    value: 14,
-                    text: 14,
-                },
-                {
-                    value: 15,
-                    text: 15,
-                },
-                {
-                    value: 16,
-                    text: 16,
-                },
-                {
-                    value: 17,
-                    text: 17,
-                },
-                {
-                    value: 18,
-                    text: 18,
-                },
-                {
-                    value: 19,
-                    text: 19,
-                },
-                {
-                    value: 20,
-                    text: 20,
-                },
-                {
-                    value: 21,
-                    text: 21,
-                },
-                {
-                    value: 22,
-                    text: 22,
-                },
-                {
-                    value: 23,
-                    text: 23,
-                },
-                {
-                    value: 24,
-                    text: 24,
-                },
-                {
-                    value: 25,
-                    text: 25,
-                },
-                {
-                    value: 26,
-                    text: 26,
-                },
-                {
-                    value: 27,
-                    text: 27,
-                },
-                {
-                    value: 28,
-                    text: 28,
-                },
-                {
-                    value: 29,
-                    text: 29,
-                },
-                {
-                    value: 30,
-                    text: 30,
-                },
-            ],
+			optionsClosingDay: [
+				{
+					value: -1,
+					text: '末日',
+				},
+				{
+					value: 1,
+					text: 1,
+				},
+				{
+					value: 2,
+					text: 2,
+				},
+				{
+					value: 3,
+					text: 3,
+				},
+				{
+					value: 4,
+					text: 4,
+				},
+				{
+					value: 5,
+					text: 5,
+				},
+				{
+					value: 6,
+					text: 6,
+				},
+				{
+					value: 7,
+					text: 7,
+				},
+				{
+					value: 8,
+					text: 8,
+				},
+				{
+					value: 9,
+					text: 9,
+				},
+				{
+					value: 10,
+					text: 10,
+				},
+				{
+					value: 11,
+					text: 11,
+				},
+				{
+					value: 12,
+					text: 12,
+				},
+				{
+					value: 13,
+					text: 13,
+				},
+				{
+					value: 14,
+					text: 14,
+				},
+				{
+					value: 15,
+					text: 15,
+				},
+				{
+					value: 16,
+					text: 16,
+				},
+				{
+					value: 17,
+					text: 17,
+				},
+				{
+					value: 18,
+					text: 18,
+				},
+				{
+					value: 19,
+					text: 19,
+				},
+				{
+					value: 20,
+					text: 20,
+				},
+				{
+					value: 21,
+					text: 21,
+				},
+				{
+					value: 22,
+					text: 22,
+				},
+				{
+					value: 23,
+					text: 23,
+				},
+				{
+					value: 24,
+					text: 24,
+				},
+				{
+					value: 25,
+					text: 25,
+				},
+				{
+					value: 26,
+					text: 26,
+				},
+				{
+					value: 27,
+					text: 27,
+				},
+				{
+					value: 28,
+					text: 28,
+				},
+				{
+					value: 29,
+					text: 29,
+				},
+				{
+					value: 30,
+					text: 30,
+				},
+			],
 
 			optionsAZ: [],
 			idCourse: null,
@@ -414,11 +439,12 @@ export default {
 				course_id: '',
 				group: [null, null],
 				course_name: '',
-                // 
+				customer_postCode: '',
+				//
 				customer_manager: '',
 				customer_address: '',
 				customer_email: '',
-                //
+				//
 				start_time: [null, null],
 				end_time: [null, null],
 				break_time: [null, null],
@@ -554,12 +580,12 @@ export default {
 		},
 
 		// goToList() {
-			// this.$router.push({ name: 'ListCourseIndex' });
+		// this.$router.push({ name: 'ListCourseIndex' });
 		// },
 
 		goToDetail() {
 			// this.$router.push({ name: 'ListCourseIndex' });
-            this.$router.push({ name: 'CourseDetail', params: { id: this.idCourse }});
+			this.$router.push({ name: 'CourseDetail', params: { id: this.idCourse }});
 		},
 
 		async handleGetCourse() {
@@ -600,35 +626,35 @@ export default {
 			}
 		},
 
-        // onClickSaveCourse() {
-        //     this.goToDetail();
-        //     TOAST_COURSE_MANAGEMENT.success();
-        // },
+		// onClickSaveCourse() {
+		//     this.goToDetail();
+		//     TOAST_COURSE_MANAGEMENT.success();
+		// },
 		async onClickSaveCourse() {
 			const BODY = this.initBody();
 			// const VALIDATE = validateCourse(BODY);
 
 			// if (VALIDATE.status) {
-				try {
-					await this.$store.dispatch('course/setWarningNotSave', false)
-						.then(async() => {
-							setLoading(true);
+			try {
+				await this.$store.dispatch('course/setWarningNotSave', false)
+					.then(async() => {
+						setLoading(true);
 
-							BODY.break_time = convertTimeCourse(BODY.break_time);
+						BODY.break_time = convertTimeCourse(BODY.break_time);
 
-							const COURSE = await putCourse(`${CONSTANT.URL_API.PUT_COURSE}/${this.idCourse}`, BODY);
+						const COURSE = await putCourse(`${CONSTANT.URL_API.PUT_COURSE}/${this.idCourse}`, BODY);
 
-							if (COURSE.code === 200) {
-								// this.goToList();
-                                this.goToDetail();
-								TOAST_COURSE_MANAGEMENT.success();
-							}
+						if (COURSE.code === 200) {
+							// this.goToList();
+							this.goToDetail();
+							TOAST_COURSE_MANAGEMENT.success();
+						}
 
-							setLoading(false);
-						});
-				} catch {
-					setLoading(false);
-				}
+						setLoading(false);
+					});
+			} catch {
+				setLoading(false);
+			}
 			// } else {
 			// 	TOAST_COURSE_MANAGEMENT.validate(VALIDATE.message);
 			// }
@@ -724,7 +750,7 @@ export default {
                             margin-bottom: 10px;
                             font-size: 18px;
                         }
-                        
+
                         .text-closing-day {
                             font-family: 'Inter';
                             font-style: normal;
