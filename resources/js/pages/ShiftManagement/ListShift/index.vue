@@ -90,19 +90,19 @@
                                     </div>
                                 </div> -->
                             </template>
-                            <!-- <div
+                            <div
                                 v-if="hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                 v-show="showControlTime"
                                 class="item-function"
-                                @click="handleClickViewLog()"
+                                @click="handleShowModal()"
                             >
                                 <div class="show-icon">
-                                    <i class="fa-regular fa-circle-exclamation" />
+                                    <i class="fas fa-calendar-check" />
                                 </div>
                                 <div class="show-text">
-                                    <span>{{ $t("LIST_SHIFT.BUTTON_VIEW_LOG") }}</span>
+                                    <span>{{ $t("LIST_SHIFT.BUTTON_SELECT_CLOSING_DATE") }}</span>
                                 </div>
-                            </div> -->
+                            </div>
                             <!-- <div
                                 v-if="(hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH)"
                                 v-show="showControlTime"
@@ -235,7 +235,6 @@
                     <div class="zone-table">
                         <template v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE">
                             <b-table-simple
-
                                 :key="`shift-table-${reRender}`"
                                 bordered
                                 no-border-collapse
@@ -274,6 +273,9 @@
                                                 </b-th>
                                             </template>
                                         </template>
+                                        <b-th class="total-shift" :rowspan="2">
+                                            {{ $t('LIST_SHIFT.TABLE_TOTAL') }}
+                                        </b-th>
                                     </b-tr>
                                     <b-tr>
                                         <b-th
@@ -381,6 +383,9 @@
                                                     />
                                                 </template>
                                             </template>
+                                            <b-td class="td-total-shift">
+                                                {{ totalShift }}
+                                            </b-td>
                                         </tr>
                                     </template>
                                 </b-tbody>
@@ -816,6 +821,51 @@
                 </b-overlay>
             </div>
         </div>
+        <b-modal
+            id="modal-closing-date"
+            v-model="showModalClosingDate"
+            body-class="modal-closing-date"
+            hide-header
+            hide-footer
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+            @close="handleCloseModalClosingDate()"
+        >
+            <div class="text-center">
+                <h5 class="font-weight-bolde">
+                    締日を選択してください
+                </h5>
+            </div>
+            <div class="body-item">
+                <b-row>
+                    <b-col cols="8" style="margin: auto;">
+                        <b-input-group>
+                            <b-form-select
+                                id="input-closing-date"
+                                v-model="closingDate"
+                                :options="optionsClosingDate"
+                            />
+                        </b-input-group>
+                    </b-col>
+                </b-row>
+            </div>
+            <div class="text-center">
+                <b-button
+                    pill
+                    class="mr-2 btn-color-active-import"
+                >
+                    OK
+                </b-button>
+
+                <b-button
+                    pill
+                    @click="handleCloseModalClosingDate()"
+                >
+                    キャンセル
+                </b-button>
+            </div>
+        </b-modal>
     </b-col>
 </template>
 
@@ -854,6 +904,17 @@ export default {
 
 	data() {
 		return {
+			closingDate: '',
+			showModalClosingDate: false,
+			optionsClosingDate: [
+				{
+					value: 1,
+					text: '締日を選択してください',
+				},
+			],
+
+			totalShift: '',
+
 			CONSTANT,
 			hasRole,
 			showLoadingBarTab: false,
@@ -1067,6 +1128,14 @@ export default {
 	methods: {
 		convertValueToText,
 		convertStatusToText,
+
+		handleCloseModalClosingDate() {
+			this.showModalClosingDate = false;
+		},
+
+		handleShowModal() {
+			this.showModalClosingDate = true;
+		},
 
 		onSelectTypeCreateShift(type) {
 			if (type === 'MONTH') {
@@ -2376,6 +2445,10 @@ export default {
 								padding: 5px 0;
 							}
 
+							th.total-shift {
+								min-width: 150px;
+							}
+
 							th.th-employee-number {
                                 position: sticky;
                                 z-index: 10;
@@ -2442,6 +2515,10 @@ export default {
                                 z-index: 8;
                                 left: 150px;
                             }
+
+							td.td-total-shift {
+								min-width: 150px;
+							}
 
                             td.td-employee-number {
                                 position: sticky;
@@ -2786,6 +2863,17 @@ export default {
 			}
 		}
 	}
+
+	.modal-closing-date {
+        .body-item {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .message-error-import-file {
+            margin-bottom: 30px;
+        }
+    }
 
     .create-ai-shift__table {
         margin-bottom: 400px;

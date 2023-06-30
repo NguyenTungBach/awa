@@ -6,9 +6,7 @@
                     <b-row>
                         <b-col>
                             <div class="zone-title">
-                                <span class="title-page"
-                                
-                                >
+                                <span class="title-page">
                                     {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
                                 </span>
                             </div>
@@ -16,37 +14,38 @@
                         <b-col>
                             <div class="zone-item">
                                 <div class="zone-title">
-                                <span class="title-edit"
-                                @click="goToCreateSchedule()"
-                                >
-                                    {{ $t('APP.BUTTON_SIGN_UP') }}
-                                </span>
-                            </div>
+                                    <span
+                                        class="title-edit"
+                                        @click="goToCreateSchedule()"
+                                    >
+                                        {{ $t('APP.BUTTON_SIGN_UP') }}
+                                    </span>
+                                </div>
                             </div>
                         </b-col>
                     </b-row>
                     <LineGray />
                 </div>
             </div>
-                
+
             <div class="page-schedule">
                 <div class="page-schedule__header">
                     <b-row>
                         <b-col>
-                            <div class="zone-title"> 
-                                <div class="zone-title__left"> </div> 
+                            <div class="zone-title">
+                                <div class="zone-title__left" />
                                 <div class="customselect">
                                     <select>
-                                    <option>{{ $t('LIST_SCHEDULE.TABLE_FILL') }} </option>
-                                    <option>2001</option>
-                                    <option>2002</option>
+                                        <option>{{ $t('LIST_SCHEDULE.TABLE_FILL') }} </option>
+                                        <option>2001</option>
+                                        <option>2002</option>
                                     </select>
                                 </div>
                                 <!-- <b-form-select v-model="selected" :options="options" class="zone-title__option"></b-form-select>                            -->
                                 <!-- <span class="title-page">
-                                    {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}  
+                                    {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
                                 </span> -->
-                                <div class="zone-title__right">  </div>
+                                <div class="zone-title__right" />
                             </div>
                         </b-col>
                         <b-col>
@@ -76,22 +75,22 @@
                 </div>
                 <div class="page-schedule__body">
                     <div class="zone-table">
-                        <b-table-simple 
+                        <b-table-simple
                             bordered
-                            no-border-collapse>
+                            no-border-collapse
+                        >
                             <b-thead class="zone-table__head">
-                                <b-tr >
+                                <b-tr>
                                     <b-th class="th-control">
                                         <b-form-checkbox
                                             id="checkbox-1"
+                                            v-model="checked_all"
                                             name="checkbox-1"
                                             class="text-center"
-                                            v-model="checked_all"
                                             @change="checkboxAll"
-                                        >
-                                        </b-form-checkbox>
+                                        />
                                     </b-th>
-                                    <b-th                                        
+                                    <b-th
                                         :rowspan="2"
                                         class="row-date"
                                     >
@@ -106,7 +105,7 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th                                        
+                                    <b-th
                                         :rowspan="2"
                                         class="row-couse-name"
                                     >
@@ -121,7 +120,7 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th                                        
+                                    <b-th
                                         :rowspan="2"
                                     >
                                         <b-row class="row-course-id">
@@ -135,8 +134,7 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th                                        
-                                    >
+                                    <b-th>
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_DEPATURE_PLACE') }}
                                             <b-col class="icon-sorts">
@@ -148,8 +146,7 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th                                        
-                                    >
+                                    <b-th>
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_ARRIVAL_PLACE') }}
                                             <b-col class="icon-sorts">
@@ -161,7 +158,7 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th                                        
+                                    <b-th
                                         :rowspan="2"
                                         class="row-freight-cost"
                                     >
@@ -200,13 +197,23 @@
                                             />
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{schedule.date}}
+                                            {{ schedule.date }}
                                         </b-td>
-                                        <b-td class="text-center">{{schedule.courseName}}</b-td>
-                                        <b-td class="text-center">{{schedule.customerName}}</b-td>
-                                        <b-td class="text-center">{{schedule.depaturePlace}}</b-td>
-                                        <b-td class="text-center">{{schedule.arrivalPlace}}</b-td>
-                                        <b-td class="text-center">{{schedule.freightCost}}</b-td>
+                                        <b-td class="text-center">
+                                            {{ schedule.courseName }}
+                                        </b-td>
+                                        <b-td class="text-center">
+                                            {{ schedule.customerName }}
+                                        </b-td>
+                                        <b-td class="text-center">
+                                            {{ schedule.depaturePlace }}
+                                        </b-td>
+                                        <b-td class="text-center">
+                                            {{ schedule.arrivalPlace }}
+                                        </b-td>
+                                        <b-td class="text-center">
+                                            {{ schedule.freightCost }}
+                                        </b-td>
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-eye"
@@ -222,169 +229,177 @@
                                     </b-tr>
                                 </template>
                             </b-tbody>
-                         
+
                         </b-table-simple>
                     </div>
                 </div>
             </div>
-        </b-container>  
+        </b-container>
         <b-modal
-        id="modal-import"
-        v-model="showModalImport"
-        body-class="modal-import"
-        hide-header
-        hide-footer
-        no-close-on-esc
-        no-close-on-backdrop
-        static
-        @close="handleCloseModalImport"
-    >
-        <div class="text-center">
-            <h5 class="font-weight-bold">
-                運行情報データを取り込む
-            </h5>
-        </div>
-        <div class="body-item">
-            <b-row>
-                <b-col cols="3">
-                    <span class="lable-show-file-name">ファイル</span>
-                </b-col>
+            id="modal-import"
+            v-model="showModalImport"
+            body-class="modal-import"
+            hide-header
+            hide-footer
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+            @close="handleCloseModalImport"
+        >
+            <div class="text-center">
+                <h5 class="font-weight-bold">
+                    運行情報データを取り込む
+                </h5>
+            </div>
+            <div class="body-item">
+                <b-row>
+                    <b-col cols="3">
+                        <span class="lable-show-file-name">ファイル</span>
+                    </b-col>
 
-                <b-col cols="9">
-                    <b-form-file
-                        id="import-file"
-                        ref="importFile"
-                        v-model="fileImport"
-                        plain
-                        type="file"
-                        name="import-file"
-                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                    />
+                    <b-col cols="9">
+                        <b-form-file
+                            id="import-file"
+                            ref="importFile"
+                            v-model="fileImport"
+                            plain
+                            type="file"
+                            name="import-file"
+                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        />
 
-                    <div class="show-file-name" @click="onClickImportFile()">
-                        <span v-if="!fileImport">ファイルを選択</span>
-                        <span v-else>{{ fileImport.name }}</span>
-                    </div>
-                </b-col>
-            </b-row>
-        </div>
-        <div v-show="messageValidateImport" class="text-center message-error-import-file">
-            <span class="text-danger font-weight-bold">{{ messageValidateImport }}</span>
-        </div>
-        <div class="text-center">
-            <b-button
-                pill
-                class="mr-2"
-                @click="handleCloseModalImport()"
-            >
-                キャンセル
-            </b-button>
+                        <div class="show-file-name" @click="onClickImportFile()">
+                            <span v-if="!fileImport">ファイルを選択</span>
+                            <span v-else>{{ fileImport.name }}</span>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+            <div v-show="messageValidateImport" class="text-center message-error-import-file">
+                <span class="text-danger font-weight-bold">{{ messageValidateImport }}</span>
+            </div>
+            <div class="text-center">
+                <b-button
+                    pill
+                    class="mr-2"
+                    @click="handleCloseModalImport()"
+                >
+                    キャンセル
+                </b-button>
 
-            <b-button
-                pill
-                class="btn-color-active-import"
-                @click="handleSaveModalImport()"
-            >
-                取り込み
-            </b-button>
-        </div>
+                <b-button
+                    pill
+                    class="btn-color-active-import"
+                    @click="handleSaveModalImport()"
+                >
+                    取り込み
+                </b-button>
+            </div>
         </b-modal>
     </b-col>
-    
+
 </template>
 
 <script>
 import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
-import { Obj2Param } from '@/utils/Obj2Param';
-import { getToken } from '@/utils/handleToken';
+// import { Obj2Param } from '@/utils/Obj2Param';
+// import { getToken } from '@/utils/handleToken';
 import { setLoading } from '@/utils/handleLoading';
-import { cleanObject } from '@/utils/handleObject';
-import { format2Digit } from '@/utils/generateTime';
-import NodeSchedule from '@/components/NodeSchedule';
-import { getCalendar } from '@/api/modules/calendar';
-import { getListSchedule, postImportFile } from '@/api/modules/courseSchedule';
-import { getNumberDate, getTextDay } from '@/utils/convertTime';
-import { validateSizeFile, validateFileCSV } from '@/utils/validate';
+// import { cleanObject } from '@/utils/handleObject';
+// import { format2Digit } from '@/utils/generateTime';
+// import NodeSchedule from '@/components/NodeSchedule';
+// import { getCalendar } from '@/api/modules/calendar';
+import { postImportFile } from '@/api/modules/courseSchedule';
+// import { getNumberDate, getTextDay } from '@/utils/convertTime';
+// import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 
 export default {
 	name: 'ListSchedule',
 	components: {
 		LineGray,
-		NodeSchedule,
+		// NodeSchedule,
 	},
 
 	data() {
 		return {
-		selected: null,
-        options: [
-          { value: null, text: 'Please select an option' },
-          { value: 'a', text: 'This is First option' },
-          { value: 'b', text: 'Selected Option' },
-          { value: { C: '3PO' }, text: 'This is an option with object value' },
-          { value: 'd', text: 'This one is disabled', disabled: true }
-        ],
-        showModalImport: false,
-        checked_all: false,
-        checkselec : [],
-        file: null,
-        listSchedule: [
-            {
-                id: 1,
-                date: '2022/12/05',
-                courseName: 'テストコース2',
-                customerName: 'B商事',
-                depaturePlace: '徳島港',
-                arrivalPlace: '高松港',
-                freightCost: '500000',
-            },
-            {
-                id: 2,
-                date: '2022/12/25',
-                courseName: 'テストコース2',
-                customerName: 'E商事',
-                depaturePlace: 'B商事',
-                arrivalPlace: '高松港',
-                freightCost: '650000',
-            }
-        ],
-        fileImport: null,
-        messageValidateImport: null,
-        showModalImportFaild: false,
-        listCourseImportFaild: [],
-	}},
-    methods: {
-        checkboxAll(){
-            if (this.checked_all) {
-                this.checkselec = [];
+			selected: null,
+			options: [
+				{ value: null, text: 'Please select an option' },
+				{ value: 'a', text: 'This is First option' },
+				{ value: 'b', text: 'Selected Option' },
+				{ value: { C: '3PO' }, text: 'This is an option with object value' },
+				{ value: 'd', text: 'This one is disabled', disabled: true },
+			],
 
-                const len = this.listSchedule.length;
-                let idx = 0;
+			showModalImport: false,
+			checked_all: false,
+			checkselec: [],
+			file: null,
+			listSchedule: [
+				{
+					id: 1,
+					date: '2022/12/05',
+					courseName: 'テストコース2',
+					customerName: 'B商事',
+					depaturePlace: '徳島港',
+					arrivalPlace: '高松港',
+					freightCost: '500000',
+				},
+				{
+					id: 2,
+					date: '2022/12/25',
+					courseName: 'テストコース2',
+					customerName: 'E商事',
+					depaturePlace: 'B商事',
+					arrivalPlace: '高松港',
+					freightCost: '650000',
+				},
+			],
 
-                while (idx < len) {
-                    this.checkselec.push(this.listSchedule[idx].id);
+			fileImport: null,
+			messageValidateImport: null,
+			showModalImportFaild: false,
+			listCourseImportFaild: [],
+		};
+	},
 
-                    idx++;
-                }
-            } else {
-                this.checkselec = [];
-            }
-        },
+	methods: {
+		checkboxAll(){
+			if (this.checked_all) {
+				this.checkselec = [];
 
-        handleShowCheckbox(id) {
-            return this.checkselec.includes(id);
-        },
-        goToCreateSchedule() {
+				const len = this.listSchedule.length;
+				let idx = 0;
+
+				while (idx < len) {
+					this.checkselec.push(this.listSchedule[idx].id);
+
+					idx++;
+				}
+			} else {
+				this.checkselec = [];
+			}
+		},
+
+		handleShowCheckbox(id) {
+			return this.checkselec.includes(id);
+		},
+
+		goToCreateSchedule() {
 			this.$router.push({ name: 'ListScheduleCreate' });
 		},
-        onClickDetail(){
-            this.$router.push({ name: 'ListScheduleDetail' });
-        },
-        handleClickImport(){
-            this.showModalImport = true;
-        },
-        async handleSaveModalImport() {
+
+		onClickDetail(){
+			this.$router.push({ name: 'ListScheduleDetail' });
+		},
+
+		handleClickImport(){
+			this.showModalImport = true;
+		},
+
+		async handleSaveModalImport() {
 			try {
 				setLoading(true);
 
@@ -433,20 +448,22 @@ export default {
 				setLoading(false);
 			}
 		},
-        onClickImportFile() {
+
+		onClickImportFile() {
 			this.$refs.importFile.$el.click();
 		},
 
 		resetImportFile() {
 			this.$refs.importFile.reset();
 		},
-        handleCloseModalImport() {
+
+		handleCloseModalImport() {
 			this.showModalImport = false;
 			this.resetImportFile();
 		},
-    }
-	
-}
+	},
+
+};
 </script>
 
 <style lang="scss" scoped>
@@ -454,7 +471,7 @@ export default {
     .container{
         max-width: 1500px !important;
     }
-    
+
     .page-schedule {
         &__header {
             .zone-title {
@@ -496,7 +513,6 @@ export default {
                     font-size: 20px;
                     }
             }
-            
 
             .zone-item {
                 display: flex;
@@ -540,7 +556,7 @@ export default {
                     }
             }
             }
-            
+
         }
         &__body{
             .zone-table{
@@ -560,7 +576,7 @@ export default {
 
                                 th {
                                     vertical-align: middle;
-                                
+
                                     min-width: 65px;
                                     height: 41px;
                                     background-color: $main;
@@ -579,7 +595,6 @@ export default {
                                     margin-right: -15px;
 
                                 }
-                                
 
                                 th.th-id {
                                      width: 150px;
@@ -593,7 +608,7 @@ export default {
                                         opacity: 0.7;
                                     }
                                 }
-                               
+
                                 th.th-time {
                                     width: 100px;
                                 }
@@ -632,7 +647,7 @@ export default {
                             }
                         }
                     }
-                } 
+                }
         }
         }
         &__modal {
