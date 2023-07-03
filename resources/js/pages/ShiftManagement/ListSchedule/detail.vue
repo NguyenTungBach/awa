@@ -140,7 +140,7 @@
                                     </b-col>
                                 </b-row>
                             </div>
-                            <TitlePathForm>
+                            <TitlePathForm class="item-not">
                                 {{ $t('DETAIL_SCHEDULE.FEE_INFORMATION') }}
                             </TitlePathForm>
                             <div>
@@ -168,24 +168,24 @@
                                 <b-row class="item-form">
                                     <b-col>
                                         <DetailForm
-                                            :label="$t('DETAIL_SCHEDULE.EXPENSES')"
+                                            :label="$t('DETAIL_SCHEDULE.COMMISSION')"
                                         />
                                     </b-col>
                                 </b-row>
                                 <b-row class="item-form">
                                     <b-col>
                                         <DetailForm
-                                            :label="$t('DETAIL_SCHEDULE.BONUS_TARGET')"
+                                            :label="$t('DETAIL_SCHEDULE.MEAL_SUBSIDY_AMOUNT')"
                                         />
                                     </b-col>
                                 </b-row>
-                                <b-row class="item-form">
+                                <!-- <b-row class="item-form">
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.BONUS_AMOUNT')"
                                         />
                                     </b-col>
-                                </b-row>
+                                </b-row> -->
                             </div>
 
                             <TitlePathForm class="item-not">
