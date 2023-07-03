@@ -338,7 +338,7 @@
                                     </b-input-group>
 
                                 </b-col>
-                                <b-col
+                                <!-- <b-col
                                     :cols="12"
                                     :sm="12"
                                     :md="12"
@@ -353,10 +353,6 @@
                                         </span>
                                     </label>
                                     <b-input-group class="mb-3">
-                                        <!-- <b-form-input
-                                            type="text"
-                                        />
-                                        <span class="freight-cost"> 円 </span> -->
                                         <b-form-select
                                             v-model="bunus_target" :options="bunusTargetOptions"
                                             :text-field="'text'"
@@ -364,7 +360,7 @@
                                         />
                                     </b-input-group>
 
-                                </b-col>
+                                </b-col> -->
                                 <b-col
                                     :cols="12"
                                     :sm="12"
