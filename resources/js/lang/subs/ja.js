@@ -148,6 +148,8 @@ export default {
 		BUTTON_OK: 'OK',
 		TABLE_DATE_EMPLOYEE_NUMBER: '社員番号',
 		TABLE_FULL_NAME: '氏名',
+		STAND_BY: '待機',
+		INTERNAL_BUSINESS: '社内業務',
 		TABLE_DATE_HOLIDAY: '公休',
 		TABLE_DATE_FIXED_DAY_OFF: '固定休',
 		TABLE_DATE_DAY_OFF_REQUEST: '希望休',

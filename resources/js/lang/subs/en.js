@@ -187,7 +187,8 @@ export default {
 
 		TABLE_DATE_EMPLOYEE_NUMBER: 'Employee number',
 		TABLE_FULL_NAME: 'Full name',
-
+		STAND_BY: 'Stand-by',
+		INTERNAL_BUSINESS: 'Internal business',
 		TABLE_DATE_HOLIDAY: 'Holiday',
 		TABLE_DATE_FIXED_DAY_OFF: 'Fixed day off',
 		TABLE_DATE_DAY_OFF_REQUEST: 'Day off request',
