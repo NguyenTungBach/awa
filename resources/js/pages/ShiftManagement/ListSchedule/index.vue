@@ -41,10 +41,6 @@
                                         <option>2002</option>
                                     </select>
                                 </div>
-                                <!-- <b-form-select v-model="selected" :options="options" class="zone-title__option"></b-form-select>                            -->
-                                <!-- <span class="title-page">
-                                    {{ $t('LIST_SCHEDULE.TITLE_LIST_SCHEDULE') }}
-                                </span> -->
                                 <div class="zone-title__right" />
                             </div>
                         </b-col>
@@ -494,10 +490,6 @@ export default {
                 margin: 17px 0;
                 margin-left: 10px;
                 }
-                // &__option{
-                //     width: 150px;
-                //     border: none;
-                // }
                 .customselect {
                     overflow: hidden;
 
@@ -506,9 +498,7 @@ export default {
 
                 .customselect select {
                     border:none;
-                    // -moz-appearance: none;
                     -webkit-appearance: none;
-                    // appearance: none;
                     outline: none;
                     font-size: 20px;
                     }
@@ -561,11 +551,6 @@ export default {
         &__body{
             .zone-table{
             margin-top: 25px;
-        //         &__head{
-        //             background: $main;
-        //             color: $white;
-        //             font-weight: 700;
-        //    }
            ::v-deep {
                     table {
                         thead {

@@ -283,9 +283,9 @@
                                 >
                                     <label for="input-cooperating-company-payment-amount">
                                         {{ $t('CREATE_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -305,9 +305,9 @@
                                 >
                                     <label for="input-hight-way">
                                         {{ $t('CREATE_SCHEDULE.HIGHT_WAY') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -327,9 +327,9 @@
                                 >
                                     <label for="input-expenses">
                                         {{ $t('CREATE_SCHEDULE.EXPENSES') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -372,9 +372,9 @@
                                 >
                                     <label for="input-bunus-amount">
                                         {{ $t('CREATE_SCHEDULE.BONUS_AMOUNT') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
