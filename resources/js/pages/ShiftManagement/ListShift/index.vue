@@ -853,16 +853,15 @@
             <div class="text-center">
                 <b-button
                     pill
-                    class="mr-2 btn-color-active-import"
-                >
-                    OK
-                </b-button>
-
-                <b-button
-                    pill
                     @click="handleCloseModalClosingDate()"
                 >
                     キャンセル
+                </b-button>
+                <b-button
+                    pill
+                    class="mr-2 btn-color-active-import"
+                >
+                    OK
                 </b-button>
             </div>
         </b-modal>
@@ -909,7 +908,11 @@ export default {
 			optionsClosingDate: [
 				{
 					value: 1,
-					text: '締日を選択してください',
+					text: '24日',
+				},
+				{
+					value: 2,
+					text: '25日',
 				},
 			],
 
