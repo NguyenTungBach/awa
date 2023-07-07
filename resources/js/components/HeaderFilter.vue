@@ -2,7 +2,10 @@
     <div class="header-filter">
         <h6>
             <slot name="label-filter">
-                <span id="collapsed-show-hide-filter" v-b-toggle.zone-filter>
+                <span
+                    id="collapsed-show-hide-filter" v-b-toggle.zone-filter
+                    aria-expanded="true"
+                >
                     <i class="fas fa-angle-up when-open" />
                     <i class="fas fa-angle-down when-closed" />
                     <span class="filter-title">{{ $t('FILTER.TITLE') }}</span>
@@ -10,7 +13,7 @@
             </slot>
         </h6>
         <div class="show-filter">
-            <b-collapse id="zone-filter" visible>
+            <b-collapse id="zone-filter">
                 <slot name="zone-filter" />
             </b-collapse>
         </div>
@@ -55,8 +58,12 @@ export default {
         }
     }
 
-    .collapsed > .when-open,
-    .not-collapsed > .when-closed {
+    // .collapsed > .when-open,
+    // .not-collapsed > .when-closed {
+    //     display: none;
+    // }
+    .not-collapsed > .when-closed,
+    .collapsed > .when-open{
         display: none;
     }
 </style>
