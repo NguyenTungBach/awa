@@ -13,6 +13,13 @@
                         </b-col>
                         <b-col>
                             <div class="zone-item">
+                                <!-- <div class="zone-title">
+                                    <span
+                                        class="title-bulk-delete"
+                                    >
+                                        {{ $t('APP.BUTTON_BULK_DELETE') }}
+                                    </span>
+                                </div> -->
                                 <div class="zone-title">
                                     <span
                                         class="title-edit"
@@ -31,7 +38,7 @@
             <div class="page-schedule">
                 <div class="page-schedule__header">
                     <b-row>
-                        <b-col>
+                        <!-- <b-col>
                             <div class="zone-title">
                                 <div class="zone-title__left" />
                                 <div class="customselect">
@@ -43,7 +50,7 @@
                                 </div>
                                 <div class="zone-title__right" />
                             </div>
-                        </b-col>
+                        </b-col> -->
                         <b-col>
                             <div class="zone-item">
                                 <div
@@ -68,6 +75,93 @@
                             </div>
                         </b-col>
                     </b-row>
+                    <HeaderFilter>
+                        <template #zone-filter>
+                            <div class="page-schedule__filter">
+                                <b-row>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="6"
+                                        :xl="6"
+                                    >
+                                        <div class="course-rate-range">
+                                            <label for="input-course-date-range">
+                                                {{ $t('LIST_SCHEDULE.TITLE_COURSE_RATE_RANGE_START_TIME') }}
+                                            </label>
+                                        </div>
+                                        <div class="time-course-rate-range">
+                                            <b-input-group class="input-time-start">
+                                                <b-form-input
+                                                    type="text"
+                                                />
+                                                <b-input-group-append>
+                                                    <b-form-timepicker
+                                                        button-only
+                                                        right
+                                                    />
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                            <div class="from-to">
+                                                <span> ~ </span>
+                                            </div>
+                                            <b-input-group class="input-time-end">
+                                                <b-form-input
+                                                    type="text"
+                                                />
+                                                <b-input-group-append>
+                                                    <b-form-timepicker
+                                                        button-only
+                                                        right
+                                                    />
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </div>
+                                    </b-col>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="4"
+                                        :xl="4"
+                                    >
+                                        <div class="customer-name">
+                                            <label for="input-customer-name">
+                                                {{ $t('LIST_SCHEDULE.TITLE_CUSTOMER_NAME') }}
+                                            </label>
+                                        </div>
+                                        <div class="select-option">
+                                            <b-form-select v-model="customerName" :options="listNameCustomer" />
+                                        </div>
+                                    </b-col>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="2"
+                                        :xl="2"
+                                        class="option_button"
+                                    >
+                                        <div class="group-button">
+                                            <b-button
+                                                pill
+                                                class="btn-reset"
+                                            >
+                                                {{ $t('LIST_SCHEDULE.BUTTON_RESET') }}
+                                            </b-button>
+                                            <b-button
+                                                pill
+                                                class="btn-search"
+                                            >
+                                                {{ $t('LIST_SCHEDULE.BUTTON_SEARCH') }}
+                                            </b-button>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+                            </div>
+                        </template>
+                    </HeaderFilter>
                 </div>
                 <div class="page-schedule__body">
                     <div class="zone-table">
@@ -299,6 +393,7 @@
 <script>
 import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
+import HeaderFilter from '@/components/HeaderFilter';
 // import { Obj2Param } from '@/utils/Obj2Param';
 // import { getToken } from '@/utils/handleToken';
 import { setLoading } from '@/utils/handleLoading';
@@ -310,16 +405,30 @@ import { postImportFile } from '@/api/modules/courseSchedule';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
+// import HeaderFilterVue from '../../../components/HeaderFilter.vue';
 
 export default {
 	name: 'ListSchedule',
 	components: {
 		LineGray,
+		HeaderFilter,
 		// NodeSchedule,
 	},
 
 	data() {
 		return {
+			customerName: null,
+			listNameCustomer: [
+				{
+					value: 1,
+					text: '荷主名',
+				},
+				{
+					value: 2,
+					text: '荷主名',
+				},
+			],
+
 			selected: null,
 			options: [
 				{ value: null, text: 'Please select an option' },
@@ -535,16 +644,71 @@ export default {
                     }
                 }
                 .title-edit{
-                background-color: $main-header;
-                font-size: 18px;
-                border-radius: 30px;
-                color: $white;
-                padding: 6px 10px;
-                &:hover {
-                        opacity: 0.8;
-                        cursor: pointer;
-                    }
+                    background-color: $main-header;
+                    font-size: 18px;
+                    border-radius: 30px;
+                    color: $white;
+                    padding: 6px 10px;
+                    &:hover {
+                            opacity: 0.8;
+                            cursor: pointer;
+                        }
+                }
+                .title-bulk-delete{
+                    background-color: $punch;
+                    font-size: 18px;
+                    border-radius: 30px;
+                    color: $white;
+                    padding: 6px 10px;
+                    &:hover {
+                            opacity: 0.8;
+                            cursor: pointer;
+                        }
+                }
             }
+
+        }
+        &__filter{
+            margin: 30px 0 10px 20px;
+            .time-course-rate-range{
+                display: flex;
+                .input-time-start{
+                    margin: 0 5px;
+                }
+                .input-time-end{
+                    margin: 0 5px;
+                }
+                .from-to{
+                    display: flex;
+                    align-items: center;
+                    font-size: 25px;
+                }
+            }
+            .course-rate-range {
+                margin-left: 5px;
+            }
+            .option_button {
+                margin-block-start: auto;
+                .group-button {
+                    .btn-reset,
+                    .btn-search {
+                        &:hover {
+                            opacity: 0.8;
+                        }
+
+                        border-color: transparent;
+                    }
+                    .btn-reset{
+                        background-color: $gray;
+                        margin: 0 5px;
+                    }
+                    .btn-search {
+                        margin: 0 5px;
+                        background-color: $main;
+                        color: $white;
+                        font-weight: 600;
+                    }
+                }
             }
 
         }
