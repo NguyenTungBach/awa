@@ -72,6 +72,7 @@ export default {
 		PLEASE_SELECT: '選択してください',
 		LABLE_HELP_CALENDAR: 'カーソルキーを使用してカレンダーの日付をナビゲートする',
 		BUTTON_SIGN_UP: '新規登録',
+		BUTTON_BULK_DELETE: '一括削除',
 		BUTTON_RETURN: '戻る',
 		BUTTON_EDIT: '編集',
 		BUTTON_SAVE: '保存',
@@ -226,6 +227,10 @@ export default {
 	},
 	LIST_SCHEDULE: {
 		TITLE_LIST_SCHEDULE: '運行情報',
+		TITLE_COURSE_RATE_RANGE_START_TIME: '運行日 検索範囲指定',
+		TITLE_CUSTOMER_NAME: '荷主名',
+		BUTTON_RESET: 'リセット',
+		BUTTON_SEARCH: '検索',
 		TABLE_COURSE_DATE: '日付',
 		TABLE_COURSE_NAME: '運行名',
 		TABLE_CUSTUM_NAME: '荷主名',
@@ -281,6 +286,9 @@ export default {
 
 	EDIT_SCHEDULE: {
 		TITLE_EDIT_SCHEDULE: '運行情報編集',
+	},
+	FILTER: {
+		TITLE: 'フィルタ',
 	},
 
 	LIST_DRIVER: {

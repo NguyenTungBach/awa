@@ -102,6 +102,7 @@ export default {
 		LABLE_HELP_CALENDAR: 'Use cursor keys to navigate calendar dates',
 
 		BUTTON_SIGN_UP: 'Sign up',
+		BUTTON_BULK_DELETE: 'Bulk delete',
 		BUTTON_RETURN: 'Return',
 		BUTTON_EDIT: 'Edit',
 		BUTTON_SAVE: 'Save',
@@ -276,7 +277,10 @@ export default {
 	},
 	LIST_SCHEDULE: {
 		TITLE_LIST_SCHEDULE: 'List Schedule',
-
+		TITLE_COURSE_RATE_RANGE_START_TIME: 'Course date range',
+		TITLE_CUSTOMER_NAME: 'Customer name',
+		BUTTON_RESET: 'Reset',
+		BUTTON_SEARCH: 'Search',
 		TABLE_COURSE_ID: 'Course ID',
 		TABLE_COURSE_DATE: 'Date',
 		TABLE_COURSE_NAME: 'Course name',
@@ -330,6 +334,9 @@ export default {
 	},
 	EDIT_SCHEDULE: {
 		TITLE_EDIT_SCHEDULE: 'Operation information editing',
+	},
+	FILTER: {
+		TITLE: 'filter',
 	},
 	LIST_DRIVER: {
 		TITLE_LIST_DRIVER: 'List Driver',
