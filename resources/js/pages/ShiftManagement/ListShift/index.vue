@@ -130,7 +130,20 @@
                             </div>
                         </div>
 
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)" class="zone-right">
+                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE || selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)" class="zone-right">
+                            <div
+                                class="item-function btn-excel"
+                                @click="onExportExcel()"
+                            >
+                                <div class="show-icon">
+                                    <i class="fas fa-file-excel" />
+                                </div>
+                                <div class="show-text">
+                                    <span>{{ $t("LIST_SHIFT.BUTTON_DOWNLOAD_EXCEL") }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -551,13 +564,16 @@
                                                 </b-th>
                                             </template>
                                         </template>
+                                        <b-th class="total-shift" :rowspan="2">
+                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
+                                        </b-th>
                                     </b-tr>
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
                                             @click="onSortTable('driver_code', 'shiftTable')"
                                         >
-                                            {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
+                                            {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID") }}
                                             <i
                                                 v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
@@ -575,7 +591,7 @@
                                             class="th-type-employee"
                                             @click="onSortTable('flag', 'shiftTable')"
                                         >
-                                            {{ $t('LIST_SHIFT.TABLE_FLAG') }}
+                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE') }}
                                             <i
                                                 v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
@@ -590,7 +606,7 @@
                                             />
                                         </b-th>
                                         <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
+                                            {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME") }}
                                         </b-th>
                                         <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
                                             <template v-for="(date, idx) in pickerWeek.listDate">
@@ -658,6 +674,9 @@
                                                     />
                                                 </template>
                                             </template>
+                                            <b-td class="td-total-shift">
+                                                {{ totalShift }}
+                                            </b-td>
                                         </tr>
                                     </template>
                                 </b-tbody>
@@ -705,13 +724,16 @@
                                                 </b-th>
                                             </template>
                                         </template>
+                                        <b-th class="total-shift" :rowspan="2">
+                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
+                                        </b-th>
                                     </b-tr>
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
                                             @click="onSortTable('driver_code', 'shiftTable')"
                                         >
-                                            {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
+                                            {{ $t("LIST_SHIFT.TABLE_PAYMENT_COMPANY_ID") }}
                                             <i
                                                 v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
@@ -729,7 +751,7 @@
                                             class="th-type-employee"
                                             @click="onSortTable('flag', 'shiftTable')"
                                         >
-                                            {{ $t('LIST_SHIFT.TABLE_FLAG') }}
+                                            {{ $t('LIST_SHIFT.TABLE_PAYMENT_DUE_DATE') }}
                                             <i
                                                 v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
@@ -744,7 +766,7 @@
                                             />
                                         </b-th>
                                         <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
+                                            {{ $t("LIST_SHIFT.TABLE_COMPANY_NAME") }}
                                         </b-th>
                                         <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
                                             <template v-for="(date, idx) in pickerWeek.listDate">
@@ -812,6 +834,9 @@
                                                     />
                                                 </template>
                                             </template>
+                                            <b-td class="td-total-shift">
+                                                {{ totalShift }}
+                                            </b-td>
                                         </tr>
                                     </template>
                                 </b-tbody>
