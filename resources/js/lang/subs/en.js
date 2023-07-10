@@ -198,8 +198,15 @@ export default {
 		TABLE_DATE_WAIT: 'Wait',
 		TABLE_DATE_WAIT_BETWEEN_TASK: 'Wait between task',
 		TABLE_TOTAL: 'Total by date of meal assistance and commission closing',
-
+		TABLE_HIGHT_WAY_FREE_CUSTOMER_ID: 'Customer ID',
+		TABLE_HIGHT_WAY_DUE_DATE: 'Due date',
+		TABLE_HIGHT_WAY_CUSTOMER_NAME: 'Customer name',
+		TABLE_HIGHT_WAY_MONTHLY_AMOUNT: 'Monthly amount',
 		HALF_DAY_OF: 'Half Day Off',
+		TABLE_PAYMENT_COMPANY_ID: 'Cooperate company ID',
+		TABLE_PAYMENT_DUE_DATE: 'Due date',
+		TABLE_COMPANY_NAME: 'Cooperate company name',
+		TABLE_PAYMENT_MONTHLY_AMOUNT: 'Monthly amount',
 		LABOUR: 'Labour',
 
 		SELECT_WAIT: 'Wait',
