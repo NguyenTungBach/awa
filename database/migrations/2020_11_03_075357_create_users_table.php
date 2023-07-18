@@ -14,15 +14,16 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('user_code');
-            $table->string('user_name');
+            $table->id();
+            $table->string('user_code', 15)->unique();
+            $table->string('user_name', 20);
             $table->string('password');
             $table->string('role')->comment('admin|driver');
             $table->string('jwt_active')->nullable();
-            $table->string('remember_token')->nullable();
-            $table->timestamps();
+            $table->remember_token();
+            $table->integer('status')->nullable()->comment('1: on, 2:off');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
     /**

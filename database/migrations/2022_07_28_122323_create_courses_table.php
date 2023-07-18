@@ -14,20 +14,23 @@ class CreateCoursesTable extends Migration
     public function up()
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->bigInteger('id')->autoIncrement();
-            $table->string('flag', 10)->default("no")->comment('yes|no');
-            $table->string('pot', 10)->default("no")->comment('yes|no');
-            $table->string('course_code');
-            $table->string('course_name');
-            $table->string('start_time');
-            $table->string('end_time');
-            $table->string('break_time');
-            $table->string('start_date');
-            $table->string('end_date')->nullable();
-            $table->string('group')->nullable();
-            $table->float('point')->comment('rate');
-            $table->string('status')->nullable()->comment('on|off');
+            $table->id();
+            $table->integer('customer_id');
+            $table->string('course_name', 20);
+            $table->dateTime('ship_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->dateTime('break_time');
+            $table->string('departure_place', 20);
+            $table->string('arrival_place', 20);
+            $table->decimal('ship_fee', 15);
+            $table->decimal('associate_company_fee', 15)->default(0);
+            $table->decimal('expressway_fee', 15)->default(0);
+            $table->decimal('commission', 15)->default(0);
+            $table->decimal('meal_fee', 15)->default(0);
+            $table->decimal('total_in', 15)->comment('ship_fee - associate_company_fee - expressway_fee + commission - meal_fee')->nullable();
             $table->text('note')->nullable();
+            $table->integer('status')->nullable()->comment('1: on, 2: off');
             $table->timestamps();
             $table->softDeletes();
         });
