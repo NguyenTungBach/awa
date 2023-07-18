@@ -259,7 +259,7 @@
                 </div>
                 <EditNodeListShift
                     :list-select="listNodeEdit"
-					:half-day-off="halfDayOff"
+                    :half-day-off="halfDayOff"
                     :list-course="listCourse"
                     :list-selected="listNodeEditSelected"
                     @add="onAddNode"
@@ -343,7 +343,7 @@ export default {
 			listUpdate: [],
 
 			reRenderTable: 1,
-            courseDisabled: [],
+			courseDisabled: [],
 		};
 	},
 
@@ -409,37 +409,37 @@ export default {
 			setLoading(false);
 		},
 
-        handleGetAllCourseWork(idx = null) {
-            const result = [];
+		handleGetAllCourseWork(idx = null) {
+			const result = [];
 
-            if (idx >= 0) {
-                const len =  this.listShift.length;
-                let idxDriver = 0;
+			if (idx >= 0) {
+				const len = this.listShift.length;
+				let idxDriver = 0;
 
-                while (idxDriver < len) {
-                    const arrValue = this.listShift[idxDriver].shift_list[idx].value;
-                    // console.log(`loop: ${idxDriver} - ${idx}`);
+				while (idxDriver < len) {
+					const arrValue = this.listShift[idxDriver].shift_list[idx].value;
+					// console.log(`loop: ${idxDriver} - ${idx}`);
 
-                    const lenValue = arrValue.length;
-                    let idxValue = 0;
+					const lenValue = arrValue.length;
+					let idxValue = 0;
 
-                    while (idxValue < lenValue) {
-                        const TYPE = arrValue[idxValue].type;
-                        if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
-                            result.push(TYPE);
-                        }
+					while (idxValue < lenValue) {
+						const TYPE = arrValue[idxValue].type;
+						if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
+							result.push(TYPE);
+						}
 
-                        idxValue++;
-                    }
+						idxValue++;
+					}
 
-                    idxDriver++;
-                }
-            }
+					idxDriver++;
+				}
+			}
 
-            // console.log(result);
+			// console.log(result);
 
-            return result;
-        },
+			return result;
+		},
 
 		createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
@@ -451,12 +451,12 @@ export default {
 				// check course choosed
 				// console.log('list shift: ', this.listShift);
 
-                // console.log(data);
+				// console.log(data);
 
 				const DATE_CHECK = data.dataNode.date;
 				const lenListUpdate = this.listUpdate.length;
 				let idxUpdate = 0;
-				let listCheck = [];
+				const listCheck = [];
 
 				if (lenListUpdate > 0) {
 					while (idxUpdate < lenListUpdate) {
@@ -468,7 +468,7 @@ export default {
 					}
 				}
 
-				let listCourseTypeCheck = [];
+				const listCourseTypeCheck = [];
 				let TYPE_CHECK = '';
 				idxUpdate = 0;
 				let idx = 0;
@@ -600,15 +600,15 @@ export default {
 
 				// if (lenCheck > 0) {
 				// 	while (idxUpdate < this.listCourse.length) {
-                //         let check = false;
+				//         let check = false;
 
 				// 		while (idx < lenCheck) {
 				// 			if (this.listCourse[idxUpdate].value === listCourseTypeCheck[idx]) {
 				// 				check = true;
-                //                 listCourseCanChoose.push({
-                //                     ...this.listCourse[idxUpdate],
-                //                     disabled: true
-                //                 });
+				//                 listCourseCanChoose.push({
+				//                     ...this.listCourse[idxUpdate],
+				//                     disabled: true
+				//                 });
 
 				// 				break;
 				// 			}
@@ -616,10 +616,10 @@ export default {
 				// 			idx++;
 				// 		}
 				// 		if (check === false) {
-                //             listCourseCanChoose.push({
-                //                 ...this.listCourse[idxUpdate],
-                //                 disabled: false
-                //             });
+				//             listCourseCanChoose.push({
+				//                 ...this.listCourse[idxUpdate],
+				//                 disabled: false
+				//             });
 				// 		}
 
 				// 		idx = 0;
@@ -631,24 +631,23 @@ export default {
 				// 	this.listCourse = JSON.parse(JSON.stringify(listCourseCanChoose));
 				// }
 
-                const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
-                this.courseDisabled = COURSE_DISABLED;
+				const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
+				this.courseDisabled = COURSE_DISABLED;
 
-                const lenCourse = this.listCourse.length;
-                let idxCourse = 0;
+				const lenCourse = this.listCourse.length;
+				let idxCourse = 0;
 
-                while (idxCourse < lenCourse) {
-                    if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
-                        this.listCourse[idx].disabled = true;
-                    } else {
-                        this.listCourse[idx].disabled = false;
-                    }
+				while (idxCourse < lenCourse) {
+					if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
+						this.listCourse[idx].disabled = true;
+					} else {
+						this.listCourse[idx].disabled = false;
+					}
 
-                    idxCourse++;
-                }
+					idxCourse++;
+				}
 
-                // console.log(this.listCourse);
-
+				// console.log(this.listCourse);
 
 				if (this.listNodeEditSelected.length > 0) {
 					this.modalDetail = true;
@@ -665,7 +664,7 @@ export default {
 		async handleGetListCourse() {
 			const LABOUR = {
 				value: 'L-0',
-				text: this.$t("LIST_SHIFT.LABOUR"),
+				text: this.$t('LIST_SHIFT.LABOUR'),
 				flag: 'yes',
 				status: 'on',
 				start_time: '',
@@ -682,7 +681,6 @@ export default {
 					this.listCourse.push(LABOUR);
 					const len = data.length;
 					let idx = 0;
-
 
 					while (idx < len) {
 						this.listCourse.push({
@@ -969,7 +967,7 @@ export default {
 				if (dataUpdate[idx].type === 'H-0') {
 					result.push({
 						type: dataUpdate[idx].type,
-						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF)
+						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF),
 					});
 				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
 					result.push({
@@ -1195,11 +1193,11 @@ export default {
 			let idxCourse = 0;
 
 			while (idxCourse < lenCourse) {
-                if (valueCourse) {
-                    this.listCourse[idxCourse].disabled = valueCourse;
-                } else {
-                    this.listCourse[idxCourse].disabled = (this.courseDisabled).includes(this.listCourse[idxCourse].value);
-                }
+				if (valueCourse) {
+					this.listCourse[idxCourse].disabled = valueCourse;
+				} else {
+					this.listCourse[idxCourse].disabled = (this.courseDisabled).includes(this.listCourse[idxCourse].value);
+				}
 
 				idxCourse++;
 			}
