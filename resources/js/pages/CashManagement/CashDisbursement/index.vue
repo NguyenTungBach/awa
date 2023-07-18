@@ -14,6 +14,18 @@
                     </b-row>
                     <LineGray />
                 </div>
+                <div
+                    class="zone-right"
+                >
+                    <div class="item-function btn-excel">
+                        <div class="show-icon">
+                            <i class="fas fa-file-excel" />
+                        </div>
+                        <div class="show-text">
+                            <span>{{ $t("LIST_SHIFT.BUTTON_DOWNLOAD_EXCEL") }}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="page-list-cashDisbursement__body">
                     <div class="zone-table">
                         <b-table-simple
@@ -328,6 +340,57 @@ export default {
     @import '@/scss/variables';
 
     .page-list-cashDisbursement {
+        .zone-right {
+            display: flex;
+            justify-content: flex-end;
+            .item-function {
+                padding: 10px 20px;
+                justify-content: flex-end;
+
+                cursor: pointer;
+
+                .show-icon {
+                    i {
+                        font-size: 25px;
+                        color: $dusty-gray;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        margin-bottom: 5px;
+                    }
+                }
+
+                .show-text {
+                    text-align: center;
+                    font-weight: bold;
+                    color: $dusty-gray;
+                    font-size: 12px;
+                }
+
+                &:hover {
+                    .show-icon {
+                        i {
+                            color: $di-serria;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            margin-bottom: 5px;
+                        }
+                    }
+
+                    .show-text {
+                        text-align: center;
+                        font-weight: bold;
+                        color: $di-serria;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
 
         .page-list-cashDisbursement__body {
             .zone-table {
