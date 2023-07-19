@@ -148,7 +148,7 @@
                                             <b-tr>
                                                 <b-th
                                                     class="th-sort"
-                                                    :colspan="2"
+                                                    :colspan="1"
                                                 >
                                                     {{ $t('LIST_CASH.TABLE_NO') }}
                                                 </b-th>
@@ -172,16 +172,28 @@
                                                 </b-th>
                                                 <b-th
                                                     class="th-remarks"
-                                                    :colspan="4"
+                                                    :colspan="3"
                                                 >
                                                     {{ $t('LIST_CASH.TABLE_REMARKS') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="1"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_EDIT') }}
+                                                </b-th>
+                                                <b-th
+                                                    class="th-sort"
+                                                    :colspan="1"
+                                                >
+                                                    {{ $t('LIST_CASH.TABLE_DELETE') }}
                                                 </b-th>
                                             </b-tr>
                                         </b-thead>
                                         <b-tbody>
                                             <template v-for="(course, idx) in listCashDeital">
                                                 <b-tr :key="`item-cash-${idx + 1}`">
-                                                    <b-td class="td-cash-id" :colspan="2">
+                                                    <b-td class="td-cash-id" :colspan="1">
                                                         {{ course.no }}
                                                     </b-td>
                                                     <b-td class="td-cash-name" :colspan="2">
@@ -193,13 +205,22 @@
                                                     <b-td class="td-cash-account-receiable" :colspan="2">
                                                         {{ course.payment_method }}
                                                     </b-td>
-                                                    <b-td class="td-cash-total-account-receiable" :colspan="4">
+                                                    <b-td class="td-cash-total-account-receiable" :colspan="3">
                                                         {{ course.remarks }}
+                                                    </b-td>
+                                                    <b-td class="td-cash-edit td-control" :colspan="1">
+                                                        <i class="fas fa-pen" @click="onClickEdit(course.id)" />
+                                                    </b-td>
+                                                    <b-td class="td-cash-delete td-control" :colspan="1">
+                                                        <i
+                                                            class="fas fa-trash-alt"
+                                                            @click="onClickShowModalDelete()"
+                                                        />
                                                     </b-td>
                                                 </b-tr>
                                             </template>
                                             <b-tr>
-                                                <b-th :colspan="4">
+                                                <b-th class="total-cash" :colspan="4">
                                                     {{ $t('LIST_CASH.TABLE_TOTAL') }}
                                                 </b-th>
                                                 <b-td>
@@ -213,6 +234,37 @@
                         </b-row>
                     </div>
                 </div>
+                <b-modal
+                    id="modal-delete"
+                    v-model="showModalDelete"
+                    body-class="modal-delete"
+                    hide-header
+                    hide-footer
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    static
+                    @close="handleCloseModalDelete()"
+                >
+                    <div class="text-center">
+                        <h5 class="font-weight-bolde">
+                            {{ $t('LIST_CASH.MESSAGE_DELETE') }}
+                        </h5>
+                    </div>
+                    <div class="text-center">
+                        <b-button
+                            pill
+                            @click="handleCloseModalDelete()"
+                        >
+                            キャンセル
+                        </b-button>
+                        <b-button
+                            pill
+                            class="mr-2 btn-color-active-import"
+                        >
+                            OK
+                        </b-button>
+                    </div>
+                </b-modal>
             </div>
         </b-container>
     </b-col>
@@ -232,6 +284,8 @@ export default {
 	data() {
 		return {
 			idCash: null,
+			showModalDelete: false,
+			// idCashIn: null,
 			isForm: {
 				course_id: '',
 				course_name: '',
@@ -245,6 +299,7 @@ export default {
 			listCashDeital: [
 				{
 					no: 1,
+					id: 1,
 					date: '22/1/2019',
 					deposit_amount: '122,33',
 					payment_method: '233,22',
@@ -252,6 +307,7 @@ export default {
 				},
 				{
 					no: 2,
+					id: 2,
 					date: '15/3/2020',
 					deposit_amount: '155,33',
 					payment_method: '144,22',
@@ -268,6 +324,18 @@ export default {
 
 		onClickCreate() {
 			this.$router.push({ name: 'ListCashReceiptCreate', params: { id: this.idCash }});
+		},
+
+		onClickEdit(idCashIn) {
+			this.$router.push({ name: 'ListCashReceiptEdit', params: { id: idCashIn }});
+		},
+
+		handleCloseModalDelete() {
+			this.showModalDelete = false;
+		},
+
+		onClickShowModalDelete() {
+			this.showModalDelete = true;
 		},
 	},
 };
@@ -317,10 +385,30 @@ export default {
                         // border-left: 1px solid gray;
                     }
                     .th-remarks {
-                                min-width: 200px;
-                            }
+                        min-width: 200px;
+                        text-align: center;
+                        background-color: #FFF4E4;
+                    }
+                    .th-sort {
+                        text-align: center;
+                        background-color: #FFF4E4;
+                    }
+                    .total-cash {
+                        text-align: center;
+                    }
+                    td.td-control {
+                        text-align: center;
+                        i {
+                            color: $dusty-gray;
+                            font-size: 18px;
+                            cursor: pointer;
+                        }
+                    }
                 }
             }
+        }
+        .font-weight-bolde{
+            margin: 30px 0;
         }
     }
 </style>
