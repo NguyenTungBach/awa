@@ -325,13 +325,8 @@ export default {
 	},
 
 	methods: {
-		onClickDetail(scope) {
-			this.$router.push({
-				name: 'ListCashDisbursementDetail',
-				param: {
-					id: scope.id,
-				},
-			});
+		onClickDetail(scopeId) {
+			this.$router.push({ name: 'ListCashDisbursementDetail', params: { id: scopeId }});
 		},
 	},
 };

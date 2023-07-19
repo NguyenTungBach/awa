@@ -618,6 +618,8 @@ export default {
 		TABLE_MONTHLY_DEPOSIT_AMOUNT: 'Monthly deposit amount',
 		TABLE_CURRENT_MONTH_BALANCE: 'current month balance',
 		TABLE_DETAIL: 'Detail',
+		BUTTON_RETURN: 'Return',
+		BUTTON_KEEP: 'Keep',
 
 		TITLE_CASH_DETAIL: 'Deposit Information Details',
 		FORM_BASIC_INFORMATION: 'Shipper information',
@@ -652,6 +654,9 @@ export default {
 		TABLE_CASH_DISBURSEMENT_PAYMENT_METHOD: 'Withdrawal method',
 		TABLE_CASH_DISBURSEMENT_REMARKS: 'Remarks',
 		TABLE_CASH_DISBURSEMENT_TOTAL: 'Withdrawal amount for the current month',
+		TABLE_EDIT: 'Edit',
+		TABLE_DELETE: 'Delete',
+		MESSAGE_DELETE: 'Are you sure you want to delete this data?',
 
 		TITLE_CASH_DISBURSEMENT_CREATE: 'Withdrawal information registration',
 		CASH_DISBURSEMENT_PAYMENT_DAY: 'Withdrawal date',

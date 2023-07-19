@@ -1,20 +1,20 @@
 <template>
     <b-col>
         <b-container>
-            <div class="page-cashDisbursement-create">
-                <div class="page-cashDisbursement-create__header">
+            <div class="page-cash-create">
+                <div class="page-cash-create__header">
                     <b-row>
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('LIST_CASH.TITLE_CASH_DISBURSEMENT_CREATE') }}
+                                    {{ $t('LIST_CASH.TITLE_CASH_CREATE') }}
                                 </span>
                             </div>
                         </b-col>
                     </b-row>
                     <LineGray />
                 </div>
-                <div class="page-cashDisbursement-create__body">
+                <div class="page-cash-create__body">
                     <div class="body-control">
                         <b-row>
                             <b-col>
@@ -24,13 +24,13 @@
                                         class="btn-return"
                                         @click="onClickReturn()"
                                     >
-                                        {{ $t('APP.BUTTON_RETURN') }}
+                                        {{ $t('LIST_CASH.BUTTON_RETURN') }}
                                     </b-button>
                                     <b-button
                                         pill
                                         class="btn-color-active btn-save"
                                     >
-                                        {{ $t('APP.BUTTON_SAVE') }}
+                                        {{ $t('LIST_CASH.BUTTON_KEEP') }}
                                     </b-button>
                                 </div>
                             </b-col>
@@ -62,7 +62,7 @@
                                 <div class="zone-form">
                                     <!-- <div class="zone-form__header">
                                         <TitlePathForm>
-                                            {{ $t('LIST_CASH.FORM_CASH_DISBURSEMENT_BASIC_INFORMATION') }}
+                                            {{ $t('CUSTOMER_CREATE.FORM_BASIC_INFORMATION') }}
                                         </TitlePathForm>
                                     </div> -->
                                     <div class="zone-form__body">
@@ -76,7 +76,7 @@
                                                     :xl="12"
                                                 >
                                                     <label for="input-payment-day">
-                                                        {{ $t('LIST_CASH.CASH_DISBURSEMENT_PAYMENT_DAY') }}
+                                                        {{ $t('LIST_CASH.PAYMENT_DAY') }}
                                                         <span class="text-danger">
                                                             *
                                                         </span>
@@ -110,7 +110,7 @@
                                             <b-row>
                                                 <b-col>
                                                     <label for="input-deposit-day">
-                                                        {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_DEPOSIT_AMOUNT') }}
+                                                        {{ $t('LIST_CASH.TABLE_DEPOSIT_AMOUNT') }}
                                                         <span class="text-danger">
                                                             *
                                                         </span>
@@ -143,7 +143,7 @@
                                                 >
                                                     <div class="item-form">
                                                         <label for="input-payment-method">
-                                                            {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_PAYMENT_METHOD') }}
+                                                            {{ $t('LIST_CASH.TABLE_PAYMENT_METHOD') }}
                                                         </label>
                                                         <span class="text-danger">
                                                             *
@@ -231,7 +231,7 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListCashDisbursement' });
+			this.$router.push({ name: 'ListCashReceipt' });
 		},
 	},
 };
@@ -239,7 +239,7 @@ export default {
 <style lang="scss" scoped>
     @import '@/scss/variables';
 
-    .page-cashDisbursement-create {
+    .page-cash-create {
         &__body {
             .body-form {
                 border: 1px solid $geyser;
