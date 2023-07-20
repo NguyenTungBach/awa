@@ -14,21 +14,17 @@ class CreateDriversTable extends Migration
     public function up()
     {
         Schema::create('drivers', function (Blueprint $table) {
-            $table->bigInteger('id')->autoIncrement();
-            $table->string('flag')->nullable()->comment('lead|full|part');
-            $table->string('driver_code');
-            $table->string('driver_name');
-            $table->string('grade')->default('0');
-            $table->string('start_date');
-            $table->string('end_date')->nullable();
-            $table->string('birth_day');
+            $table->id();
+            $table->integer('type')->comment('1: manager, 2: full-time, 3: part-time, 4: associate company');
+            $table->string('driver_code', 15)->unique();
+            $table->string('driver_name', 15);
+            $table->dateTime('start_date')->comment('day join company');
+            $table->dateTime('end_date')->nullable()->comment('retirement');
+            $table->string('car', 20)->nullable();
             $table->text('note')->nullable();
-            $table->string('working_day')->nullable();
-            $table->string('day_of_week')->nullable();
-            $table->string('working_time')->nullable();
-            $table->string('status')->nullable()->comment('on|off');
-            $table->timestamps();
+            $table->string('status')->nullable()->comment('1:on, 2: off');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
