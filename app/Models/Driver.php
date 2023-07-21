@@ -20,64 +20,36 @@ class Driver extends Model
     use SoftDeletes;
 
     protected $table = 'drivers';
-    //const flag
-    const DRIVER_FLAG_POSITION_LEADER = 'lead'; // leader
-    const DRIVER_FLAG_POSITION_FULL_TIME = 'full';  //full time
-    const DRIVER_FLAG_POSITION_PART_TIME = 'part';  //part time
+    public $timestamps = false;
 
-    //const status
-    const DRIVER_STATUS_WORK = 'on';  // driver work
-    const DRIVER_STATUS_OFF = 'off';  //hearse off
-
-    //cons time OT
-    const DRIVER_TIME_WORK_DAILY = 'daily';  // driver cannot over 15h/day
-    const DRIVER_TIME_WORK_MONTH = 'month';  //driver cannot OT over 40h/month
-
-
-    // const table
-    const DRIVER_FLAG = "flag";
-    const DRIVER_CODE = "driver_code";
-    const DRIVER_NAME = "driver_name";
-    const DRIVER_START_DATE = "start_date";
-    const DRIVER_END_DATE = "end_date";
-    const DRIVER_BIRTH_DAY = "birth_day";
-    const DRIVER_NOTE = "note";
-    const DRIVER_WORKING_DAY = "working_day";
-    const DRIVER_DAY_OF_WEEK = "day_of_week";
-    const DRIVER_WORKING_TIME = "working_time";
-    const DRIVER_STATUS = "status";
-    const GRADE = 'grade';
-
-    protected $fillable = [self::DRIVER_FLAG, self::DRIVER_CODE, self::GRADE, self::DRIVER_NAME, self::DRIVER_START_DATE, self::DRIVER_END_DATE, self::DRIVER_BIRTH_DAY, self::DRIVER_NOTE, self::DRIVER_WORKING_DAY,
-        self::DRIVER_DAY_OF_WEEK, self::DRIVER_WORKING_TIME, self::DRIVER_STATUS];
+    protected $dates = ['deleted_at'];
 
     protected $casts = [
-        'data' => 'array'
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    /*  Relationships  */
-    public function driverCourse()
+    protected $fillable = [
+        'type',
+        'driver_code',
+        'driver_name',
+        'start_date',
+        'end_date',
+        'car',
+        'note',
+        'status',
+        'created_at',
+        'updated_at'
+    ];
+
+    public function scopeSortByForDriver($query)
     {
-        return $this->hasMany(DriverCourse::class, 'driver_code', 'driver_code');
+        if (request()->filled('field') && request()->filled('sortby')) {
+            $field = request()->get('field');
+            $sortby = request()->get('sortby');
+            $query->orderBy($field, $sortby);
+        }
+        return $query;
     }
 
-    public function course()
-    {
-        return $this->belongsToMany(Course::class, 'driver_courses', 'driver_code', 'course_code');
-    }
-
-    public function dayOff()
-    {
-        return $this->hasMany(DayOff::class, 'driver_code', 'driver_code');
-    }
-    public function reports(){
-        return $this->hasMany(Report::class,'driver_code','driver_code');
-    }
-    public function resultAI()
-    {
-        return $this->hasMany(ResultAI::class,'driver_code','driver_code');
-    }
-    public function grades() {
-        return $this->hasMany(Grade::class, 'driver_code', 'driver_code');
-    }
 }

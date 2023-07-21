@@ -76,11 +76,7 @@ class DriverController extends Controller
      */
     public function index(DriverRequest $request)
     {
-        $driver = $this->repository->listDriver($request);
-        if ($driver['status'] != 'success') {
-            return $this->responseJsonError($driver['code'], $driver['message']);
-        }
-        return $this->responseJson($driver['code'], isset($driver['data'])?$driver['data']:null);
+        return $this->repository->listDriver($request);
     }
 
     /**
@@ -120,11 +116,12 @@ class DriverController extends Controller
      */
     public function store(DriverRequest $request)
     {
-        $createDriver = $this->repository->create($request->all());
-        if ($createDriver['status'] != 'success') {
-            return $this->responseJsonError($createDriver['code'], $createDriver['message'], $createDriver['message']);
+        try {
+            $data = $this->repository->create($request->all());
+            return $this->responseJson(200, new DriverResource($data));
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return $this->responseJson($createDriver['code'], new DriverResource($createDriver['data']), $createDriver['message']);
     }
 
     /**
@@ -166,9 +163,8 @@ class DriverController extends Controller
     public function show($id)
     {
         try {
-            $driver = $this->repository->getOne($id);
-            if ($driver['status'] != 'success') return $this->responseJsonError($driver['code'], $driver['message'], $driver['message']);
-            return $this->responseJson($driver['code'], new DriverResource($driver['data']));
+            $data = $this->repository->find($id);
+            return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -227,16 +223,9 @@ class DriverController extends Controller
      */
     public function update(DriverRequest $request, $id)
     {
-        $r = ['id' => $id];
-        $validator = Validator::make($r, ['id' => 'required|exists:drivers,id',]);
-        if ($validator->fails()) {
-            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, $validator->messages());
-        }
-        $driver = $this->repository->update($request->all(), $id);
-        if ($driver['status'] != 'success') {
-            return $this->responseJsonError($driver['code'], $driver['message'], $driver['message']);
-        }
-        return $this->responseJson(CODE_SUCCESS, new UserResource($driver['data']), $driver['message']);
+        $attributes = $request->except([]);
+        $data = $this->repository->update($attributes, $id);
+        return $this->responseJson(200, new BaseResource($data));
     }
 
     /**
@@ -270,9 +259,6 @@ class DriverController extends Controller
     public function destroy($id)
     {
         $driver = $this->repository->destroy($id);
-        if ($driver['status']!='success'){
-            return $this->responseJsonError($driver['code'],$driver['message'],$driver['message']);
-        }
-        return $this->responseJson($driver['code'], null,$driver['message']);
+        return $this->responseJson($driver['code'], null,$driver);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\DriverCourse;
-use App\Models\ResultAI;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,5 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(UserSeeder::class);
+        $this->call(DriverSeeder::class);
     }
 }
