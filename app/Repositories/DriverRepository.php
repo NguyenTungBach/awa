@@ -103,7 +103,7 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
     {
         try {
             $driver = $this->model->find($id);
-            if (!$driver) return ResponseService::responseData(Response::HTTP_METHOD_NOT_ALLOWED, 'error', trans('errors.data_not_found'));
+            if (!$driver) return ResponseService::responseData(Response::HTTP_NOT_FOUND, 'error', trans('errors.data_not_found'));
 
             $driver->delete();
         }catch (\Exception $exception){

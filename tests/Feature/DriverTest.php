@@ -971,7 +971,7 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->delete('api/driver/' . 9 . "?token=".$token)
             ->assertStatus(Response::HTTP_OK);
-        $this->assertEquals(\Illuminate\Http\Response::HTTP_METHOD_NOT_ALLOWED, $response->decodeResponseJson()['code']);
+        $this->assertEquals(\Illuminate\Http\Response::HTTP_NOT_FOUND, $response->decodeResponseJson()['code']);
     }
 
 }
