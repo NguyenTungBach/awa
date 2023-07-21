@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Kreait\Firebase\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Arr;
+use Helper\ResponseService;
 
 class UserController extends BaseController
 {
@@ -79,11 +80,64 @@ class UserController extends BaseController
      */
     public function index(UserRequest $request)
     {
-        $users = $this->repository->getPagination($request);
-        if ($users['status']!='success'){
-            return  $this->responseJsonError($users['code'],$users['message']);
+        try {
+            $result = $this->repository->getAll($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, UserResource::collection($result), LIST_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());
         }
-        return $this->responseJson($users['code'], UserResource::collection($users['data']));
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/user",
+     *   tags={"User"},
+     *   summary="Add create",
+     *   operationId="user_create",
+     * @OA\RequestBody(
+     *       description="role = 'admin|driver'",
+     *       @OA\MediaType(
+     *          mediaType="application/json",
+     *          example={"user_name": "Admin","user_code": "111111","password": "abc12345678","role": "admin"},
+     *          @OA\Schema(
+     *            required={"user_name"},
+     *            @OA\Property(
+     *              property="name",
+     *              format="string",
+     *            ),
+     *         )
+     *      )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id":1,
+     *     "role":"admin",
+     *     "name":"Nguyen",
+     *     "id":"1",
+     *     "created_at":1570031021}}}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * @param UserRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store(UserRequest $request)
+    {
+        try {
+            $result = $this->repository->create($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, new UserResource($result), CREATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $exception->getMessage());
+        }
     }
 
     /**
@@ -135,11 +189,12 @@ class UserController extends BaseController
     public function show($id)
     {
         try {
-            $user = $this->repository->getOne($id);
-            if ($user['status'] != 'success') return $this->responseJsonError($user['code'],$user['message'],$user['message']);
-            return $this->responseJson($user['code'], new UserResource($user['data']));
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->getDetail($id);
+
+            return $this->responseJson(Response::HTTP_OK, new UserResource($result), SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
         }
     }
 
@@ -206,64 +261,17 @@ class UserController extends BaseController
      */
     public function update(UserRequest $request, $id)
     {
-        $r = ['id' => $id];
-        $validator = Validator::make($r, ['id' => 'required|exists:users,id',]);
-        if ($validator->fails()) {
-            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, $validator->messages());
+        try {
+            $user = $this->repository->find($id);
+            $result = $this->repository->update($request->all(), $id);
+
+            return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, UPDATE_ERROR, $exception->getMessage());
         }
-        $user = $this->repository->update($request->all(), $id);
-        if ($user['status']!='success'){
-            return $this->responseJsonError($user['code'],$user['message'],$user['message']);
-        }
-        return $this->responseJson(CODE_SUCCESS, new UserResource($user['data']),$user['message']);
     }
 
-    /**
-     * @OA\Post(
-     *   path="/api/user",
-     *   tags={"User"},
-     *   summary="Add create",
-     *   operationId="user_register",
-     * @OA\RequestBody(
-     *       description="role = 'admin|driver'",
-     *       @OA\MediaType(
-     *          mediaType="application/json",
-     *          example={"user_name": "Nguyen","user_code": "111111","password": "abc122998833","role": "admin"},
-     *          @OA\Schema(
-     *            required={"user_name"},
-     *            @OA\Property(
-     *              property="name",
-     *              format="string",
-     *            ),
-     *         )
-     *      )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":{{"id":1,
-     *     "role":"admin",
-     *     "name":"Nguyen",
-     *     "id":"1",
-     *     "created_at":1570031021}}}
-     *     )
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * @param UserRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function store(UserRequest $request)
-    {
-        $createUser = $this->repository->create($request->all());
-        if ($createUser['status']!='success'){
-            return $this->responseJsonError($createUser['code'], $createUser['message'], $createUser['message']);
-        }
-        return $this->responseJson($createUser['code'],new UserResource($createUser['data']),$createUser['message']);
-    }
     /**
      * @OA\Delete(
      *   path="/api/user/{id}",
@@ -291,13 +299,13 @@ class UserController extends BaseController
      * */
     public function destroy($id)
     {
-        $user = $this->repository->destroy($id);
-        if ($user['status']!='success'){
-            return $this->responseJsonError($user['code'],$user['message'],$user['message']);
+        $result =  $this->repository->destroy($id);
+        if ($result) {
+            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
         }
-        return $this->responseJson($user['code'], null,$user['message']);
-    }
 
+        return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR);
+    }
 
     /**
      * @OA\Post(

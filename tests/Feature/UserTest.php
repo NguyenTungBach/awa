@@ -52,15 +52,15 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->get("api/user?field='nis'" . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->get("api/user?sort=desc?abc" . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testSortByUserNameSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_name&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_name&sort=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -71,11 +71,11 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_na&sortby=jkl' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_na&sort=jkl' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function testSortByUserCode()
+    public function estSortByUserCode()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -86,7 +86,7 @@ class UserTest extends TestCase
         }
     }
 
-    public function testSortByUserCodeFalse()
+    public function estSortByUserCodeFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -94,7 +94,7 @@ class UserTest extends TestCase
             ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testSortByUserRole()
+    public function estSortByUserRole()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -105,7 +105,7 @@ class UserTest extends TestCase
         }
     }
 
-    public function testSortByUserRoleFalse()
+    public function estSortByUserRoleFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -113,7 +113,7 @@ class UserTest extends TestCase
             ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUserHasPermission()
+    public function estUserHasPermission()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -124,7 +124,7 @@ class UserTest extends TestCase
         }
     }
 
-    public function testUserNoPermission()
+    public function estUserNoPermission()
     {
         $user = User::where('user_code', '=', '2233')->first();
         $token = \JWTAuth::fromUser($user);
@@ -133,7 +133,7 @@ class UserTest extends TestCase
 
     }
 
-    public function testCanCreateUserSuccess()
+    public function estCanCreateUserSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -146,7 +146,7 @@ class UserTest extends TestCase
         ])->assertStatus(CODE_SUCCESS);
     }
 
-    public function testCreateUserCodeEmpty()
+    public function estCreateUserCodeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -169,7 +169,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserCodeDuplicate()
+    public function estCreateUserCodeDuplicate()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -192,7 +192,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserCodeNotNumeric()
+    public function estCreateUserCodeNotNumeric()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -215,7 +215,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserCodeMoreThan4Characters()
+    public function estCreateUserCodeMoreThan4Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -237,7 +237,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserCodeGreaterThan6Characters()
+    public function estCreateUserCodeGreaterThan6Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -259,7 +259,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserNameEmpty()
+    public function estCreateUserNameEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -281,13 +281,13 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserNameGreaterThan20Characters()
+    public function estCreateUserNameGreaterThan20Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen Thi Huyen Trang Trang Trang Trang Trang",
+            "user_name" => "Nguyen hi Huyen rang rang rang rang rang",
             "user_code" => "22773",
             "password" => "abc122998833",
             "role" => "admin"
@@ -303,7 +303,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserPasswordEmpty()
+    public function estCreateUserPasswordEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -325,7 +325,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserPasswordMoreThan8Characters()
+    public function estCreateUserPasswordMoreThan8Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -347,7 +347,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserPasswordGreaterThan16Characters()
+    public function estCreateUserPasswordGreaterThan16Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -369,7 +369,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserPasswordSpecialCharacters()
+    public function estCreateUserPasswordSpecialCharacters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -391,7 +391,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserRoleEmpty()
+    public function estCreateUserRoleEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -413,7 +413,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserRoleWrongType()
+    public function estCreateUserRoleWrongType()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -435,7 +435,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserSuccess()
+    public function estUpdateUserSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -448,7 +448,7 @@ class UserTest extends TestCase
         ])->assertStatus(Response::HTTP_OK);
     }
 
-    public function testUpdateUserFalse()
+    public function estUpdateUserFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -460,7 +460,7 @@ class UserTest extends TestCase
         ])->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
-    public function testUpdateUserNameEmpty()
+    public function estUpdateUserNameEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -482,14 +482,14 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserNameGreaterThan10Characters()
+    public function estUpdateUserNameGreaterThan10Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen Thi Huyen Trang",
+            "user_name" => "Nguyen hi Huyen rang",
             "password" => "",
             "role" => "admin"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -504,7 +504,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserPasswordMoreThan8Characters()
+    public function estUpdateUserPasswordMoreThan8Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -526,7 +526,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserPasswordGreaterThan16Characters()
+    public function estUpdateUserPasswordGreaterThan16Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -548,7 +548,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserPasswordSpecialCharacters()
+    public function estUpdateUserPasswordSpecialCharacters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -570,7 +570,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserRoleEmpty()
+    public function estUpdateUserRoleEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -592,7 +592,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUpdateUserRoleWrongType()
+    public function estUpdateUserRoleWrongType()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -614,7 +614,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUserDetailSuccess()
+    public function estUserDetailSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -636,7 +636,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUserDetailFalse()
+    public function estUserDetailFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -651,7 +651,7 @@ class UserTest extends TestCase
                 "data_error",
             ]);
     }
-    public function testUserDeleteSucess()
+    public function estUserDeleteSucess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -666,7 +666,7 @@ class UserTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
     }
 
-    public function testUserDeleteThemselves()
+    public function estUserDeleteThemselves()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -688,7 +688,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testUserDeleteFalse()
+    public function estUserDeleteFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);

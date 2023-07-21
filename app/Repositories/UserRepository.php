@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Repository\BaseRepository;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -30,16 +31,21 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return User::class;
     }
 
-    public function getAll()
+    public function getAll($input)
     {
-        // return User::with('roles')->find($id);
+        $orderBy = Arr::get($input, 'order_by', 'id');
+        $sort = Arr::get($input, 'sort', 'desc');
+
+        $result = User::orderBy($orderBy, $sort)->get();
+
+        return $result;
     }
 
-    public function getOne($id)
+    public function getDetail($id)
     {
-        $user = $this->model->find($id);
-        if (!$user) return ResponseService::responseData(Response::HTTP_METHOD_NOT_ALLOWED, 'error', trans('errors.data_not_found'));
-        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $user);
+        $result = UserRepository::find($id);
+
+        return $result;
     }
 
     public function getOneByCode($userCode)
@@ -63,20 +69,18 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $listUser);
     }
 
-    /**
-     * @param array $attributes
-     * $attributes = ['user_code','user_name','password','role']
-     * @return array|mixed|null
-     */
-    public function create(array $attributes)
+    public function create($attributes)
     {
-        $user_name = $attributes['user_name'];
-//        $user_code = $attributes['user_code'];
-        $user_code = Common::convertDataCodeInput($attributes['user_code'],4);
-        $password = $attributes['password'];
-        $role = $attributes['role'];
-        $user = parent::createUser($user_code, $user_name, $password, $role);
-        return ResponseService::responseData($user['code'], $user['status'], $user['message'], $user['data']);
+        $status = Arr::get($attributes, 'status', NULL);
+        $user = User::create([
+            'user_code' => $attributes['user_code'],
+            'user_name' => $attributes['user_name'],
+            'password' => Hash::make($attributes['password']),
+            'role' => $attributes['role'],
+            'status' => $status,
+        ]);
+
+        return $user;
     }
 
     public function saveTokenFCM($token, $token_old, $isLogOut = false)
@@ -119,29 +123,26 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         }
     }
 
-    /**
-     * @param array $request
-     * $request = ['user_name','password','role'];
-     * @param $id
-     * @return array|mixed|null
-     */
-    public function update(array $request, $id)
+    public function update($request, $id)
     {
-        $user_name = $request['user_name'];
-        $password = isset($request['password'])?$request['password']:null;
-        $role = $request['role'];
-        $user = parent::updateUser($id, $user_name, $password, $role);
-        return ResponseService::responseData($user['code'], $user['status'], $user['message'], $user['data']);
+        $user = UserRepository::find($id);
+        if(!empty($request['password'])) {
+            $request['password'] = Hash::make($request['password']);
+        }
+        $request['status'] = Arr::get($request, 'status', NULL);
+        $result = $user->update($request);
+
+        return $result;
     }
 
     public function destroy($id)
     {
-        $userLogin = \Illuminate\Support\Facades\Auth::user();
-        if ($userLogin->id == $id)return ResponseService::responseData(Response::HTTP_METHOD_NOT_ALLOWED, 'error', trans('errors.data.me'));
-        $user = $this->model->find($id);
-        if (!$user) return ResponseService::responseData(Response::HTTP_METHOD_NOT_ALLOWED, 'error', trans('errors.data_not_found'));
-        $user->delete();
-        return ResponseService::responseData(Response::HTTP_OK, 'success', trans('messages.mes.delete_success'));
+        if(auth()->user()->id == $id) {
+            return false;
+        }
+        $result = UserRepository::find($id)->delete();
+
+        return $result;
     }
 
     public function syncUser($listUser)

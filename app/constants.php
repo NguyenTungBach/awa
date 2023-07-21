@@ -133,6 +133,14 @@ const JP_WAIT = '待機';
 const JP_WAIT_BETWEEN_TASKS = '待機時間';
 const ERROR = 'error';
 const SUCCESS = 'success';
+const CREATE_SUCCESS = 'Create success';
+const LIST_SUCCESS = 'List success';
+const UPDATE_SUCCESS = 'Update success';
+const DELETE_SUCCESS = 'Delete success';
+const CREATE_ERROR = 'Create error';
+const LIST_ERROR = 'List error';
+const UPDATE_ERROR = 'Update error';
+const DELETE_ERROR = 'Delete error';
 
 define("COLOR_HOLIDAY",'#EAE7AC');
 define("COLOR_FIXED_DAY_OFF",'#FFE5CD');
