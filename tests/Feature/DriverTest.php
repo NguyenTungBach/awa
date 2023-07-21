@@ -48,8 +48,8 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->get("api/driver?field='nis'" . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->get("api/driver?field='nis'" . '&token=' . $token);
+        $this->assertEquals($response->decodeResponseJson()['code'],\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testSortByDriverNameSuccess()
@@ -114,47 +114,62 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
+        $response = $this->actingAs($user)->json('post', 'api/driver?'. 'token=' . $token, [
+            "type" => 1,
+            "driver_code" => "00055",
+            "driver_name" => "Bach",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(CODE_SUCCESS);
     }
 
-    public function testCreateDriverFlagFalse()
+    public function testCreateTypeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "mini",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
+            "driver_name" => "Test False",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
-            "note" => "ke tu khi phao do ruou hong",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'driver_code' => [
+                    'type' => [
 
                     ],
                 ],
+                "data_error"
+            ]);
+    }
+
+    public function testCreateTypeFalse()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->actingAs($user)->json('post', 'api/driver', [
+            'token' => $token,
+            "type" => 5,
+            "driver_name" => "Test False",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "note" => "thoi roi ta da xa nhau",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'type' => [
+
+                    ],
+                ],
+                "data_error"
             ]);
     }
 
@@ -164,16 +179,12 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
+            "type" => 1,
+            "driver_name" => "",
             "driver_code" => "",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
-            "note" => "ke tu khi phao do ruou hong",
+            "car" => "LamBo",
+            "start_date" => "",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -193,15 +204,11 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0001",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0001",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "anh duong anh em duong em",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -216,21 +223,17 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testCreateDriverCodeNotNumeric()
+    public function testCreateDriverCodeNotHaftWidth()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "kk05",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "abc-123-",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -245,42 +248,14 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testCreateDriverCodeMoreThan1Characters()
+    public function testCreateDriverCodeGreaterThan15Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
             'flag' => "",
-            "driver_code" => "",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
-            "note" => "toi the toi chang con tin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'driver_code' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverCodeGreaterThan4Characters()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "000225",
+            "driver_code" => "000225acxczxzczxczxczxczxczxczxczxczxczxc",
             "driver_name" => "TuanMinh",
             "start_date" => "2022-08-20",
             "end_date" => "",
@@ -307,15 +282,11 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -329,22 +300,18 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testCreateDriverNameGreaterThan10Characters()
+    public function testCreateDriverNameGreaterThan20Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
+            "type" => 1,
+            "driver_name" => "chuvitconchaylontonzxczxczxczxczxczxczxczxczxc",
             "driver_code" => "0005",
-            "driver_name" => "chuvitconchaylonton",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -357,22 +324,41 @@ class DriverTest extends TestCase
             ]);
     }
 
+    public function testCreateCarEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->actingAs($user)->json('post', 'api/driver', [
+            'token' => $token,
+            "type" => 1,
+            "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "start_date" => "2022-08-20",
+            "note" => "toi the toi chang con tin",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'car' => [
+                    ],
+                ],
+            ]);
+    }
+
     public function testCreateDriverNameStartDateEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -391,16 +377,12 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "bigcyti",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "bicty",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -419,16 +401,12 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022/08/18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -447,16 +425,13 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "dfgdfgdfg",
-            "birth_day" => "2022-08/16",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "end_date" => "zxczxczx",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -475,16 +450,13 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
             "end_date" => "2022/08/16",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -503,16 +475,13 @@ class DriverTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-18",
             "end_date" => "2022-08-10",
-            "birth_day" => "2022-08/16",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -525,218 +494,19 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testCreateDriverBirthdayEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverBirthdayNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "45345FG",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverBirthDayNoMalformed()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022/08/18",
-            "end_date" => "",
-            "birth_day" => "2020/12/03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverWorkingDayEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverWorkingDayFalse()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "7",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverDayOfWeekFalse()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "pi,ka,chu",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'day_of_week' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverWorkingTime()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver', [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "",
-            "working_time" => "lalalal",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_time' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testCreateDriverNote1000Char()
+    public function testCreateDriverNoteGreaterThan1000Characters()
     {
         $random = Str::random(1200);
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/driver', [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "",
-            "working_time" => "",
+            "end_date" => "2022-08-10",
             "note" => $random,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -757,14 +527,11 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
+            'type' => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(CODE_SUCCESS);
     }
@@ -773,45 +540,63 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = strtotime(now());
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $id, [
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
+            "type" => "",
             "driver_name" => "TuanMinh",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
             "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUpdateDriverFlagFalse()
+    public function testUpdateTypeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "mini",
-            "driver_code" => "0005",
+            "type" => "",
             "driver_name" => "TuanMinh",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
-            "note" => "ke tu khi phao do ruou hong",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'flag' => [
+                    'type' => [
+                    ],
+                ],
+            ]);
+    }
+
+    public function testUpdateTypeFalse()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
+            'token' => $token,
+            "type" => 5,
+            "driver_name" => "TuanMinh",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "note" => "thoi roi ta da xa nhau",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'type' => [
                     ],
                 ],
             ]);
@@ -824,16 +609,12 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "mon,tue,wed",
-            "working_time" => "",
-            "note" => "toi the toi chang con tin",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -846,23 +627,19 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testUpdateDriverNameGreaterThan10Characters()
+    public function testUpdateDriverNameGreaterThan20Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "chuvitconchaylonton",
+            "type" => 1,
+            "driver_name" => "TuanMinhzczxczxczxczxczxczxczxczxzxc",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
             "start_date" => "2022-08-20",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -870,6 +647,81 @@ class DriverTest extends TestCase
                 "message_content",
                 "message_internal" => [
                     'driver_name' => [
+                    ],
+                ],
+            ]);
+    }
+
+    public function testUpdateDriverCodeEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
+            'token' => $token,
+            "type" => 1,
+            "driver_name" => "TuanMinh",
+            "driver_code" => "",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "note" => "thoi roi ta da xa nhau",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'driver_code' => [
+                    ],
+                ],
+            ]);
+    }
+
+    public function testUpdateDriverCodeDuplicate()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
+            'token' => $token,
+            "type" => 1,
+            "driver_name" => "TuanMinh",
+            "driver_code" => "0002",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "note" => "thoi roi ta da xa nhau",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'driver_code' => [
+                    ],
+                ],
+            ]);
+    }
+
+    public function testUpdateDriverCodeGreaterThan15Characters()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
+            'token' => $token,
+            "type" => 1,
+            "driver_name" => "TuanMinh",
+            "driver_code" => "abc-123-zzxczxczxczxczxczxczxczxzxc",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "note" => "thoi roi ta da xa nhau",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'driver_code' => [
                     ],
                 ],
             ]);
@@ -882,16 +734,11 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "driver_code" => "abc-123-z",
+            "car" => "LamBo",
+            "note" => "thoi roi ta da xa nhau",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -911,16 +758,12 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "bigcyti",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "bicty",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -940,16 +783,12 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022/08/18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -969,16 +808,13 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "dfgdfgdfg",
-            "birth_day" => "2022-08/16",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
+            "end_date" => "zxczxczx",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -998,16 +834,13 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
+            "driver_code" => "0005",
+            "car" => "LamBo",
+            "start_date" => "2022-08-20",
             "end_date" => "2022/08/16",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -1027,16 +860,13 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-18",
             "end_date" => "2022-08-10",
-            "birth_day" => "2022-08/16",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
+            "note" => "toi the toi chang con tin",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -1049,210 +879,7 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testUpdateDriverBirthdayEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverBirthdayNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "45345FG",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverBirthDayNoMalformed()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022/08/18",
-            "end_date" => "",
-            "birth_day" => "2020/12/03",
-            "working_day" => "1",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'birth_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverWorkingDayEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverWorkingDayFalse()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "7",
-            "day_of_week" => "admin",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_day' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverDayOfWeekFalse()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "pi,ka,chu",
-            "working_time" => "admin",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'day_of_week' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverWorkingTime()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
-            "driver_name" => "TuanMinh",
-            "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "",
-            "working_time" => "lalalal",
-            "note" => "admin",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'working_time' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUpdateDriverNote1000Char()
+    public function testUpdateDriverNoteGreaterThan1000Characters()
     {
         $random = Str::random(1200);
         $user = User::where('user_code', '=', '1122')->first();
@@ -1260,15 +887,12 @@ class DriverTest extends TestCase
         $driver = Driver::first();
         $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
             'token' => $token,
-            'flag' => "",
-            "driver_code" => "0005",
+            "type" => 1,
             "driver_name" => "TuanMinh",
+            "driver_code" => "0005",
+            "car" => "LamBo",
             "start_date" => "2022-08-18",
-            "end_date" => "",
-            "birth_day" => "2020-12-03",
-            "working_day" => "1",
-            "day_of_week" => "",
-            "working_time" => "",
+            "end_date" => "2022-08-10",
             "note" => $random,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -1293,16 +917,13 @@ class DriverTest extends TestCase
                 "code",
                 "data" => [
                     "id",
-                    "flag",
+                    "type",
                     "driver_code",
                     "driver_name",
                     "start_date",
                     "end_date",
-                    "birth_day",
+                    "car",
                     "note",
-                    "working_day",
-                    "day_of_week",
-                    "working_time",
                     "status",
                     "created_at",
                     "updated_at",
@@ -1311,13 +932,13 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testDriverDetailFalse()
+    public function testDriverDetailFalseNotFound()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $id = strtotime(now());
-        $response = $this->actingAs($user)->get('api/driver/' . $id, ['HTTP_Authorization' => 'Bearer' . $token])
-            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED)
+        $response = $this->actingAs($user)->get('api/driver/' . $id . "?token=".$token)
+            ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure([
                 "code",
                 "message",
@@ -1331,23 +952,26 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $timeDelete = Carbon::now()->subMonths(2);
-        $countListDriver = Driver::whereYear(Driver::DRIVER_END_DATE, $timeDelete->year)
-            ->whereMonth(Driver::DRIVER_END_DATE, $timeDelete->month)
-            ->count();
-        $this->assertEquals($countListDriver, 0);
+        $driver = Driver::first();
+        $response = $this->actingAs($user)->delete('api/driver/' . $driver->id . "?token=".$token)
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                "code",
+                "message"=> [
+                    "code",
+                    "status",
+                    "message",
+                ],
+            ]);
     }
 
     public function testDriverDeleteFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $timeDelete = Carbon::now()->subMonths(2);
-        $countListDriver = Driver::whereYear(Driver::DRIVER_END_DATE, $timeDelete->year)
-            ->whereMonth(Driver::DRIVER_END_DATE, $timeDelete->month)
-            ->count();
-
-        $this->assertFalse($countListDriver > 0);
+        $response = $this->actingAs($user)->delete('api/driver/' . 9 . "?token=".$token)
+            ->assertStatus(Response::HTTP_OK);
+        $this->assertEquals(\Illuminate\Http\Response::HTTP_NOT_FOUND, $response->decodeResponseJson()['code']);
     }
 
 }

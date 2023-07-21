@@ -17,7 +17,7 @@ class CreateDriversTable extends Migration
             $table->id();
             $table->integer('type')->comment('1: manager, 2: full-time, 3: part-time, 4: associate company');
             $table->string('driver_code', 15)->unique();
-            $table->string('driver_name', 15);
+            $table->string('driver_name', 20);
             $table->dateTime('start_date')->comment('day join company');
             $table->dateTime('end_date')->nullable()->comment('retirement');
             $table->string('car', 20)->nullable();
