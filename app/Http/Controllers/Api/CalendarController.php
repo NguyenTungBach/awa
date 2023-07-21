@@ -121,10 +121,6 @@ class CalendarController extends Controller
      * @throws \Exception
      */
     public function store(CalendarRequest $request){
-        $checkPassword = $this->checkPassword($request);
-        if ($checkPassword['status'] != 'success'){
-            return $this->responseJson($checkPassword['code'], null,null,$checkPassword['message']);
-        }
         try {
             $data = $this->repository->store($request->all());
             return $this->responseJson($data['code'], null,$data['message']);
