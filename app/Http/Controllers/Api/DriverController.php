@@ -85,22 +85,49 @@ class DriverController extends Controller
      *   tags={"Driver"},
      *   summary="Add new Driver",
      *   operationId="driver_create",
-     *     * @OA\RequestBody(
-     *       description="flag = 'lead|full|part' , day_of_week = ['mon' => 'Monday','tue'=>'Tuesday','wed'=> 'Wednesday','thu'=>'Thursday','fri'=>'Friday','sat'=>'Saturday ','sun'=>'Sunday'],working_time = ['daily' => 'over_15h_day','month'=>'over_ot_40h_month']",
+     *   @OA\RequestBody(
      *       @OA\MediaType(
      *          mediaType="application/json",
-     *          example={"flag": "lead|full|part","driver_code": "1111","driver_name": "tuanminh","start_date": "2022-08-15","end_date": "","brith_day" : "2020-12-03","working_day" : "2","day_of_week" : "mon,tue,wed"
-     *     , "working_time": "daily,month" ,"note":""},
+     *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"user_name"},
+     *            required={"type","driver_code","driver_name","car","start_date","end_date","note"},
      *            @OA\Property(
-     *              property="name",
+     *              property="type",
+     *              format="integer",
+     *              description="type = {'1' => 'manager','2'=>'full-time','3'=> 'part-time','4'=>'associate company'}",
+     *            ),
+     *            @OA\Property(
+     *              property="driver_code",
      *              format="string",
+     *              description="15 character"
+     *            ),
+     *            @OA\Property(
+     *              property="driver_name",
+     *              format="string",
+     *              description="20 character"
+     *            ),
+     *            @OA\Property(
+     *              property="car",
+     *              format="string",
+     *            ),
+     *            @OA\Property(
+     *              property="start_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="end_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="note",
+     *              format="string",
+     *              description="1000 character"
      *            ),
      *         )
      *      )
      *   ),
-     *
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",
@@ -117,6 +144,7 @@ class DriverController extends Controller
     public function store(DriverRequest $request)
     {
         try {
+            $request->merge(['status' => 1]);
             $data = $this->repository->create($request->all());
             return $this->responseJson(200, new DriverResource($data));
         } catch (\Exception $e) {
@@ -184,17 +212,45 @@ class DriverController extends Controller
      *      type="string",
      *     ),
      *   ),
-     *     * @OA\RequestBody(
-     *       description="flag = 'lead|full|part' , day_of_week = ['mon' => 'Monday','tue'=>'Tuesday','wed'=> 'Wednesday','thu'=>'Thursday','fri'=>'Friday','sat'=>'Saturday ','sun'=>'Sunday'],working_time = ['daily' => 'over_15h_day','month'=>'over_ot_40h_month']",
+     *   @OA\RequestBody(
      *       @OA\MediaType(
      *          mediaType="application/json",
-     *          example={"flag":"lead|full|part","driver_name": "tuanminh","start_date": "2022-08-15","end_date": "","brith_day" : "2020-12-03","working_day" : "2","day_of_week" : "mon,tue,wed"
-     *     , "working_time": "daily,month" ,"note":""},
+     *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"user_name"},
+     *            required={"type","driver_code","driver_name","car","start_date","end_date","note"},
      *            @OA\Property(
-     *              property="name",
+     *              property="type",
+     *              format="integer",
+     *              description="type = {'1' => 'manager','2'=>'full-time','3'=> 'part-time','4'=>'associate company'}",
+     *            ),
+     *            @OA\Property(
+     *              property="driver_code",
      *              format="string",
+     *              description="15 character"
+     *            ),
+     *            @OA\Property(
+     *              property="driver_name",
+     *              format="string",
+     *              description="20 character"
+     *            ),
+     *            @OA\Property(
+     *              property="car",
+     *              format="string",
+     *            ),
+     *            @OA\Property(
+     *              property="start_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="end_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="note",
+     *              format="string",
+     *              description="1000 character"
      *            ),
      *         )
      *      )
