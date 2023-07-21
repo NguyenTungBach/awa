@@ -197,51 +197,51 @@ class AuthController extends BaseController
     //        return [];
     //    }
 
-    /**
-     * @OA\Post(
-     *   path="/api/auth/register",
-     *   tags={"Web-App Auth"},
-     *   summary="User register account",
-     *   operationId="user_register_account",
-     * @OA\RequestBody(
-     *       @OA\MediaType(
-     *          mediaType="application/json",
-     *          example={
-     *       "employee_code": "LMH110011",
-     *       "email": "namnt@gmail.com"
-     *   },
-     *        @OA\Schema(
-     *            required={},
-     *            @OA\Property(
-     *              property="employee_code",
-     *              format="string",
-     *            ),
-     *            @OA\Property(
-     *              property="email",
-     *              format="string",
-     *            )
-     *         )
-     *      )
-     *   ),
-     *   @OA\Response(
-     *
-     *     response=200,
-     *     description="Submit request successfully",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"message": "i18n.register.success"}
-     *     )
-     *   ),
-     *   security={},
-     * )
-     * @param RegisterRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function registerAccount(Request $request)
-    {
-        return [];
-    }
+//    /**
+//     * @OA\Post(
+//     *   path="/api/auth/register",
+//     *   tags={"Web-App Auth"},
+//     *   summary="User register account",
+//     *   operationId="user_register_account",
+//     * @OA\RequestBody(
+//     *       @OA\MediaType(
+//     *          mediaType="application/json",
+//     *          example={
+//     *       "employee_code": "LMH110011",
+//     *       "email": "namnt@gmail.com"
+//     *   },
+//     *        @OA\Schema(
+//     *            required={},
+//     *            @OA\Property(
+//     *              property="employee_code",
+//     *              format="string",
+//     *            ),
+//     *            @OA\Property(
+//     *              property="email",
+//     *              format="string",
+//     *            )
+//     *         )
+//     *      )
+//     *   ),
+//     *   @OA\Response(
+//     *
+//     *     response=200,
+//     *     description="Submit request successfully",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"message": "i18n.register.success"}
+//     *     )
+//     *   ),
+//     *   security={},
+//     * )
+//     * @param RegisterRequest $request
+//     * @return \Illuminate\Http\JsonResponse
+//     * @throws \Exception
+//     */
+//    public function registerAccount(Request $request)
+//    {
+//        return [];
+//    }
 
     //
     //
@@ -322,56 +322,56 @@ class AuthController extends BaseController
         ], Response::HTTP_OK);
     }
 
-    /**
-     * @OA\Get(
-     *   path="/api/auth/bothutesthoi/ahii",
-     *   tags={"Web-App Auth"},
-     *   summary="User valid password",
-     *   operationId="user_auth_test",
-     *   @OA\Response(
-     *     response=200,
-     *     description="Submit request successfully",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"message": "i18n.confirm_password.success"}
-     *     )
-     *   ),
-     *   security={},
-     * )
-     * @param RegisterRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function testAI(Request $request)
-    {
-        $type = $request->type;
-        $serve = $request->serve;
-        $localInput = 'F:/input';
-        $localOuput = 'F:/output';
-        $localExcel = 'F:/xampp/htdocs/toshine/storage/app/public/AI';
-        $serveExcel = '/var/www/toshin-dev/toshine/storage/app/public/AI';
-        $serveinput = '/var/www/toshin-dev/input';
-        $serveOut = '/var/www/toshin-dev/output';
-        return response()->json([
-            'status' => 'success',
-            'message' => 'logout'
-        ], Response::HTTP_OK);
-
-
-        if ($type == 'push' && $serve == 'local'){
-            $getFile = Storage::get('AI\course.xlsx');
-            $pushFile = Storage::disk('custom_folder_input_local')->put('course.xlsx',$getFile);
-        }elseif ($type == 'get' && $serve == 'local'){
-            $a = Storage::disk('custom_download_output_local')->exists('course1.xlsx');;
-            $getFile = Storage::disk('custom_download_output_local')->get('course1.xlsx');
-            $pushFile = Storage::disk('custom_folder_input_local')->put('course2.xlsx',$getFile);
-        }elseif ($type == 'push' && $serve == 'serve'){
-            $getFile = Storage::get('/var/www/toshin-dev/toshine/storage/app/public/AI/course.xlsx');
-            $pushFile = Storage::disk('custom_folder_input_serve')->put('course.xlsx',$getFile);
-        }elseif ($type == 'get' && $serve == 'serve') {
-            $a = Storage::disk('custom_download_output_serve')->exists('course1.xlsx');;
-            $getFile = Storage::disk('custom_download_output_serve')->get('course1.xlsx');
-            $pushFile = Storage::disk('custom_folder_input_serve')->put('course2.xlsx', $getFile);
-        }
-    }
+//    /**
+//     * @OA\Get(
+//     *   path="/api/auth/bothutesthoi/ahii",
+//     *   tags={"Web-App Auth"},
+//     *   summary="User valid password",
+//     *   operationId="user_auth_test",
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Submit request successfully",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"message": "i18n.confirm_password.success"}
+//     *     )
+//     *   ),
+//     *   security={},
+//     * )
+//     * @param RegisterRequest $request
+//     * @return \Illuminate\Http\JsonResponse
+//     * @throws \Exception
+//     */
+//    public function testAI(Request $request)
+//    {
+//        $type = $request->type;
+//        $serve = $request->serve;
+//        $localInput = 'F:/input';
+//        $localOuput = 'F:/output';
+//        $localExcel = 'F:/xampp/htdocs/toshine/storage/app/public/AI';
+//        $serveExcel = '/var/www/toshin-dev/toshine/storage/app/public/AI';
+//        $serveinput = '/var/www/toshin-dev/input';
+//        $serveOut = '/var/www/toshin-dev/output';
+//        return response()->json([
+//            'status' => 'success',
+//            'message' => 'logout'
+//        ], Response::HTTP_OK);
+//
+//
+//        if ($type == 'push' && $serve == 'local'){
+//            $getFile = Storage::get('AI\course.xlsx');
+//            $pushFile = Storage::disk('custom_folder_input_local')->put('course.xlsx',$getFile);
+//        }elseif ($type == 'get' && $serve == 'local'){
+//            $a = Storage::disk('custom_download_output_local')->exists('course1.xlsx');;
+//            $getFile = Storage::disk('custom_download_output_local')->get('course1.xlsx');
+//            $pushFile = Storage::disk('custom_folder_input_local')->put('course2.xlsx',$getFile);
+//        }elseif ($type == 'push' && $serve == 'serve'){
+//            $getFile = Storage::get('/var/www/toshin-dev/toshine/storage/app/public/AI/course.xlsx');
+//            $pushFile = Storage::disk('custom_folder_input_serve')->put('course.xlsx',$getFile);
+//        }elseif ($type == 'get' && $serve == 'serve') {
+//            $a = Storage::disk('custom_download_output_serve')->exists('course1.xlsx');;
+//            $getFile = Storage::disk('custom_download_output_serve')->get('course1.xlsx');
+//            $pushFile = Storage::disk('custom_folder_input_serve')->put('course2.xlsx', $getFile);
+//        }
+//    }
 }
