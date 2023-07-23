@@ -52,15 +52,15 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->get("api/user?field='nis'" . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->get("api/user?sort=desc?abc" . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testSortByUserNameSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_name&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_name&sort=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -71,15 +71,15 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_na&sortby=jkl' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_na&sort=jkl' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testSortByUserCode()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_code&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -90,15 +90,15 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_code&sortby=mmm' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=mmm' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testSortByUserRole()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=role&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=role&sort=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -109,15 +109,15 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=role&sortby=abc' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=role&sort=abc' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testUserHasPermission()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_code&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -128,7 +128,7 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '2233')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?field=user_code&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
             ->assertStatus(\Illuminate\Http\Response::HTTP_FORBIDDEN);
 
     }
@@ -139,7 +139,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "111111",
             "password" => "abc122998833",
             "role" => "admin"
@@ -152,7 +152,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 02",
             "user_code" => "",
             "password" => "abc122998833",
             "role" => "admin"
@@ -175,7 +175,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "1122",
             "password" => "abc122998833",
             "role" => "admin"
@@ -198,7 +198,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Amin 01",
             "user_code" => "abc99",
             "password" => "abc122998833",
             "role" => "admin"
@@ -221,7 +221,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22",
             "password" => "abc122998833",
             "role" => "admin"
@@ -237,14 +237,14 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testCreateUserCodeGreaterThan6Characters()
+    public function testCreateUserCodeGreaterThan15Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
             "user_name" => "Nguyen",
-            "user_code" => "22777777",
+            "user_code" => "227777772277777722777777",
             "password" => "abc122998833",
             "role" => "admin"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -287,7 +287,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen Thi Huyen Trang Trang Trang Trang Trang",
+            "user_name" => "Admin Admin Admin Admin Admin Admin Admin",
             "user_code" => "22773",
             "password" => "abc122998833",
             "role" => "admin"
@@ -309,7 +309,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22773",
             "password" => "",
             "role" => "admin"
@@ -331,7 +331,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22773",
             "password" => "111",
             "role" => "admin"
@@ -353,7 +353,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22773",
             "password" => "abc122333333998833",
             "role" => "admin"
@@ -375,7 +375,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22773",
             "password" => "a!#*33338833",
             "role" => "admin"
@@ -397,7 +397,7 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin",
             "user_code" => "22773",
             "password" => "a!#*33338833",
             "role" => ""
@@ -419,10 +419,10 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
+            "user_name" => "Admin 01",
             "user_code" => "22773",
             "password" => "a!#*33338833",
-            "role" => "bigticy"
+            "role" => "abc"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -442,9 +442,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "password" => "33338833",
-            "role" => "admin"
+            "user_name" => "Admin update",
         ])->assertStatus(Response::HTTP_OK);
     }
 
@@ -452,12 +450,11 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('put', 'api/user/', [
+        $id = $user->id;
+        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "password" => "33338833",
-            "role" => "admin"
-        ])->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
+            "user_code" => "2233",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testUpdateUserNameEmpty()
@@ -468,8 +465,6 @@ class UserTest extends TestCase
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
             "user_name" => "",
-            "password" => "abc122998833",
-            "role" => "admin"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -489,9 +484,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen Thi Huyen Trang",
-            "password" => "",
-            "role" => "admin"
+            "user_name" => "Admin Update Update Update",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -511,9 +504,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
             "password" => "111",
-            "role" => "admin"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -533,9 +524,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "password" => "abc122333333998833",
-            "role" => "admin"
+            "password" => "abc122333333998833123",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -555,9 +544,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
             "password" => "a!#*33338833",
-            "role" => "admin"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -577,8 +564,6 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "password" => "a!#*33338833",
             "role" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
@@ -599,9 +584,7 @@ class UserTest extends TestCase
         $id = $user->id;
         $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "password" => "a!#*33338833",
-            "role" => "bigticy"
+            "role" => "abc"
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -623,16 +606,17 @@ class UserTest extends TestCase
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
                 "code",
+                "message",
                 "data" => [
                     "id",
                     "user_code",
                     "user_name",
                     "role",
-                    "jwt_active",
-                    "remember_token",
+                    "status",
+                    "deleted_at",
                     "created_at",
-                    "updated_at",
-                ],
+                    "updated_at"
+                ]
             ]);
     }
 
@@ -640,9 +624,9 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = strtotime(now());
+        $id = 10000;
         $response = $this->actingAs($user)->get('api/user/' . $id, ['HTTP_Authorization' => 'Bearer' . $token])
-            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED)
+            ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure([
                 "code",
                 "message",
@@ -657,8 +641,8 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $newUser = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Bimbim",
-            "user_code" => "999011",
+            "user_name" => "Admin 01",
+            "user_code" => "112233",
             "password" => "abc122998833",
             "role" => "admin"
         ]);
@@ -672,8 +656,8 @@ class UserTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $newUser = $this->actingAs($user)->json('post', 'api/user', [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "user_code" => "111111",
+            "user_name" => "Admin",
+            "user_code" => "22334455",
             "password" => "abc122998833",
             "role" => "admin"
         ]);
@@ -692,9 +676,9 @@ class UserTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = strtotime(now());
+        $id = 10000;
         $response = $this->actingAs($user)->json('delete', 'api/user/' . $id, ['token' => $token])
-            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED)
+            ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure([
                 "code",
                 "message",

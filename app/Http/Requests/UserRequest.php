@@ -27,70 +27,109 @@ class UserRequest extends FormRequest
     public function rules()
     {
         switch (Route::getCurrentRoute()->getActionMethod()) {
-            case 'updateone':
-                return $this->getCustomRuleUpdateOne();
-            case 'changePassword':
-                return $this->getCustomRuleChangePassword();
             case 'store':
                 return $this->getCustomRuleStore();
             case 'update':
                 return $this->getCustomRuleUpdate();
+            case 'updateone':
+                return $this->getCustomRuleUpdateOne();
+            case 'changePassword':
+                return $this->getCustomRuleChangePassword();
             default:
                 return [];
         }
     }
 
+    public function getCustomRuleStore()
+    {
+        $rules = [
+            'user_code' => [
+                'required',
+                'min:4',
+                'max:15',
+                'regex:/^[0-9]+$/',
+                'unique:users,user_code',
+            ],
+            'user_name' => 'required|string|max:20',
+            'password' => 'required|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/',
+            'role' => [
+                'required',
+                Rule::in(config('users.role'))
+            ],
+            'status' => 'nullable',
+        ];
+
+        return $rules;
+    }
+
     public function getCustomRuleUpdateOne()
     {
         return [
-            "user_name" => "required|string",
-            "user_code" => "required|unique:users,user_code,null,user_code,deleted_at,NULL",
-            "roles*" => "required|string",
-            "department_id" => "required|number",
-            "password" => "required|string"
-        ];
-    }
-
-    public function getCustomRuleChangePassword()
-    {
-        return [
-            // 'password' => "required|min:8"
-        ];
-    }
-
-    public function getCustomRuleStore()
-    {
-        return [
-            "user_code" => "required|min:4|max:4|unique:users,user_code,null,user_code,deleted_at,NULL|regex:/^[0-9]+$/",
-            "user_name" => "required|string|max:20",
-            "password" => "required|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/",
-            "role" => ['required',Rule::in([User::USER_ROLE_ADMIN,User::USER_ROLE_DRIVER])],
+            'user_name' => 'required|string',
+            'user_code' => 'required|unique:users,user_code,null,user_code,deleted_at,NULL',
+            'roles*' => 'required|string',
+            'department_id' => 'required|number',
+            'password' => 'required|string'
         ];
     }
 
     public function getCustomRuleUpdate()
     {
+        $user = User::find(request()->route('user'));
+
+        $rules = [
+            'user_code' => [
+                'sometimes',
+                'required',
+                'min:4',
+                'max:15',
+                'regex:/^[0-9]+$/',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'user_name' => 'sometimes|required|string|max:20',
+            'password' => 'sometimes|required|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/',
+            'role' => [
+                'sometimes',
+                'required',
+                Rule::in(config('users.role'))
+            ],
+            'status' => 'nullable',
+        ];
+
+        return $rules;
+    }
+
+
+    public function getCustomRuleChangePassword()
+    {
         return [
-            "user_name" => "required|string|max:20",
-            "password" => "nullable|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/",
-            "role" => ['required',Rule::in([User::USER_ROLE_ADMIN,User::USER_ROLE_DRIVER])],
+            // 'password' => 'required|min:8'
         ];
     }
+
 
     public function messages()
     {
         return [
-            'user_code.*' => 'ユーザーIDは半角数字4桁で入力してください。',
-            'required' => trans('validation.required'),
-            'date_format' => trans('validation.date_format'),
-            'numeric' => trans('validation.numeric'),
-            'min' => trans('validation.min'),
-            'max' => trans('validation.max'),
-            'user_name.max' => 'ユーザー名は20文字以下で入力してください。',
-            'exists' => trans('validation.exists'),
-            'in' => trans('validation.in'),
-            'in_array' => trans('validation.in_array'),
-            'password.regex' => "パスワードは半角英数字で入力してください。",
+            // user_code
+            'user_code.required' => __('validation.required', ['attribute' => __('users.user_code')]),
+            'user_code.min' => __('validation.between.numeric', ['attribute' => __('users.user_code'), 'min' => 4, 'max' => 15]),
+            'user_code.max' => __('validation.between.numeric', ['attribute' => __('users.user_code'), 'min' => 4, 'max' => 15]),
+            'user_code.regex' => __('validation.regex', ['attribute' => __('users.user_code')]),
+            'user_code.unique' => __('validation.unique', ['attribute' => __('users.user_code')]),
+            // user_name
+            'user_name.required' => __('validation.required', ['attribute' => __('users.user_name')]),
+            'user_name.string' => __('validation.string', ['attribute' => __('users.user_name')]),
+            'user_name.max' => __('validation.max.string', ['attribute' => __('users.user_name'), 'max' => 20]),
+            // password
+            'password.required' => __('validation.required', ['attribute' => __('users.password')]),
+            'password.string' => __('validation.string', ['attribute' => __('users.password')]),
+            'password.min' => __('validation.between.numeric', ['attribute' => __('users.password'), 'min' => 8, 'max' => 16]),
+            'password.max' => __('validation.between.numeric', ['attribute' => __('users.password'), 'min' => 8, 'max' => 16]),
+            'password.regex' => __('validation.regex', ['attribute' => __('users.password')]),
+            // role
+            'role.required' => __('validation.required', ['attribute' => __('users.role')]),
+            'role.in' => __('validation.in', ['attribute' => __('users.role')]),
         ];
     }
 }

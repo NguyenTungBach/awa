@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
@@ -16,9 +17,20 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        if (!User::first()) {
-            User::createUser('1122','Super Admin','abc12345678','admin');
-            User::createUser('2233','Member Drive','abc12345678','driver');
-        }
+        DB::table('users')->truncate();
+        User::factory()->create([
+            'user_code'    => '1122',
+            'user_name' => 'Super Admin',
+            'password' => Hash::make('abc12345678'),
+            'role' => 'admin',
+            'status' => NULL
+        ]);
+        User::factory()->create([
+            'user_code'    => '2233',
+            'user_name' => 'Member Drive',
+            'password' => Hash::make('abc12345678'),
+            'role' => 'driver',
+            'status' => NULL
+        ]);
     }
 }
