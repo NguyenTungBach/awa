@@ -130,12 +130,6 @@ return [
     |
     */
 
-    'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
@@ -147,6 +141,9 @@ return [
     |
     */
 
-    'attributes' => [],
-
+    'custom' => [
+        'phone_number' => [
+            'regex' => ':attributeには数字とハイフン (-) のみを指定ください。'
+        ],
+    ],
 ];

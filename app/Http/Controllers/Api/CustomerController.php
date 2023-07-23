@@ -12,11 +12,12 @@ use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
 
 class CustomerController extends Controller
 {
-
-     /**
+    /**
      * var Repository
      */
     protected $repository;
@@ -70,8 +71,14 @@ class CustomerController extends Controller
      */
     public function index(CustomerRequest $request)
     {
-        $data = $this->repository->paginate($request->per_page);
-        return $this->responseJson(200, BaseResource::collection($data));
+        try {
+            $result = $this->repository->getAll($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, CustomerResource::collection($result), LIST_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());
+        }
     }
 
     /**
@@ -100,10 +107,12 @@ class CustomerController extends Controller
     public function store(CustomerRequest $request)
     {
         try {
-            $data = $this->repository->create($request->all());
-            return $this->responseJson(200, new CustomerResource($data));
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->createCustomer($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, new CustomerResource($result), CREATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $exception->getMessage());
         }
     }
 
@@ -146,10 +155,12 @@ class CustomerController extends Controller
     public function show($id)
     {
         try {
-            $department = $this->repository->find($id);
-            return $this->responseJson(200, new BaseResource($department));
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->getDetail($id);
+
+            return $this->responseJson(Response::HTTP_OK, new CustomerResource($result), SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
         }
     }
 
@@ -204,9 +215,14 @@ class CustomerController extends Controller
      */
     public function update(CustomerRequest $request, $id)
     {
-        $attributes = $request->except([]);
-        $data = $this->repository->update($attributes, $id);
-        return $this->responseJson(200, new BaseResource($data));
+        try {
+            $result = $this->repository->updateCustomer($request->all(), $id);
+
+            return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, UPDATE_ERROR, $exception->getMessage());
+        }
     }
 
     /**
@@ -239,7 +255,11 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $this->repository->delete($id);
-        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
+        $result =  $this->repository->deleteCustomer($id);
+        if ($result) {
+            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+        }
+
+        return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
     }
 }

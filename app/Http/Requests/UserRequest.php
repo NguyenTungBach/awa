@@ -33,6 +33,8 @@ class UserRequest extends FormRequest
                 return $this->getCustomRuleUpdate();
             case 'updateone':
                 return $this->getCustomRuleUpdateOne();
+            case 'index':
+                return $this->getCustomRuleIndex();
             case 'changePassword':
                 return $this->getCustomRuleChangePassword();
             default:
@@ -99,6 +101,21 @@ class UserRequest extends FormRequest
         return $rules;
     }
 
+    public function getCustomRuleIndex()
+    {
+        $rules = [
+            'order_by' => [
+                'nullable',
+                Rule::in(['user_code', 'user_name', 'role'])
+            ],
+            'sort' => [
+                'nullable',
+                Rule::in(SORT_BY)
+            ]
+        ];
+
+        return $rules;
+    }
 
     public function getCustomRuleChangePassword()
     {
