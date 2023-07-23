@@ -194,7 +194,7 @@ class UserController extends BaseController
             return $this->responseJson(Response::HTTP_OK, new UserResource($result), SUCCESS);
         } catch (\Exception $exception) {
 
-            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
+            return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
         }
     }
 
@@ -304,7 +304,7 @@ class UserController extends BaseController
             return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
         }
 
-        return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR);
+        return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
     }
 
     /**

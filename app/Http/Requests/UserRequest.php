@@ -48,7 +48,7 @@ class UserRequest extends FormRequest
                 'min:4',
                 'max:15',
                 'regex:/^[0-9]+$/',
-                Rule::unique('users')->ignore(auth()->user()->id),
+                'unique:users,user_code',
             ],
             'user_name' => 'required|string|max:20',
             'password' => 'required|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/',
@@ -56,6 +56,7 @@ class UserRequest extends FormRequest
                 'required',
                 Rule::in(config('users.role'))
             ],
+            'status' => 'nullable',
         ];
 
         return $rules;
@@ -74,7 +75,17 @@ class UserRequest extends FormRequest
 
     public function getCustomRuleUpdate()
     {
+        $user = User::find(request()->route('user'));
+
         $rules = [
+            'user_code' => [
+                'sometimes',
+                'required',
+                'min:4',
+                'max:15',
+                'regex:/^[0-9]+$/',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'user_name' => 'sometimes|required|string|max:20',
             'password' => 'sometimes|required|string|min:8|max:16|regex:/^[a-zA-Z0-9]+$/',
             'role' => [
@@ -82,6 +93,7 @@ class UserRequest extends FormRequest
                 'required',
                 Rule::in(config('users.role'))
             ],
+            'status' => 'nullable',
         ];
 
         return $rules;
