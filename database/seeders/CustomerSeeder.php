@@ -40,5 +40,38 @@ class CustomerSeeder extends Seeder
             'note' => NULL,
             'status' => NULL,
         ]);
+        Customer::factory()->create([
+            'customer_code' => '0003',
+            'customer_name' => 'Customer 03',
+            'closing_date' => '3',
+            'person_charge' => 'Person charge 03',
+            'post_code' => '456-7891',
+            'address' => 'Address 03',
+            'phone' => '01234567893',
+            'note' => NULL,
+            'status' => NULL,
+        ]);
+        Customer::factory()->create([
+            'customer_code' => '0004',
+            'customer_name' => 'Customer 04',
+            'closing_date' => '2',
+            'person_charge' => 'Person charge 04',
+            'post_code' => '456-7890',
+            'address' => 'Address 04',
+            'phone' => '01234567894',
+            'note' => NULL,
+            'status' => NULL,
+        ]);
+        Customer::factory()->create([
+            'customer_code' => '0005',
+            'customer_name' => 'Customer 05',
+            'closing_date' => '4',
+            'person_charge' => 'Person charge 05',
+            'post_code' => '456-7890',
+            'address' => 'Address 05',
+            'phone' => '01234567895',
+            'note' => NULL,
+            'status' => NULL,
+        ]);
     }
 }
