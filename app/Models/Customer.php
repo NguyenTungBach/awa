@@ -17,7 +17,17 @@ class Customer extends Model
 
     protected $table = 'customers';
 
-    protected $fillable = [];
+    protected $fillable = [
+        'customer_code',
+        'customer_name',
+        'closing_date',
+        'person_charge',
+        'post_code',
+        'address',
+        'phone',
+        'note',
+        'status',
+    ];
 
     protected $dates = ['deleted_at'];
 
