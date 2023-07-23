@@ -17,10 +17,10 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->integer('customer_id');
             $table->string('course_name', 20);
-            $table->dateTime('ship_date');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->dateTime('break_time');
+            $table->date('ship_date');
+            $table->time('start_date');
+            $table->time('end_date');
+            $table->time('break_time');
             $table->string('departure_place', 20);
             $table->string('arrival_place', 20);
             $table->decimal('ship_fee', 15);
@@ -28,7 +28,6 @@ class CreateCoursesTable extends Migration
             $table->decimal('expressway_fee', 15)->default(0);
             $table->decimal('commission', 15)->default(0);
             $table->decimal('meal_fee', 15)->default(0);
-            $table->decimal('total_in', 15)->comment('ship_fee - associate_company_fee - expressway_fee + commission - meal_fee')->nullable();
             $table->text('note')->nullable();
             $table->integer('status')->nullable()->comment('1: on, 2: off');
             $table->timestamps();
