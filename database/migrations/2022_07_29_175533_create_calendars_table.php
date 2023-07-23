@@ -20,6 +20,7 @@ class CreateCalendarsTable extends Migration
             $table->string('rokuyou')->nullable();
             $table->string('holiday')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

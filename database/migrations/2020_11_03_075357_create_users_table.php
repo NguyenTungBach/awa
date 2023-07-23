@@ -22,8 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('jwt_active')->nullable();
             $table->string('remember_token')->nullable();;
             $table->integer('status')->nullable()->comment('1: on, 2:off');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
     /**

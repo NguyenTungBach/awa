@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
             $table->string('post_code', 8);
             $table->string('address', 100);
             $table->string('phone', 11);
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->integer('status')->nullable()->comment('1: on, 2: off');
             $table->timestamps();
             $table->softDeletes();

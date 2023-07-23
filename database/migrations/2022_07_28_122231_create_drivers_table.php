@@ -23,8 +23,8 @@ class CreateDriversTable extends Migration
             $table->string('car', 20)->nullable();
             $table->text('note')->nullable();
             $table->string('status')->nullable()->comment('1:on, 2: off');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
