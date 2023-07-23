@@ -123,6 +123,7 @@ const IS_WAIT = 'S-1';
 const IS_WAIT_BETWEEN_TASKS = 'S-2';
 const DAY_OFF_CODE = [IS_HOLIDAY, IS_FIX_DAY_OFF, IS_DAY_OFF_REQUEST, IS_DAY_OFF_PAID];
 const WAIT_CODE = [IS_WAIT, IS_WAIT_BETWEEN_TASKS, IS_LEADER];
+const SORT_BY = ['desc', 'asc'];
 
 const JP_HOLIDAY = '公休';
 const JP_FIX_DAY_OFF = '固定休';

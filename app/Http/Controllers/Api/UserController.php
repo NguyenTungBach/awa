@@ -263,7 +263,7 @@ class UserController extends BaseController
     {
         try {
             $user = $this->repository->find($id);
-            $result = $this->repository->update($request->all(), $id);
+            $result = $this->repository->updateUser($request->all(), $id);
 
             return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
         } catch (\Exception $exception) {

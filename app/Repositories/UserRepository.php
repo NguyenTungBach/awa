@@ -36,9 +36,17 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $orderBy = Arr::get($input, 'order_by', 'id');
         $sort = Arr::get($input, 'sort', 'desc');
 
-        $result = User::orderBy($orderBy, $sort)->get();
+        $data = [];
+        $user = User::orderBy($orderBy, $sort);
+        $users = $user->get();
+        foreach ($users as $key => $value) {
+            $data[$key]['user_code'] = $value->user_code;
+            $data[$key]['user_name'] = $value->user_name;
+            $data[$key]['role'] = __('users.role_lang.' . $value->role);
+        }
+        $result = $data;
 
-        return $result;
+        return $result ?? [];
     }
 
     public function getDetail($id)
@@ -123,14 +131,13 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         }
     }
 
-    public function update($request, $id)
+    public function updateUser($request, $id)
     {
-        $user = UserRepository::find($id);
         if(!empty($request['password'])) {
             $request['password'] = Hash::make($request['password']);
         }
         $request['status'] = Arr::get($request, 'status', NULL);
-        $result = $user->update($request);
+        $result = UserRepository::update($request, $id);
 
         return $result;
     }

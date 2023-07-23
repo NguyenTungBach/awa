@@ -141,6 +141,12 @@ return [
     |
     */
 
+    'custom' => [
+        'phone_number' => [
+            'regex' => ':attributeには数字とハイフン (-) のみを指定ください。'
+        ],
+    ],
+
     'attributes' => [
         'password' => 'パスワード',
     ],

@@ -10,17 +10,18 @@ use App\Repositories\Contracts\CourseRepositoryInterface;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 use App\Repositories\Contracts\DriverRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use Repository\BaseRepository;
 use Repository\AuthRepository;
-
 use Repository\CalendarRepository;
 use Repository\CourseRepository;
 use Repository\DriverCourseRepository;
 use Repository\DriverRepository;
 use Laravel\Dusk\DuskServiceProvider;
 use Repository\ReportRepository;
+use Repository\CustomerRepository;
 
 class  AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,7 @@ class  AppServiceProvider extends ServiceProvider
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(DriverCourseRepositoryInterface::class, DriverCourseRepository::class);
         $this->app->bind(DriverRepositoryInterface::class, DriverRepository::class);
+        $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
 
         //Customer
         if ($this->app->environment('local', 'testing')) {
