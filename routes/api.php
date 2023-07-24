@@ -24,9 +24,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::post('calendar/setup-data', 'CalendarController@store');
             Route::post('calendar/delete', 'CalendarController@destroy');
             Route::apiResource('user', 'UserController');
-            // Route::apiResource('driver', 'DriverController');
+            Route::apiResource('driver', 'DriverController');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
+            Route::apiResource('driver-course', 'DriverCourseController');
         });
         Route::group(['prefix' => 'auth'], function () {
             Route::post('refresh', 'AuthController@refresh');

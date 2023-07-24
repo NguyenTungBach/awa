@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Http\Requests\DriverCourseRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Resources\BaseResource;
 use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
@@ -68,6 +69,78 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ];
         }
         return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $arrayDataDriverCourse);
+    }
+
+    public function create(array $attributes)
+    {
+        $items = $attributes["items"];
+
+        // Kiểm tra trong mảng có đang duplicate không start
+        $uniqueItems = array_map(function ($item) {
+            return $item['course_id'] . '|' . $item['date'];
+        }, $items);
+        $countedItems = array_count_values($uniqueItems);
+
+        // Lấy ra
+        $duplicates = array_filter($countedItems, function ($count) {
+            return $count > 1;
+        });
+        if (!empty($duplicates)) {
+            $duplicates_key_first = explode('|',array_key_first($duplicates));
+//            $duplicates_value_first = $duplicates[$duplicates_key_first];
+            return ResponseService::responseJsonError(Response::HTTP_BAD_REQUEST,
+                trans('errors.duplicate_course_id_and_date',[
+                    "course_id"=> $duplicates_key_first[0],
+                    "date"=> $duplicates_key_first[1]
+                ]));
+        }
+        // Kiểm tra trong mảng có đang duplicate không end
+
+//        // Kiểm tra lần nữa driver theo driver_id có tồn tại không start
+//        $driver = Driver::find($attributes['driver_id']);
+//        if (!$driver){
+//            return ResponseService::responseJsonError(Response::HTTP_NOT_FOUND, trans('errors.not_found',$attributes['driver_id']), trans('errors.not_found',$attributes['driver_id']));
+//        }
+//        // Kiểm tra lần nữa driver theo driver_id có tồn tại không end
+//        // Kiểm tra lần nữa driver theo course_id có tồn tại không start
+//        $course = Course::find($attributes['course_id']);
+//        if (!$course){
+//            return ResponseService::responseJsonError(Response::HTTP_NOT_FOUND, trans('errors.not_found',$attributes['course_id']), trans('errors.not_found',$attributes['course_id']));
+//        }
+//        // Kiểm tra lần nữa driver theo course_id có tồn tại không end
+
+        // Kiểm tra duy nhất DriverCourse theo driver_id,course_id và date
+        foreach ($items as $item){
+            $checkDriver_id = $attributes['driver_id'];
+            $checkCourse_id = $item['course_id'];
+            $checkDate = $item['date'];
+
+            $checkUnique = DriverCourse::where('driver_id', $checkDriver_id)
+                ->where('course_id', $checkCourse_id)
+                ->where('date', $checkDate)
+                ->exists();
+            // Nếu có tồn tại (không là duy nhất)
+            if ($checkUnique){
+                return ResponseService::responseJsonError(Response::HTTP_BAD_REQUEST,
+                    trans("errors.unique" ,[
+                        "attribute"=> "driver_id: $checkDriver_id, course_id: $checkCourse_id, and date: $checkDate"
+                    ]));
+            }
+        }
+
+        // Lưu lại nếu thỏa mãn tất cả điều kiện
+        foreach ($items as $item){
+            $driver_course = new DriverCourse();
+            $driver_course->driver_id = $attributes['driver_id'];
+            $driver_course->course_id = $item['course_id'];
+            $driver_course->date = $item['date'];
+            $driver_course->start_time = $item['start_time'];
+            $driver_course->end_time = $item['end_time'];
+            $driver_course->break_time = $item['break_time'];
+            $driver_course->save();
+        }
+
+        return ResponseService::responseJson(200, new BaseResource($attributes));
     }
 
     public function updateData($data, $theDriver)

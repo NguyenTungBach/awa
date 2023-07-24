@@ -8,6 +8,9 @@ namespace App\Http\Requests;
 
 use App\Models\DriverCourse;
 use App\Models\User;
+use App\Rules\DriverCourseUniqueRule;
+use App\Rules\ShipDateRule;
+use App\Rules\TimeRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,35 +52,49 @@ class DriverCourseRequest extends FormRequest
             ];
         }
         if(Route::getCurrentRoute()->getActionMethod() == 'store'){
-            $flag = \Illuminate\Http\Request::all()['flag'];
-            if ($flag != 'delete'){
-                return  [
-                    "driver_id" => "required",
-                    "driver_course" => "required",
-                    "flag" => ['required',Rule::in(['delete','update'])],
-                ];
-            }else{
-                return  [
-
-                ];
-            }
+            return [
+                'driver_id' => [
+                    'required',
+                    Rule::exists('drivers', 'id'),
+//                    new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                'items.*.course_id' => [
+                    'required',
+                    Rule::exists('courses', 'id'),
+//                    new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                "items.*.date" => [
+                    'required',
+                    'date_format:Y-m-d',
+//                    ,new DriverCourseUniqueRule("date","driver_id","course_id"),
+                    ],
+                "items.*.start_time" => [
+                    "required",
+                    'date_format:H:i',
+                    new TimeRule("start_time")
+                ],
+                "items.*.break_time" => [
+                    "required",
+                    'date_format:H:i',
+                    'after_or_equal:items.*.start_time',
+                    new TimeRule("break_time")
+                ],
+                "items.*.end_time" => [
+                    "required",
+                    'date_format:H:i',
+                    'after_or_equal:items.*.break_time',
+                    new TimeRule("end_time")
+                ],
+            ];
         }
      }
 
     public function messages()
     {
-        $flag = \Illuminate\Http\Request::all()['flag'];
-        if ($flag != 'delete'){
-            return [
-                'required' => trans('validation.required'),
-                'in' => trans('validation.in'),
-                'in_array' => trans('validation.in_array')
-            ];
-        }else{
-            return  [
-
-            ];
-        }
-
+        return [
+            'required' => trans('validation.required'),
+            'driver_id.exists' => "driver_id not found in database",
+            'items.*.course_id.exists' => "course_id not found in database",
+        ];
     }
 }
