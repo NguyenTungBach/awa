@@ -84,7 +84,6 @@ class CourseRequest extends FormRequest
             'commission' => 'nullable|max:15',
             'meal_fee' => 'nullable|max:15',
             'note' => 'nullable|string|max:1000',
-            'status' => 'nullable',
         ];
 
         return $rules;

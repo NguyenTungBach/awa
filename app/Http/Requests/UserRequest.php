@@ -58,7 +58,6 @@ class UserRequest extends FormRequest
                 'required',
                 Rule::in(config('users.role'))
             ],
-            'status' => 'nullable',
         ];
 
         return $rules;
@@ -95,7 +94,6 @@ class UserRequest extends FormRequest
                 'required',
                 Rule::in(config('users.role'))
             ],
-            'status' => 'nullable',
         ];
 
         return $rules;

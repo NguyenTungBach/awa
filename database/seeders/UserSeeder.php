@@ -23,14 +23,12 @@ class UserSeeder extends Seeder
             'user_name' => 'Super Admin',
             'password' => Hash::make('abc12345678'),
             'role' => 'admin',
-            'status' => NULL
         ]);
         User::factory()->create([
             'user_code' => '2233',
             'user_name' => 'Member Drive',
             'password' => Hash::make('abc12345678'),
             'role' => 'driver',
-            'status' => NULL
         ]);
     }
 }

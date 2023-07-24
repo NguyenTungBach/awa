@@ -80,13 +80,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function create($attributes)
     {
-        $status = Arr::get($attributes, 'status', NULL);
         $user = User::create([
             'user_code' => $attributes['user_code'],
             'user_name' => $attributes['user_name'],
             'password' => Hash::make($attributes['password']),
             'role' => $attributes['role'],
-            'status' => $status,
         ]);
 
         return $user;
@@ -137,7 +135,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         if(!empty($request['password'])) {
             $request['password'] = Hash::make($request['password']);
         }
-        $request['status'] = Arr::get($request, 'status', NULL);
         $result = UserRepository::update($request, $id);
 
         return $result;

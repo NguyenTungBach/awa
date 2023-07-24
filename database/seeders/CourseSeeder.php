@@ -44,7 +44,6 @@ class CourseSeeder extends Seeder
                 'commission' => '0',
                 'meal_fee' => '0',
                 'note' => NULL,
-                'status' => NULL,
             ]);
         }
     }
