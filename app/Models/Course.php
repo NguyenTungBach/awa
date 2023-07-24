@@ -45,7 +45,6 @@ class Course extends Model
         'commission',
         'meal_fee',
         'note',
-        'status',
     ];
 
     protected $dates = ['deleted_at'];

@@ -35,7 +35,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     public function createCustomer($input)
     {
         $note = Arr::get($input, 'note', NULL);
-        $status = Arr::get($input, 'status', NULL);
 
         $customer = Customer::create([
             'customer_code' => $input['customer_code'],
@@ -46,7 +45,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
             'address' => $input['address'],
             'phone' => $input['phone'],
             'note' => $note,
-            'status' => $status,
         ]);
 
         return $customer;
@@ -84,7 +82,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     public function updateCustomer($input, $id)
     {
         $input['note'] = Arr::get($input, 'note', NULL);
-        $input['status'] = Arr::get($input, 'status', NULL);
         $result = CustomerRepository::update($input, $id);
 
         return $result;

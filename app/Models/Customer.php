@@ -26,7 +26,6 @@ class Customer extends Model
         'address',
         'phone',
         'note',
-        'status',
     ];
 
     protected $dates = ['deleted_at'];

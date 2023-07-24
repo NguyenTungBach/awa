@@ -63,7 +63,6 @@ class CustomerRequest extends FormRequest
             'address' => 'required|string|max:100',
             'phone' => ['required', 'regex:/^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}+$/D'],
             'note' => 'nullable|string|max:1000',
-            'status' => 'nullable',
         ];
 
         return $rules;
@@ -92,7 +91,6 @@ class CustomerRequest extends FormRequest
             'address' => 'sometimes|required|string|max:100',
             'phone' => ['sometimes', 'required', 'regex:/^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}+$/D'],
             'note' => 'nullable|string|max:1000',
-            'status' => 'nullable',
         ];
 
         return $rules;

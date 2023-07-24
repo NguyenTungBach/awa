@@ -41,7 +41,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $input['commission'] = empty($input['commission']) ? 0 : Arr::get($input, 'commission', 0);
         $input['meal_fee'] = empty($input['meal_fee']) ? 0 : Arr::get($input, 'meal_fee', 0);
         $input['note'] = Arr::get($input, 'note', NULL);
-        $input['status'] = Arr::get($input, 'status', NULL);
 
         $course = Course::create([
             'customer_id' => $input['customer_id'],
@@ -58,7 +57,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             'commission' => $input['commission'],
             'meal_fee' => $input['meal_fee'],
             'note' => $input['note'],
-            'status' => $input['status'],
         ]);
 
         return $course;
