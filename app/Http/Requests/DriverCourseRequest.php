@@ -58,6 +58,9 @@ class DriverCourseRequest extends FormRequest
                     Rule::exists('drivers', 'id'),
 //                    new DriverCourseUniqueRule("date","driver_id","course_id"),
                 ],
+                "items"=> [
+                    'required',
+                ],
                 'items.*.course_id' => [
                     'required',
                     Rule::exists('courses', 'id'),
