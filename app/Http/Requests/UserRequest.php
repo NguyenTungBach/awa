@@ -105,11 +105,11 @@ class UserRequest extends FormRequest
     {
         $rules = [
             'order_by' => [
-                'nullable',
+                'sometimes',
                 Rule::in(['user_code', 'user_name', 'role'])
             ],
             'sort' => [
-                'nullable',
+                'sometimes',
                 Rule::in(SORT_BY)
             ]
         ];

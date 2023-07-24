@@ -145,5 +145,7 @@ return [
         'phone_number' => [
             'regex' => ':attributeには数字とハイフン (-) のみを指定ください。'
         ],
+        'check_date' => ':attribute時間は作成日以降である必要があります',
+        'check_minute' => ':attributeが無効です',
     ],
 ];

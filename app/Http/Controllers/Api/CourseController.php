@@ -13,10 +13,10 @@ use App\Http\Resources\BaseResource;
 use App\Http\Resources\CourseResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class CourseController extends Controller
 {
-
     /**
      * var Repository
      */
@@ -74,11 +74,14 @@ class CourseController extends Controller
      */
     public function index(CourseRequest $request)
     {
-        $course = $this->repository->listCourse($request);
-        if ($course['status'] != 'success') {
-            return $this->responseJsonError($course['code'], $course['message']);
+        try {
+            $result = $this->repository->getAll($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, CourseResource::collection($result), LIST_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());
         }
-        return $this->responseJson($course['code'], isset($course['data'])?$course['data']:null);
     }
 
     /**
@@ -118,13 +121,12 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
         try {
-            $createCourse = $this->repository->create($request->all());
-            if ($createCourse['status'] != 'success') {
-                return $this->responseJsonError($createCourse['code'], $createCourse['message'], $createCourse['message']);
-            }
-            return $this->responseJson($createCourse['code'], new BaseResource($createCourse['data']), $createCourse['message']);
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->createCourse($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, new CourseResource($result), CREATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $exception->getMessage());
         }
     }
 

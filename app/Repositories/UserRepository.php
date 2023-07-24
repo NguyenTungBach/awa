@@ -33,13 +33,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getAll($input)
     {
-        $orderBy = Arr::get($input, 'order_by', 'id');
-        $sort = Arr::get($input, 'sort', 'desc');
+        $input['order_by'] = Arr::get($input, 'order_by', 'id');
+        $input['sort'] = Arr::get($input, 'sort', 'desc');
 
         $data = [];
-        $user = User::orderBy($orderBy, $sort);
-        $users = $user->get();
+        $users = User::orderBy($input['order_by'], $input['sort']);
+        $users = $users->get();
         foreach ($users as $key => $value) {
+            $data[$key]['id'] = $value->id;
             $data[$key]['user_code'] = $value->user_code;
             $data[$key]['user_name'] = $value->user_name;
             $data[$key]['role'] = __('users.role_lang.' . $value->role);

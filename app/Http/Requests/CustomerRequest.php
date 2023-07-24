@@ -101,11 +101,11 @@ class CustomerRequest extends FormRequest
     public function getCustomRuleIndex(){
         $rules = [
             'order_by' => [
-                'nullable',
+                'sometimes',
                 Rule::in(['customer_code', 'customer_name', 'closing_date'])
             ],
             'sort_by' => [
-                'nullable',
+                'sometimes',
                 Rule::in(SORT_BY)
             ]
         ];

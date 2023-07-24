@@ -54,34 +54,8 @@ class Course extends Model
         'data' => 'array'
     ];
 
-    // public function coursePatterns()
-    // {
-    //     return $this->hasMany(CoursePattern::class, 'course_parent_code', 'course_code');
-    // }
-
-    // /*  Relationships  */
-    // public function driverCourse(){
-    //     return $this->hasMany(DriverCourse::class,'course_code','course_code');
-    // }
-    // public function owner(){
-    //     return $this->hasOne(DriverCourse::class,'course_code','course_code')->where('is_checked','yes');
-    // }
-    // public function driver(){
-    //     return $this->belongsToMany(Driver::class,'driver_courses','course_code','driver_code');
-    // }
-
-    // public function courseSchedules()
-    // {
-    //     return $this->hasMany(CourseSchedule::class, 'course_code', 'course_code');
-    // }
-
-    // public function resultAI()
-    // {
-    //     return $this->hasMany(ResultAI::class, 'result_ai', 'course_code');
-    // }
-
-    // public function points()
-    // {
-    //     return $this->hasMany(Point::class, 'course_code', 'course_code');
-    // }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 }

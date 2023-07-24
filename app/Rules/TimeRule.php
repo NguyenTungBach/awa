@@ -3,19 +3,17 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use DateTime;
+use Carbon\Carbon;
 
-class PostCode implements Rule
+class TimeRule implements Rule
 {
-    const POSTAL_CODE_LENGTH = 8;
-
-    protected string $attribute;
-
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct(string $attribute = 'post_code')
+    public function __construct(string $attribute)
     {
         $this->attribute = $attribute;
     }
@@ -29,13 +27,9 @@ class PostCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        if (strlen($value) < self::POSTAL_CODE_LENGTH) {
-            return false;
-        }
-        if (strlen($value) > self::POSTAL_CODE_LENGTH) {
-            return false;
-        }
-        if (!preg_match('%^\d{3}-\d{4}$%i', $value)) {
+        $arrTime = explode(':',$value);
+        $arrMinute = [00, 15, 30, 45];
+        if (in_array($arrTime[1], $arrMinute) == false) {
             return false;
         }
 
@@ -49,6 +43,6 @@ class PostCode implements Rule
      */
     public function message()
     {
-        return __('validation.regex', ['attribute' => $this->attribute]);
+        return __('validation.custom.check_minute', ['attribute' => $this->attribute]);
     }
 }
