@@ -91,22 +91,38 @@ class DriverCourseController extends Controller
      *              "driver_id": "1",
      *              "items" : {
      *                  {
-     *                      "course_code": "00001",
-     *                      "is_checked": "no"
-     *
+     *                      "course_id": 4,
+     *                      "date": "2023-07-25",
+     *                      "start_time": "08:00",
+     *                      "end_time": "18:00",
+     *                      "break_time": "12:00"
      *                  },
      *                  {
-     *                      "course_code": "00002",
-     *                      "is_checked": "no"
-     *
-     *                  }
+     *                      "course_id": 2,
+     *                      "date": "2023-07-25",
+     *                      "start_time": "08:00",
+     *                      "end_time": "18:00",
+     *                      "break_time": "12:00"
+     *                  },
      *              }
      *          },
      *          @OA\Schema(
-     *            required={"user_name"},
+     *            required={"driver_id","items"},
      *            @OA\Property(
-     *              property="name",
-     *              format="string",
+     *              property="driver_id",
+     *              type="integer",
+     *            ),
+     *            @OA\Property(
+     *              property="items",
+     *              type="array",
+     *              @OA\Items(
+     *                  required={"course_id","date","start_time","end_time","break_time"},
+     *                  @OA\Property(property="course_id", type="string" ),
+     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
+     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
+     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
+     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
+     *               )
      *            ),
      *         )
      *      )
@@ -124,59 +140,14 @@ class DriverCourseController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(DriverCourseRequest $request)
     {
-        $data = $request->json()->all();
-
-
-        $validator = Validator::make($data, [
-            'driver_id' => 'required|numeric',
-            'items.*.course_code' => 'required',
-            'items.*.is_checked' => 'nullable|in:yes,no'
-        ]);
-
-        if ($validator->fails()) {
-            $errors = $validator->errors();//dd($validator->errors()->all());
-            return $this->responseJsonError(422, $errors);
+        try {
+            $request->merge(['status' => 1]);
+            return $this->repository->create($request->all());
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        $theDriver = Driver::where('id', $data['driver_id'])->first();
-
-        if (!$theDriver) {
-            return $this->responseJsonError(422, "not found for id [" . $data['driver_id'] . "]");
-        }
-
-        if ($data['items']) {
-            $codes = array_column($data['items'], 'course_code');
-
-            $validCodes = Course::whereIn('course_code', $codes)->get();
-            $validCourses = $validCodes->keyBy('course_code')->toArray();
-
-            if (count(array_unique($codes)) != count($validCourses)) {
-                return $this->responseJsonError(422, "some courses was not found");
-            } elseif (count($codes) != count($validCourses)) {
-                return $this->responseJsonError(422, "some courses was duplicated");
-            }
-
-            $resultCheck = [];
-            foreach ($data['items'] as $item) {
-                if ($result = $this->checkUnique($item['course_code'], $item['is_checked'], $theDriver->driver_code)) {
-                    $resultCheck[] = "this course " . $item['course_code'] . " has checked by Driver has code[" . $result->driver_code . "]";
-                }
-            }
-
-            if ($resultCheck) {
-                return $this->responseJsonError(422, "このコースは、既に他のドライバーに専属チェックが付いています。", "some course have been checked", $resultCheck);
-            }
-
-        }
-
-        $createDriverCourse = $this->repository->updateData($data, $theDriver);
-
-        if ($createDriverCourse['status']!='success'){
-            return $this->responseJsonError($createDriverCourse['code'], $createDriverCourse['message'], $createDriverCourse['message'],$createDriverCourse);
-        }
-        return $this->responseJson($createDriverCourse['code'],isset($createDriverCourse['data']) ? $createDriverCourse['data'] : null);
     }
 
     private function checkUnique($code, $isChecked, $driverCode)

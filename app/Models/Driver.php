@@ -20,7 +20,6 @@ class Driver extends Model
     use SoftDeletes;
 
     protected $table = 'drivers';
-    public $timestamps = false;
 
     protected $dates = ['deleted_at'];
 

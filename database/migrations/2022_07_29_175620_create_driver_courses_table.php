@@ -17,10 +17,10 @@ class CreateDriverCoursesTable extends Migration
             $table->id();
             $table->integer('driver_id');
             $table->integer('course_id');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            $table->dateTime('breark_time');
-            $table->dateTime('date');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->time('break_time');
+            $table->date('date');
             $table->integer('status')->nullable()->comment('1: on, 2: off');
             $table->timestamps();
             $table->softDeletes();

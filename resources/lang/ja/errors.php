@@ -29,5 +29,7 @@ return [
     'shift.check.create' => '他のシフトが生成されています。しばらくお待ちください。',
     'shift.driver_empty' => 'Empty Drivers data',
     'shift.course_empty' => 'Empty Courses data',
-
+    'not_found' => 'not found',
+    'unique' => ':attribute already exists',
+    'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
 ];
