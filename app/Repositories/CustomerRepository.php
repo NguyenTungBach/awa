@@ -54,14 +54,15 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
 
     public function getAll($input)
     {
-        $orderBy = empty($input['order_by']) ? 'customer_code' : Arr::get($input, 'order_by', 'customer_code');
-        $sortBy = empty($input['sort_by']) ? 'desc' : Arr::get($input, 'sort_by', 'desc');
+        $input['order_by'] = Arr::get($input, 'order_by', 'customer_code');
+        $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
 
         $data = [];
-        $customer = Customer::orderBy($orderBy, $sortBy);
-        $customers = $customer->get();
+        $customers = Customer::orderBy($input['order_by'], $input['sort_by']);
+        $customers = $customers->get();
 
         foreach ($customers as $key => $value) {
+            $data[$key]['id'] = $value->id;
             $data[$key]['customer_code'] = $value->customer_code;
             $data[$key]['customer_name'] = $value->customer_name;
             $data[$key]['closing_date'] = $value->closing_date;

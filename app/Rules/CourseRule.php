@@ -2,21 +2,21 @@
 
 namespace App\Rules;
 
-use App\Models\Course;
-use App\Models\Driver;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 
 class CourseRule implements Rule
 {
+    protected string $attribute;
+
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $attribute = 'ship_date')
     {
-        //
+        $this->attribute = $attribute;
     }
 
     /**
@@ -28,13 +28,10 @@ class CourseRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($attribute == 'course_name') {
-            $id = Route::getCurrentRoute()->course;
-            $course = Course::where(Course::COURSE_NAME, $value)->where('id', '!=', $id)->first();
-            if ($course) {
-                return false;
-            }
+        if ($value < Carbon::now()->format('Y-m-d')) {
+            return false;
         }
+
         return true;
     }
 
@@ -45,8 +42,6 @@ class CourseRule implements Rule
      */
     public function message()
     {
-        return [
-            'course_name.*' => 'このコース名は既に登録されています。',
-        ];
+        return __('validation.custom.check_date', ['attribute' => $this->attribute]);
     }
 }

@@ -34,5 +34,4 @@ class Customer extends Model
     protected $casts = [
         'data' => 'array'
     ];
-
 }
