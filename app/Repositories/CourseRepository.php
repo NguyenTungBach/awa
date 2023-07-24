@@ -100,4 +100,20 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         return $result ?? [];
     }
+
+    public function getDetail($id)
+    {
+        $result = CourseRepository::find($id);
+        $result['ship_date'] = date('Y年m月d日', strtotime($result->start_date));
+        $result['start_date'] = date('H:i', strtotime($result->start_date));
+        $result['end_date'] = date('H:i', strtotime($result->end_date));
+        $result['break_time'] = date('H:i', strtotime($result->break_time));
+        $result['ship_fee'] = number_format($result->ship_fee, 0, '.', ',');
+        $result['associate_company_fee'] = number_format($result->associate_company_fee, 0, '.', ',');
+        $result['expressway_fee'] = number_format($result->expressway_fee, 0, '.', ',');
+        $result['commission'] = number_format($result->commission, 0, '.', ',');
+        $result['meal_fee'] = number_format($result->meal_fee, 0, '.', ',');
+
+        return $result;
+    }
 }

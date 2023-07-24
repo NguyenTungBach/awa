@@ -169,11 +169,12 @@ class CourseController extends Controller
     public function show($id)
     {
         try {
-            $course = $this->repository->getOne($id);
-            if ($course['status'] != 'success') return $this->responseJsonError($course['code'], $course['message'], $course['message']);
-            return $this->responseJson($course['code'], new CourseResource($course['data']));
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->getDetail($id);
+
+            return $this->responseJson(Response::HTTP_OK, new CourseResource($result), SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
         }
     }
 
