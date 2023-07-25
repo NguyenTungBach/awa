@@ -749,6 +749,73 @@ class DriverCourseTest extends TestCase
                 "data_error"
             ]);
     }
+
+    public function testDriverCourseCreateDuplicateItem()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->actingAs($user)->json('post', 'api/driver-course', [
+            'token' => $token,
+            "driver_id" => 9,
+            "items" => [
+                [
+                    "course_id" => 1,
+                    "date" => "2023/07/24",
+                    "start_time" => "08:00",
+                    "break_time" => "07:00",
+                    "end_time" => "09:00",
+                ],
+                [
+                    "course_id" => 1,
+                    "date" => "2023-07-24",
+                    "start_time" => "08:00",
+                    "break_time" => "12:00",
+                    "end_time" => "18:00",
+                ]
+            ]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal",
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseCreateDriver_idCourse_idDateExist()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->actingAs($user)->json('post', 'api/driver-course', [
+            'token' => $token,
+            "driver_id" => 9,
+            "items" => [
+                [
+                    "course_id" => 1,
+                    "date" => "2023/07/24",
+                    "start_time" => "08:00",
+                    "break_time" => "07:00",
+                    "end_time" => "09:00",
+                ],
+                [
+                    "course_id" => 2,
+                    "date" => "2023-07-24",
+                    "start_time" => "08:00",
+                    "break_time" => "12:00",
+                    "end_time" => "18:00",
+                ]
+            ]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal",
+                "data_error"
+            ]);
+    }
+
 //    public function testDriverCourseUpdateCoursesFasleCode()
 //    {
 //        $user = User::where('user_code', '1122')->first();
