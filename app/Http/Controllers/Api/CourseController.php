@@ -169,11 +169,12 @@ class CourseController extends Controller
     public function show($id)
     {
         try {
-            $course = $this->repository->getOne($id);
-            if ($course['status'] != 'success') return $this->responseJsonError($course['code'], $course['message'], $course['message']);
-            return $this->responseJson($course['code'], new CourseResource($course['data']));
-        } catch (\Exception $e) {
-            throw $e;
+            $result = $this->repository->getDetail($id);
+
+            return $this->responseJson(Response::HTTP_OK, new CourseResource($result), SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
         }
     }
 
@@ -229,11 +230,14 @@ class CourseController extends Controller
      */
     public function update(CourseRequest $request, $id)
     {
-        $updateCourse = $this->repository->update($request->all(), $id);
-        if ($updateCourse['status']!='success'){
-            return $this->responseJsonError($updateCourse['code'],$updateCourse['message'],$updateCourse['message']);
+        try {
+            $result = $this->repository->updateCourse($request->all(), $id);
+
+            return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, UPDATE_ERROR, $exception->getMessage());
         }
-        return $this->responseJson(CODE_SUCCESS, new BaseResource($updateCourse['data']),$updateCourse['message']);
     }
 
     /**
