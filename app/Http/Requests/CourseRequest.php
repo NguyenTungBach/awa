@@ -119,6 +119,52 @@ class CourseRequest extends FormRequest
         return $rules;
     }
 
+    public function getCustomRuleUpdate(){
+        $arrCustomerId = Customer::get()->pluck('id');
+
+        $rules = [
+            'customer_id' => [
+                'sometimes',
+                'required',
+                Rule::in($arrCustomerId)
+            ],
+            'course_name' => 'sometimes|required|string|max:20',
+            'ship_date' => [
+                'sometimes',
+                'required',
+                'date_format:Y-m-d',
+            ],
+            'start_date' => [
+                'sometimes',
+                'required',
+                'date_format:H:i',
+                new TimeRule(__('courses.start_date'))
+            ],
+            'end_date' => [
+                'sometimes',
+                'required',
+                'date_format:H:i',
+                new TimeRule(__('courses.end_date'))
+            ],
+            'break_time' => [
+                'sometimes',
+                'required',
+                'date_format:H:i',
+                new TimeRule(__('courses.break_time'))
+            ],
+            'departure_place' => 'sometimes|required|string|max:20',
+            'arrival_place' => 'sometimes|required|string|max:20',
+            'ship_fee' => 'sometimes|required|max:15',
+            'associate_company_fee' => 'nullable|max:15',
+            'expressway_fee' => 'nullable|max:15',
+            'commission' => 'nullable|max:15',
+            'meal_fee' => 'nullable|max:15',
+            'note' => 'nullable|string|max:1000',
+        ];
+
+        return $rules;
+    }
+
     public function messages()
     {
         return [
@@ -152,9 +198,13 @@ class CourseRequest extends FormRequest
             // ship_fee
             'ship_fee.required' => __('validation.required', ['attribute' => __('courses.ship_fee')]),
             // associate_company_fee
+            'associate_company_fee.max' => __('validation.max.string', ['attribute' => __('courses.associate_company_fee'), 'max' => 15]),
             // expressway_fee
+            'expressway_fee.max' => __('validation.max.string', ['attribute' => __('courses.expressway_fee'), 'max' => 15]),
             // commission
+            'commission.max' => __('validation.max.string', ['attribute' => __('courses.commission'), 'max' => 15]),
             // meal_fee
+            'meal_fee.max' => __('validation.max.string', ['attribute' => __('courses.meal_fee'), 'max' => 15]),
             // note
             'note.string' => __('validation.string', ['attribute' => __('courses.note')]),
             'note.max' => __('validation.max.string', ['attribute' => __('courses.note'), 'max' => 1000]),

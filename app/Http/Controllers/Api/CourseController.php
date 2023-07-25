@@ -230,11 +230,14 @@ class CourseController extends Controller
      */
     public function update(CourseRequest $request, $id)
     {
-        $updateCourse = $this->repository->update($request->all(), $id);
-        if ($updateCourse['status']!='success'){
-            return $this->responseJsonError($updateCourse['code'],$updateCourse['message'],$updateCourse['message']);
+        try {
+            $result = $this->repository->updateCourse($request->all(), $id);
+
+            return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, UPDATE_ERROR, $exception->getMessage());
         }
-        return $this->responseJson(CODE_SUCCESS, new BaseResource($updateCourse['data']),$updateCourse['message']);
     }
 
     /**

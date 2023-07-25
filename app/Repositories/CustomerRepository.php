@@ -81,7 +81,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
 
     public function updateCustomer($input, $id)
     {
-        $input['note'] = Arr::get($input, 'note', NULL);
         $result = CustomerRepository::update($input, $id);
 
         return $result;

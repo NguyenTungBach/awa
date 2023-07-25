@@ -116,4 +116,11 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         return $result;
     }
+
+    public function updateCourse($input, $id)
+    {
+        $result = CourseRepository::update($input, $id);
+
+        return $result;
+    }
 }
