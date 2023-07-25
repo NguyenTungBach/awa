@@ -25,7 +25,7 @@ class CustomerSeeder extends Seeder
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
-            'phone' => '012-1234-1234',
+            'phone' => '01212341234',
             'note' => NULL,
         ]);
         Customer::factory()->create([
@@ -35,7 +35,7 @@ class CustomerSeeder extends Seeder
             'person_charge' => 'Person charge 02',
             'post_code' => '456-7890',
             'address' => 'Address 02',
-            'phone' => '012-123-4567',
+            'phone' => '01212341234',
             'note' => NULL,
         ]);
         Customer::factory()->create([
@@ -45,7 +45,7 @@ class CustomerSeeder extends Seeder
             'person_charge' => 'Person charge 03',
             'post_code' => '456-7891',
             'address' => 'Address 03',
-            'phone' => '123-456-7890',
+            'phone' => '01212341234',
             'note' => NULL,
         ]);
         Customer::factory()->create([
@@ -55,7 +55,7 @@ class CustomerSeeder extends Seeder
             'person_charge' => 'Person charge 04',
             'post_code' => '456-7890',
             'address' => 'Address 04',
-            'phone' => '111-222-3334',
+            'phone' => '01212341234',
             'note' => NULL,
         ]);
         Customer::factory()->create([
@@ -65,7 +65,7 @@ class CustomerSeeder extends Seeder
             'person_charge' => 'Person charge 05',
             'post_code' => '456-7890',
             'address' => 'Address 05',
-            'phone' => '111-222-3344',
+            'phone' => '01212341234',
             'note' => NULL,
         ]);
     }
