@@ -88,7 +88,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         if (!empty($duplicates)) {
             $duplicates_key_first = explode('|',array_key_first($duplicates));
 //            $duplicates_value_first = $duplicates[$duplicates_key_first];
-            return ResponseService::responseJsonError(Response::HTTP_BAD_REQUEST,
+            return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('errors.duplicate_course_id_and_date',[
                     "course_id"=> $duplicates_key_first[0],
                     "date"=> $duplicates_key_first[1]
@@ -121,12 +121,15 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->exists();
             // Nếu có tồn tại (không là duy nhất)
             if ($checkUnique){
-                return ResponseService::responseJsonError(Response::HTTP_BAD_REQUEST,
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans("errors.unique" ,[
                         "attribute"=> "driver_id: $checkDriver_id, course_id: $checkCourse_id, and date: $checkDate"
                     ]));
             }
         }
+
+        //Kiểm tra có nằm trong phạm vi tháng này năm nay không
+
 
         // Lưu lại nếu thỏa mãn tất cả điều kiện
         foreach ($items as $item){
