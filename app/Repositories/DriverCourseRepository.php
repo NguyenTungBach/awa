@@ -137,6 +137,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $driver_course->start_time = $item['start_time'];
             $driver_course->end_time = $item['end_time'];
             $driver_course->break_time = $item['break_time'];
+            $driver_course->status = 1;
             $driver_course->save();
         }
 
