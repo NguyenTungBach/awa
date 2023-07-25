@@ -16,7 +16,7 @@ class CreateFinalClosingHistoriesTable extends Migration
         Schema::create('final_closing_histories', function (Blueprint $table) {
             $table->id();
             $table->date('date')->comment('final closing date');
-            $table->integer('month')->comment('click button final closing for month');
+            $table->date('month_year')->comment('click button final closing for month');
             $table->integer('type')->comment('1: cash in, 2: cash out');
             $table->integer('status')->nullable()->comment('1: on, 2: off')->default(1);
             $table->timestamps();
