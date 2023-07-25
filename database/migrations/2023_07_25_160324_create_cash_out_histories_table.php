@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDriverCoursesTable extends Migration
+class CreateCashOutHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateDriverCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::create('driver_courses', function (Blueprint $table) {
+        Schema::create('cash_out_histories', function (Blueprint $table) {
             $table->id();
             $table->integer('driver_id');
-            $table->integer('course_id');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->time('break_time');
-            $table->date('date');
+            $table->integer('cash_out_id');
+            $table->integer('type')->comment('1: update, 2:delete');
+            $table->decimal('cash_out', 15);
+            $table->integer('payment_method')->comment('1: 銀行振込 - ngân hàng ck, 2: 口座振替 - bưu điện ck');
+            $table->date('payment_date');
+            $table->text('note')->nullable();
             $table->integer('status')->nullable()->comment('1: on, 2: off')->default(1);
             $table->timestamps();
             $table->softDeletes();
@@ -34,6 +35,6 @@ class CreateDriverCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('driver_courses');
+        Schema::dropIfExists('cash_out_histories');
     }
 }
