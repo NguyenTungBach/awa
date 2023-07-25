@@ -22,7 +22,7 @@ class CreateDriversTable extends Migration
             $table->dateTime('end_date')->nullable()->comment('retirement');
             $table->string('car', 20)->nullable();
             $table->text('note')->nullable();
-            $table->string('status')->nullable()->comment('1:on, 2: off');
+            $table->string('status')->nullable()->comment('1:on, 2: off')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

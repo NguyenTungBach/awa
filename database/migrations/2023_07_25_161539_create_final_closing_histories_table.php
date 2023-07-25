@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDriverCoursesTable extends Migration
+class CreateFinalClosingHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateDriverCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::create('driver_courses', function (Blueprint $table) {
+        Schema::create('final_closing_histories', function (Blueprint $table) {
             $table->id();
-            $table->integer('driver_id');
-            $table->integer('course_id');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->time('break_time');
-            $table->date('date');
+            $table->date('date')->comment('final closing date');
+            $table->integer('month')->comment('click button final closing for month');
+            $table->integer('type')->comment('1: cash in, 2: cash out');
             $table->integer('status')->nullable()->comment('1: on, 2: off')->default(1);
             $table->timestamps();
             $table->softDeletes();
@@ -34,6 +31,6 @@ class CreateDriverCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('driver_courses');
+        Schema::dropIfExists('final_closing_histories');
     }
 }
