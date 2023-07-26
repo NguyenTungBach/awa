@@ -49,7 +49,21 @@ class CalendarRepository extends BaseRepository implements CalendarRepositoryInt
         $calendar = Calendar::whereDate(Calendar::CALENDAR_DATE, '>=', $startDate)
             ->whereDate(Calendar::CALENDAR_DATE, '<=', $endDate)
             ->get();
+
         return ResponseService::responseData(\Illuminate\Http\Response::HTTP_OK, 'success', 'success', $calendar);
+    }
+
+    public function indexGetData($startDate,$endDate)
+    {
+        $checkDateGetData = $this->checkDateGetData($startDate, $endDate);
+        if ($checkDateGetData['status'] != 'success') {
+            return ResponseService::responseData($checkDateGetData['code'], $checkDateGetData['status'], $checkDateGetData['message']);
+        }
+        $calendar = Calendar::whereDate(Calendar::CALENDAR_DATE, '>=', $startDate)
+            ->whereDate(Calendar::CALENDAR_DATE, '<=', $endDate)
+            ->get();
+
+        return $calendar;
     }
 
     /** create calendar
