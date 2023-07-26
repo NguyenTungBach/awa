@@ -44,6 +44,8 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'total_extra_cost':
                   return $this->getCustomRule();
+              case 'export_shift':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -114,6 +116,21 @@ class DriverCourseRequest extends FormRequest
                      'required',
                      "date_format:Y-m",
                  ],
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'export_shift'){
+             return [
+                 "closing_date" => [
+                     'required',
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
+                 "sortby" => "in:asc,desc"
              ];
          }
      }

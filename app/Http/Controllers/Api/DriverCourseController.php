@@ -15,8 +15,10 @@ use App\Models\DriverCourse;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\DriverCourseResource;
+use Helper\ResponseService;
 use Http\Client\Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class DriverCourseController extends Controller
@@ -92,7 +94,17 @@ class DriverCourseController extends Controller
      */
     public function index(DriverCourseRequest $request)
     {
-        return $this->repository->getAll($request);
+        $field = isset($request['field']) ? $request['field'] : null;
+        $sortby = isset($request['sortby']) ? $request['sortby'] : null;
+
+        $arraySortby = ['asc', 'desc'];
+
+        if (!$field && $sortby){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
+        }
+
+        $datas = $this->repository->getAll($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);;
     }
 
     /**
@@ -229,6 +241,60 @@ class DriverCourseController extends Controller
      */
     public function total_extra_cost(DriverCourseRequest $request)
     {
-        return $this->repository->totalOfExtraCost($request);
+        $datas = $this->repository->totalOfExtraCost($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/driver-course/total-extra-cost",
+     *   tags={"DriverCourse"},
+     *   summary="Total extra cost DriverCourse",
+     *   operationId="driver_course_total_extra_cost",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function export_shift(DriverCourseRequest $request)
+    {
+        return $this->repository->export_shift($request);
     }
 }

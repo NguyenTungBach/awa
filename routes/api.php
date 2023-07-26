@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     Route::post('auth/login', 'AuthController@login');
     Route::get('auth/bothutesthoi/ahii', 'AuthController@testAI');
-
+    Route::get('driver-course/export-shift','DriverCourseController@export_shift');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');
         Route::get('calendar/index', 'CalendarController@index');
