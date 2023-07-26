@@ -64,6 +64,117 @@ class DriverCourseTest extends TestCase
 //            ->assertStatus(CODE_SUCCESS);
 //    }
 
+    public function testDriverCourseListSuccess()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'month_year' => "2023-07",
+        ])->assertStatus(CODE_SUCCESS);
+    }
+
+    public function testDriverCourseListWrongField()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'field' => "zxc",
+            'month_year' => "2023-07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'field' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseListWrongSortby()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'sortby' => "zxc",
+            'month_year' => "2023-07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'sortby' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseListSortbyButNotField()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'sortby' => "desc",
+            'month_year' => "2023-07",
+        ])->assertStatus(CODE_SUCCESS)
+            ->assertJsonStructure([
+                "code",
+                "status",
+                "message",
+            ]);
+    }
+
+    public function testDriverCourseListMonth_yearEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseListWrongMonth_yearFormat()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'month_year' => "2023/07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
     public function testDriverCourseCreateSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -566,7 +677,7 @@ class DriverCourseTest extends TestCase
             ]);
     }
 
-    public function testDriverCourseCreateEnd_timeWrongAfter_or_equalBreak_time()
+    public function testDriverCourseCreateEnd_timeWrongAfter_or_equalStart_time()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
@@ -579,7 +690,7 @@ class DriverCourseTest extends TestCase
                     "date" => "2023/07/24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
-                    "end_time" => "09:00",
+                    "end_time" => "07:00",
                 ],
                 [
                     "course_id" => 2,
@@ -713,43 +824,6 @@ class DriverCourseTest extends TestCase
             ]);
     }
 
-    public function testDriverCourseCreateBreak_timeWrongAfter_or_equalStart_time()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/driver-course', [
-            'token' => $token,
-            "driver_id" => 9,
-            "items" => [
-                [
-                    "course_id" => 1,
-                    "date" => "2023/07/24",
-                    "start_time" => "08:00",
-                    "break_time" => "07:00",
-                    "end_time" => "09:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.break_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
     public function testDriverCourseCreateDuplicateItem()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -812,6 +886,92 @@ class DriverCourseTest extends TestCase
                 "message",
                 "message_content",
                 "message_internal",
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseTotal_extra_costMonth_yearEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course/total-extra-cost', [
+            'token' => $token,
+            'closing_date' => 24,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseTotal_extra_costWrongMonth_yearFormat()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course/total-extra-cost', [
+            'token' => $token,
+            'closing_date' => 24,
+            'month_year' => "2023/07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseTotal_extra_costClosing_dateEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course/total-extra-cost', [
+            'token' => $token,
+            'month_year' => "2023-07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'closing_date' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseTotal_extra_costClosing_dateNotIn()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course/total-extra-cost', [
+            'token' => $token,
+            'closing_date' => 22,
+            'month_year' => "2023-07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'closing_date' => [
+
+                    ],
+                ],
                 "data_error"
             ]);
     }

@@ -12,10 +12,13 @@ use App\Http\Resources\BaseResource;
 use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
+use App\Models\FinalClosingHistories;
 use App\Models\User;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
+use Carbon\Carbon;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +74,80 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $arrayDataDriverCourse);
     }
 
+    public function getAll($request)
+    {
+        $field = isset($request['field']) ? $request['field'] : null;
+        $sortby = isset($request['sortby']) ? $request['sortby'] : null;
+        $getMonth_year = explode("-",$request->month_year);
+
+        $arraySortby = ['asc', 'desc'];
+
+        if (!$field && $sortby){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
+        }
+
+        // Nhóm tất cả những course nằm trong driver
+        $datas = $this->model->query()
+            ->select(
+                "driver_courses.id as driver_courses_id",
+                "driver_courses.driver_id",
+                "driver_courses.date",
+                "drivers.driver_name",
+                "drivers.type",
+            )
+            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids'))
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->SortByForDriverCourse($request)
+            ->groupBy("driver_courses.driver_id","driver_courses.date")
+            ->whereYear("driver_courses.date",$getMonth_year[0])
+            ->whereMonth("driver_courses.date",$getMonth_year[1])
+            ->whereNull('driver_courses.deleted_at')->get()
+            ->filter(function ($data) {
+                switch ($data['driver']['type']){
+                    case 1:
+                        $data['driver']['typeName'] = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $data['driver']['typeName'] = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $data['driver']['typeName'] = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $data['driver']['typeName'] = trans('drivers.type.4');
+                        break;
+                };
+                return $data;
+            });
+
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);
+    }
+
+    public function totalOfExtraCost($request)
+    {
+        $month_year = $request->month_year;
+        $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
+        $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+
+        // Nhóm tất cả những course nằm trong driver
+        $datas = $this->model->query()
+            ->select(
+                "driver_courses.driver_id",
+                "drivers.driver_name",
+                "drivers.type",
+            )
+            ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,SUM(CASE WHEN
+            `driver_courses`.`date` BETWEEN '$startDate' AND '$endDate'
+            THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
+            as `total_money`"))
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->groupBy("driver_courses.driver_id")
+            ->whereNull('driver_courses.deleted_at')->get();
+
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);
+    }
+
     public function create(array $attributes)
     {
         $items = $attributes["items"];
@@ -96,20 +173,27 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // Kiểm tra trong mảng có đang duplicate không end
 
-//        // Kiểm tra lần nữa driver theo driver_id có tồn tại không start
-//        $driver = Driver::find($attributes['driver_id']);
-//        if (!$driver){
-//            return ResponseService::responseJsonError(Response::HTTP_NOT_FOUND, trans('errors.not_found',$attributes['driver_id']), trans('errors.not_found',$attributes['driver_id']));
-//        }
-//        // Kiểm tra lần nữa driver theo driver_id có tồn tại không end
-//        // Kiểm tra lần nữa driver theo course_id có tồn tại không start
-//        $course = Course::find($attributes['course_id']);
-//        if (!$course){
-//            return ResponseService::responseJsonError(Response::HTTP_NOT_FOUND, trans('errors.not_found',$attributes['course_id']), trans('errors.not_found',$attributes['course_id']));
-//        }
-//        // Kiểm tra lần nữa driver theo course_id có tồn tại không end
 
-        // Kiểm tra duy nhất DriverCourse theo driver_id,course_id và date
+        // Kiểm tra có được phép tạo không, xem trong bảng start
+        foreach ($items as $item){
+            $checkDriver_id = $attributes['driver_id'];
+            $checkCourse_id = $item['course_id'];
+            $checkDate = $item['date'];
+            $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
+
+            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
+                ->exists();
+            // Nếu có tồn tại (không là duy nhất)
+            if ($checkFinalClosingHistories){
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                    trans("errors.final_closing_histories" ,[
+                        "attribute"=> "driver_id: $checkDriver_id, course_id: $checkCourse_id, and date: $checkDate"
+                    ]));
+            }
+        }
+        // Kiểm tra có được phép tạo không, xem trong bảng end
+
+        // Kiểm tra duy nhất DriverCourse theo driver_id,course_id và date start
         foreach ($items as $item){
             $checkDriver_id = $attributes['driver_id'];
             $checkCourse_id = $item['course_id'];
@@ -127,8 +211,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ]));
             }
         }
-
-        //Kiểm tra có nằm trong phạm vi tháng này năm nay không
+        // Kiểm tra duy nhất DriverCourse theo driver_id,course_id và date end
 
 
         // Lưu lại nếu thỏa mãn tất cả điều kiện

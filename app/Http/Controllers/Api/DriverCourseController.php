@@ -34,7 +34,7 @@ class DriverCourseController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/driver-course/list/{id}",
+     *   path="/api/driver-course",
      *   tags={"DriverCourse"},
      *   summary="List DriverCourse",
      *   operationId="driver_course_index",
@@ -47,8 +47,29 @@ class DriverCourseController extends Controller
      *     )
      *   ),
      *   @OA\Parameter(
-     *     name="id",
-     *     description = "id = driver_id",
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
      *     in="path",
      *     required=true,
      *     @OA\Schema(
@@ -69,13 +90,9 @@ class DriverCourseController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($id)
+    public function index(DriverCourseRequest $request)
     {
-        $driverCourse = $this->repository->getPagination($id);
-        if ($driverCourse['status'] != 'success') {
-            return $this->responseJsonError($driverCourse['code'], $driverCourse['message']);
-        }
-        return $this->responseJson($driverCourse['code'], isset($driverCourse['data']) ? $driverCourse['data'] : null);
+        return $this->repository->getAll($request);
     }
 
     /**
@@ -162,4 +179,56 @@ class DriverCourseController extends Controller
         return $hasCheck;
     }
 
+    /**
+     * @OA\Get(
+     *   path="/driver-course/total-extra-cost",
+     *   tags={"DriverCourse"},
+     *   summary="Total extra cost DriverCourse",
+     *   operationId="driver_course_total_extra_cost",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function total_extra_cost(DriverCourseRequest $request)
+    {
+        return $this->repository->totalOfExtraCost($request);
+    }
 }

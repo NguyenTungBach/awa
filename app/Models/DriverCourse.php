@@ -37,14 +37,38 @@ class DriverCourse extends Model
         'data' => 'array'
     ];
 
+    public function scopeSortByForDriverCourse($query)
+    {
+        if (request()->filled('field') && request()->filled('sortby')) {
+            $field = request()->get('field');
+            $sortby = request()->get('sortby');
+            $query->orderBy($field, $sortby);
+        }
+        return $query;
+    }
 
 
     /*  Relationships  */
     public function driver(){
-        return $this->belongsTo(Driver::class,'driver_code','driver_code');
+        return $this->belongsTo(Driver::class,'driver_id','id')
+            ->select('id', 'type', 'driver_code','type', 'driver_name', 'start_date', 'end_date', 'car', 'status');
     }
     public function course(){
-        return $this->belongsTo(Course::class,'course_code','course_code');
+        return $this->belongsTo(Course::class,'course_id','id')
+            ->select('id',
+                'customer_id',
+                'course_name',
+                'ship_date',
+                'start_date', 'break_time', 'end_date',
+                'departure_place',
+                'arrival_place',
+                'ship_fee',
+                'associate_company_fee',
+                'expressway_fee',
+                'commission',
+                'meal_fee',
+                'status',
+            );
     }
 
 }

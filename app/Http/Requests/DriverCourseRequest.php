@@ -40,12 +40,26 @@ class DriverCourseRequest extends FormRequest
                     return $this->getCustomRule();
                 case 'store':
                     return $this->getCustomRule();
+              case 'index':
+                  return $this->getCustomRule();
+              case 'total_extra_cost':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
     }
 
      public function getCustomRule(){
+         if(Route::getCurrentRoute()->getActionMethod() == 'index'){
+             return [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
+                 "sortby" => "in:asc,desc"
+             ];
+         }
         if(Route::getCurrentRoute()->getActionMethod() == 'update'){
             return [
 
@@ -79,17 +93,29 @@ class DriverCourseRequest extends FormRequest
                 "items.*.break_time" => [
                     "required",
                     'date_format:H:i',
-                    'after_or_equal:items.*.start_time',
                     new TimeRule("break_time")
                 ],
                 "items.*.end_time" => [
                     "required",
                     'date_format:H:i',
-                    'after_or_equal:items.*.break_time',
+                    'after_or_equal:items.*.start_time',
                     new TimeRule("end_time")
                 ],
             ];
         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'total_extra_cost'){
+             return [
+                 "closing_date" => [
+                     'required',
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+             ];
+         }
      }
 
     public function messages()
@@ -98,6 +124,8 @@ class DriverCourseRequest extends FormRequest
             'required' => trans('validation.required'),
             'driver_id.exists' => "driver_id not found in database",
             'items.*.course_id.exists' => "course_id not found in database",
+            'sortby.in' => 'Please input asc or desc',
+            'closing_date.in' => 'Please input 24 or 25',
         ];
     }
 }

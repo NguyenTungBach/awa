@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DriverCourseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('driver', 'DriverController');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
+            Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
             Route::apiResource('driver-course', 'DriverCourseController');
         });
         Route::group(['prefix' => 'auth'], function () {

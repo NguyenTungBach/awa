@@ -31,5 +31,6 @@ return [
     'shift.course_empty' => 'Empty Courses data',
     'not_found' => 'not found',
     'unique' => ':attribute already exists',
+    'final_closing_histories' => ':attribute already in final closing',
     'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
 ];
