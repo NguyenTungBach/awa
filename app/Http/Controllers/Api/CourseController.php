@@ -14,6 +14,9 @@ use App\Http\Resources\CourseResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
+use App\Exports\CourseExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CourseController extends Controller
 {
@@ -272,5 +275,17 @@ class CourseController extends Controller
             return $this->responseJsonError($course['code'],$course['message'],$course['message']);
         }
         return $this->responseJson($course['code'], null,$course['message']);
+    }
+
+    public function export(CourseRequest $request)
+    {
+        try {
+            $input = $request->all();
+
+            return Excel::download(new CourseExport($input), 'hy download.xlsx');
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
+        }
     }
 }
