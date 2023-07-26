@@ -28,7 +28,9 @@ class CourseSeeder extends Seeder
     {
         DB::table('courses')->truncate();
         $arrId = Customer::get()->pluck('id');
+        $dem = 0;
         foreach ($arrId as $key => $value) {
+            $dem = $dem + 10;
             Course::factory()->create([
                 'customer_id' => $value,
                 'course_name' => 'Course name ' . $value,
@@ -39,10 +41,10 @@ class CourseSeeder extends Seeder
                 'departure_place' => 'Departure place 0' . $value,
                 'arrival_place' => 'Arrival place 0 ' . $value,
                 'ship_fee' => '5000',
-                'associate_company_fee' => '0',
-                'expressway_fee' => '0',
-                'commission' => '0',
-                'meal_fee' => '0',
+                'associate_company_fee' => $dem,
+                'expressway_fee' => $dem,
+                'commission' => $dem,
+                'meal_fee' => $dem,
                 'note' => NULL,
             ]);
         }

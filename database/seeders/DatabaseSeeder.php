@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DriverCourse;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DriverSeeder::class);
         $this->call(CustomerSeeder::class);
         $this->call(CourseSeeder::class);
+        $this->call(DriverCourseSeeder::class);
     }
 }

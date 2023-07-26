@@ -10,5 +10,6 @@ return [
     'email_not_exist' => 'Email không tồn tại.',
     'not_found' => 'not found',
     'unique' => ':attribute already exists',
+    'final_closing_histories' => ':attribute already in final closing',
     'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
 ];
