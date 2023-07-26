@@ -42,6 +42,8 @@ class CourseRequest extends FormRequest
                 return $this->getCustomRuleUpdate();
             case 'index':
                 return $this->getCustomRuleIndex();
+            case 'export':
+                return $this->getCustomRuleIndex();
             default:
                 return [];
         }

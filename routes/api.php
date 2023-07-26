@@ -26,6 +26,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::post('calendar/delete', 'CalendarController@destroy');
             Route::apiResource('user', 'UserController');
             Route::apiResource('driver', 'DriverController');
+            Route::post('course/export', 'CourseController@export');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
