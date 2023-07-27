@@ -78,6 +78,15 @@ class DriverCourseController extends Controller
      *      type="string",
      *     ),
      *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
      *   @OA\Response(
      *     response=401,
      *     description="Login false",
