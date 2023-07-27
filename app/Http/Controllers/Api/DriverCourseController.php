@@ -188,17 +188,92 @@ class DriverCourseController extends Controller
         }
     }
 
-    private function checkUnique($code, $isChecked, $driverCode)
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/{driver_id}",
+     *   tags={"DriverCourse"},
+     *   summary="Detail DriverCourse",
+     *   operationId="driver_course_detail",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     example = "2023-07-23",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($driver_id,DriverCourseRequest $request)
     {
-        if ($isChecked == 'no') {
-            return false;
-        }
-        $hasCheck = DriverCourse::where('driver_code', '<>', $driverCode)
-                                ->where('course_code', $code)
-                                ->where('is_checked', $isChecked)
-                                ->first();
-        return $hasCheck;
+        return $this->repository->getDetalDriverCourse($driver_id,$request);
     }
+
+    /**
+     * @OA\Post(
+     *   path="/api/driver-course/{id}",
+     *   tags={"DriverCourse"},
+     *   summary="Update DriverCourse",
+     *   operationId="driver_course_update",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     example = "2023-07-23",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_course(DriverCourseRequest $request)
+    {
+        return $this->repository->update_course($request->all());
+    }
+
 
     /**
      * @OA\Get(
@@ -256,10 +331,10 @@ class DriverCourseController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/driver-course/total-extra-cost",
+     *   path="/driver-course/export-shift",
      *   tags={"DriverCourse"},
-     *   summary="Total extra cost DriverCourse",
-     *   operationId="driver_course_total_extra_cost",
+     *   summary="Export_shift DriverCourse",
+     *   operationId="driver_course_export_shift",
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",

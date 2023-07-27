@@ -31,6 +31,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
+            Route::post('driver-course/update-course','DriverCourseController@update_course');
             Route::apiResource('driver-course', 'DriverCourseController');
         });
         Route::group(['prefix' => 'auth'], function () {

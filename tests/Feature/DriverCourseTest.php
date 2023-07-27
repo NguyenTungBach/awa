@@ -78,6 +78,7 @@ class DriverCourseTest extends TestCase
         ])->assertStatus(CODE_SUCCESS);
     }
 
+    /////////List Start//////////
     public function testDriverCourseListWrongField()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -178,7 +179,9 @@ class DriverCourseTest extends TestCase
                 "data_error"
             ]);
     }
+    /////////List End//////////
 
+    /////////Create Start//////////
     public function testDriverCourseCreateSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -1008,7 +1011,9 @@ class DriverCourseTest extends TestCase
                 "data_error" => null
             ]);
     }
+    /////////Create End//////////
 
+    /////////Total Extra Cost Start//////////
     public function testDriverCourseTotal_extra_costMonth_yearEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -1094,6 +1099,55 @@ class DriverCourseTest extends TestCase
                 "data_error"
             ]);
     }
+    /////////Total Extra Cost Start//////////
+
+    /////////Detail Start//////////
+    public function testDriverCourseDetailSuccess()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver_course = DriverCourse::find(1);
+        $this->actingAs($user)->json('get', "api/driver-course/$driver_course->driver_id", [
+            'token' => $token,
+            'date' => $driver_course->date,
+        ])->assertStatus(CODE_SUCCESS)
+            ->assertJsonStructure([
+                "code",
+                "data" => [
+                    [
+                        "id",
+                        "driver_id",
+                        "course_id",
+                        "start_time",
+                        "end_time",
+                        "break_time",
+                        "date",
+                        "status",
+                        "created_at",
+                        "updated_at",
+                        "deleted_at",
+                        'course' => [
+                            "id",
+                            "customer_id",
+                            "course_name",
+                            "ship_date",
+                            "start_date",
+                            "break_time",
+                            "end_date",
+                            "departure_place",
+                            "arrival_place",
+                            "ship_fee",
+                            "associate_company_fee",
+                            "expressway_fee",
+                            "commission",
+                            "meal_fee",
+                            "status",
+                        ]
+                    ]
+                ],
+            ]);
+    }
+    /////////Detail End//////////
 
 //    public function testDriverCourseUpdateCoursesFasleCode()
 //    {
