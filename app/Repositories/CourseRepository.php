@@ -15,6 +15,7 @@ use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use App\Models\DriverCourse;
 
 class CourseRepository extends BaseRepository implements CourseRepositoryInterface
 {
@@ -94,7 +95,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
             $data[$key]['departure_place'] = $value->departure_place;
             $data[$key]['arrival_place'] = $value->arrival_place;
-            $data[$key]['ship_fee'] = $value->ship_fee;
+            $data[$key]['ship_fee'] = number_format($value->ship_fee, 0, '.', ',');
         }
         $result = $data;
 
@@ -120,6 +121,56 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     public function updateCourse($input, $id)
     {
         $result = CourseRepository::update($input, $id);
+
+        return $result;
+    }
+
+    public function deleteCourse($id)
+    {
+        $checkDriverCourse = $this->checkDriverCourse($id);
+        if ($checkDriverCourse) {
+            return false;
+        }
+        $result = CourseRepository::find($id)->delete();
+
+        return $result;
+    }
+
+    public function destroyCourse($arrId)
+    {
+        $checkDriverCourse = $this->checkDriverCourse($arrId);
+        if ($checkDriverCourse) {
+            return false;
+        }
+        $result = Course::destroy($arrId);
+
+        return $result;
+    }
+
+    public function checkDriverCourse($id)
+    {
+        $arrCourseId = DriverCourse::get()->pluck('course_id')->toArray();
+        // $result = Arr::hasAny($arrCourseId, $id);
+        if (is_array($id)) {
+            foreach ($id as $key => $value) {
+                if (!in_array($value, $arrCourseId)) {
+                    return false;
+                }
+                if (in_array($value, $arrCourseId)) {
+                    return true;
+                }
+            }
+        } else {
+            $result = in_array($id, $arrCourseId);
+        }
+
+        // if (is_array($id)) {
+        //     $result = array_diff($arrCourseId, $id);
+        //     dd('resrulttt', $result);
+        //     $result = ($result == []) ? true : false;
+        // } else {
+        //     $result = in_array($id, $arrCourseId);
+        // }
 
         return $result;
     }

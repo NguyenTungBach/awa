@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 class DriverCourse extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
 
     protected $table = 'driver_courses';
     protected $dates = ['deleted_at'];
@@ -46,7 +46,6 @@ class DriverCourse extends Model
         }
         return $query;
     }
-
 
     /*  Relationships  */
     public function driver(){
