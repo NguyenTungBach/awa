@@ -6,6 +6,9 @@ return [
     'name_accessory_not_change' => 'accessory name cannot be edited',
     'not_found' => 'not found',
     'unique' => ':attribute already exists',
+    'has_been_assigned' => ':attribute has been assigned',
+    'end_date_retirement' => ':attribute already in retirement :end_date',
+    'unlike_ship_date' => ':attribute not unlike ship date :ship_date',
     'final_closing_histories' => ':attribute already in final closing',
     'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
 ];

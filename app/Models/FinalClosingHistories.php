@@ -17,7 +17,12 @@ class FinalClosingHistories extends Model
 
     protected $table = 'final_closing_histories';
 
-    protected $fillable = [];
+    protected $fillable = [
+        "date",
+        "month_year",
+        "type",
+        "status",
+    ];
 
     protected $dates = ['deleted_at'];
 

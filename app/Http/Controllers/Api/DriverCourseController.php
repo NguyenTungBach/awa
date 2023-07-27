@@ -279,6 +279,25 @@ class DriverCourseController extends Controller
      *      type="string",
      *     ),
      *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
      *   @OA\Response(
      *     response=401,
      *     description="Login false",

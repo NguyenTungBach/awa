@@ -31,10 +31,14 @@ class CourseSeeder extends Seeder
         $dem = 0;
         foreach ($arrId as $key => $value) {
             $dem = $dem + 10;
+            // Lấy ngẫu nhiên trong khoảng hôm nay đến 7 ngày trước
+            $randomNumberOfDays = rand(0, 7);
+            $aboutSevenDaysAgo = Carbon::now()->subDays($randomNumberOfDays);
+
             Course::factory()->create([
                 'customer_id' => $value,
                 'course_name' => 'Course name ' . $value,
-                'ship_date' => Carbon::now()->format('Y-m-d'),
+                'ship_date' => $aboutSevenDaysAgo->format("Y-m-d"),
                 'start_date' => '09:00',
                 'end_date' => '10:00',
                 'break_time' => '00:00',
