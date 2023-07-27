@@ -54,6 +54,9 @@ class DriverCourseRequest extends FormRequest
      public function getCustomRule(){
          if(Route::getCurrentRoute()->getActionMethod() == 'index'){
              return [
+                 "closing_date" => [
+                     "in:24,25",
+                 ],
                  "month_year" => [
                      'required',
                      "date_format:Y-m",

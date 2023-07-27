@@ -78,6 +78,15 @@ class DriverCourseController extends Controller
      *      type="string",
      *     ),
      *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
      *   @OA\Response(
      *     response=401,
      *     description="Login false",
@@ -273,6 +282,25 @@ class DriverCourseController extends Controller
      *     name="month_year",
      *     description = "Y-m",
      *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
      *     in="path",
      *     required=true,
      *     @OA\Schema(
