@@ -33,4 +33,9 @@ class Customer extends Model
     protected $casts = [
         'data' => 'array'
     ];
+
+    public function course()
+    {
+        return $this->hasMany(Course::class, 'customer_id');
+    }
 }
