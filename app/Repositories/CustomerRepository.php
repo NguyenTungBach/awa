@@ -7,6 +7,7 @@
 namespace Repository;
 
 use App\Models\Customer;
+use App\Models\Course;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
@@ -88,7 +89,19 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
 
     public function deleteCustomer($id)
     {
+        $check = $this->checkCustomer($id);
+        if ($check) {
+            return false;
+        }
         $result = CustomerRepository::find($id)->delete();
+
+        return $result;
+    }
+
+    public function checkCustomer($id)
+    {
+        $arrCustomerId = Course::get()->pluck('customer_id')->toArray();
+        $result = in_array($id, $arrCustomerId);
 
         return $result;
     }
