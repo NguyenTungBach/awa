@@ -36,11 +36,13 @@ class DriverCourseRequest extends FormRequest
     public function rules()
     {
           switch (Route::getCurrentRoute()->getActionMethod()){
-                case 'update':
+                case 'update_course':
                     return $this->getCustomRule();
                 case 'store':
                     return $this->getCustomRule();
               case 'index':
+                  return $this->getCustomRule();
+              case 'show':
                   return $this->getCustomRule();
               case 'total_extra_cost':
                   return $this->getCustomRule();
@@ -65,9 +67,49 @@ class DriverCourseRequest extends FormRequest
                  "sortby" => "in:asc,desc"
              ];
          }
-        if(Route::getCurrentRoute()->getActionMethod() == 'update'){
+         if(Route::getCurrentRoute()->getActionMethod() == 'show'){
+             return [
+                 "date" => [
+                     'required',
+                     "date_format:Y-m-d",
+                 ],
+             ];
+         }
+        if(Route::getCurrentRoute()->getActionMethod() == 'update_course'){
             return [
-
+                "items"=> [
+                    'required',
+                ],
+                'items.*.driver_id' => [
+                    'required',
+                    Rule::exists('drivers', 'id'),
+                ],
+                'items.*.course_id' => [
+                    'required',
+                    Rule::exists('courses', 'id'),
+//                    new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                "items.*.date" => [
+                    'required',
+                    'date_format:Y-m-d',
+//                    ,new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                "items.*.start_time" => [
+                    "required",
+                    'date_format:H:i',
+                    new TimeRule("start_time")
+                ],
+                "items.*.break_time" => [
+                    "required",
+                    'date_format:H:i',
+                    new TimeRule("break_time")
+                ],
+                "items.*.end_time" => [
+                    "required",
+                    'date_format:H:i',
+                    'after_or_equal:items.*.start_time',
+                    new TimeRule("end_time")
+                ],
             ];
         }
         if(Route::getCurrentRoute()->getActionMethod() == 'store'){
