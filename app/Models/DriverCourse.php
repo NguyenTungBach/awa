@@ -21,6 +21,10 @@ class DriverCourse extends Model
     protected $table = 'driver_courses';
     protected $dates = ['deleted_at'];
 
+    const ALL_ID_SPECIAL = [1,2,3,4,5,6,7];
+    const ID_CHILL = [2,3];
+    const ID_PERSONAL_WORK = [1,4,5,6,7];
+
     protected $fillable = [
         "driver_id",
         "course_id",
