@@ -271,11 +271,8 @@ class CourseController extends Controller
     public function destroy($id)
     {
         $result = $this->repository->deleteCourse($id);
-        if ($result) {
-            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
-        }
 
-        return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
+        return $result;
     }
 
     public function export(CourseRequest $request)
@@ -291,14 +288,11 @@ class CourseController extends Controller
         }
     }
 
-    public function deleteMany(CourseRequest $request)
+    public function deleteMultiple(CourseRequest $request)
     {
         $arrId = $request->course_ids;
         $result = $this->repository->destroyCourse($arrId);
-        if ($result) {
-            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
-        }
 
-        return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR);
+        return $result;
     }
 }
