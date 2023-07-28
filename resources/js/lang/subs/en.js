@@ -73,7 +73,9 @@ export default {
 		DAY_OFF_UPDATE_SUCCESS: 'Update day-off success',
 
 		// SCHEDULE
+		COURSE_SCHEDULE_UPDATE_SUCCESS: 'Update Course schedule success',
 		SCHEDULE_UPDATE_SUCCESS: 'Update schedule success',
+		SCHEDULE_CREATE_SUCCESS: 'Create course schedule success',
 		SCHEDULE_VALIDATE_FILE_REQUIRED: 'Please select file',
 		SCHEDULE_VALIDATE_FILE_TYPE: 'File type must be .csv',
 		SCHEDULE_VALIDATE_FILE_SIZE: 'File size must be less than 3MB',
@@ -566,9 +568,10 @@ export default {
 		COURSE_ID: 'Customer ID',
 		COURSE_NAME: 'Customer name',
 		CLOSING_DAY: 'Closing day',
-		CLIENT_MANAGER: 'Client mangager',
+		CLIENT_MANAGER: 'Person_charge',
 		ADDRESS_OF_CLIENT: 'Address of client',
 		CLIENT_EMAIL: 'client e-mail',
+		CLIENT_PHONE: 'Client Phone Number',
 		NOTE: 'Note',
 	},
 	CUSTOMER_DETAIL: {

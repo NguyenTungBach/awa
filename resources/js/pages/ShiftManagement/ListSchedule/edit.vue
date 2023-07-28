@@ -77,10 +77,13 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-date-date-of-birth"
+                                            v-model="isForm.ship_date"
                                             type="text"
                                         />
                                         <b-input-group-append>
                                             <b-form-datepicker
+                                                v-model="isForm.ship_date"
                                                 button-only
                                                 right
                                             />
@@ -103,6 +106,8 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-date-date-of-birth"
+                                            v-model="isForm.course_name"
                                             type="text"
                                         />
 
@@ -116,7 +121,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-start-time">
                                             {{ $t('CREATE_SCHEDULE.START_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -124,10 +129,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-start-time"
+                                                v-model="isForm.start_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.start_time"
                                                     button-only
                                                     right
                                                 />
@@ -141,7 +149,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-end-time">
                                             {{ $t('CREATE_SCHEDULE.END_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -149,10 +157,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-end-time"
+                                                v-model="isForm.end_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.end_time"
                                                     button-only
                                                     right
                                                 />
@@ -166,7 +177,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-break-time">
                                             {{ $t('CREATE_SCHEDULE.BREAK_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -174,10 +185,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-break-time"
+                                                v-model="isForm.break_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.break_time"
                                                     button-only
                                                     right
                                                 />
@@ -193,15 +207,17 @@
                                     :xl="12"
                                     class="date"
                                 >
-                                    <label for="input-date-date-of-birth">
+                                    <label for="input-customer-name">
                                         {{ $t('CREATE_SCHEDULE.CUSTUM_NAME') }}
                                         <span class="text-danger">
                                             *
                                         </span>
                                     </label>
                                     <b-input-group class="mb-3">
-                                        <b-form-input
-                                            type="text"
+                                        <b-form-select
+                                            id="input-customer-name"
+                                            v-model="isForm.customer_name"
+                                            :options="isForm.optionListCustomer"
                                         />
 
                                     </b-input-group>
@@ -214,7 +230,7 @@
                                     :xl="12"
                                     class="date"
                                 >
-                                    <label for="input-date-date-of-birth">
+                                    <label for="input-depature-place">
                                         {{ $t('CREATE_SCHEDULE.DEPATURE_PLACE') }}
                                         <span class="text-danger">
                                             *
@@ -222,6 +238,8 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-depature-place"
+                                            v-model="isForm.departure_place"
                                             type="text"
                                         />
 
@@ -235,7 +253,7 @@
                                     :xl="12"
                                     class="date"
                                 >
-                                    <label for="input-date-date-of-birth">
+                                    <label for="input-arrival_place">
                                         {{ $t('CREATE_SCHEDULE.ARRIVAL_PLACE') }}
                                         <span class="text-danger">
                                             *
@@ -243,6 +261,8 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-arrival_place"
+                                            v-model="isForm.arrival_place"
                                             type="text"
                                         />
 
@@ -259,7 +279,7 @@
                                     :xl="12"
                                     class="date"
                                 >
-                                    <label for="input-date-date-of-birth">
+                                    <label for="input-freight-cost">
                                         {{ $t('CREATE_SCHEDULE.FREIGHT_COST') }}
                                         <span class="text-danger">
                                             *
@@ -267,9 +287,11 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            type="text"
+                                            id="input-cooperating-company-payment-amount"
+                                            v-model="isForm.freight_cost"
+                                            type="number"
                                         />
-                                        <span class="freight-cost"> 円</span>
+                                        <span class="freight-cost"> 円 </span>
                                     </b-input-group>
                                 </b-col>
                                 <b-col
@@ -288,7 +310,9 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            type="text"
+                                            id="input-cooperating-company-payment-amount"
+                                            v-model="isForm.payment_amount"
+                                            type="number"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -310,7 +334,9 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            type="text"
+                                            id="input-hight-way"
+                                            v-model="isForm.hight_way"
+                                            type="number"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -332,7 +358,9 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            type="text"
+                                            id="input-expenses"
+                                            v-model="isForm.expenses"
+                                            type="number"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -377,7 +405,9 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            type="text"
+                                            id="input-bunus-amount"
+                                            v-model="isForm.bonus_amount"
+                                            type="number"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -399,6 +429,7 @@
                             </label>
                             <b-form-textarea
                                 id="input-notes"
+                                v-model="isForm.note"
                                 rows="6"
                                 max-rows="12"
                             />
@@ -411,17 +442,19 @@
 </template>
 
 <script>
-// import CONSTANT from '@/const';
+import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
-// import { setLoading } from '@/utils/handleLoading';
+import { setLoading } from '@/utils/handleLoading';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { cleanObject } from '@/utils/handleObject';
 // import { getCalendar } from '@/api/modules/calendar';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
-// import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
+import { getDetail, editCourse } from '@/api/modules/courseSchedule';
+import { getList } from '@/api/modules/courseManagement';
+import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 // import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 
@@ -441,6 +474,25 @@ export default {
 				{ value: 'b', text: 'ボーナス対象者' },
 				{ value: 'c', text: 'ボーナス対象者' },
 			],
+
+			isForm: {
+				customer_id: '',
+				course_name: '',
+				ship_date: '',
+				start_time: '',
+				end_time: '',
+				break_time: '',
+				customer_name: null,
+				departure_place: '',
+				arrival_place: '',
+				freight_cost: '',
+				payment_amount: '',
+				hight_way: '',
+				expenses: '',
+				bonus_amount: '',
+				note: '',
+				optionListCustomer: [],
+			},
 		};
 	},
 
@@ -453,12 +505,108 @@ export default {
 	},
 
 	created() {
-
+		this.initDate();
 	},
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListScheduleDetail' });
+			this.$router.push({ name: 'ListScheduleDetail', params: { id: this.$route.params.id || null }});
+		},
+
+		async initDate() {
+			this.isForm.customer_id = this.$route.params.id || null;
+			await this.handleGetCustomer();
+			await this.handleGetCourseShedule();
+		},
+
+		async handleGetCustomer() {
+			try {
+				setLoading(true);
+				const params = {};
+				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, params);
+				if (LIST.code === 200) {
+					this.isForm.optionListCustomer = [];
+					LIST.data.forEach(item => {
+						this.isForm.optionListCustomer.push({
+							value: item.id,
+							text: item.customer_name,
+						});
+					});
+				} else {
+					this.isForm.optionListCustomer = [];
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async handleGetCourseShedule() {
+			try {
+				if (this.isForm.customer_id) {
+					setLoading(true);
+					const customer = await getDetail(`${CONSTANT.URL_API.GET_DETAIL_COURSE_SCHEDULE}/${this.isForm.customer_id}`);
+
+					if (customer.code === 200) {
+						const DATA = customer.data;
+						const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
+						this.isForm.ship_date = convertDate;
+						this.isForm.course_name = DATA.course_name;
+						this.isForm.customer_name = DATA.customer_id;
+						this.isForm.start_time = DATA.start_date;
+						this.isForm.end_time = DATA.end_date;
+						this.isForm.break_time = DATA.break_time;
+						this.isForm.departure_place = DATA.departure_place;
+						this.isForm.arrival_place = DATA.arrival_place;
+						this.isForm.freight_cost = parseInt(DATA.ship_fee);
+						this.isForm.payment_amount = DATA.associate_company_fee;
+						this.isForm.hight_way = DATA.expressway_fee;
+						this.isForm.expenses = DATA.commission;
+						this.isForm.bonus_amount = DATA.meal_fee;
+						this.isForm.note = DATA.note;
+					}
+					setLoading(false);
+				}
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async onClickSave() {
+			try {
+				setLoading(true);
+				const convertDate = `${(this.isForm.ship_date).slice(0, 4)}-${(this.isForm.ship_date).slice(5, 7)}-${(this.isForm.ship_date).slice(8, 10)}`;
+				const params = {
+					customer_id: this.isForm.customer_name,
+					course_name: this.isForm.course_name,
+					ship_date: convertDate,
+					start_date: this.isForm.start_time,
+					end_date: this.isForm.end_time,
+					break_time: this.isForm.break_time,
+					departure_place: this.isForm.departure_place,
+					arrival_place: this.isForm.arrival_place,
+					ship_fee: this.isForm.freight_cost,
+					associate_company_fee: this.isForm.payment_amount,
+					expressway_fee: this.isForm.hight_way,
+					commission: this.isForm.expenses,
+					meal_fee: this.isForm.bonus_amount,
+					note: this.isForm.note,
+				};
+				const Data = await editCourse(`${CONSTANT.URL_API.PUT_COURSE_SCHEDULE}/${this.isForm.customer_id}`, params);
+
+				if (Data.code === 200) {
+					this.goToCourseList();
+					TOAST_SCHEDULE_SHIFT.update();
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		goToCourseList() {
+			// this.$router.push({ name: 'ListCourseIndex' });
+			this.$router.push({ name: 'ListSchedule' });
 		},
 	},
 

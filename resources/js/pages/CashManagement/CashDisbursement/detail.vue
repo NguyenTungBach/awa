@@ -378,11 +378,9 @@ export default {
                     margin-top: 40px;
                     th {
                         border: 1px solid rgb(211, 211, 211);
-                        // border-left: 1px solid gray;
                     }
                     td {
                         border: 1px solid rgb(211, 211, 211);
-                        // border-left: 1px solid gray;
                     }
                     .th-remarks {
                         min-width: 200px;

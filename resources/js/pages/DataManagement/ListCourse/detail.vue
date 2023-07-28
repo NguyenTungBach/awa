@@ -79,7 +79,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.COURSE_ID')"
-                                                        :value="isForm.course_id"
+                                                        :value="isForm.customer_id"
                                                     />
                                                 </div>
                                             </b-col>
@@ -90,7 +90,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.COURSE_NAME')"
-                                                        :value="isForm.course_name"
+                                                        :value="isForm.customer_name"
                                                     />
                                                 </div>
                                             </b-col>
@@ -105,7 +105,7 @@
                                                     /> -->
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.CLOSING_DAY')"
-                                                        :value="'末日'"
+                                                        :value="isForm.closing_date"
                                                     />
                                                 </div>
                                             </b-col>
@@ -116,7 +116,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.CLIENT_MANAGER')"
-                                                        :value="''"
+                                                        :value="isForm.client_manager"
                                                     />
                                                 </div>
                                             </b-col>
@@ -127,7 +127,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.POST_CODE')"
-                                                        :value="''"
+                                                        :value="isForm.post_code"
                                                     />
                                                 </div>
                                             </b-col>
@@ -138,7 +138,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT')"
-                                                        :value="''"
+                                                        :value="isForm.address"
                                                     />
                                                 </div>
                                             </b-col>
@@ -148,8 +148,8 @@
                                             <b-col>
                                                 <div class="item-form">
                                                     <DetailForm
-                                                        :label="$t('CUSTOMER_CREATE.CLIENT_EMAIL')"
-                                                        :value="''"
+                                                        :label="$t('CUSTOMER_CREATE.CLIENT_PHONE')"
+                                                        :value="isForm.client_phone"
                                                     />
                                                 </div>
                                             </b-col>
@@ -188,9 +188,9 @@ import LineGray from '@/components/LineGray';
 import DetailForm from '@/components/DetailForm';
 import { setLoading } from '@/utils/handleLoading';
 import TitlePathForm from '@/components/TitlePathForm';
-import { generateTimeSelect } from '@/utils/generateTime';
+// import { generateTimeSelect } from '@/utils/generateTime';
 import { getCourse } from '@/api/modules/courseManagement';
-import { convertBreakTimeNumberToTime } from '@/utils/convertTime';
+// import { convertBreakTimeNumberToTime } from '@/utils/convertTime';
 import { convertValueToText } from '@/utils/handleSelect';
 
 export default {
@@ -206,22 +206,14 @@ export default {
 			idCourse: null,
 
 			isForm: {
-				flag: 'no',
-				pot: 'no',
-				course_id: '',
-				group: '',
-				course_name: '',
-				start_time: null,
-				end_time: null,
-				break_time: null,
-				point: null,
-				start_date: '',
-				end_date: '',
+				customer_id: '',
+				customer_name: '',
+				closing_date: '',
+				client_manager: '',
+				post_code: '',
+				address: '',
+				client_phone: '',
 				note: '',
-				owner: null,
-
-				listTime: [],
-				listFatigue: [],
 			},
 		};
 	},
@@ -241,27 +233,27 @@ export default {
 
 		initData() {
 			this.idCourse = this.$route.params.id || null;
-			this.isForm.listTime = generateTimeSelect(15);
-			this.isForm.listFatigue = this.generateListFatigue(1, 5);
+			// this.isForm.listTime = generateTimeSelect(15);
+			// this.isForm.listFatigue = this.generateListFatigue(1, 5);
 			this.handleGetCourse();
 		},
 
-		generateListFatigue(min = 1, max = 5) {
-			let idx = min;
+		// generateListFatigue(min = 1, max = 5) {
+		// 	let idx = min;
 
-			const result = [];
+		// 	const result = [];
 
-			while (idx <= max) {
-				result.push({
-					value: idx,
-					text: `${idx}`,
-				});
+		// 	while (idx <= max) {
+		// 		result.push({
+		// 			value: idx,
+		// 			text: `${idx}`,
+		// 		});
 
-				idx++;
-			}
+		// 		idx++;
+		// 	}
 
-			return result;
-		},
+		// 	return result;
+		// },
 
 		async handleGetCourse() {
 			try {
@@ -272,19 +264,16 @@ export default {
 					if (COURSE.code === 200) {
 						const DATA = COURSE.data;
 
-						this.isForm.flag = DATA.flag;
-						this.isForm.pot = DATA.pot;
-						this.isForm.course_id = DATA.course_code;
-						this.isForm.group = DATA.group;
-						this.isForm.course_name = DATA.course_name;
-						this.isForm.start_time = convertValueToText(this.isForm.listTime, DATA.start_time);
-						this.isForm.end_time = convertValueToText(this.isForm.listTime, DATA.end_time);
-						this.isForm.break_time = convertValueToText(this.isForm.listTime, convertBreakTimeNumberToTime(DATA.break_time));
-						this.isForm.point = DATA.point;
-						this.isForm.start_date = DATA.start_date;
-						this.isForm.end_date = DATA.end_date;
+						this.isForm.customer_id = DATA.customer_code;
+						this.isForm.customer_name = DATA.customer_name;
+						// this.isForm.end_time = convertValueToText(this.isForm.listTime, DATA.end_time);
+						// this.isForm.break_time = convertValueToText(this.isForm.listTime, convertBreakTimeNumberToTime(DATA.break_time));
+						this.isForm.closing_date = DATA.closing_date;
+						this.isForm.client_manager = DATA.person_charge;
+						this.isForm.post_code = DATA.post_code;
 						this.isForm.note = DATA.note;
-						this.isForm.owner = DATA.owner;
+						this.isForm.client_phone = DATA.phone;
+						this.isForm.address = DATA.address;
 
 						setLoading(false);
 					}
@@ -302,19 +291,19 @@ export default {
 			this.$router.push({ name: 'CourseEdit', params: { id: this.idCourse }});
 		},
 
-		formatFlagAndPot(flag, pot) {
-			if (flag === 'yes' && pot === 'yes') {
-				return `${this.$t('COURSE_CREATE.CHECKBOX_SPOT_FLIGHT')}, ${this.$t('COURSE_CREATE.CHECKBOX_SHORT_FLIGHT')}`;
-			}
+		// formatFlagAndPot(flag, pot) {
+		// 	if (flag === 'yes' && pot === 'yes') {
+		// 		return `${this.$t('COURSE_CREATE.CHECKBOX_SPOT_FLIGHT')}, ${this.$t('COURSE_CREATE.CHECKBOX_SHORT_FLIGHT')}`;
+		// 	}
 
-			if (flag === 'yes') {
-				return `${this.$t('COURSE_CREATE.CHECKBOX_SPOT_FLIGHT')}`;
-			}
+		// 	if (flag === 'yes') {
+		// 		return `${this.$t('COURSE_CREATE.CHECKBOX_SPOT_FLIGHT')}`;
+		// 	}
 
-			if (pot === 'yes') {
-				return `${this.$t('COURSE_CREATE.CHECKBOX_SHORT_FLIGHT')}`;
-			}
-		},
+		// 	if (pot === 'yes') {
+		// 		return `${this.$t('COURSE_CREATE.CHECKBOX_SHORT_FLIGHT')}`;
+		// 	}
+		// },
 	},
 };
 </script>

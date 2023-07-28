@@ -88,7 +88,7 @@
                                             /> -->
                                             <b-form-input
                                                 id="input-course-id"
-                                                v-model="isForm.course_id"
+                                                v-model="isForm.customer_id"
                                                 type="text"
                                                 onpaste="return false;"
                                                 ondrop="return false;"
@@ -106,7 +106,7 @@
                                             </label>
                                             <b-form-input
                                                 id="input-course-name"
-                                                v-model="isForm.course_name"
+                                                v-model="isForm.customer_name"
                                             />
                                         </div>
 
@@ -236,7 +236,7 @@
                                             >
                                                 <div class="item-form">
                                                     <label for="input-course-email">
-                                                        {{ $t('CUSTOMER_CREATE.CLIENT_EMAIL') }}
+                                                        {{ $t('CUSTOMER_CREATE.CLIENT_PHONE') }}
                                                         <span class="text-danger">
                                                             *
                                                         </span>
@@ -244,7 +244,7 @@
                                                     <b-input-group>
                                                         <b-form-input
                                                             id="input-course-email"
-                                                            v-model="isForm.customer_email"
+                                                            v-model="isForm.customer_phone"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -286,8 +286,8 @@ import LineGray from '@/components/LineGray';
 import { setLoading } from '@/utils/handleLoading';
 import TitlePathForm from '@/components/TitlePathForm';
 import { getCourse, putCourse } from '@/api/modules/courseManagement';
-import { convertTimeCourse } from '@/utils/convertTime';
-import { convertBreakTimeNumberToTime, convertTimeToSelect, convertStingToSelect } from '@/utils/convertTime';
+// import { convertTimeCourse } from '@/utils/convertTime';
+// import { convertBreakTimeNumberToTime, convertTimeToSelect, convertStingToSelect } from '@/utils/convertTime';
 // import { validateCourse } from '@/utils/validateCRUD';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
@@ -305,128 +305,20 @@ export default {
 		return {
 			optionsClosingDay: [
 				{
-					value: -1,
-					text: '末日',
-				},
-				{
 					value: 1,
-					text: 1,
+					text: '15日',
 				},
 				{
 					value: 2,
-					text: 2,
+					text: '20日',
 				},
 				{
 					value: 3,
-					text: 3,
+					text: '25日',
 				},
 				{
 					value: 4,
-					text: 4,
-				},
-				{
-					value: 5,
-					text: 5,
-				},
-				{
-					value: 6,
-					text: 6,
-				},
-				{
-					value: 7,
-					text: 7,
-				},
-				{
-					value: 8,
-					text: 8,
-				},
-				{
-					value: 9,
-					text: 9,
-				},
-				{
-					value: 10,
-					text: 10,
-				},
-				{
-					value: 11,
-					text: 11,
-				},
-				{
-					value: 12,
-					text: 12,
-				},
-				{
-					value: 13,
-					text: 13,
-				},
-				{
-					value: 14,
-					text: 14,
-				},
-				{
-					value: 15,
-					text: 15,
-				},
-				{
-					value: 16,
-					text: 16,
-				},
-				{
-					value: 17,
-					text: 17,
-				},
-				{
-					value: 18,
-					text: 18,
-				},
-				{
-					value: 19,
-					text: 19,
-				},
-				{
-					value: 20,
-					text: 20,
-				},
-				{
-					value: 21,
-					text: 21,
-				},
-				{
-					value: 22,
-					text: 22,
-				},
-				{
-					value: 23,
-					text: 23,
-				},
-				{
-					value: 24,
-					text: 24,
-				},
-				{
-					value: 25,
-					text: 25,
-				},
-				{
-					value: 26,
-					text: 26,
-				},
-				{
-					value: 27,
-					text: 27,
-				},
-				{
-					value: 28,
-					text: 28,
-				},
-				{
-					value: 29,
-					text: 29,
-				},
-				{
-					value: 30,
-					text: 30,
+					text: '末日',
 				},
 			],
 
@@ -434,35 +326,16 @@ export default {
 			idCourse: null,
 
 			isForm: {
-				flag: 'no',
-				pot: 'no',
-				course_id: '',
-				group: [null, null],
-				course_name: '',
+				customer_id: '',
+				customer_name: '',
 				customer_postCode: '',
 				//
 				customer_manager: '',
 				customer_address: '',
-				customer_email: '',
+				customer_phone: '',
+				exclusive: '',
 				//
-				start_time: [null, null],
-				end_time: [null, null],
-				break_time: [null, null],
-				point: null,
-				start_date: '',
-				end_date: '',
 				note: '',
-				owner: {
-					driver_code: '',
-					course_code: '',
-					driver: {
-						driver_code: '',
-						driver_name: '',
-					},
-				},
-
-				listTime: [],
-				listFatigue: [],
 			},
 
 			inited: false,
@@ -564,17 +437,13 @@ export default {
 
 		initBody() {
 			return {
-				flag: this.isForm.flag,
-				pot: this.isForm.pot,
-				course_code: this.isForm.course_id,
-				group: this.isForm.group ? (this.isForm.group).join('') : '',
-				course_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
-				start_time: this.formatter(this.isForm.start_time),
-				end_time: this.formatter(this.isForm.end_time),
-				break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
-				point: parseFloat(this.isForm.point) || null,
-				start_date: this.isForm.start_date,
-				end_date: this.isForm.end_date,
+				customer_code: this.isForm.customer_id,
+				customer_name: this.isForm.customer_name ? this.isForm.customer_name.trim() : '',
+				closing_date: this.isForm.exclusive,
+				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
+				post_code: this.isForm.customer_postCode,
+				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
+				phone: this.isForm.customer_phone,
 				note: this.isForm.note ? this.isForm.note.trim() : '',
 			};
 		},
@@ -594,30 +463,20 @@ export default {
 				const COURSE = await getCourse(`${CONSTANT.URL_API.GET_COURSE}/${this.idCourse}`);
 
 				if (COURSE.code === 200) {
-					const OWER = {
-						driver_code: '',
-						course_code: '',
-						driver: {
-							driver_code: '',
-							driver_name: '',
-						},
-					};
 					const DATA = COURSE.data;
-
-					this.isForm.flag = DATA.flag || 'no';
-					this.isForm.pot = DATA.pot || 'no';
-					this.isForm.course_id = DATA.course_code;
-					this.isForm.group = convertStingToSelect(DATA.group);
-					this.isForm.course_name = DATA.course_name;
-					this.isForm.start_time = convertTimeToSelect(DATA.start_time);
-					this.isForm.end_time = convertTimeToSelect(DATA.end_time);
-					this.isForm.break_time = convertTimeToSelect(convertBreakTimeNumberToTime(DATA.break_time));
-					this.isForm.point = DATA.point;
-					this.isForm.start_date = DATA.start_date;
-					this.isForm.end_date = DATA.end_date;
+					this.optionsClosingDay.forEach(item => {
+						if (item.text === DATA.closing_date) {
+							this.isForm.exclusive = item.value;
+						}
+					});
+					this.isForm.customer_id = DATA.customer_code;
+					this.isForm.customer_name = DATA.customer_name;
+					this.isForm.customer_manager = DATA.person_charge;
+					this.isForm.customer_postCode = DATA.post_code;
+					this.isForm.customer_address = DATA.address;
+					this.isForm.customer_phone = DATA.phone;
 					this.isForm.note = DATA.note;
-					this.isForm.owner = DATA.owner ? DATA.owner : OWER;
-
+					console.log('form:', this.isForm);
 					setLoading(false);
 				}
 			} catch (error) {
@@ -640,7 +499,7 @@ export default {
 					.then(async() => {
 						setLoading(true);
 
-						BODY.break_time = convertTimeCourse(BODY.break_time);
+						// BODY.break_time = convertTimeCourse(BODY.break_time);
 
 						const COURSE = await putCourse(`${CONSTANT.URL_API.PUT_COURSE}/${this.idCourse}`, BODY);
 
@@ -688,35 +547,35 @@ export default {
 		// 	return [result, result];
 		// },
 
-		formatter(arr) {
-			for (let idx = 0; idx < arr.length; idx++) {
-				if (!arr[idx]) {
-					return arr.join('');
-				}
-			}
+		// formatter(arr) {
+		// 	for (let idx = 0; idx < arr.length; idx++) {
+		// 		if (!arr[idx]) {
+		// 			return arr.join('');
+		// 		}
+		// 	}
 
-			return arr.join(':');
-		},
+		// 	return arr.join(':');
+		// },
 
-		formatterAZ(arr) {
-			return arr.join('');
-		},
+		// formatterAZ(arr) {
+		// 	return arr.join('');
+		// },
 
-		getSelectValueAZ(select) {
-			this.isForm.group = select;
-		},
+		// getSelectValueAZ(select) {
+		// 	this.isForm.group = select;
+		// },
 
-		getSelectStartTime(select) {
-			this.isForm.start_time = select;
-		},
+		// getSelectStartTime(select) {
+		// 	this.isForm.start_time = select;
+		// },
 
-		getSelectEndTime(select) {
-			this.isForm.end_time = select;
-		},
+		// getSelectEndTime(select) {
+		// 	this.isForm.end_time = select;
+		// },
 
-		getSelectBreakTime(select) {
-			this.isForm.break_time = select;
-		},
+		// getSelectBreakTime(select) {
+		// 	this.isForm.break_time = select;
+		// },
 	},
 };
 </script>
