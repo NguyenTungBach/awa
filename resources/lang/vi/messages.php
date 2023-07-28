@@ -7,4 +7,5 @@ return [
     'facebook.exist' => 'Facebook này đã tồn tại',
     'facebook.not_exist' => 'Bạn chưa thêm Facebook nào.',
     'facebook.error_call_api_facebook' => 'Token FB không có quyền hoặc hết hạn.',
+    'mes.export_success' => 'export success',
 ];

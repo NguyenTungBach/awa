@@ -7,5 +7,6 @@ return [
     'mes.create_error' => 'create error',
     'mes.update_success' => 'update success',
     'mes.update_error' => 'update error',
+    'mes.export_success' => 'export success',
     'email_not_exist' => 'Email not exist.',
 ];

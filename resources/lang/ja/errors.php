@@ -30,6 +30,7 @@ return [
     'shift.driver_empty' => 'Empty Drivers data',
     'shift.course_empty' => 'Empty Courses data',
     'not_found' => 'not found',
+    'driver_can_not_delete' => 'driver id :driver_id, driver_name :driver_name have course_id :course_id, course_name :course_name can not delete',
     'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
     'has_been_assigned' => ':attribute has been assigned',

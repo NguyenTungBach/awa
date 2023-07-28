@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -151,9 +152,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
             ->groupBy("driver_courses.driver_id")
+            ->SortByForDriverCourse($request)
             ->whereBetween('driver_courses.date', [$startDate, $endDate])
             ->whereNull('driver_courses.deleted_at')->get();
-
         return $datas;
     }
 
@@ -651,5 +652,17 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         ob_end_clean();
         $writer->save('php://output');
         die();
+    }
+
+    public function delete($id)
+    {
+        $driver_course = $this->model->find($id);
+
+        if ($driver_course == null){
+            return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans("errors.not_found"));
+        } else{
+            DB::table('driver_courses')->where('id', $id)->delete();
+            return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
+        }
     }
 }

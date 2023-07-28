@@ -176,5 +176,26 @@ class DriverCourseListTest extends TestCase
                 "data_error"
             ]);
     }
+
+    public function testDriverCourseListExport()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $this->actingAs($user)->json('get', 'api/driver-course', [
+            'token' => $token,
+            'month_year' => "2023/07",
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
     /////////List End//////////
 }
