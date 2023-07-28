@@ -25,7 +25,7 @@ export function getDetail(url, params) {
 }
 
 export function getAllDelete(url, params) {
-	return request.getRequest(url, params);
+	return request.deleteRequest(url, params);
 }
 
 export function postExportExcel(url, params) {

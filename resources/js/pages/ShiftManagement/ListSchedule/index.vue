@@ -612,8 +612,6 @@ export default {
 	},
 
 	created() {
-	    // this.handleGetCustomer();
-		// this.handleGetListCourse();
 		this.initData();
 	},
 
