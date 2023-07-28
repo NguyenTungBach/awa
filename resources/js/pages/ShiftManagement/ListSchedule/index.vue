@@ -16,6 +16,7 @@
                                 <div class="zone-title">
                                     <span
                                         class="title-bulk-delete"
+                                        @click="handleDeleteAll()"
                                     >
                                         {{ $t('APP.BUTTON_BULK_DELETE') }}
                                     </span>
@@ -190,7 +191,7 @@
                                             <b-button
                                                 pill
                                                 class="btn-search"
-                                                @click="onClickSearch()"
+                                                @click="handleGetListCourse()"
                                             >
                                                 {{ $t('LIST_SCHEDULE.BUTTON_SEARCH') }}
                                             </b-button>
@@ -373,7 +374,9 @@
                                     <b-tr :key="`schedule-number-${idx + 1}`">
                                         <b-td>
                                             <b-form-checkbox
-                                                :checked="handleShowCheckbox(schedule.id)"
+                                                v-model="selectedCheckbox"
+                                                :options="optionSelect"
+                                                :value="schedule.id"
                                                 class="text-center td-control"
                                             />
                                         </b-td>
@@ -497,6 +500,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import HeaderFilter from '@/components/HeaderFilter';
@@ -507,7 +511,7 @@ import { cleanObject } from '@/utils/handleObject';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { getCalendar } from '@/api/modules/calendar';
-import { postImportFile, getListSchedule, deleteCourse, deleteAll } from '@/api/modules/courseSchedule';
+import { postImportFile, getListSchedule, deleteCourse, getAllDelete } from '@/api/modules/courseSchedule';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
@@ -524,6 +528,8 @@ export default {
 
 	data() {
 		return {
+			optionSelect: [],
+			selectedCheckbox: [],
 			customerName: null,
 			getIDCourse: null,
 			modalDelete: false,
@@ -560,24 +566,24 @@ export default {
 			checkselec: [],
 			file: null,
 			listSchedule: [
-				{
-					id: 1,
-					ship_date: '2022/12/05',
-					course_name: 'テストコース2',
-					customer_name: 'B商事',
-					departure_place: '徳島港',
-					arrival_place: '高松港',
-					ship_fee: '500000',
-				},
-				{
-					id: 2,
-					ship_date: '2022/12/25',
-					course_name: 'テストコース2',
-					customer_name: 'E商事',
-					departure_place: 'B商事',
-					arrival_place: '高松港',
-					ship_fee: '650000',
-				},
+				// {
+				// 	id: 1,
+				// 	ship_date: '2022/12/05',
+				// 	course_name: 'テストコース2',
+				// 	customer_name: 'B商事',
+				// 	departure_place: '徳島港',
+				// 	arrival_place: '高松港',
+				// 	ship_fee: '500000',
+				// },
+				// {
+				// 	id: 2,
+				// 	ship_date: '2022/12/25',
+				// 	course_name: 'テストコース2',
+				// 	customer_name: 'E商事',
+				// 	departure_place: 'B商事',
+				// 	arrival_place: '高松港',
+				// 	ship_fee: '650000',
+				// },
 			],
 
 			listCourse: [],
@@ -617,18 +623,18 @@ export default {
 
 		checkboxAll(){
 			if (this.checked_all) {
-				this.checkselec = [];
+				this.selectedCheckbox = [];
 
 				const len = this.listSchedule.length;
 				let idx = 0;
 
 				while (idx < len) {
-					this.checkselec.push(this.listSchedule[idx].id);
+					this.selectedCheckbox.push(this.listSchedule[idx].id);
 
 					idx++;
 				}
 			} else {
-				this.checkselec = [];
+				this.selectedCheckbox = [];
 			}
 		},
 
@@ -655,7 +661,7 @@ export default {
 				let params = {
 					start_date_ship: this.start_date ? this.start_date : '',
 					end_date_ship: this.end_date ? this.end_date : '',
-					customer_id: '',
+					customer_id: this.customerName,
 					order_by: this.sortTable.sortBy,
 					sort_by: this.sortTable.sortType,
 				};
@@ -668,6 +674,9 @@ export default {
 				if (response.code === 200) {
 					this.listSchedule = response.data;
 					this.listCourse = response.data;
+					this.optionSelect.push({
+						item: response.data.id,
+					});
 				} else {
 					this.listSchedule = [];
 					this.listCourse = [];
@@ -750,57 +759,57 @@ export default {
 			}
 		},
 
-		onClickSearch() {
-			if (this.customerName !== null && this.start_date === '' && this.end_date === '') {
-				this.listSchedule = this.listCourse.filter(item => item.id === this.customerName);
-			} else if (this.start_date !== '' && this.customerName === null && this.end_date === '') {
-				const formatStartDate = new Date(this.start_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate >= formatStartDate;
-				});
-			} else if (this.end_date !== '' && this.customerName === null && this.start_date === '') {
-				const formatEndDate = new Date(this.end_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate <= formatEndDate;
-				});
-			} else if (this.end_date !== '' && this.start_date !== '' && this.customerName === null) {
-				const formatEndDate = new Date(this.end_date);
-				const formatStartDate = new Date(this.start_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate <= formatEndDate && formatDate >= formatStartDate;
-				});
-			} else if (this.start_date !== '' && this.end_date !== '' && this.customerName !== null) {
-				const formatEndDate = new Date(this.end_date);
-				const formatStartDate = new Date(this.start_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate <= formatEndDate && formatDate >= formatStartDate && item.id === this.customerName;
-				});
-			} else if (this.start_date !== '' && this.customerName !== null && this.end_date === '') {
-				const formatStartDate = new Date(this.start_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate >= formatStartDate && item.id === this.customerName;
-				});
-			} else if (this.end_date !== '' && this.customerName !== null && this.start_date === '') {
-				const formatEndDate = new Date(this.end_date);
-				this.listSchedule = this.listCourse.filter(item => {
-					const formatDate = new Date(item.ship_date);
-					return formatDate <= formatEndDate && item.id === this.customerName;
-				});
-			} else if (this.start_date === '' && this.end_date === '' && this.customerName === null) {
-				this.listSchedule = this.listCourse;
-			}
-		},
+		// onClickSearch() {
+		// 	if (this.customerName !== null && this.start_date === '' && this.end_date === '') {
+		// 		this.listSchedule = this.listCourse.filter(item => item.id === this.customerName);
+		// 	} else if (this.start_date !== '' && this.customerName === null && this.end_date === '') {
+		// 		const formatStartDate = new Date(this.start_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate >= formatStartDate;
+		// 		});
+		// 	} else if (this.end_date !== '' && this.customerName === null && this.start_date === '') {
+		// 		const formatEndDate = new Date(this.end_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate <= formatEndDate;
+		// 		});
+		// 	} else if (this.end_date !== '' && this.start_date !== '' && this.customerName === null) {
+		// 		const formatEndDate = new Date(this.end_date);
+		// 		const formatStartDate = new Date(this.start_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate <= formatEndDate && formatDate >= formatStartDate;
+		// 		});
+		// 	} else if (this.start_date !== '' && this.end_date !== '' && this.customerName !== null) {
+		// 		const formatEndDate = new Date(this.end_date);
+		// 		const formatStartDate = new Date(this.start_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate <= formatEndDate && formatDate >= formatStartDate && item.id === this.customerName;
+		// 		});
+		// 	} else if (this.start_date !== '' && this.customerName !== null && this.end_date === '') {
+		// 		const formatStartDate = new Date(this.start_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate >= formatStartDate && item.id === this.customerName;
+		// 		});
+		// 	} else if (this.end_date !== '' && this.customerName !== null && this.start_date === '') {
+		// 		const formatEndDate = new Date(this.end_date);
+		// 		this.listSchedule = this.listCourse.filter(item => {
+		// 			const formatDate = new Date(item.ship_date);
+		// 			return formatDate <= formatEndDate && item.id === this.customerName;
+		// 		});
+		// 	} else if (this.start_date === '' && this.end_date === '' && this.customerName === null) {
+		// 		this.listSchedule = this.listCourse;
+		// 	}
+		// },
 
 		onClickReset() {
 			this.customerName = null;
 			this.start_date = '';
 			this.end_date = '';
-			this.listSchedule = this.listCourse;
+			this.handleGetListCourse();
 		},
 
 		onClickImportFile() {
@@ -818,7 +827,6 @@ export default {
 
 		onClickDelete(scope) {
 			this.getIDCourse = scope.id;
-			console.log('getid:', this.getIDCourse);
 			this.modalDelete = true;
 		},
 
@@ -840,12 +848,42 @@ export default {
 		async handleDeleteAll() {
 			try {
 				setLoading(true);
-				const params = this.checkselec;
-				const deleteAllCourse = await deleteAll(CONSTANT.URL_API.DELETE_COURSE_SCHEDULE, params);
+				const params = {
+					course_ids: this.selectedCheckbox,
+				};
+				const deleteAllCourse = await getAllDelete(CONSTANT.URL_API.DELETE_COURSE_SCHEDULE_MANY, params);
 				if (deleteAllCourse.code === 200) {
 					await this.handleGetListCourse();
 					TOAST_SCHEDULE_SHIFT.delete();
 				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async onClickExport() {
+			try {
+				setLoading(true);
+				const params = {
+					end_date_ship: this.end_date ? this.end_date : '',
+					customer_id: this.customerName,
+					order_by: this.sortTable.sortBy,
+					sort_by: this.sortTable.sortType,
+				};
+				const URL = CONSTANT.URL_API.POST_EXPORT_COURSE_SCHEDULE;
+				await axios.post(URL, params, {
+					responseType: 'blob',
+				}).then((response) => {
+					const url = window.URL.createObjectURL(new Blob([response.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'danh_sach.xlsx');
+					document.body.appendChild(link);
+					link.click();
+				}).catch((error) => {
+					console.log(error);
+				});
 				setLoading(false);
 			} catch {
 				setLoading(false);

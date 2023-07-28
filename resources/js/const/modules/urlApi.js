@@ -38,7 +38,9 @@ const GET_LIST_COURSE_SCHEDULE = '/course';
 const DELETE_COURSE_SCHEDULE = '/course';
 const POST_COURSE_SCHEDULE = '/course';
 const GET_DETAIL_COURSE_SCHEDULE = '/course';
+const DELETE_COURSE_SCHEDULE_MANY = '/course/delete-many';
 const POST_LIST_COURSE_SCHEDULE = '/course-schedule/updates';
+const POST_EXPORT_COURSE_SCHEDULE = '/course/export';
 
 // const POST_COURSE_SCHEDULE = '/course-pattern/updates';
 const GET_EXPORT_COURSE_SCHEDULE = '/course-schedule/export-data';
@@ -106,7 +108,9 @@ export default {
 	POST_LIST_COURSE_SCHEDULE,
 	GET_EXPORT_COURSE_SCHEDULE,
 	GET_DETAIL_COURSE_SCHEDULE,
+	DELETE_COURSE_SCHEDULE_MANY,
 	POST_IMPORT_COURSE_SCHEDULE,
+	POST_EXPORT_COURSE_SCHEDULE,
 
 	// Day-off API
 	GET_LIST_DAY_OFF,

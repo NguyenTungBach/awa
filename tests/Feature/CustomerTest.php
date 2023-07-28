@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Driver;
 use App\Models\User;
+use App\Models\Customer;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,11 +14,11 @@ use Tests\TestCase;
 use Faker\Generator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserTest extends TestCase
+class CustomerTest extends TestCase
 {
     // use RefreshDatabase;
 
-    protected $user;
+    protected $customer;
 
     /**
      * A basic feature test example.
@@ -33,598 +33,624 @@ class UserTest extends TestCase
         if (!$user) {
             $user = User::factory()->count(5)->create();
         }
+        $this->artisan('db:seed --class=CustomerSeeder');
+        $customer = Customer::first();
+        if (!$customer) {
+            $customer = Customer::factory()->count(5)->create();
+        }
     }
 
-    public function testUserListSuccess()
+    public function testCustomerListSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $this->actingAs($user);
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->get('api/user?token=' . $token)
+        $response = $this->actingAs($user)->get('api/customer?token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
         }
     }
 
-    public function testUserListFalse()
+    public function testCustomerListFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->get("api/user?sort=desc?abc" . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response = $this->actingAs($user)->get("api/customer?sort_by=abc" . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testSortByUserNameSuccess()
+    public function testSortByCustomerNameSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_name&sort=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=customer_name&sort_by=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
         }
     }
 
-    public function testSortByUserNameFalse()
+    public function testSortByCustomerNameFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_na&sort=jkl' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=customer_nameaaa&sort_by=desc' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testSortByUserCode()
+    public function testSortByCustomerCode()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=customer_code&sort_by=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
         }
     }
 
-    public function testSortByUserCodeFalse()
+    public function testSortByCustomerCodeFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=mmm' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=customer_codeabc&sort_by=desc' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testSortByUserRole()
+    public function testSortByCustomerClosingDate()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=role&sort=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=closing_date&sort_by=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
         }
     }
 
-    public function testSortByUserRoleFalse()
+    public function testSortByCustomerClosingDateFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=role&sort=abc' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response = $this->actingAs($user)->json('get', 'api/customer?order_by=closing_dateabc&sort_by=desc' . '&token=' . $token)
+            ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUserHasPermission()
+    public function testCanCreateCustomerSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
-            ->assertStatus(CODE_SUCCESS);
-        if (count($response->decodeResponseJson()['data'])) {
-            $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
-        }
-    }
-
-    public function testUserNoPermission()
-    {
-        $user = User::where('user_code', '=', '2233')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/user?order_by=user_code&sort=desc' . '&token=' . $token)
-            ->assertStatus(\Illuminate\Http\Response::HTTP_FORBIDDEN);
-
-    }
-
-    public function testCanCreateUserSuccess()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "111111",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '123456',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(CODE_SUCCESS);
     }
 
-    public function testCreateUserCodeEmpty()
+    public function testCreateCustomerCodeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 02",
-            "user_code" => "",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_code' => [
+                    'customer_code' => [
 
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserCodeDuplicate()
+    public function testCreateCustomerCodeDuplicate()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "1122",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '0001',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_code' => [
+                    'customer_code' => [
 
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserCodeNotNumeric()
+    public function testCreateCustomerCodeNotNumeric()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Amin 01",
-            "user_code" => "abc99",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => 'abc',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_code' => [
+                    'customer_code' => [
 
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserCodeMoreThan4Characters()
+    public function testCreateCustomerCodeGreaterThan20Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '12345678954236178542962',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_code' => [
+                    'customer_code' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserCodeGreaterThan15Characters()
+    public function testCreateCustomerNameEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Nguyen",
-            "user_code" => "227777772277777722777777",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => '',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_code' => [
+                    'customer_name' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserNameEmpty()
+    public function testCreateCustomerNameGreaterThan20Characters()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "",
-            "user_code" => "22773",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Admin Admin Admin Admin Admin Admin Admin',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_name' => [
+                    'customer_name' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserNameGreaterThan20Characters()
+    public function testCreateCustomerClosingDateEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin Admin Admin Admin Admin Admin Admin",
-            "user_code" => "22773",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_name' => [
+                    'closing_date' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserPasswordEmpty()
+    public function testCreateCustomerClosingDateNotExist()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22773",
-            "password" => "",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'closing_date' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserPasswordMoreThan8Characters()
+    public function testCreateCustomerPersonChargeNull()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22773",
-            "password" => "111",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => '',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'person_charge' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserPasswordGreaterThan16Characters()
+    public function testCreateCustomerPersonChargeNullMoreThan20Character()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22773",
-            "password" => "abc122333333998833",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => 'person charge person charge person charge person charge',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'person_charge' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserPasswordSpecialCharacters()
+    public function testCreateCustomerPostCodeNull()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22773",
-            "password" => "a!#*33338833",
-            "role" => "admin"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => 'person charge',
+            'post_code' => '',
+            'address' => '',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'post_code' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserRoleEmpty()
+    public function testCreateCustomerAdressNull()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin",
-            "user_code" => "22773",
-            "password" => "a!#*33338833",
-            "role" => ""
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => 'person charge',
+            'post_code' => '123-4567',
+            'address' => '',
+            'phone' => '01212341234',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'role' => [
+                    'address' => [
                     ],
                 ],
             ]);
     }
 
-    public function testCreateUserRoleWrongType()
+    public function testCreateCustomerPhoneNull()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('post', 'api/user', [
+        $response = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "22773",
-            "password" => "a!#*33338833",
-            "role" => "abc"
+            'customer_code' => '12345678',
+            'customer_name' => 'Customer',
+            'closing_date' => '5',
+            'person_charge' => 'person charge',
+            'post_code' => '123-4567',
+            'address' => 'address',
+            'phone' => '',
+            'note' => NULL,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'role' => [
+                    'phone' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserSuccess()
+    public function testUpdateCustomerSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "user_name" => "Admin update",
+            "customer_name" => "Customer update",
         ])->assertStatus(Response::HTTP_OK);
     }
 
-    public function testUpdateUserFalse()
+    public function testUpdateCustomerFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "user_code" => "2233",
+            "customer_code" => "0002",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUpdateUserNameEmpty()
+    public function testUpdateCustomerNameEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "user_name" => "",
+            "customer_name" => "",
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_name' => [
+                    'customer_name' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserNameGreaterThan10Characters()
+    public function testUpdateCustomerClosingDateEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "user_name" => "Admin Update Update Update",
+            "closing_date" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'user_name' => [
+                    'closing_date' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserPasswordMoreThan8Characters()
+    public function testUpdateCustomerPersonChargeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "password" => "111",
+            "person_charge" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'person_charge' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserPasswordGreaterThan16Characters()
+    public function testUpdateCustomerPostCodeEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "password" => "abc122333333998833123",
+            "post_code" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'post_code' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserPasswordSpecialCharacters()
+    public function testUpdateCustomerAddressEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "password" => "a!#*33338833",
+            "address" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'password' => [
+                    'address' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserRoleEmpty()
+    public function testUpdateCustomerPhoneEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "role" => ""
+            "phone" => ""
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'role' => [
+                    'phone' => [
                     ],
                 ],
             ]);
     }
 
-    public function testUpdateUserRoleWrongType()
+    public function testCustomerDetailSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->json('put', 'api/user/' . $id, [
-            'token' => $token,
-            "role" => "abc"
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'role' => [
-                    ],
-                ],
-            ]);
-    }
-
-    public function testUserDetailSuccess()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $id = $user->id;
-        $response = $this->actingAs($user)->get('api/user/' . $id, ['HTTP_Authorization' => 'Bearer' . $token])
+        $customer = Customer::first();
+        $response = $this->actingAs($user)->get('api/customer/' . $customer->id, ['HTTP_Authorization' => 'Bearer' . $token])
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "data" => [
                     "id",
-                    "user_code",
-                    "user_name",
-                    "role",
+                    "customer_code",
+                    "customer_name",
+                    "closing_date",
+                    "person_charge",
+                    "post_code",
+                    "address",
+                    "phone",
+                    "note",
                     "status",
-                    "deleted_at",
                     "created_at",
-                    "updated_at"
-                ]
+                    "updated_at",
+                    "deleted_at",
+                ],
             ]);
     }
 
-    public function testUserDetailFalse()
+    public function testCustomerDetailFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $id = 10000;
-        $response = $this->actingAs($user)->get('api/user/' . $id, ['HTTP_Authorization' => 'Bearer' . $token])
+        $response = $this->actingAs($user)->get('api/customer/' . $id, ['HTTP_Authorization' => 'Bearer' . $token])
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure([
                 "code",
@@ -634,49 +660,32 @@ class UserTest extends TestCase
                 "data_error",
             ]);
     }
-    public function testUserDeleteSucess()
+
+    public function testCustomerDeleteSucess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $newUser = $this->actingAs($user)->json('post', 'api/user', [
+        $newCustomer = $this->actingAs($user)->json('post', 'api/customer', [
             'token' => $token,
-            "user_name" => "Admin 01",
-            "user_code" => "112233",
-            "password" => "abc122998833",
-            "role" => "admin"
+            'customer_code' => '1234567890',
+            'customer_name' => 'Customer 01',
+            'closing_date' => '1',
+            'person_charge' => 'Person charge 01',
+            'post_code' => '123-4567',
+            'address' => 'Address 01',
+            'phone' => '01212341234',
+            'note' => NULL,
         ]);
-        $response = $this->actingAs($user)->json('delete', 'api/user/' . $newUser['data']['id'], ['token' => $token])
+        $response = $this->actingAs($user)->json('delete', 'api/customer/' . $newCustomer['data']['id'], ['token' => $token])
             ->assertStatus(Response::HTTP_OK);
     }
 
-    public function testUserDeleteThemselves()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $newUser = $this->actingAs($user)->json('post', 'api/user', [
-            'token' => $token,
-            "user_name" => "Admin",
-            "user_code" => "22334455",
-            "password" => "abc122998833",
-            "role" => "admin"
-        ]);
-        $response = $this->actingAs($user)->json('delete', 'api/user/' . $user->id, ['token' => $token])
-            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal",
-                "data_error",
-            ]);
-    }
-
-    public function testUserDeleteFalse()
+    public function testCustomerDeleteFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $id = 10000;
-        $response = $this->actingAs($user)->json('delete', 'api/user/' . $id, ['token' => $token])
+        $response = $this->actingAs($user)->json('delete', 'api/customer/' . $id, ['token' => $token])
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure([
                 "code",

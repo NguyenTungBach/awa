@@ -95,6 +95,7 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         return ResponseService::responseJson(200, new BaseResource($listDriver));
     }
 
+
     /**
      * @param $id
      * @return array|mixed|null

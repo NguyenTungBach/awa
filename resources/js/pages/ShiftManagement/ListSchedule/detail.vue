@@ -204,6 +204,18 @@
                                 {{ $t('DETAIL_SCHEDULE.NOTE') }}
                             </TitlePathForm>
 
+                            <div class="item-form">
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="12"
+                                    :xl="12"
+                                >
+                                    <p>{{ isForm.note ? isForm.note : '-' }}</p>
+                                </b-col>
+                            </div>
+
                         </b-col>
                     </b-row>
 
@@ -255,6 +267,7 @@ export default {
 				hight_way: '',
 				commission: '',
 				meal_fee: '',
+				note: '',
 			},
 		};
 	},
@@ -295,7 +308,7 @@ export default {
 						const DATA = customer.data;
 						this.isForm.ship_date = DATA.ship_date;
 						this.isForm.course_name = DATA.course_name;
-						this.isForm.customer_name = DATA.customer_id;
+						this.isForm.customer_name = DATA.customer_name;
 						this.isForm.start_time = DATA.start_date;
 						this.isForm.end_time = DATA.end_date;
 						this.isForm.break_time = DATA.break_time;
@@ -306,6 +319,7 @@ export default {
 						this.isForm.hight_way = DATA.expressway_fee;
 						this.isForm.commission = DATA.commission;
 						this.isForm.meal_fee = DATA.meal_fee;
+						this.isForm.note = DATA.note;
 					}
 					setLoading(false);
 				}

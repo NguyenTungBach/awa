@@ -36,19 +36,80 @@ class DriverCourseRequest extends FormRequest
     public function rules()
     {
           switch (Route::getCurrentRoute()->getActionMethod()){
-                case 'update':
+                case 'update_course':
                     return $this->getCustomRule();
                 case 'store':
                     return $this->getCustomRule();
+              case 'index':
+                  return $this->getCustomRule();
+              case 'show':
+                  return $this->getCustomRule();
+              case 'total_extra_cost':
+                  return $this->getCustomRule();
+              case 'export_shift':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
     }
 
      public function getCustomRule(){
-        if(Route::getCurrentRoute()->getActionMethod() == 'update'){
+         if(Route::getCurrentRoute()->getActionMethod() == 'index'){
+             return [
+                 "closing_date" => [
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
+                 "sortby" => "in:asc,desc"
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'show'){
+             return [
+                 "date" => [
+                     'required',
+                     "date_format:Y-m-d",
+                 ],
+             ];
+         }
+        if(Route::getCurrentRoute()->getActionMethod() == 'update_course'){
             return [
-
+                "items"=> [
+                    'required',
+                ],
+                'items.*.driver_id' => [
+                    'required',
+                    Rule::exists('drivers', 'id'),
+                ],
+                'items.*.course_id' => [
+                    'required',
+                    Rule::exists('courses', 'id'),
+//                    new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                "items.*.date" => [
+                    'required',
+                    'date_format:Y-m-d',
+//                    ,new DriverCourseUniqueRule("date","driver_id","course_id"),
+                ],
+                "items.*.start_time" => [
+                    "required",
+                    'date_format:H:i',
+                    new TimeRule("start_time")
+                ],
+                "items.*.break_time" => [
+                    "required",
+                    'date_format:H:i',
+                    new TimeRule("break_time")
+                ],
+                "items.*.end_time" => [
+                    "required",
+                    'date_format:H:i',
+                    'after_or_equal:items.*.start_time',
+                    new TimeRule("end_time")
+                ],
             ];
         }
         if(Route::getCurrentRoute()->getActionMethod() == 'store'){
@@ -79,17 +140,44 @@ class DriverCourseRequest extends FormRequest
                 "items.*.break_time" => [
                     "required",
                     'date_format:H:i',
-                    'after_or_equal:items.*.start_time',
                     new TimeRule("break_time")
                 ],
                 "items.*.end_time" => [
                     "required",
                     'date_format:H:i',
-                    'after_or_equal:items.*.break_time',
+                    'after_or_equal:items.*.start_time',
                     new TimeRule("end_time")
                 ],
             ];
         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'total_extra_cost'){
+             return [
+                 "closing_date" => [
+                     'required',
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'export_shift'){
+             return [
+                 "closing_date" => [
+                     'required',
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
+                 "sortby" => "in:asc,desc"
+             ];
+         }
      }
 
     public function messages()
@@ -98,6 +186,8 @@ class DriverCourseRequest extends FormRequest
             'required' => trans('validation.required'),
             'driver_id.exists' => "driver_id not found in database",
             'items.*.course_id.exists' => "course_id not found in database",
+            'sortby.in' => 'Please input asc or desc',
+            'closing_date.in' => 'Please input 24 or 25',
         ];
     }
 }

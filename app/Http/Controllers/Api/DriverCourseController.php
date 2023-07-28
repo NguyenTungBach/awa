@@ -15,8 +15,10 @@ use App\Models\DriverCourse;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\DriverCourseResource;
+use Helper\ResponseService;
 use Http\Client\Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class DriverCourseController extends Controller
@@ -34,7 +36,7 @@ class DriverCourseController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/driver-course/list/{id}",
+     *   path="/api/driver-course",
      *   tags={"DriverCourse"},
      *   summary="List DriverCourse",
      *   operationId="driver_course_index",
@@ -47,12 +49,42 @@ class DriverCourseController extends Controller
      *     )
      *   ),
      *   @OA\Parameter(
-     *     name="id",
-     *     description = "id = driver_id",
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
      *     in="path",
      *     required=true,
      *     @OA\Schema(
      *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="integer",
      *     ),
      *   ),
      *   @OA\Response(
@@ -69,13 +101,19 @@ class DriverCourseController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($id)
+    public function index(DriverCourseRequest $request)
     {
-        $driverCourse = $this->repository->getPagination($id);
-        if ($driverCourse['status'] != 'success') {
-            return $this->responseJsonError($driverCourse['code'], $driverCourse['message']);
+        $field = isset($request['field']) ? $request['field'] : null;
+        $sortby = isset($request['sortby']) ? $request['sortby'] : null;
+
+        $arraySortby = ['asc', 'desc'];
+
+        if (!$field && $sortby){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
         }
-        return $this->responseJson($driverCourse['code'], isset($driverCourse['data']) ? $driverCourse['data'] : null);
+
+        $datas = $this->repository->getAll($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);;
     }
 
     /**
@@ -150,16 +188,216 @@ class DriverCourseController extends Controller
         }
     }
 
-    private function checkUnique($code, $isChecked, $driverCode)
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/{driver_id}",
+     *   tags={"DriverCourse"},
+     *   summary="Detail DriverCourse",
+     *   operationId="driver_course_detail",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     example = "2023-07-23",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($driver_id,DriverCourseRequest $request)
     {
-        if ($isChecked == 'no') {
-            return false;
-        }
-        $hasCheck = DriverCourse::where('driver_code', '<>', $driverCode)
-                                ->where('course_code', $code)
-                                ->where('is_checked', $isChecked)
-                                ->first();
-        return $hasCheck;
+        return $this->repository->getDetalDriverCourse($driver_id,$request);
     }
 
+    /**
+     * @OA\Post(
+     *   path="/api/driver-course/{id}",
+     *   tags={"DriverCourse"},
+     *   summary="Update DriverCourse",
+     *   operationId="driver_course_update",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     example = "2023-07-23",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_course(DriverCourseRequest $request)
+    {
+        return $this->repository->update_course($request->all());
+    }
+
+
+    /**
+     * @OA\Get(
+     *   path="/driver-course/total-extra-cost",
+     *   tags={"DriverCourse"},
+     *   summary="Total extra cost DriverCourse",
+     *   operationId="driver_course_total_extra_cost",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function total_extra_cost(DriverCourseRequest $request)
+    {
+        $datas = $this->repository->totalOfExtraCost($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/driver-course/export-shift",
+     *   tags={"DriverCourse"},
+     *   summary="Export_shift DriverCourse",
+     *   operationId="driver_course_export_shift",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function export_shift(DriverCourseRequest $request)
+    {
+        return $this->repository->export_shift($request);
+    }
 }
