@@ -159,8 +159,8 @@ export default {
 				setLoading(true);
 
 				let PARAMS = {
-					field: this.sortTable.sortBy,
-					sortby: this.sortTable.sortType,
+					order_by: this.sortTable.sortBy,
+					sort: this.sortTable.sortType,
 				};
 
 				PARAMS = cleanObject(PARAMS);
@@ -224,6 +224,7 @@ export default {
 		},
 
 		handleSort(ctx) {
+			console.log('sort:', ctx);
 			this.sortTable = {
 				sortBy: ctx.sortBy,
 				sortType: ctx.sortDesc ? 'asc' : 'desc',

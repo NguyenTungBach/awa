@@ -65,6 +65,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.SHIP_DATE')"
+                                            :value="isForm.ship_date"
                                         />
                                     </b-col>
                                 </b-row>
@@ -74,6 +75,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.COURSE_NAME')"
+                                            :value="isForm.course_name"
                                         />
                                     </b-col>
                                 </b-row>
@@ -90,7 +92,7 @@
                                     >
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.START_TIME')"
-                                            :value="123"
+                                            :value="isForm.start_time"
                                         />
                                     </b-col>
                                     <b-col
@@ -103,6 +105,7 @@
                                     >
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.END_TIME')"
+                                            :value="isForm.end_time"
                                         />
                                     </b-col>
                                     <b-col
@@ -115,6 +118,7 @@
                                     >
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.BREAK_TIME')"
+                                            :value="isForm.break_time"
                                         />
                                     </b-col>
                                 </b-row>
@@ -122,6 +126,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.CUSTUM_NAME')"
+                                            :value="isForm.customer_name"
                                         />
                                     </b-col>
                                 </b-row>
@@ -129,6 +134,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.DEPATURE_PLACE')"
+                                            :value="isForm.departure_place"
                                         />
                                     </b-col>
                                 </b-row>
@@ -136,6 +142,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.ARRIVAL_PLACE')"
+                                            :value="isForm.arrival_place"
                                         />
                                     </b-col>
                                 </b-row>
@@ -148,6 +155,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.FREIGHT_COST')"
+                                            :value="isForm.freight_cost"
                                         />
                                     </b-col>
                                 </b-row>
@@ -155,6 +163,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT')"
+                                            :value="isForm.payment_amount"
                                         />
                                     </b-col>
                                 </b-row>
@@ -162,6 +171,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.HIGHT_WAY')"
+                                            :value="isForm.hight_way"
                                         />
                                     </b-col>
                                 </b-row>
@@ -169,6 +179,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.COMMISSION')"
+                                            :value="isForm.commission"
                                         />
                                     </b-col>
                                 </b-row>
@@ -176,6 +187,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.MEAL_SUBSIDY_AMOUNT')"
+                                            :value="isForm.meal_fee"
                                         />
                                     </b-col>
                                 </b-row>
@@ -203,17 +215,17 @@
 </template>
 
 <script>
-// import CONSTANT from '@/const';
+import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
-// import { setLoading } from '@/utils/handleLoading';
+import { setLoading } from '@/utils/handleLoading';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { cleanObject } from '@/utils/handleObject';
 // import { getCalendar } from '@/api/modules/calendar';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
-// import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
+import { getDetail } from '@/api/modules/courseSchedule';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 // import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 import DetailForm from '@/components/DetailForm';
@@ -227,7 +239,24 @@ export default {
 	},
 
 	data() {
-		return {};
+		return {
+			isForm: {
+				customer_id: '',
+				ship_date: '',
+				course_name: '',
+				start_time: '',
+				end_time: '',
+				break_time: '',
+				customer_name: '',
+				departure_place: '',
+				arrival_place: '',
+				freight_cost: '',
+				payment_amount: '',
+				hight_way: '',
+				commission: '',
+				meal_fee: '',
+			},
+		};
 	},
 
 	computed: {
@@ -239,7 +268,7 @@ export default {
 	},
 
 	created() {
-
+		this.initData();
 	},
 
 	methods: {
@@ -249,6 +278,40 @@ export default {
 
 		onClickEdit(){
 			this.$router.push({ name: 'ListScheduleEdit' });
+		},
+
+		async initData() {
+			this.isForm.customer_id = this.$route.params.id || null;
+			await this.handleGetCourseShedule();
+		},
+
+		async handleGetCourseShedule() {
+			try {
+				if (this.isForm.customer_id) {
+					setLoading(true);
+					const customer = await getDetail(`${CONSTANT.URL_API.GET_DETAIL_COURSE_SCHEDULE}/${this.isForm.customer_id}`);
+
+					if (customer.code === 200) {
+						const DATA = customer.data;
+						this.isForm.ship_date = DATA.ship_date;
+						this.isForm.course_name = DATA.course_name;
+						this.isForm.customer_name = DATA.customer_id;
+						this.isForm.start_time = DATA.start_date;
+						this.isForm.end_time = DATA.end_date;
+						this.isForm.break_time = DATA.break_time;
+						this.isForm.departure_place = DATA.departure_place;
+						this.isForm.arrival_place = DATA.arrival_place;
+						this.isForm.freight_cost = DATA.ship_fee;
+						this.isForm.payment_amount = DATA.associate_company_fee;
+						this.isForm.hight_way = DATA.expressway_fee;
+						this.isForm.commission = DATA.commission;
+						this.isForm.meal_fee = DATA.meal_fee;
+					}
+					setLoading(false);
+				}
+			} catch {
+				setLoading(false);
+			}
 		},
 	},
 

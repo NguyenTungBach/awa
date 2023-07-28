@@ -566,9 +566,10 @@ export default {
 		COURSE_ID: 'Customer ID',
 		COURSE_NAME: 'Customer name',
 		CLOSING_DAY: 'Closing day',
-		CLIENT_MANAGER: 'Client mangager',
+		CLIENT_MANAGER: 'Person_charge',
 		ADDRESS_OF_CLIENT: 'Address of client',
 		CLIENT_EMAIL: 'client e-mail',
+		CLIENT_PHONE: 'Client Phone Number',
 		NOTE: 'Note',
 	},
 	CUSTOMER_DETAIL: {

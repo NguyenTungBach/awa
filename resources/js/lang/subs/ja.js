@@ -50,6 +50,7 @@ export default {
 		DAY_OFF_UPDATE_SUCCESS: 'シフト生成情報を更新しました。',
 		DAY_OFF_VALIDATE_SELECT_TYPE_DAY: '休日の種類が選択されていません',
 		SCHEDULE_UPDATE_SUCCESS: '保存しました。',
+		SCHEDULE_CREATE_SUCCESS: 'コーススケジュールの作成が成功しました',
 		SCHEDULE_VALIDATE_FILE_REQUIRED: 'ファイルを選択してください。',
 		SCHEDULE_VALIDATE_FILE_TYPE: ' ファイルの形式が正しくありません。',
 		SCHEDULE_VALIDATE_FILE_SIZE: 'ファイルの容量が大きすぎます。',
@@ -486,6 +487,7 @@ export default {
 		CLIENT_MANAGER: '担当者',
 		ADDRESS_OF_CLIENT: '住所',
 		CLIENT_EMAIL: '請求書送付連絡先',
+		CLIENT_PHONE: '請求書送付連絡先',
 		NOTE: 'メモ:',
 	},
 	CUSTOMER_DETAIL: {

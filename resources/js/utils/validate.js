@@ -17,7 +17,7 @@ function validateUserID(userID) {
 		return false;
 	}
 
-	const re = /^\d{1,4}$/;
+	const re = /^\d{1,15}$/;
 
 	return re.test(userID);
 }

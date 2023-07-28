@@ -61,7 +61,7 @@ class CustomerRequest extends FormRequest
             'person_charge' => 'required|string|max:20',
             'post_code' => ['required', new PostCode(__('customers.post_code'))],
             'address' => 'required|string|max:100',
-            'phone' => ['required', 'regex:/^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}+$/D'],
+            'phone' => ['required'],
             'note' => 'nullable|string|max:1000',
         ];
 

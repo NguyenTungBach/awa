@@ -77,7 +77,7 @@ const ShiftManagement = {
 			component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/ShiftManagement/ListSchedule/create.vue'),
 		},
 		{
-			path: 'list-schedule-detail',
+			path: 'list-schedule-detail/:id',
 			name: 'ListScheduleDetail',
 			meta: {
 				title: 'ROUTER.LIST_SCHEDULE',

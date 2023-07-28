@@ -60,10 +60,10 @@
                                 v-show="showControlTime"
                                 class="zone-calendar-week"
                             >
-                                <CalendarWeek
+                                <!-- <CalendarWeek
                                     v-show="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                     @value="getselectedYMD"
-                                />
+                                /> -->
                             </div>
                         </div>
                     </b-col>
@@ -1056,9 +1056,9 @@ export default {
 			return result;
 		},
 
-		currentPageTableLogChange() {
-			return this.paginationLogAI.current_page;
-		},
+		// currentPageTableLogChange() {
+		// 	return this.paginationLogAI.current_page;
+		// },
 
 		checkEventReloadTable() {
 			return this.$store.getters.reloadTableListShift;
@@ -1138,11 +1138,11 @@ export default {
 			deep: true,
 		},
 
-		currentPageTableLogChange() {
-			if (this.showModalLogAI) {
-				this.handleClickViewLog();
-			}
-		},
+		// currentPageTableLogChange() {
+		// 	if (this.showModalLogAI) {
+		// 		this.handleClickViewLog();
+		// 	}
+		// },
 
 		checkEventReloadTable() {
 			this.initData();

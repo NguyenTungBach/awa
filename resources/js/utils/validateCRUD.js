@@ -7,7 +7,7 @@ import {
 	validateCourseCode,
 	validateFormatYYYYMMDD,
 	validateCrewCode,
-	validateGrade,
+	// validateGrade,
 } from '@/utils/validate';
 import {
 	validateStartEndBreakTime,

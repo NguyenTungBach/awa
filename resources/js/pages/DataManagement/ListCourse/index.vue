@@ -36,18 +36,18 @@
                                     <b-th
                                         class="th-sort th-id th-course-id text-center"
                                         :rowspan="2"
-                                        @click="onSortTable('course_code')"
+                                        @click="onSortTable('customer_code')"
                                     >
                                         <b-row class="row-course-id ">
                                             {{ $t('LIST_COURSE.TABLE_COURSE_ID') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'course_code' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'customer_code' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'course_code' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'customer_code' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -61,7 +61,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
-                                        @click="onSortTable('course_name')"
+                                        @click="onSortTable('customer_name')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -70,11 +70,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'course_name' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'course_name' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -88,7 +88,7 @@
                                     <b-th
                                         class="th-sort th-closing-day"
                                         :rowspan="2"
-                                        @click="onSortTable('closing_day')"
+                                        @click="onSortTable('closing_date')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -97,11 +97,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'closing_day' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'closing_date' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'closing_day' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'closing_date' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -131,15 +131,13 @@
                                 <template v-for="(course, idx) in listCourse">
                                     <b-tr :key="`course-number-${idx + 1}`" :class="[genereateClassRowByStatus(course.status)]">
                                         <b-td class="td-course-id">
-                                            {{ course.course_code }}
+                                            {{ course.customer_code }}
                                         </b-td>
                                         <b-td class="td-course-name">
-                                            <!-- {{ course.course_name }} -->
-                                            ABC company
+                                            {{ course.customer_name }}
                                         </b-td>
                                         <b-td :colspan="3" class="text-center td-control">
-                                            <!-- {{ course.start_time }} -->
-                                            25 日
+                                            {{ course.closing_date }}
                                         </b-td>
 
                                         <b-td class="text-center td-control">
@@ -214,19 +212,11 @@ export default {
 
 			courseHandle: {
 				id: null,
-				flag: '',
-				course_code: '',
-				course_name: '',
-				start_time: '',
-				end_time: '',
-				break_time: '',
-				start_date: '',
-				end_date: '',
+				customer_code: '',
+				customer_name: '',
+				closing_date: '',
 				status: '',
 				note: '',
-				created_at: null,
-				updated_at: null,
-				deleted_at: null,
 			},
 		};
 	},
@@ -255,14 +245,15 @@ export default {
 				setLoading(true);
 
 				let PARAMS = {
-					field: this.sortTable.sortBy,
-					sortby: this.sortTable.sortType,
+					order_by: this.sortTable.sortBy,
+					sort_by: this.sortTable.sortType,
 				};
 
 				PARAMS = cleanObject(PARAMS);
+                console.log('param:', PARAMS);
 
-				if (PARAMS.field) {
-					PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
+				if (PARAMS.order_by) {
+					PARAMS.sort_by = PARAMS.sort_by ? 'asc' : 'desc';
 				}
 
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, PARAMS);
@@ -281,43 +272,43 @@ export default {
 
 		onSortTable(col) {
 			switch (col) {
-				case 'course_code':
-					if (this.sortTable.sortBy === 'course_code') {
+				case 'customer_code':
+					if (this.sortTable.sortBy === 'customer_code') {
 						if (this.sortTable.sortType) {
 							this.sortTable.sortType = !this.sortTable.sortType;
 						} else {
 							this.sortTable.sortType = true;
 						}
 					} else {
-						this.sortTable.sortBy = 'course_code';
+						this.sortTable.sortBy = 'customer_code';
 						this.sortTable.sortType = true;
 					}
 
 					break;
 
-				case 'course_name':
-					if (this.sortTable.sortBy === 'course_name') {
+				case 'customer_name':
+					if (this.sortTable.sortBy === 'customer_name') {
 						if (this.sortTable.sortType) {
 							this.sortTable.sortType = !this.sortTable.sortType;
 						} else {
 							this.sortTable.sortType = true;
 						}
 					} else {
-						this.sortTable.sortBy = 'course_name';
+						this.sortTable.sortBy = 'customer_name';
 						this.sortTable.sortType = true;
 					}
 
 					break;
 
-				case 'closing_day':
-					if (this.sortTable.sortBy === 'closing_day') {
+				case 'closing_date':
+					if (this.sortTable.sortBy === 'closing_date') {
 						if (this.sortTable.sortType) {
 							this.sortTable.sortType = !this.sortTable.sortType;
 						} else {
 							this.sortTable.sortType = true;
 						}
 					} else {
-						this.sortTable.sortBy = 'closing_day';
+						this.sortTable.sortBy = 'closing_date';
 						this.sortTable.sortType = true;
 					}
 
@@ -348,19 +339,11 @@ export default {
 		resetModal() {
 			this.courseHandle = {
 				id: null,
-				flag: null,
-				course_code: null,
-				course_name: null,
-				start_time: null,
-				end_time: null,
-				break_time: null,
-				start_date: null,
-				end_date: null,
-				status: null,
-				note: null,
-				created_at: null,
-				updated_at: null,
-				deleted_at: null,
+				customer_code: '',
+				customer_name: '',
+				closing_date: '',
+				status: '',
+				note: '',
 			};
 		},
 

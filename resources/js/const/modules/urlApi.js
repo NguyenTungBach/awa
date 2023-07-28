@@ -23,18 +23,21 @@ const GET_DRIVER_COURSE = '/driver-course/list';
 const POST_DRIVER_COURSE = '/driver-course';
 
 // Course API
-const GET_LIST_COURSE = '/course';
-const POST_COURSE = '/course';
-const GET_COURSE = '/course';
-const PUT_COURSE = '/course';
-const DELETE_COURSE = '/course';
+const GET_LIST_COURSE = '/customer';
+const POST_COURSE = '/customer';
+const GET_COURSE = '/customer';
+const PUT_COURSE = '/customer';
+const DELETE_COURSE = '/customer';
 
 // CoursePatern API
 const GET_LIST_COURSE_PATERN = '/course-pattern';
 const POST_COURSE_PATTERN = '/course-pattern/updates';
 
 // Course Schedule API
-const GET_LIST_COURSE_SCHEDULE = '/course-schedule';
+const GET_LIST_COURSE_SCHEDULE = '/course';
+const DELETE_COURSE_SCHEDULE = '/course';
+const POST_COURSE_SCHEDULE = '/course';
+const GET_DETAIL_COURSE_SCHEDULE = '/course';
 const POST_LIST_COURSE_SCHEDULE = '/course-schedule/updates';
 
 // const POST_COURSE_SCHEDULE = '/course-pattern/updates';
@@ -98,8 +101,11 @@ export default {
 
 	// Course Schedule API
 	GET_LIST_COURSE_SCHEDULE,
+	POST_COURSE_SCHEDULE,
+	DELETE_COURSE_SCHEDULE,
 	POST_LIST_COURSE_SCHEDULE,
 	GET_EXPORT_COURSE_SCHEDULE,
+	GET_DETAIL_COURSE_SCHEDULE,
 	POST_IMPORT_COURSE_SCHEDULE,
 
 	// Day-off API

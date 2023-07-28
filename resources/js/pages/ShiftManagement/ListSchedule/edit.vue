@@ -77,10 +77,13 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-date-date-of-birth"
+                                            v-model="isForm.ship_date"
                                             type="text"
                                         />
                                         <b-input-group-append>
                                             <b-form-datepicker
+                                                v-model="isForm.ship_date"
                                                 button-only
                                                 right
                                             />
@@ -116,7 +119,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-start-time">
                                             {{ $t('CREATE_SCHEDULE.START_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -124,10 +127,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-start-time"
+                                                v-model="isForm.start_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.start_time"
                                                     button-only
                                                     right
                                                 />
@@ -141,7 +147,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-end-time">
                                             {{ $t('CREATE_SCHEDULE.END_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -149,10 +155,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-end-time"
+                                                v-model="isForm.end_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.end_time"
                                                     button-only
                                                     right
                                                 />
@@ -166,7 +175,7 @@
                                         :lg="6"
                                         :xl="6"
                                     >
-                                        <label for="input-date-date-of-birth">
+                                        <label for="input-break-time">
                                             {{ $t('CREATE_SCHEDULE.BREAK_TIME') }}
                                             <span class="text-danger">
                                                 *
@@ -174,10 +183,13 @@
                                         </label>
                                         <b-input-group class="mb-3">
                                             <b-form-input
+                                                id="input-break-time"
+                                                v-model="isForm.break_time"
                                                 type="text"
                                             />
                                             <b-input-group-append>
                                                 <b-form-timepicker
+                                                    v-model="isForm.break_time"
                                                     button-only
                                                     right
                                                 />

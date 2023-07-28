@@ -96,6 +96,7 @@
                                                             id="input-course-id"
                                                             v-model="isForm.course_id"
                                                             type="text"
+                                                            max-length="10"
                                                             onpaste="return false;"
                                                             ondrop="return false;"
                                                             autocomplete="off"
@@ -197,13 +198,17 @@
                                                 :xl="4"
                                             >
                                                 <label for="input-course-id">
-                                                    {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
+                                                    {{ $t('CUSTOMER_CREATE.POST_CODE') }}
                                                     <span class="text-danger">
                                                         *
                                                     </span>
                                                 </label>
                                                 <div class="item-form-postCode">
-                                                    <b-form-input v-model="postalCode_first" type="number" maxlength="3" />
+                                                    <b-form-input
+                                                        v-model="postalCode_first" type="number"
+                                                        min="1"
+                                                        max="3"
+                                                    />
                                                     <span class="postCode">-</span>
                                                     <b-form-input v-model="postalCode_last" type="number" maxlength="4" />
                                                 </div>
@@ -245,7 +250,7 @@
                                             >
                                                 <div class="item-form">
                                                     <label for="input-course-id">
-                                                        {{ $t('CUSTOMER_CREATE.CLIENT_EMAIL') }}
+                                                        {{ $t('CUSTOMER_CREATE.CLIENT_PHONE') }}
                                                         <span class="text-danger">
                                                             *
                                                         </span>
@@ -253,7 +258,9 @@
                                                     <b-input-group>
                                                         <b-form-input
                                                             id="input-course-name"
-                                                            v-model="isForm.customer_email"
+                                                            v-model="isForm.customer_phone"
+                                                            type="number"
+                                                            maxlength="11"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -296,7 +303,7 @@ import LineGray from '@/components/LineGray';
 import { setLoading } from '@/utils/handleLoading';
 // import { validateCourse } from '@/utils/validateCRUD';
 import TitlePathForm from '@/components/TitlePathForm';
-import { convertTimeCourse } from '@/utils/convertTime';
+// import { convertTimeCourse } from '@/utils/convertTime';
 import { postCourse } from '@/api/modules/courseManagement';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
@@ -316,128 +323,20 @@ export default {
 			postalCode_last: '',
 			optionsClosingDay: [
 				{
-					value: -1,
-					text: '末日',
-				},
-				{
 					value: 1,
-					text: 1,
+					text: '15日',
 				},
 				{
 					value: 2,
-					text: 2,
+					text: '20日',
 				},
 				{
 					value: 3,
-					text: 3,
+					text: '25日',
 				},
 				{
 					value: 4,
-					text: 4,
-				},
-				{
-					value: 5,
-					text: 5,
-				},
-				{
-					value: 6,
-					text: 6,
-				},
-				{
-					value: 7,
-					text: 7,
-				},
-				{
-					value: 8,
-					text: 8,
-				},
-				{
-					value: 9,
-					text: 9,
-				},
-				{
-					value: 10,
-					text: 10,
-				},
-				{
-					value: 11,
-					text: 11,
-				},
-				{
-					value: 12,
-					text: 12,
-				},
-				{
-					value: 13,
-					text: 13,
-				},
-				{
-					value: 14,
-					text: 14,
-				},
-				{
-					value: 15,
-					text: 15,
-				},
-				{
-					value: 16,
-					text: 16,
-				},
-				{
-					value: 17,
-					text: 17,
-				},
-				{
-					value: 18,
-					text: 18,
-				},
-				{
-					value: 19,
-					text: 19,
-				},
-				{
-					value: 20,
-					text: 20,
-				},
-				{
-					value: 21,
-					text: 21,
-				},
-				{
-					value: 22,
-					text: 22,
-				},
-				{
-					value: 23,
-					text: 23,
-				},
-				{
-					value: 24,
-					text: 24,
-				},
-				{
-					value: 25,
-					text: 25,
-				},
-				{
-					value: 26,
-					text: 26,
-				},
-				{
-					value: 27,
-					text: 27,
-				},
-				{
-					value: 28,
-					text: 28,
-				},
-				{
-					value: 29,
-					text: 29,
-				},
-				{
-					value: 30,
-					text: 30,
+					text: '末日',
 				},
 			],
 
@@ -450,9 +349,10 @@ export default {
 			isForm: {
 				course_id: '',
 				course_name: '',
+				exclusive: '',
 				customer_manager: '',
 				customer_address: '',
-				customer_email: '',
+				customer_phone: '',
 				note: '',
 			},
 		};
@@ -530,17 +430,13 @@ export default {
 
 		initBody() {
 			return {
-				// flag: this.isForm.flag,
-				// pot: this.isForm.pot,
-				course_code: this.isForm.course_id,
-				// group: this.selectAZ ? (this.selectAZ).join('') : '',
-				course_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
-				// start_time: this.formatter(this.isForm.start_time),
-				// end_time: this.formatter(this.isForm.end_time),
-				// break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
-				// point: parseFloat(this.isForm.point + ''),
-				// start_date: this.isForm.start_date,
-				// end_date: this.isForm.end_date,
+				customer_code: this.isForm.course_id,
+				customer_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
+				closing_date: this.isForm.exclusive,
+				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
+				post_code: this.postalCode_first + '-' + this.postalCode_last,
+				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
+				phone: this.isForm.customer_phone,
 				note: this.isForm.note ? this.isForm.note.trim() : '',
 			};
 		},
@@ -561,7 +457,7 @@ export default {
 			try {
 				setLoading(true);
 
-				BODY.break_time = convertTimeCourse(BODY.break_time);
+				// BODY.break_time = convertTimeCourse(BODY.break_time);
 
 				const COURSE = await postCourse(CONSTANT.URL_API.POST_COURSE, BODY);
 
@@ -609,25 +505,25 @@ export default {
 		// 	return arr.join(':');
 		// },
 
-		formatterAZ(arr) {
-			return arr.join('');
-		},
+		// formatterAZ(arr) {
+		// 	return arr.join('');
+		// },
 
-		getSelectValueAZ(select) {
-			this.selectAZ = select;
-		},
+		// getSelectValueAZ(select) {
+		// 	this.selectAZ = select;
+		// },
 
-		getSelectStartTime(select) {
-			this.isForm.start_time = select;
-		},
+		// getSelectStartTime(select) {
+		// 	this.isForm.start_time = select;
+		// },
 
-		getSelectEndTime(select) {
-			this.isForm.end_time = select;
-		},
+		// getSelectEndTime(select) {
+		// 	this.isForm.end_time = select;
+		// },
 
-		getSelectBreakTime(select) {
-			this.isForm.break_time = select;
-		},
+		// getSelectBreakTime(select) {
+		// 	this.isForm.break_time = select;
+		// },
 	},
 };
 </script>

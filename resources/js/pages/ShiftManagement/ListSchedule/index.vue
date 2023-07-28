@@ -13,13 +13,13 @@
                         </b-col>
                         <b-col>
                             <div class="zone-item">
-                                <!-- <div class="zone-title">
+                                <div class="zone-title">
                                     <span
                                         class="title-bulk-delete"
                                     >
                                         {{ $t('APP.BUTTON_BULK_DELETE') }}
                                     </span>
-                                </div> -->
+                                </div>
                                 <div class="zone-title">
                                     <span
                                         class="title-edit"
@@ -93,7 +93,7 @@
                                         </div>
                                         <div class="time-course-rate-range">
                                             <b-input-group class="input-time-start">
-                                                <b-form-input
+                                                <!-- <b-form-input
                                                     type="text"
                                                 />
                                                 <b-input-group-append>
@@ -101,19 +101,55 @@
                                                         button-only
                                                         right
                                                     />
+                                                </b-input-group-append> -->
+                                                <b-form-input
+                                                    id="input-time-start"
+                                                    v-model="start_date"
+                                                    type="text"
+                                                    autocomplete="off"
+                                                />
+                                                <b-input-group-append>
+                                                    <b-form-datepicker
+                                                        v-model="start_date"
+                                                        button-only
+                                                        right
+                                                        :locale="language"
+                                                        aria-controls="input-time-start"
+                                                        hide-header
+                                                        :is-r-t-l="false"
+                                                        :label-help="$t('APP.LABLE_HELP_CALENDAR')"
+                                                    />
                                                 </b-input-group-append>
                                             </b-input-group>
                                             <div class="from-to">
                                                 <span> ~ </span>
                                             </div>
                                             <b-input-group class="input-time-end">
-                                                <b-form-input
+                                                <!-- <b-form-input
                                                     type="text"
                                                 />
                                                 <b-input-group-append>
                                                     <b-form-timepicker
                                                         button-only
                                                         right
+                                                    />
+                                                </b-input-group-append> -->
+                                                <b-form-input
+                                                    id="input-time-end"
+                                                    v-model="end_date"
+                                                    type="text"
+                                                    autocomplete="off"
+                                                />
+                                                <b-input-group-append>
+                                                    <b-form-datepicker
+                                                        v-model="end_date"
+                                                        button-only
+                                                        right
+                                                        :locale="language"
+                                                        aria-controls="input-time-end"
+                                                        hide-header
+                                                        :is-r-t-l="false"
+                                                        :label-help="$t('APP.LABLE_HELP_CALENDAR')"
                                                     />
                                                 </b-input-group-append>
                                             </b-input-group>
@@ -147,12 +183,14 @@
                                             <b-button
                                                 pill
                                                 class="btn-reset"
+                                                @click="onClickReset()"
                                             >
                                                 {{ $t('LIST_SCHEDULE.BUTTON_RESET') }}
                                             </b-button>
                                             <b-button
                                                 pill
                                                 class="btn-search"
+                                                @click="onClickSearch()"
                                             >
                                                 {{ $t('LIST_SCHEDULE.BUTTON_SEARCH') }}
                                             </b-button>
@@ -183,13 +221,23 @@
                                     <b-th
                                         :rowspan="2"
                                         class="row-date"
+                                        @click="onSortTable('ship_date')"
                                     >
                                         <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_COURSE_DATE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
+                                                        v-if="sortTable.sortBy === 'ship_date' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'ship_date' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
                                                     />
                                                 </div>
                                             </b-col>
@@ -198,13 +246,23 @@
                                     <b-th
                                         :rowspan="2"
                                         class="row-couse-name"
+                                        @click="onSortTable('course_name')"
                                     >
                                         <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_COURSE_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
+                                                        v-if="sortTable.sortBy === 'course_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'course_name' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
                                                     />
                                                 </div>
                                             </b-col>
@@ -212,37 +270,69 @@
                                     </b-th>
                                     <b-th
                                         :rowspan="2"
+                                        @click="onSortTable('customer_name')"
                                     >
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_CUSTUM_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
+                                                        v-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
                                                     />
                                                 </div>
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th>
+                                    <b-th
+                                        @click="onSortTable('departure_place')"
+                                    >
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_DEPATURE_PLACE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
+                                                        v-if="sortTable.sortBy === 'departure_place' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'departure_place' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
                                                     />
                                                 </div>
                                             </b-col>
                                         </b-row>
                                     </b-th>
-                                    <b-th>
+                                    <b-th
+                                        @click="onSortTable('arrival_place')"
+                                    >
                                         <b-row class="row-course-id">
                                             {{ $t('LIST_SCHEDULE.TABLE_ARRIVAL_PLACE') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
+                                                        v-if="sortTable.sortBy === 'arrival_place' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'arrival_place' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
                                                     />
                                                 </div>
                                             </b-col>
@@ -251,6 +341,7 @@
                                     <b-th
                                         :rowspan="2"
                                         class="row-freight-cost"
+                                        @click="onSortTable('ship_fee')"
                                     >
                                         <b-row class="row-course-id ">
                                             {{ $t('LIST_SCHEDULE.TABLE_FREIGHT_COST') }}
@@ -287,33 +378,33 @@
                                             />
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.date }}
+                                            {{ schedule.ship_date }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.courseName }}
+                                            {{ schedule.course_name }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.customerName }}
+                                            {{ schedule.customer_name }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.depaturePlace }}
+                                            {{ schedule.departure_place }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.arrivalPlace }}
+                                            {{ schedule.arrival_place }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.freightCost }}
+                                            {{ schedule.ship_fee }}
                                         </b-td>
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-eye"
-                                                @click="onClickDetail()"
+                                                @click="onClickDetail(schedule)"
                                             />
                                         </b-td>
                                         <b-td class="text-center td-control">
                                             <i
                                                 class="fas fa-trash-alt"
-                                                @click="onClickDelete()"
+                                                @click="onClickDelete(schedule)"
                                             />
                                         </b-td>
                                     </b-tr>
@@ -386,6 +477,21 @@
                 </b-button>
             </div>
         </b-modal>
+        <b-modal
+            id="modal-delete"
+            ref="modal-delete"
+            v-model="modalDelete"
+            body-class="modal-detail"
+            static
+            :title="$t('APP.TITLE_MODAL_CONFIRM')"
+            :cancel-title="$t('APP.TEXT_CANCEL')"
+            :ok-title="$t('APP.TEXT_CONFIRM')"
+            @ok="handleOk"
+        >
+            <div class="text-center">
+                <span>{{ $t('LIST_USER.TEXT_CONFIRM_DELETE') }}</span>
+            </div>
+        </b-modal>
     </b-col>
 
 </template>
@@ -397,14 +503,15 @@ import HeaderFilter from '@/components/HeaderFilter';
 // import { Obj2Param } from '@/utils/Obj2Param';
 // import { getToken } from '@/utils/handleToken';
 import { setLoading } from '@/utils/handleLoading';
-// import { cleanObject } from '@/utils/handleObject';
+import { cleanObject } from '@/utils/handleObject';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { getCalendar } from '@/api/modules/calendar';
-import { postImportFile } from '@/api/modules/courseSchedule';
+import { postImportFile, getListSchedule, deleteCourse, deleteAll } from '@/api/modules/courseSchedule';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
+import { getList } from '@/api/modules/courseManagement';
 // import HeaderFilterVue from '../../../components/HeaderFilter.vue';
 
 export default {
@@ -418,6 +525,8 @@ export default {
 	data() {
 		return {
 			customerName: null,
+			getIDCourse: null,
+			modalDelete: false,
 			listNameCustomer: [
 				{
 					value: 1,
@@ -428,6 +537,14 @@ export default {
 					text: '荷主名',
 				},
 			],
+
+			start_date: '',
+			end_date: '',
+
+			sortTable: {
+				sortBy: '',
+				sortType: null,
+			},
 
 			selected: null,
 			options: [
@@ -445,23 +562,25 @@ export default {
 			listSchedule: [
 				{
 					id: 1,
-					date: '2022/12/05',
-					courseName: 'テストコース2',
-					customerName: 'B商事',
-					depaturePlace: '徳島港',
-					arrivalPlace: '高松港',
-					freightCost: '500000',
+					ship_date: '2022/12/05',
+					course_name: 'テストコース2',
+					customer_name: 'B商事',
+					departure_place: '徳島港',
+					arrival_place: '高松港',
+					ship_fee: '500000',
 				},
 				{
 					id: 2,
-					date: '2022/12/25',
-					courseName: 'テストコース2',
-					customerName: 'E商事',
-					depaturePlace: 'B商事',
-					arrivalPlace: '高松港',
-					freightCost: '650000',
+					ship_date: '2022/12/25',
+					course_name: 'テストコース2',
+					customer_name: 'E商事',
+					departure_place: 'B商事',
+					arrival_place: '高松港',
+					ship_fee: '650000',
 				},
 			],
+
+			listCourse: [],
 
 			fileImport: null,
 			messageValidateImport: null,
@@ -470,7 +589,32 @@ export default {
 		};
 	},
 
+	computed: {
+		language() {
+			return this.$store.getters.language;
+		},
+	},
+
+	watch: {
+		sortTable: {
+			handler: function() {
+				this.handleGetListCourse();
+			},
+
+			deep: true,
+		},
+	},
+
+	created() {
+		this.initData();
+	},
+
 	methods: {
+		async initData() {
+			await this.handleGetListCourse();
+			await this.handleGetCustomer();
+		},
+
 		checkboxAll(){
 			if (this.checked_all) {
 				this.checkselec = [];
@@ -496,12 +640,64 @@ export default {
 			this.$router.push({ name: 'ListScheduleCreate' });
 		},
 
-		onClickDetail(){
-			this.$router.push({ name: 'ListScheduleDetail' });
+		onClickDetail(scope){
+			this.$router.push({ name: 'ListScheduleDetail', params: { id: scope.id }});
 		},
 
 		handleClickImport(){
 			this.showModalImport = true;
+		},
+
+		async handleGetListCourse() {
+			try {
+				setLoading(true);
+				const URL = CONSTANT.URL_API.GET_LIST_COURSE_SCHEDULE;
+				let params = {
+					start_date_ship: this.start_date ? this.start_date : '',
+					end_date_ship: this.end_date ? this.end_date : '',
+					customer_id: '',
+					order_by: this.sortTable.sortBy,
+					sort_by: this.sortTable.sortType,
+				};
+
+				params = cleanObject(params);
+				if (params.order_by) {
+					params.sort_by = params.sort_by ? 'asc' : 'desc';
+				}
+				const response = await getListSchedule(URL, params);
+				if (response.code === 200) {
+					this.listSchedule = response.data;
+					this.listCourse = response.data;
+				} else {
+					this.listSchedule = [];
+					this.listCourse = [];
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async handleGetCustomer() {
+			try {
+				setLoading(true);
+				const params = {};
+				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, params);
+				if (LIST.code === 200) {
+					this.listNameCustomer = [];
+					LIST.data.forEach(item => {
+						this.listNameCustomer.push({
+							value: item.id,
+							text: item.customer_name,
+						});
+					});
+				} else {
+					this.listNameCustomer = [];
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
 		},
 
 		async handleSaveModalImport() {
@@ -554,6 +750,59 @@ export default {
 			}
 		},
 
+		onClickSearch() {
+			if (this.customerName !== null && this.start_date === '' && this.end_date === '') {
+				this.listSchedule = this.listCourse.filter(item => item.id === this.customerName);
+			} else if (this.start_date !== '' && this.customerName === null && this.end_date === '') {
+				const formatStartDate = new Date(this.start_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate >= formatStartDate;
+				});
+			} else if (this.end_date !== '' && this.customerName === null && this.start_date === '') {
+				const formatEndDate = new Date(this.end_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate <= formatEndDate;
+				});
+			} else if (this.end_date !== '' && this.start_date !== '' && this.customerName === null) {
+				const formatEndDate = new Date(this.end_date);
+				const formatStartDate = new Date(this.start_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate <= formatEndDate && formatDate >= formatStartDate;
+				});
+			} else if (this.start_date !== '' && this.end_date !== '' && this.customerName !== null) {
+				const formatEndDate = new Date(this.end_date);
+				const formatStartDate = new Date(this.start_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate <= formatEndDate && formatDate >= formatStartDate && item.id === this.customerName;
+				});
+			} else if (this.start_date !== '' && this.customerName !== null && this.end_date === '') {
+				const formatStartDate = new Date(this.start_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate >= formatStartDate && item.id === this.customerName;
+				});
+			} else if (this.end_date !== '' && this.customerName !== null && this.start_date === '') {
+				const formatEndDate = new Date(this.end_date);
+				this.listSchedule = this.listCourse.filter(item => {
+					const formatDate = new Date(item.ship_date);
+					return formatDate <= formatEndDate && item.id === this.customerName;
+				});
+			} else if (this.start_date === '' && this.end_date === '' && this.customerName === null) {
+				this.listSchedule = this.listCourse;
+			}
+		},
+
+		onClickReset() {
+			this.customerName = null;
+			this.start_date = '';
+			this.end_date = '';
+			this.listSchedule = this.listCourse;
+		},
+
 		onClickImportFile() {
 			this.$refs.importFile.$el.click();
 		},
@@ -565,6 +814,124 @@ export default {
 		handleCloseModalImport() {
 			this.showModalImport = false;
 			this.resetImportFile();
+		},
+
+		onClickDelete(scope) {
+			this.getIDCourse = scope.id;
+			console.log('getid:', this.getIDCourse);
+			this.modalDelete = true;
+		},
+
+		async handleOk() {
+			try {
+				this.modalDelete = false;
+				setLoading(true);
+				const Delete_course = await deleteCourse(`${CONSTANT.URL_API.DELETE_COURSE_SCHEDULE}/${this.getIDCourse}`);
+				if (Delete_course.code === 200) {
+					await this.handleGetListCourse();
+					TOAST_SCHEDULE_SHIFT.delete();
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async handleDeleteAll() {
+			try {
+				setLoading(true);
+				const params = this.checkselec;
+				const deleteAllCourse = await deleteAll(CONSTANT.URL_API.DELETE_COURSE_SCHEDULE, params);
+				if (deleteAllCourse.code === 200) {
+					await this.handleGetListCourse();
+					TOAST_SCHEDULE_SHIFT.delete();
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		onSortTable(col) {
+			switch (col) {
+				case 'ship_date':
+					if (this.sortTable.sortBy === 'ship_date') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'ship_date';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'course_name':
+					if (this.sortTable.sortBy === 'course_name') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'course_name';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'customer_name':
+					if (this.sortTable.sortBy === 'customer_name') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'customer_name';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'departure_place':
+					if (this.sortTable.sortBy === 'departure_place') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'departure_place';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'arrival_place':
+					if (this.sortTable.sortBy === 'arrival_place') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'arrival_place';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'ship_fee':
+					if (this.sortTable.sortBy === 'ship_fee') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'ship_fee';
+						this.sortTable.sortType = true;
+					}
+					break;
+
+				default:
+					console.log('Handle sort table faild');
+
+					break;
+			}
 		},
 	},
 
@@ -659,6 +1026,7 @@ export default {
                     font-size: 18px;
                     border-radius: 30px;
                     color: $white;
+                    margin: 0 10px;
                     padding: 6px 10px;
                     &:hover {
                             opacity: 0.8;
@@ -725,15 +1093,14 @@ export default {
 
                                 th {
                                     vertical-align: middle;
-
                                     min-width: 65px;
                                     height: 41px;
                                     background-color: $main;
                                     color: $white;
                                 }
-                                th.row-date {
-                                   width: 65px;
-                                }
+                                // th.row-date {
+                                // //    width: 90px;
+                                // }
                                 th.row-freight-cost {
                                     width: 150px;
                                 }
