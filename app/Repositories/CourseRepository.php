@@ -86,7 +86,14 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $courses = $courses->where('customer_id', $input['customer_id']);
         }
 
-        $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
+        if ($input['order_by'] == 'customer_name') {
+            $courses = $courses->join('customers', 'courses.customer_id', '=', 'customers.id');
+            $courses = $courses->select('courses.*', 'customers.customer_name');
+            $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
+        } else {
+            $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
+        }
+
         $courses = $courses->get();
         foreach ($courses as $key => $value) {
             $data[$key]['id'] = $value->id;
@@ -95,7 +102,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
             $data[$key]['departure_place'] = $value->departure_place;
             $data[$key]['arrival_place'] = $value->arrival_place;
-            $data[$key]['ship_fee'] = number_format($value->ship_fee, 0, '.', ',');
+            $data[$key]['ship_fee'] = $value->ship_fee;
         }
         $result = $data;
 
@@ -104,16 +111,13 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function getDetail($id)
     {
-        $result = CourseRepository::find($id);
+        $result = CourseRepository::with('customer')->find($id);
+        $result['customer_name'] = $result->customer->customer_name;
         $result['ship_date'] = date('Y年m月d日', strtotime($result->start_date));
         $result['start_date'] = date('H:i', strtotime($result->start_date));
         $result['end_date'] = date('H:i', strtotime($result->end_date));
         $result['break_time'] = date('H:i', strtotime($result->break_time));
-        $result['ship_fee'] = number_format($result->ship_fee, 0, '.', ',');
-        $result['associate_company_fee'] = number_format($result->associate_company_fee, 0, '.', ',');
-        $result['expressway_fee'] = number_format($result->expressway_fee, 0, '.', ',');
-        $result['commission'] = number_format($result->commission, 0, '.', ',');
-        $result['meal_fee'] = number_format($result->meal_fee, 0, '.', ',');
+        unset($result['customer']);
 
         return $result;
     }
@@ -129,48 +133,61 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         $checkDriverCourse = $this->checkDriverCourse($id);
         if ($checkDriverCourse) {
-            return false;
+            $courseNameError = $this->getCourseName($checkDriverCourse);
+
+            return $this->responseJsonError(Response::HTTP_BAD_REQUEST, '削除できません: '. $courseNameError);
         }
         $result = CourseRepository::find($id)->delete();
 
-        return $result;
+        return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
     }
 
     public function destroyCourse($arrId)
     {
         $checkDriverCourse = $this->checkDriverCourse($arrId);
         if ($checkDriverCourse) {
-            return false;
+            if (is_array($checkDriverCourse)) {
+                $courseNameError = $this->getCourseName($checkDriverCourse);
+
+                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, '削除できません: '. $courseNameError);
+            }
+
+            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, '削除するコースを少なくとも 1 つ選択してください');
         }
         $result = Course::destroy($arrId);
 
-        return $result;
+        return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
     }
 
     public function checkDriverCourse($id)
     {
+        if (empty($id)) {
+            return $result = true;
+        }
         $arrCourseId = DriverCourse::get()->pluck('course_id')->toArray();
-        // $result = Arr::hasAny($arrCourseId, $id);
         if (is_array($id)) {
-            foreach ($id as $key => $value) {
-                if (!in_array($value, $arrCourseId)) {
-                    return false;
-                }
-                if (in_array($value, $arrCourseId)) {
-                    return true;
-                }
-            }
+            $result = array_intersect($arrCourseId, $id);
+            $result = ($result == []) ? false : $result;
         } else {
             $result = in_array($id, $arrCourseId);
         }
 
-        // if (is_array($id)) {
-        //     $result = array_diff($arrCourseId, $id);
-        //     dd('resrulttt', $result);
-        //     $result = ($result == []) ? true : false;
-        // } else {
-        //     $result = in_array($id, $arrCourseId);
-        // }
+        return $result;
+    }
+
+    public function getCourseName($input)
+    {
+        $arrCourseName = [];
+        if (is_array($input)) {
+            foreach ($input as $key => $value) {
+                $courseName = Course::find($value);
+                $arrCourseName[$key] = $courseName->course_name;
+            }
+            $result = implode(", ", $arrCourseName);
+        } else {
+            $courseName = Course::find($input);
+            $result = $courseName->course_name;
+        }
 
         return $result;
     }
