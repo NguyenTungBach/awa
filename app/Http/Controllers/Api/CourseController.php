@@ -281,6 +281,7 @@ class CourseController extends Controller
     public function export(CourseRequest $request)
     {
         try {
+            dd(1);
             $input = $request->all();
 
             return Excel::download(new CourseExport($input), 'hy download.xlsx');

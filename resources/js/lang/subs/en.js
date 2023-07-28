@@ -73,7 +73,9 @@ export default {
 		DAY_OFF_UPDATE_SUCCESS: 'Update day-off success',
 
 		// SCHEDULE
+		COURSE_SCHEDULE_UPDATE_SUCCESS: 'Update Course schedule success',
 		SCHEDULE_UPDATE_SUCCESS: 'Update schedule success',
+		SCHEDULE_CREATE_SUCCESS: 'Create course schedule success',
 		SCHEDULE_VALIDATE_FILE_REQUIRED: 'Please select file',
 		SCHEDULE_VALIDATE_FILE_TYPE: 'File type must be .csv',
 		SCHEDULE_VALIDATE_FILE_SIZE: 'File size must be less than 3MB',

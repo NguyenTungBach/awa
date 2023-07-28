@@ -612,13 +612,15 @@ export default {
 	},
 
 	created() {
+	    // this.handleGetCustomer();
+		// this.handleGetListCourse();
 		this.initData();
 	},
 
 	methods: {
 		async initData() {
-			await this.handleGetListCourse();
 			await this.handleGetCustomer();
+			await this.handleGetListCourse();
 		},
 
 		checkboxAll(){

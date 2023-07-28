@@ -306,7 +306,8 @@ export default {
 
 					if (customer.code === 200) {
 						const DATA = customer.data;
-						this.isForm.ship_date = DATA.ship_date;
+						const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
+						this.isForm.ship_date = convertDate;
 						this.isForm.course_name = DATA.course_name;
 						this.isForm.customer_name = DATA.customer_name;
 						this.isForm.start_time = DATA.start_date;
@@ -327,6 +328,7 @@ export default {
 				setLoading(false);
 			}
 		},
+
 	},
 
 };

@@ -31,3 +31,7 @@ export function getAllDelete(url, params) {
 export function postExportExcel(url, params) {
 	return request.postRequest(url, params);
 }
+
+export function editCourse(url, params) {
+	return request.putRequest(url, params);
+}

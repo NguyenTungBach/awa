@@ -106,6 +106,8 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
+                                            id="input-date-date-of-birth"
+                                            v-model="isForm.course_name"
                                             type="text"
                                         />
 
@@ -285,7 +287,7 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            id="input-freight-cost"
+                                            id="input-cooperating-company-payment-amount"
                                             v-model="isForm.freight_cost"
                                             type="number"
                                         />
@@ -450,7 +452,9 @@ import { setLoading } from '@/utils/handleLoading';
 // import { getCalendar } from '@/api/modules/calendar';
 // import { getNumberDate, getTextDay } from '@/utils/convertTime';
 // import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/scheduleManagement';
-import { getList } from '@/api/modules/courseSchedule';
+import { getDetail, editCourse } from '@/api/modules/courseSchedule';
+import { getList } from '@/api/modules/courseManagement';
+import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 // import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 
@@ -506,11 +510,13 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListScheduleDetail' });
+			this.$router.push({ name: 'ListScheduleDetail', params: { id: this.$route.params.id || null }});
 		},
 
 		async initDate() {
+			this.isForm.customer_id = this.$route.params.id || null;
 			await this.handleGetCustomer();
+			await this.handleGetCourseShedule();
 		},
 
 		async handleGetCustomer() {
@@ -533,6 +539,74 @@ export default {
 			} catch {
 				setLoading(false);
 			}
+		},
+
+		async handleGetCourseShedule() {
+			try {
+				if (this.isForm.customer_id) {
+					setLoading(true);
+					const customer = await getDetail(`${CONSTANT.URL_API.GET_DETAIL_COURSE_SCHEDULE}/${this.isForm.customer_id}`);
+
+					if (customer.code === 200) {
+						const DATA = customer.data;
+						const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
+						this.isForm.ship_date = convertDate;
+						this.isForm.course_name = DATA.course_name;
+						this.isForm.customer_name = DATA.customer_id;
+						this.isForm.start_time = DATA.start_date;
+						this.isForm.end_time = DATA.end_date;
+						this.isForm.break_time = DATA.break_time;
+						this.isForm.departure_place = DATA.departure_place;
+						this.isForm.arrival_place = DATA.arrival_place;
+						this.isForm.freight_cost = parseInt(DATA.ship_fee);
+						this.isForm.payment_amount = DATA.associate_company_fee;
+						this.isForm.hight_way = DATA.expressway_fee;
+						this.isForm.expenses = DATA.commission;
+						this.isForm.bonus_amount = DATA.meal_fee;
+						this.isForm.note = DATA.note;
+					}
+					setLoading(false);
+				}
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async onClickSave() {
+			try {
+				setLoading(true);
+				const convertDate = `${(this.isForm.ship_date).slice(0, 4)}-${(this.isForm.ship_date).slice(5, 7)}-${(this.isForm.ship_date).slice(8, 10)}`;
+				const params = {
+					customer_id: this.isForm.customer_name,
+					course_name: this.isForm.course_name,
+					ship_date: convertDate,
+					start_date: this.isForm.start_time,
+					end_date: this.isForm.end_time,
+					break_time: this.isForm.break_time,
+					departure_place: this.isForm.departure_place,
+					arrival_place: this.isForm.arrival_place,
+					ship_fee: this.isForm.freight_cost,
+					associate_company_fee: this.isForm.payment_amount,
+					expressway_fee: this.isForm.hight_way,
+					commission: this.isForm.expenses,
+					meal_fee: this.isForm.bonus_amount,
+					note: this.isForm.note,
+				};
+				const Data = await editCourse(`${CONSTANT.URL_API.PUT_COURSE_SCHEDULE}/${this.isForm.customer_id}`, params);
+
+				if (Data.code === 200) {
+					this.goToCourseList();
+					TOAST_SCHEDULE_SHIFT.update();
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		goToCourseList() {
+			// this.$router.push({ name: 'ListCourseIndex' });
+			this.$router.push({ name: 'ListSchedule' });
 		},
 	},
 
