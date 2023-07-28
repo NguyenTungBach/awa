@@ -5,6 +5,7 @@ return [
     'not_change_tonnage_accessory_referenced_to_maintenance_cost' => 'Unable to change frequency, accessory referenced with mt cost',
     'name_accessory_not_change' => 'accessory name cannot be edited',
     'not_found' => 'not found',
+    'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
     'has_been_assigned' => ':attribute has been assigned',
     'end_date_retirement' => ':attribute already in retirement :end_date',

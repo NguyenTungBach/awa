@@ -9,6 +9,7 @@ return [
     'page_not_found' => 'Không tìm thấy kết quả.',
     'email_not_exist' => 'Email không tồn tại.',
     'not_found' => 'not found',
+    'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
     'has_been_assigned' => ':attribute has been assigned',
     'end_date_retirement' => ':attribute already in retirement :end_date',

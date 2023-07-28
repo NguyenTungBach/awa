@@ -30,6 +30,7 @@ return [
     'shift.driver_empty' => 'Empty Drivers data',
     'shift.course_empty' => 'Empty Courses data',
     'not_found' => 'not found',
+    'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
     'has_been_assigned' => ':attribute has been assigned',
     'end_date_retirement' => ':attribute already in retirement :end_date',

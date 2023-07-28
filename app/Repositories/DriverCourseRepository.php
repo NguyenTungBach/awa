@@ -217,7 +217,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 if ($dateRetirement->gte($checkDate)){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans("errors.end_date_retirement" ,[
-                            "attribute"=> "course_id: $checkCourse_id, course_name: $course->course_name,driver_id: $checkDriver_id, driver_name: $driver->driver_name",
+                            "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name",
                             "end_date"=> $dateRetirement->format('Y-m-d')
                         ]));
                 }
@@ -357,6 +357,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // 1.3 Kiểm tra trong mảng có đang duplicate course_id và date không end
 
+
+        //1.4 Kiểm tra id course có tồn tại không start
+        foreach ($items as $item) {
+            if (isset($item['id'])) {
+                $driverCourse = DriverCourse::find($item['id']);
+                if ($driverCourse == null){
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans('errors.driver_course_id_not_found',[
+                            "id"=> $item['id'],
+                        ]));
+                }
+            }
+        }
+        //1.4 Kiểm tra id course có tồn tại không end
+
         // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
         foreach ($items as $item){
             $checkDriver_id = $item['driver_id'];
@@ -372,7 +387,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             if ($checkFinalClosingHistories){
                 return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans("errors.final_closing_histories" ,[
-                        "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name , and date: $checkDate"
+                        "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name, and date: $checkDate"
                     ]));
             }
         }
@@ -391,7 +406,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 if ($dateRetirement->gte($checkDate)){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans("errors.end_date_retirement" ,[
-                            "attribute"=> "course_id: $checkCourse_id, course_name: $course->course_name,driver_id: $checkDriver_id, driver_name: $driver->driver_name",
+                            "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name",
                             "end_date"=> $dateRetirement->format('Y-m-d')
                         ]));
                 }
@@ -442,7 +457,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             if ($checkUnique){
                 return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans("errors.has_been_assigned" ,[
-                        "attribute"=> "driver_id: $checkUnique->driver_id, driver_name: $driver->driver_name, course_id: $checkUnique->course_id, course_name: $course->course_name and date: $checkUnique->date"
+                        "attribute"=> "driver_id: $checkUnique->driver_id, driver_name: $checkUnique->driver_name, course_id: $checkUnique->course_id, course_name: $course->course_name and date: $checkUnique->date"
                     ]));
             }
         }
