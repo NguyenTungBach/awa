@@ -27,7 +27,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('user', 'UserController');
             Route::apiResource('driver', 'DriverController');
             Route::post('course/export', 'CourseController@export');
-            Route::get('course/delete-many', 'CourseController@deleteMany');
+            Route::delete('course/delete-many', 'CourseController@deleteMultiple');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
