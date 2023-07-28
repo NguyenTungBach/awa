@@ -155,7 +155,7 @@ class DriverCourseController extends Controller
      *              type="array",
      *              @OA\Items(
      *                  required={"course_id","date","start_time","end_time","break_time"},
-     *                  @OA\Property(property="course_id", type="string" ),
+     *                  @OA\Property(property="course_id", type="interger" ),
      *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
      *                  @OA\Property(property="start_time", type="string",description="H:i" ),
      *                  @OA\Property(property="end_time", type="string",description="H:i" ),
@@ -233,7 +233,7 @@ class DriverCourseController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/api/driver-course/{id}",
+     *   path="/api/driver-course/update-course",
      *   tags={"DriverCourse"},
      *   summary="Update DriverCourse",
      *   operationId="driver_course_update",
@@ -242,18 +242,45 @@ class DriverCourseController extends Controller
      *     description="Send request success",
      *     @OA\MediaType(
      *      mediaType="application/json",
-     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *          example={
+     *              "items" : {
+     *                  {
+     *                      "id": 1,
+     *                      "driver_id": 1,
+     *                      "course_id": 6,
+     *                      "date": "2023-07-28",
+     *                      "start_time": "08:00",
+     *                      "end_time": "18:00",
+     *                      "break_time": "12:00"
+     *                  },
+     *                  {
+     *                      "driver_id": 2,
+     *                      "course_id": 7,
+     *                      "date": "2023-07-24",
+     *                      "start_time": "08:00",
+     *                      "end_time": "18:00",
+     *                      "break_time": "12:00"
+     *                  },
+     *              }
+     *          },
+     *          @OA\Schema(
+     *            required={"items"},
+     *            @OA\Property(
+     *              property="items",
+     *              type="array",
+     *              @OA\Items(
+     *                  required={"course_id","driver_id","course_id","start_time","end_time","break_time"},
+     *                  @OA\Property(property="id", type="interger" ),
+     *                  @OA\Property(property="driver_id", type="interger" ),
+     *                  @OA\Property(property="course_id", type="interger" ),
+     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
+     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
+     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
+     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
+     *               )
+     *            ),
+     *         )
      *     )
-     *   ),
-     *   @OA\Parameter(
-     *     name="date",
-     *     description = "Y-m-d",
-     *     example = "2023-07-23",
-     *     in="path",
-     *     required=true,
-     *     @OA\Schema(
-     *      type="string",
-     *     ),
      *   ),
      *   @OA\Response(
      *     response=401,
@@ -398,6 +425,40 @@ class DriverCourseController extends Controller
      */
     public function export_shift(DriverCourseRequest $request)
     {
-        return $this->repository->export_shift($request);
+        $this->repository->export_shift($request);
+        return $this->responseJson(200, null, trans('messages.mes.export_success'));
+    }
+
+    /**
+     * @OA\Delete(
+     *   path="/driver-course/{id}",
+     *   tags={"DriverCourse"},
+     *   summary="Delete DriverCourse",
+     *   operationId="driver_course_delete",
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":"Send request success"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * @param int $id
+     * @return int
+     * @throws \Exception
+     */
+    public function destroy($id)
+    {
+        return $this->repository->delete($id);
     }
 }

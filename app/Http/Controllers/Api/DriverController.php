@@ -314,7 +314,6 @@ class DriverController extends Controller
      */
     public function destroy($id)
     {
-        $driver = $this->repository->destroy($id);
-        return $this->responseJson($driver['code'], null,$driver);
+        return $this->repository->destroy($id);
     }
 }

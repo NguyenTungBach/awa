@@ -7,6 +7,7 @@
 namespace Repository;
 
 use App\Http\Resources\BaseResource;
+use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\User;
@@ -104,11 +105,24 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
     {
         try {
             $driver = $this->model->find($id);
-            if (!$driver) return ResponseService::responseData(Response::HTTP_NOT_FOUND, 'error', trans('errors.data_not_found'));
-
-            $driver->delete();
+            // Kiểm tra xem driver có tồn tại không
+            if (!$driver) return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.data_not_found'));
+            // Kiểm tra xem driver này đã có chuyến giao hàng nào chưa nếu có thì không được xóa
+            $driver_courses = DriverCourse::where("driver_id",$driver->id)->first();
+            if ($driver_courses != null){
+                $course = Course::find($driver_courses->course_id);
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                    trans("errors.driver_can_not_delete" ,[
+                        "driver_id"=> $driver->id,
+                        "driver_name"=> $driver->driver_name,
+                        "course_id"=> $course->id,
+                        "course_name"=> $course->course_name,
+                    ]));
+            } else{
+                $driver->delete();
+            }
         }catch (\Exception $exception){
-            return ResponseService::responseData(Response::HTTP_METHOD_NOT_ALLOWED, 'error', trans('errors.data_not_found'));
+            return ResponseService::responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, $exception->getMessage(), trans('errors.data_not_found'));
         }
 //        $endDate = Carbon::now()->toDateString();
 //        if ($driver->end_date) {

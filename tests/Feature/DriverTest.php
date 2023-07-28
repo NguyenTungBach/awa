@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Course;
 use App\Models\Driver;
+use App\Models\DriverCourse;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -952,26 +954,60 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
+        $driver = Driver::create([
+            "type"=> 1,
+            "driver_code"=> "abc1234",
+            "driver_name"=> "Bach test delete",
+            "car"=> "Lambo",
+            "start_date"=> "2022-08-20",
+            "note"=> "thoi roi ta da xa nhau"
+        ]);
         $response = $this->actingAs($user)->delete('api/driver/' . $driver->id . "?token=".$token)
-            ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure([
-                "code",
-                "message"=> [
-                    "code",
-                    "status",
-                    "message",
-                ],
+            ->assertStatus(CODE_SUCCESS)
+            ->assertExactJson([
+                "code" => CODE_SUCCESS,
+                "status" => "success",
+                "message"=> trans('messages.mes.delete_success'),
             ]);
     }
 
-    public function testDriverDeleteFalse()
+    public function testDriverDeleteHaveCourseCanNotDelete()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver_course = DriverCourse::where("driver_id",1)->first();
+        $driver = Driver::find(1);
+        $course = Course::find($driver_course->course_id);
+        $response = $this->actingAs($user)->delete('api/driver/' . 1 . "?token=".$token)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertExactJson([
+                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
+                "message" => trans("errors.driver_can_not_delete" ,[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
+                    "course_id"=> $course->id,
+                    "course_name"=> $course->course_name,
+                ]),
+                "message_content" => null,
+                "message_internal" => null,
+                "data_error" => null
+            ]);
+
+    }
+
+    public function testDriverDeleteNotFoundId()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $response = $this->actingAs($user)->delete('api/driver/' . 9 . "?token=".$token)
-            ->assertStatus(Response::HTTP_OK);
-        $this->assertEquals(\Illuminate\Http\Response::HTTP_NOT_FOUND, $response->decodeResponseJson()['code']);
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertExactJson([
+                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
+                "message" => trans('errors.data_not_found'),
+                "message_content" => null,
+                "message_internal" => null,
+                "data_error" => null
+            ]);
     }
 
 }

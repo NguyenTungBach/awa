@@ -9,6 +9,7 @@ return [
     'page_not_found' => 'Không tìm thấy kết quả.',
     'email_not_exist' => 'Email không tồn tại.',
     'not_found' => 'not found',
+    'driver_have_course_can_not_delete' => 'driver id :driver_id, driver_name :driver_name have course_id :course_id, course_name :course_name can not delete',
     'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
     'has_been_assigned' => ':attribute has been assigned',
