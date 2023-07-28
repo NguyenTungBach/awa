@@ -192,6 +192,24 @@ class DriverController extends Controller
     {
         try {
             $data = $this->repository->find($id);
+            if ($data != null){
+                $data->checkEnd_date = $data->end_date !== null;
+                switch ($data->type){
+                    case 1:
+                        $data->typeName = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $data->typeName = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $data->typeName = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $data->typeName = trans('drivers.type.4');
+                        break;
+                }
+            }
+
             return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;

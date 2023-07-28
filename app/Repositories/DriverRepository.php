@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Http\Resources\BaseResource;
 use App\Models\Course;
+use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\User;
@@ -91,6 +92,20 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
             ->SortByForDriver($request)->get()
             ->filter(function ($driver) {
                 $driver->checkEnd_date = $driver->end_date !== null;
+                switch ($driver->type){
+                    case 1:
+                        $driver->typeName = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $driver->typeName = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $driver->typeName = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $driver->typeName = trans('drivers.type.4');
+                        break;
+                }
                 return $driver;
             });
         return ResponseService::responseJson(200, new BaseResource($listDriver));
