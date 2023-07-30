@@ -26,7 +26,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::post('calendar/delete', 'CalendarController@destroy');
             Route::apiResource('user', 'UserController');
             Route::apiResource('driver', 'DriverController');
-            Route::post('course/export', 'CourseController@export');
+            Route::get('course/export', 'CourseController@export');
             Route::post('course/import', 'CourseController@import');
             Route::delete('course/delete-many', 'CourseController@deleteMultiple');
             Route::apiResource('course', 'CourseController');

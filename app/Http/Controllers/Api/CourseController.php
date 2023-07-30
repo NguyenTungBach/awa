@@ -283,10 +283,9 @@ class CourseController extends Controller
     public function export(CourseRequest $request)
     {
         try {
-            dd(1);
             $input = $request->all();
 
-            return Excel::download(new CourseExport($input), 'hy download.xlsx');
+            return Excel::download(new CourseExport($input), 'course.xlsx');
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
