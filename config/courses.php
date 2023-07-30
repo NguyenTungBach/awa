@@ -17,4 +17,21 @@ return [
         'メモ', // 13 note
     ],
     'comma' => ', ',
+    'header_export' => [
+        'ID', // id
+        '運行日', //ship_date
+        '運行名', // course_name
+        '始業時間', // start_date
+        '終業時間', // end_date
+        '休憩時間', // break_time
+        '荷主名', // customer_name
+        '発地', // departure_place
+        '着地', // arrival_place
+        '運賃', // ship_fee
+        '協力会社支払金額', // associate_company_fee
+        '高速道路・フェリー料金', // expressway_fee
+        '歩合', // commission
+        '食事補助金額', // meal_fee
+        'メモ', // note
+    ]
 ];

@@ -16,6 +16,7 @@ use Illuminate\Foundation\Application;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use App\Models\DriverCourse;
+use Illuminate\Support\Facades\Route;
 
 class CourseRepository extends BaseRepository implements CourseRepositoryInterface
 {
@@ -95,14 +96,34 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         }
 
         $courses = $courses->get();
-        foreach ($courses as $key => $value) {
-            $data[$key]['id'] = $value->id;
-            $data[$key]['ship_date'] = $value->ship_date;
-            $data[$key]['course_name'] = $value->course_name;
-            $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
-            $data[$key]['departure_place'] = $value->departure_place;
-            $data[$key]['arrival_place'] = $value->arrival_place;
-            $data[$key]['ship_fee'] = $value->ship_fee;
+        if (Route::getCurrentRoute()->getActionMethod() == 'export') {
+            foreach ($courses as $key => $value) {
+                $data[$key]['id'] = $value->id;
+                $data[$key]['ship_date'] = $value->ship_date;
+                $data[$key]['course_name'] = $value->course_name;
+                $data[$key]['start_date'] = date('H:i', strtotime($value->start_date));
+                $data[$key]['end_date'] = date('H:i', strtotime($value->end_date));
+                $data[$key]['break_time'] = date('H:i', strtotime($value->break_time));
+                $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
+                $data[$key]['departure_place'] = $value->departure_place;
+                $data[$key]['arrival_place'] = $value->arrival_place;
+                $data[$key]['ship_fee'] = $value->ship_fee;
+                $data[$key]['associate_company_fee'] = $value->associate_company_fee;
+                $data[$key]['expressway_fee'] = $value->expressway_fee;
+                $data[$key]['commission'] = $value->commission;
+                $data[$key]['meal_fee'] = $value->meal_fee;
+                $data[$key]['note'] = empty($value->note) ? '' : $value->note;
+            }
+        } else {
+            foreach ($courses as $key => $value) {
+                $data[$key]['id'] = $value->id;
+                $data[$key]['ship_date'] = $value->ship_date;
+                $data[$key]['course_name'] = $value->course_name;
+                $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
+                $data[$key]['departure_place'] = $value->departure_place;
+                $data[$key]['arrival_place'] = $value->arrival_place;
+                $data[$key]['ship_fee'] = $value->ship_fee;
+            }
         }
         $result = $data;
 
