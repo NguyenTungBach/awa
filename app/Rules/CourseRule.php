@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 
 class CourseRule implements Rule
 {
@@ -42,6 +43,10 @@ class CourseRule implements Rule
      */
     public function message()
     {
+        if (Route::getCurrentRoute()->getActionMethod() == 'import') {
+            return __('validation.custom.csv.check_date', ['attribute' => $this->attribute]);
+        }
+
         return __('validation.custom.check_date', ['attribute' => $this->attribute]);
     }
 }
