@@ -17,6 +17,11 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use App\Exports\CourseExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CourseImport;
+use Maatwebsite\Excel\Validators\ValidationException;
+use Illuminate\Validation\ValidationException as Validation;
+use Maatwebsite\Excel\HeadingRowImport;
+use Maatwebsite\Excel\Validators\Failure;
 
 class CourseController extends Controller
 {
@@ -293,5 +298,34 @@ class CourseController extends Controller
         $result = $this->repository->destroyCourse($arrId);
 
         return $result;
+    }
+
+    public function import(CourseRequest $request)
+    {
+        try {
+            $file = $request->file;
+            // validate header before read content data
+            $diff = array_diff(config('courses.header'), collect((new HeadingRowImport)->toArray($file))->flatten()->all());
+            if (!empty($diff)) {
+                throw Validation::withMessages([
+                    __('validation.custom.csv.headings.matched', ['names' => implode(config('courses.comma'), $diff)]),
+                ]);
+            }
+            // read data
+            $courseImport = new CourseImport;
+            Excel::import($courseImport, $file);
+            if(!empty($courseImport->data) && is_array($courseImport->data) && count($courseImport->data)) {
+                return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, ERROR, $courseImport->data);
+            }
+
+            return $this->responseJson(200, [], trans('messages.mes.create_success'));
+        } catch (ValidationException $exception) {
+            return $this->responseJsonError(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                ERROR, 
+                collect($exception->failures())
+                ->map(fn(Failure $failure) => str_replace(':row', $failure->row(), $failure->errors()[0]))->all()
+            );
+        }
     }
 }

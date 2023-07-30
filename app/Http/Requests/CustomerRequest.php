@@ -51,7 +51,7 @@ class CustomerRequest extends FormRequest
                 'min:4',
                 'max:15',
                 'regex:/^[0-9]+$/',
-                'unique:customers,customer_code',
+                'unique:customers,customer_code,NULL,id,deleted_at,NULL',
             ],
             'customer_name' => 'required|string|max:20',
             'closing_date' => [

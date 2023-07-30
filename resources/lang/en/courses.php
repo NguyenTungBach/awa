@@ -15,4 +15,5 @@ return [
     'commission' => '歩合',
     'meal_fee' => '食事補助金額',
     'note' => 'メモ',
+    'file' => 'ファイル',
 ];

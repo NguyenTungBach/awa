@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Course;
 use App\Models\Customer;
 use Illuminate\Validation\Rule;
+use App\Rules\CompareHours;
 
 class CourseRequest extends FormRequest
 {
@@ -44,6 +45,8 @@ class CourseRequest extends FormRequest
                 return $this->getCustomRuleIndex();
             case 'export':
                 return $this->getCustomRuleIndex();
+            case 'import':
+                return $this->getCustomRuleImport();
             default:
                 return [];
         }
@@ -57,7 +60,12 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrCustomerId)
             ],
-            'course_name' => 'required|string|max:20',
+            'course_name' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:courses,course_name,NULL,id,deleted_at,NULL',
+            ],
             'ship_date' => [
                 'required',
                 'date_format:Y-m-d',
@@ -66,7 +74,8 @@ class CourseRequest extends FormRequest
             'start_date' => [
                 'required',
                 'date_format:H:i',
-                new TimeRule(__('courses.start_date'))
+                new TimeRule(__('courses.start_date')),
+                new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
                 'required',
@@ -80,11 +89,11 @@ class CourseRequest extends FormRequest
             ],
             'departure_place' => 'required|string|max:20',
             'arrival_place' => 'required|string|max:20',
-            'ship_fee' => 'required|max:15',
-            'associate_company_fee' => 'nullable|max:15',
-            'expressway_fee' => 'nullable|max:15',
-            'commission' => 'nullable|max:15',
-            'meal_fee' => 'nullable|max:15',
+            'ship_fee' => 'required|numeric',
+            'associate_company_fee' => 'nullable|numeric',
+            'expressway_fee' => 'nullable|numeric',
+            'commission' => 'nullable|numeric',
+            'meal_fee' => 'nullable|numeric',
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -123,6 +132,7 @@ class CourseRequest extends FormRequest
 
     public function getCustomRuleUpdate(){
         $arrCustomerId = Customer::get()->pluck('id');
+        $course = Course::find(request()->route('course'));
 
         $rules = [
             'customer_id' => [
@@ -130,7 +140,13 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrCustomerId)
             ],
-            'course_name' => 'sometimes|required|string|max:20',
+            'course_name' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('courses')->ignore($course->id),
+            ],
             'ship_date' => [
                 'sometimes',
                 'required',
@@ -140,7 +156,8 @@ class CourseRequest extends FormRequest
                 'sometimes',
                 'required',
                 'date_format:H:i',
-                new TimeRule(__('courses.start_date'))
+                new TimeRule(__('courses.start_date')),
+                new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
                 'sometimes',
@@ -167,6 +184,18 @@ class CourseRequest extends FormRequest
         return $rules;
     }
 
+    public function getCustomRuleImport(){
+        $rules = [
+            'file' => [
+                'required',
+                'max:3000',
+                'mimes:xlsx'
+            ],
+        ];
+
+        return $rules;
+    }
+
     public function messages()
     {
         return [
@@ -177,6 +206,7 @@ class CourseRequest extends FormRequest
             'course_name.required' => __('validation.required', ['attribute' => __('courses.course_name')]),
             'course_name.string' => __('validation.string', ['attribute' => __('courses.course_name')]),
             'course_name.max' => __('validation.max.string', ['attribute' => __('courses.course_name'), 'max' => 20]),
+            'course_name.unique' => __('validation.unique', ['attribute' => __('courses.course_name')]),
             // ship_date
             'ship_date.required' => __('validation.required', ['attribute' => __('courses.ship_date')]),
             'ship_date.date_format' => __('validation.date_format', ['attribute' => __('courses.ship_date'), 'format' => 'Y-m-d']),
@@ -199,17 +229,27 @@ class CourseRequest extends FormRequest
             'arrival_place.max' => __('validation.max.string', ['attribute' => __('courses.arrival_place'), 'max' => 20]),
             // ship_fee
             'ship_fee.required' => __('validation.required', ['attribute' => __('courses.ship_fee')]),
+            'ship_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.ship_fee')]),
+            'ship_fee.max' => __('validation.max.string', ['attribute' => __('courses.ship_fee'), 'max' => 15]),
             // associate_company_fee
+            'associate_company_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.associate_company_fee')]),
             'associate_company_fee.max' => __('validation.max.string', ['attribute' => __('courses.associate_company_fee'), 'max' => 15]),
             // expressway_fee
+            'expressway_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.expressway_fee'), 'max' => 15]),
             'expressway_fee.max' => __('validation.max.string', ['attribute' => __('courses.expressway_fee'), 'max' => 15]),
             // commission
+            'commission.numeric' => __('validation.numeric', ['attribute' => __('courses.commission'), 'max' => 15]),
             'commission.max' => __('validation.max.string', ['attribute' => __('courses.commission'), 'max' => 15]),
             // meal_fee
+            'meal_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.meal_fee'), 'max' => 15]),
             'meal_fee.max' => __('validation.max.string', ['attribute' => __('courses.meal_fee'), 'max' => 15]),
             // note
             'note.string' => __('validation.string', ['attribute' => __('courses.note')]),
             'note.max' => __('validation.max.string', ['attribute' => __('courses.note'), 'max' => 1000]),
+            // file
+            'file.required' => __('validation.required', ['attribute' => __('courses.file')]),
+            'file.max' => __('validation.max.file', ['attribute' => __('courses.file'), 'max' => 3000]),
+            'file.mimes' => __('validation.mimes', ['attribute' => __('courses.file'), 'values' => '.xlsx']),
         ];
     }
 }
