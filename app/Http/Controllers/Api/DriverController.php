@@ -209,7 +209,7 @@ class DriverController extends Controller
                         break;
                 }
             }
-
+            $data->start_date = explode(" ",$data->start_date)[0];
             return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;
