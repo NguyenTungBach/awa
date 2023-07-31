@@ -12,6 +12,7 @@ use App\Http\Resources\UserResource;
 use App\Repositories\Contracts\DriverRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\DriverResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -209,7 +210,7 @@ class DriverController extends Controller
                         break;
                 }
             }
-            $data->start_date = explode(" ",$data->start_date)[0];
+            $data->start_date = Carbon::parse(explode(" ",$data->start_date)[0])->format('Y年m月d日');
             return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;

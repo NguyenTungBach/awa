@@ -168,15 +168,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // 0.Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
         foreach ($items as $item) {
             if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                if (count($items) > 1){
-                    $checkCourse_id = $item['course_id'];
-                    $course = Course::find($checkCourse_id);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDateFind = $item['date'];
+
+                $result = array_filter($items, function ($item) use ($checkDateFind) {
+                    return $item['date'] === $checkDateFind;
+                });
+                if (count($result) >1){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.all_id_special_must_one',[
                             "driver_id"=> $driver->id,
                             "driver_name"=> $driver->driver_name,
                             "course_id"=> $item['course_id'],
                             "course_name"=> $course->course_name,
+                            "date"=> $checkDateFind,
                         ]));
                 }
             }
@@ -259,6 +265,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ->where('driver_courses.date', $checkDate)
                     ->whereNull('drivers.end_date') // driver không nghỉ hưu
                     ->first();
+
                 if ($checkAllDriverCourseIfSpecial){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.driver_must_one_course_in_day_with_id_special',[
@@ -266,6 +273,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
                             "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
                             "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
+                            "date"=> $checkDate,
                         ]));
                 }
             }
@@ -361,17 +369,24 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
         foreach ($items as $item) {
             if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                if (count($items) > 1){
-                    $checkDriver_id = $item['driver_id'];
-                    $driver = Driver::find($checkDriver_id);
-                    $checkCourse_id = $item['course_id'];
-                    $course = Course::find($checkCourse_id);
+                //Lấy ra và tìm tất cả driver và date mà có course_id đặc biệt
+                $checkDriver_idFind = $item['driver_id'];
+                $driver = Driver::find($checkDriver_idFind);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDateFind = $item['date'];
+
+                $result = array_filter($items, function ($item) use ($checkDriver_idFind, $checkDateFind) {
+                    return $item['driver_id'] === $checkDriver_idFind && $item['date'] === $checkDateFind;
+                });
+                if (count($result) >1){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.all_id_special_must_one',[
                             "driver_id"=> $item['driver_id'],
                             "driver_name"=> $driver->driver_name,
                             "course_id"=> $item['course_id'],
                             "course_name"=> $course->course_name,
+                            "date"=> $checkDateFind,
                         ]));
                 }
             }
@@ -515,6 +530,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
                             "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
                             "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
+                            "date"=> $checkDate,
                         ]));
                 }
             }
