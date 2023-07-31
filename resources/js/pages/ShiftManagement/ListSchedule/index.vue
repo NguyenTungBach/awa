@@ -396,7 +396,7 @@
                                             {{ schedule.arrival_place }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.ship_fee }}
+                                            {{ Number(schedule.ship_fee).toLocaleString() }}
                                         </b-td>
                                         <b-td class="text-center td-control">
                                             <i
@@ -516,6 +516,7 @@ import { postImportFile, getListSchedule, deleteCourse, getAllDelete } from '@/a
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 import { getList } from '@/api/modules/courseManagement';
+import { getToken } from '@/utils/handleToken';
 // import HeaderFilterVue from '../../../components/HeaderFilter.vue';
 
 export default {
@@ -664,6 +665,7 @@ export default {
 					customer_id: this.customerName,
 					order_by: this.sortTable.sortBy,
 					sort_by: this.sortTable.sortType,
+					// Authorization: getToken(),
 				};
 
 				params = cleanObject(params);
@@ -759,52 +761,6 @@ export default {
 			}
 		},
 
-		// onClickSearch() {
-		// 	if (this.customerName !== null && this.start_date === '' && this.end_date === '') {
-		// 		this.listSchedule = this.listCourse.filter(item => item.id === this.customerName);
-		// 	} else if (this.start_date !== '' && this.customerName === null && this.end_date === '') {
-		// 		const formatStartDate = new Date(this.start_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate >= formatStartDate;
-		// 		});
-		// 	} else if (this.end_date !== '' && this.customerName === null && this.start_date === '') {
-		// 		const formatEndDate = new Date(this.end_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate <= formatEndDate;
-		// 		});
-		// 	} else if (this.end_date !== '' && this.start_date !== '' && this.customerName === null) {
-		// 		const formatEndDate = new Date(this.end_date);
-		// 		const formatStartDate = new Date(this.start_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate <= formatEndDate && formatDate >= formatStartDate;
-		// 		});
-		// 	} else if (this.start_date !== '' && this.end_date !== '' && this.customerName !== null) {
-		// 		const formatEndDate = new Date(this.end_date);
-		// 		const formatStartDate = new Date(this.start_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate <= formatEndDate && formatDate >= formatStartDate && item.id === this.customerName;
-		// 		});
-		// 	} else if (this.start_date !== '' && this.customerName !== null && this.end_date === '') {
-		// 		const formatStartDate = new Date(this.start_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate >= formatStartDate && item.id === this.customerName;
-		// 		});
-		// 	} else if (this.end_date !== '' && this.customerName !== null && this.start_date === '') {
-		// 		const formatEndDate = new Date(this.end_date);
-		// 		this.listSchedule = this.listCourse.filter(item => {
-		// 			const formatDate = new Date(item.ship_date);
-		// 			return formatDate <= formatEndDate && item.id === this.customerName;
-		// 		});
-		// 	} else if (this.start_date === '' && this.end_date === '' && this.customerName === null) {
-		// 		this.listSchedule = this.listCourse;
-		// 	}
-		// },
-
 		onClickReset() {
 			this.customerName = null;
 			this.start_date = '';
@@ -865,20 +821,27 @@ export default {
 		async onClickExport() {
 			try {
 				setLoading(true);
-				const params = {
+				let params = {
 					end_date_ship: this.end_date ? this.end_date : '',
 					customer_id: this.customerName,
 					order_by: this.sortTable.sortBy,
 					sort_by: this.sortTable.sortType,
 				};
-				const URL = CONSTANT.URL_API.POST_EXPORT_COURSE_SCHEDULE;
-				await axios.post(URL, params, {
+				params = cleanObject(params);
+				const URL = `/api${CONSTANT.URL_API.POST_EXPORT_COURSE_SCHEDULE}`;
+				await axios.get(URL, {
+					params: params,
 					responseType: 'blob',
+					headers: {
+						'Accept-Language': this.$store.getters.language,
+						'Authorization': getToken(),
+						'accept': 'application/json',
+					},
 				}).then((response) => {
 					const url = window.URL.createObjectURL(new Blob([response.data]));
 					const link = document.createElement('a');
 					link.href = url;
-					link.setAttribute('download', 'danh_sach.xlsx');
+					link.setAttribute('download', '運行情報.xlsx');
 					document.body.appendChild(link);
 					link.click();
 				}).catch((error) => {

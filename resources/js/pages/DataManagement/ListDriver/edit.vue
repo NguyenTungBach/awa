@@ -108,7 +108,7 @@
                                             </TitlePathForm>
                                             <div class="item-form">
                                                 <label for="input-empolyee-number">
-                                                    {{ $t('CREATE_DRIVER.TYPE_DRIVER') }}
+                                                    {{ $t('CREATE_DRIVER.TYPE_EMPLOYEE') }}
                                                     <span class="text-danger">
                                                         *
                                                     </span>
@@ -443,7 +443,7 @@ import { getTextShortDayByCodeDay } from '@/utils/convertTime';
 import TOAST_DRIVER_COURSE from '@/toast/modules/driverCourse';
 import { getListDriverCourse, postListDriverCourse } from '@/api/modules/driverCourse';
 // import TableEditDriverCourse from '@/components/TableEditDriverCourse';
-import { loopCallback, splitStr2Array, getValueShortDayByText } from '@/utils/helper';
+// import { loopCallback, splitStr2Array, getValueShortDayByText } from '@/utils/helper';
 import { formatNumber } from '@/utils/formatNumber';
 import { validInputNumber } from '@/utils/handleInput';
 
@@ -650,15 +650,16 @@ export default {
 
 				if (DRIVER.code === 200) {
 					const DATA = DRIVER.data;
-
-					this.isForm.typeDriver = DATA.flag;
+					const convertDate = `${(DATA.start_date).slice(0, 4)}-${(DATA.start_date).slice(5, 7)}-${(DATA.start_date).slice(8, 10)}`;
+					this.isForm.typeDriver = DATA.type;
 					this.isForm.employeeNumber = DATA.driver_code;
 					this.isForm.fullname = DATA.driver_name;
-					this.isForm.hireDate = DATA.start_date;
-					this.isForm.dateOfBirth = DATA.birth_day;
-					this.isForm.grade = DATA.grade;
-					this.isForm.availableDays = DATA.working_day;
-					this.isForm.seletedDateInWeek = (loopCallback(splitStr2Array(DATA.day_of_week, ','), getValueShortDayByText)).sort();
+					this.isForm.hireDate = convertDate;
+					// this.isForm.dateOfBirth = DATA.birth_day;
+					// this.isForm.grade = DATA.grade;
+					// this.isForm.availableDays = DATA.working_day;
+					// this.isForm.seletedDateInWeek = (loopCallback(splitStr2Array(DATA.day_of_week, ','), getValueShortDayByText)).sort();
+					this.isForm.character = DATA.car;
 					this.isForm.retirementDate = DATA.end_date;
 					this.isForm.notes = DATA.note;
 				}
@@ -677,21 +678,24 @@ export default {
 					.then(async() => {
 						setLoading(true);
 
-						const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
+						// const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
 
 						const DRIVER = {
-							flag: this.isForm.typeDriver,
+							type: this.isForm.typeDriver,
+							driver_code: this.isForm.employeeNumber,
 							driver_name: this.isForm.fullname,
 							start_date: this.isForm.hireDate,
-							end_date: this.isForm.retirementDate,
-							birth_day: this.isForm.dateOfBirth,
-							grade: parseInt(this.isForm.grade),
-							working_day: this.isForm.availableDays,
-							day_of_week: this.handleDayOfWeek((seletedDateInWeek).sort()),
+							car: this.isForm.character,
 							note: this.isForm.notes,
+							end_date: this.isForm.retirementDate,
+							// birth_day: this.isForm.dateOfBirth,
+							// grade: parseInt(this.isForm.grade),
+							// working_day: this.isForm.availableDays,
+							// day_of_week: this.handleDayOfWeek((seletedDateInWeek).sort()),
+							// note: this.isForm.notes,
 						};
 
-						const VALIDATE = validateDriver(DRIVER, ['flag', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'day_of_week', 'working_time', 'note']);
+						const VALIDATE = validateDriver(DRIVER, ['type', 'driver_name', 'start_date', 'end_date', 'driver_code', 'car', 'working_day', 'day_of_week', 'working_time', 'note']);
 
 						if (VALIDATE.status) {
 							const UPDATE_DRIVER = await putDriver(`${CONSTANT.URL_API.PUT_DRIVER}/${this.idDriver}`, DRIVER);
@@ -699,27 +703,27 @@ export default {
 							if (UPDATE_DRIVER.code === 200) {
 								TOAST_DRIVER.update();
 
-								let LIST_COURSE = removeDirtyItemInArray(this.listDriverCourseSelected, [null, undefined], 'id');
+								// let LIST_COURSE = removeDirtyItemInArray(this.listDriverCourseSelected, [null, undefined], 'id');
 
-								LIST_COURSE = this.handleGetListCourseCodeByID(LIST_COURSE, this.listDriverCourse);
+								// LIST_COURSE = this.handleGetListCourseCodeByID(LIST_COURSE, this.listDriverCourse);
 
-								LIST_COURSE = [...new Set(LIST_COURSE)];
+								// LIST_COURSE = [...new Set(LIST_COURSE)];
 
-								if (Array.isArray(LIST_COURSE)) {
-									if (LIST_COURSE.length >= 0) {
-										const BODY = {
-											driver_id: parseInt(this.idDriver),
-											items: LIST_COURSE,
-											flag: LIST_COURSE.length > 0 ? 'update' : 'delete',
-										};
+								// if (Array.isArray(LIST_COURSE)) {
+								// 	if (LIST_COURSE.length >= 0) {
+								// 		const BODY = {
+								// 			driver_id: parseInt(this.idDriver),
+								// 			items: LIST_COURSE,
+								// 			flag: LIST_COURSE.length > 0 ? 'update' : 'delete',
+								// 		};
 
-										const { code } = await postListDriverCourse(CONSTANT.URL_API.POST_DRIVER_COURSE, BODY);
+								// 		const { code } = await postListDriverCourse(CONSTANT.URL_API.POST_DRIVER_COURSE, BODY);
 
-										if (code === 200) {
-											TOAST_DRIVER_COURSE.update();
-										}
-									}
-								}
+								// 		if (code === 200) {
+								// 			TOAST_DRIVER_COURSE.update();
+								// 		}
+								// 	}
+								// }
 
 								this.onClickDetail();
 							}

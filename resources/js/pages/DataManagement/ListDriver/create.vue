@@ -102,7 +102,7 @@
                                             </TitlePathForm>
                                             <div class="item-form">
                                                 <label for="input-empolyee-number">
-                                                    {{ $t('CREATE_DRIVER.TYPE_DRIVER') }}
+                                                    {{ $t('CREATE_DRIVER.TYPE_EMPLOYEE') }}
                                                     <span class="text-danger">
                                                         *
                                                     </span>
@@ -402,7 +402,7 @@ import { setLoading } from '@/utils/handleLoading';
 import { validateDriver } from '@/utils/validateCRUD';
 import TitlePathForm from '@/components/TitlePathForm';
 import TOAST_DRIVER from '@/toast/modules/driverManagement';
-import { getTextShortDayByCodeDay } from '@/utils/convertTime';
+// import { getTextShortDayByCodeDay } from '@/utils/convertTime';
 import { formatNumber } from '@/utils/formatNumber';
 
 export default {
@@ -473,17 +473,18 @@ export default {
 
 		isForm: {
 			handler() {
-				const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
+				// const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
 
 				const DRIVER = {
-					flag: this.isForm.typeDriver,
+					type: this.isForm.typeDriver,
 					driver_code: this.isForm.employeeNumber,
 					driver_name: this.isForm.fullname,
 					start_date: this.isForm.hireDate,
-					end_date: this.isForm.retirementDate,
-					birth_day: this.isForm.dateOfBirth,
-					working_day: this.isForm.availableDays,
-					day_of_week: this.handleDayOfWeek(seletedDateInWeek),
+					car: this.isForm.character,
+					// end_date: this.isForm.retirementDate,
+					// birth_day: this.isForm.dateOfBirth,
+					// working_day: this.isForm.availableDays,
+					// day_of_week: this.handleDayOfWeek(seletedDateInWeek),
 					note: this.isForm.notes,
 				};
 
@@ -591,18 +592,18 @@ export default {
 		async onClickSave() {
 			setLoading(true);
 
-			const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
+			// const seletedDateInWeek = JSON.parse(JSON.stringify(this.isForm.seletedDateInWeek));
 
 			const DRIVER = {
-				flag: this.isForm.typeDriver,
+				type: this.isForm.typeDriver,
 				driver_code: this.isForm.employeeNumber,
 				driver_name: this.isForm.fullname,
 				start_date: this.isForm.hireDate,
-				end_date: this.isForm.retirementDate,
-				birth_day: this.isForm.dateOfBirth,
-				grade: parseInt(this.isForm.grade),
-				working_day: this.isForm.availableDays,
-				day_of_week: this.handleDayOfWeek(seletedDateInWeek.sort()),
+				car: this.isForm.character,
+				// end_date: this.isForm.retirementDate,
+				// birth_day: this.isForm.dateOfBirth,
+				// working_day: this.isForm.availableDays,
+				// day_of_week: this.handleDayOfWeek(seletedDateInWeek),
 				note: this.isForm.notes,
 			};
 
@@ -629,26 +630,26 @@ export default {
 			}
 		},
 
-		handleFlag(list = []) {
-			if (list.length > 0) {
-				return list.join(',');
-			}
+		// handleFlag(list = []) {
+		// 	if (list.length > 0) {
+		// 		return list.join(',');
+		// 	}
 
-			return null;
-		},
+		// 	return null;
+		// },
 
-		handleDayOfWeek(list = []) {
-			const result = [];
-			if (list.length > 0) {
-				for (let day = 0; day < list.length; day++) {
-					result.push(getTextShortDayByCodeDay(list[day]));
-				}
+		// handleDayOfWeek(list = []) {
+		// 	const result = [];
+		// 	if (list.length > 0) {
+		// 		for (let day = 0; day < list.length; day++) {
+		// 			result.push(getTextShortDayByCodeDay(list[day]));
+		// 		}
 
-				return result.length > 0 ? result.join(',') : null;
-			}
+		// 		return result.length > 0 ? result.join(',') : null;
+		// 	}
 
-			return '';
-		},
+		// 	return '';
+		// },
 
 		handleWorkingTime(list = []) {
 			if (list.length > 0) {
@@ -722,10 +723,6 @@ export default {
 			} else {
 				this.isTab = 'BASIC';
 			}
-		},
-
-		handleDelete(scope) {
-
 		},
 	},
 };

@@ -8,6 +8,9 @@ export default {
 	validate(message) {
 		Notification.warning(i18n.t(message));
 	},
+	update() {
+		Notification.success(i18n.t('MESSAGE_APP.COURSE_SCHEDULE_UPDATE_SUCCESS'));
+	},
 	delete() {
 		Notification.success(i18n.t('MESSAGE_APP.COURSE_MANAGEMENT_DELETE_SUCCESS'));
 	},

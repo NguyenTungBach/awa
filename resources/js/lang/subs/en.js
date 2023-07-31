@@ -380,7 +380,7 @@ export default {
 		DIRECTOR: 'Director',
 		FUNERAL_ONLY_DRIVER: 'Funeral only driver',
 
-		TYPE_DRIVER: 'Flag',
+		TYPE_EMPLOYEE: 'Employee classification',
 		EMPLOYEE_NUMBER: 'Crew code',
 		FULL_NAME: 'Crew name',
 		CHARACTER: 'create Character',

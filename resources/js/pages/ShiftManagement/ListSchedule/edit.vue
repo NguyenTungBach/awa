@@ -558,11 +558,11 @@ export default {
 						this.isForm.break_time = DATA.break_time;
 						this.isForm.departure_place = DATA.departure_place;
 						this.isForm.arrival_place = DATA.arrival_place;
-						this.isForm.freight_cost = parseInt(DATA.ship_fee);
-						this.isForm.payment_amount = DATA.associate_company_fee;
-						this.isForm.hight_way = DATA.expressway_fee;
-						this.isForm.expenses = DATA.commission;
-						this.isForm.bonus_amount = DATA.meal_fee;
+						this.isForm.freight_cost = Number(DATA.ship_fee).toLocaleString();
+						this.isForm.payment_amount = Number(DATA.associate_company_fee).toLocaleString();
+						this.isForm.hight_way = Number(DATA.expressway_fee).toLocaleString();
+						this.isForm.expenses = Number(DATA.commission).toLocaleString();
+						this.isForm.bonus_amount = Number(DATA.meal_fee).toLocaleString();
 						this.isForm.note = DATA.note;
 					}
 					setLoading(false);

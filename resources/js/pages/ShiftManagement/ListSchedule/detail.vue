@@ -306,8 +306,8 @@ export default {
 
 					if (customer.code === 200) {
 						const DATA = customer.data;
-						const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
-						this.isForm.ship_date = convertDate;
+						// const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
+						this.isForm.ship_date = DATA.ship_date;
 						this.isForm.course_name = DATA.course_name;
 						this.isForm.customer_name = DATA.customer_name;
 						this.isForm.start_time = DATA.start_date;
@@ -315,11 +315,11 @@ export default {
 						this.isForm.break_time = DATA.break_time;
 						this.isForm.departure_place = DATA.departure_place;
 						this.isForm.arrival_place = DATA.arrival_place;
-						this.isForm.freight_cost = DATA.ship_fee;
-						this.isForm.payment_amount = DATA.associate_company_fee;
-						this.isForm.hight_way = DATA.expressway_fee;
-						this.isForm.commission = DATA.commission;
-						this.isForm.meal_fee = DATA.meal_fee;
+						this.isForm.freight_cost = DATA.ship_fee ? Number(DATA.ship_fee).toLocaleString() + '円' : '';
+						this.isForm.payment_amount = DATA.associate_company_fee ? Number(DATA.associate_company_fee).toLocaleString() + '円' : '';
+						this.isForm.hight_way = DATA.expressway_fee ? Number(DATA.expressway_fee).toLocaleString() + '円' : '';
+						this.isForm.commission = DATA.commission ? Number(DATA.commission).toLocaleString() + '円' : '';
+						this.isForm.meal_fee = DATA.meal_fee ? Number(DATA.meal_fee).toLocaleString() + '円' : '';
 						this.isForm.note = DATA.note;
 					}
 					setLoading(false);

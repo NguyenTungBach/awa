@@ -899,7 +899,7 @@ import { hasRole } from '@/utils/hasRole';
 import LineGray from '@/components/LineGray';
 import { setLoading } from '@/utils/handleLoading';
 import { format2Digit } from '@/utils/generateTime';
-import CalendarWeek from '@/components/CalendarWeek';
+// import CalendarWeek from '@/components/CalendarWeek';
 import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
@@ -919,7 +919,7 @@ export default {
 	components: {
 		LineGray,
 		NodeListShift,
-		CalendarWeek,
+		// CalendarWeek,
 		// CalendarMultipleWeek,
 		// CalendarMonth,
 		// CalendarFreeMonth,

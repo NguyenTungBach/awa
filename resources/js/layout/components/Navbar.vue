@@ -102,12 +102,12 @@ export default {
 	},
 
 	watch: {
-		currentRouter() {
-			const ROUTER_NAME = this.$route.name;
-			const PAGE = ['ListShift', 'ListDayOff', 'ListSchedule'];
+		// currentRouter() {
+		// 	const ROUTER_NAME = this.$route.name;
+		// 	const PAGE = ['ListShift', 'ListDayOff', 'ListSchedule'];
 
-			this.showPickYearMonth = PAGE.includes(ROUTER_NAME);
-		},
+		// 	this.showPickYearMonth = PAGE.includes(ROUTER_NAME);
+		// },
 	},
 
 	methods: {
