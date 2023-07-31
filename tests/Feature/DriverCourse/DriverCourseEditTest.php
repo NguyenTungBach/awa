@@ -108,7 +108,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=> 1,
                     "driver_id" => 1,
-                    "course_id" => 6,
+                    "course_id" => $course6->id,
                     "date" => $course6->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -116,7 +116,7 @@ class DriverCourseEditTest extends TestCase
                 ],
                 [
                     "driver_id" => 2,
-                    "course_id" => 7,
+                    "course_id" => $course7->id,
                     "date" => $course7->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -131,7 +131,7 @@ class DriverCourseEditTest extends TestCase
                         [
                             "id"=> 1,
                             "driver_id" => 1,
-                            "course_id" => 6,
+                            "course_id" => $course6->id,
                             "date" => $course6->ship_date,
                             "start_time" => "08:00",
                             "break_time" => "12:00",
@@ -139,7 +139,7 @@ class DriverCourseEditTest extends TestCase
                         ],
                         [
                             "driver_id" => 2,
-                            "course_id" => 7,
+                            "course_id" => $course7->id,
                             "date" => $course7->ship_date,
                             "start_time" => "08:00",
                             "break_time" => "12:00",
@@ -182,7 +182,7 @@ class DriverCourseEditTest extends TestCase
                     [
                         "id"=> 99,
                         "driver_id" => 1,
-                        "course_id" => 1,
+                        "course_id" => 8,
                         "date" => "2023-07-24",
                         "start_time" => "08:00",
                         "break_time" => "12:00",
@@ -210,7 +210,7 @@ class DriverCourseEditTest extends TestCase
             "items" => [
                 [
                     "id"=>1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -249,7 +249,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 9,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -324,7 +324,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 9,
+                    "course_id" => 99,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -362,7 +362,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 9,
+                    "course_id" => 99,
                     "start_time" => "08:00",
                     "break_time" => "12:00",
                     "end_time" => "18:00",
@@ -436,7 +436,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "break_time" => "12:00",
                     "end_time" => "18:00",
@@ -474,7 +474,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023/07/24",
                     "start_time" => "08:00:00",
                     "break_time" => "12:00",
@@ -505,7 +505,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:11",
                     "break_time" => "12:00",
@@ -536,7 +536,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "break_time" => "12:00",
                     "start_time" => "08:00",
@@ -566,7 +566,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023/07/24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -597,7 +597,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -628,7 +628,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -659,7 +659,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "end_time" => "18:00",
@@ -696,7 +696,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00:00",
@@ -727,7 +727,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:11",
@@ -748,7 +748,51 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 1.1. Duplicate course_id và date DriverCourseCreate
+    // 1.0. Duplicate driver_course_id và date DriverCourseCreate
+    public function testDriverCourseEditItemMustOneWithSpecialId()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::find(1);
+        $course = Course::find(2);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)
+            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+                "items" => [
+                    [
+                        "id"=>1,
+                        "driver_id" => 1,
+                        "course_id" => 2,
+                        "date" => "2023-07-24",
+                        "start_time" => "08:00",
+                        "break_time" => "07:00",
+                        "end_time" => "09:00",
+                    ],
+                    [
+                        "driver_id" => 1,
+                        "course_id" => 3,
+                        "date" => "2023-07-24",
+                        "start_time" => "08:00",
+                        "break_time" => "12:00",
+                        "end_time" => "18:00",
+                    ]
+                ]
+            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertExactJson([
+                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
+                "message" => trans('errors.all_id_special_must_one',[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
+                    "course_id"=> $course->id,
+                    "course_name"=> $course->course_name,
+                    "date"=> "2023-07-24",
+                ]),
+                "message_content" => null,
+                "message_internal" => null,
+                "data_error" => null
+            ]);
+    }
+
+    // 1.1. Duplicate driver_course_id và date DriverCourseCreate
     public function testDriverCourseEditDuplicateDriverCourse_id()
     {
         $user = User::where('user_code', '=', '1122')->first();
@@ -759,7 +803,7 @@ class DriverCourseEditTest extends TestCase
                     [
                         "id"=>1,
                         "driver_id" => 1,
-                        "course_id" => 3,
+                        "course_id" => 8,
                         "date" => "2023-07-25",
                         "start_time" => "08:00",
                         "break_time" => "07:00",
@@ -767,8 +811,8 @@ class DriverCourseEditTest extends TestCase
                     ],
                     [
                         "id"=>1,
-                        "driver_id" => 2,
-                        "course_id" => 2,
+                        "driver_id" => 1,
+                        "course_id" => 8,
                         "date" => "2023-07-24",
                         "start_time" => "08:00",
                         "break_time" => "12:00",
@@ -798,7 +842,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "07:00",
@@ -806,7 +850,7 @@ class DriverCourseEditTest extends TestCase
                 ],
                 [
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => "2023-07-24",
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -818,7 +862,7 @@ class DriverCourseEditTest extends TestCase
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
                 "message" => trans('errors.duplicate_driver_id_and_course_id',[
                     "driver_id"=> 1,
-                    "course_id"=> 1
+                    "course_id"=> 8
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -837,7 +881,7 @@ class DriverCourseEditTest extends TestCase
                     [
                         "id"=>1,
                         "driver_id" => 1,
-                        "course_id" => 2,
+                        "course_id" => 9,
                         "date" => "2023-07-24",
                         "start_time" => "08:00",
                         "break_time" => "07:00",
@@ -845,7 +889,7 @@ class DriverCourseEditTest extends TestCase
                     ],
                     [
                         "driver_id" => 2,
-                        "course_id" => 2,
+                        "course_id" => 9,
                         "date" => "2023-07-24",
                         "start_time" => "08:00",
                         "break_time" => "12:00",
@@ -856,7 +900,7 @@ class DriverCourseEditTest extends TestCase
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
                 "message" => trans('errors.duplicate_course_id_and_date',[
-                    "course_id"=> 2,
+                    "course_id"=> 9,
                     "date"=> "2023-07-24"
                 ]),
                 "message_content" => null,
@@ -870,16 +914,10 @@ class DriverCourseEditTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(1);
+
         $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
         $dayForCourse7 = Carbon::now()->addDay(2)->format("Y-m-d");
 
-        $testFinalClosingHistories = FinalClosingHistories::create([
-            'date' => $course->ship_date,
-            'month_year' => Carbon::parse($course->ship_date)->format("Y-m"),
-            'type' => 1,
-            'status' => 1,
-        ]);
 //        dd($testFinalClosingHistories);
 //        DB::table('final_closing_histories')->where('id', $testFinalClosingHistories->id)->delete();
         $token = \JWTAuth::fromUser($user);
@@ -914,13 +952,19 @@ class DriverCourseEditTest extends TestCase
             "commission"=> 70,
             "meal_fee"=> 70,
         ]);
+        $testFinalClosingHistories = FinalClosingHistories::create([
+            'date' => $dayForCourse6,
+            'month_year' => Carbon::parse($dayForCourse6)->format("Y-m"),
+            'type' => 1,
+            'status' => 1,
+        ]);
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
             "items" => [
                 [
                     "id"=> 1,
                     "driver_id" => $driver->id,
-                    "course_id" => 6,
+                    "course_id" => $course6->id,
                     "date" => $course6->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -928,7 +972,7 @@ class DriverCourseEditTest extends TestCase
                 ],
                 [
                     "driver_id" => 2,
-                    "course_id" => 7,
+                    "course_id" => $course7->id,
                     "date" => $course7->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "12:00",
@@ -953,7 +997,7 @@ class DriverCourseEditTest extends TestCase
         DB::table('final_closing_histories')->truncate();
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(1);
+        $course = Course::find(8);
         $driver->end_date = $course->ship_date;
         $driver->save();
         $token = \JWTAuth::fromUser($user);
@@ -962,7 +1006,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => $driver->id,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => $course->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "07:00",
@@ -982,12 +1026,80 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 4. In NotInShip_dateCourses DriverCourseCreate
+    // 4. Day Must One With Special Id DriverCourseCreate
+    public function testDriverCourseEditDayMustOneWithSpecialId()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $token = \JWTAuth::fromUser($user);
+        $driver = Driver::create([
+            "type"=> 1,
+            "driver_code"=> "abc1234",
+            "driver_name"=> "Bach test",
+            "car"=> "Lambo",
+            "start_date"=> "2022-08-20",
+            "note"=> "thoi roi ta da xa nhau"
+        ]);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $driver_course = new DriverCourse();
+        $driver_course->driver_id = $driver->id;
+        $driver_course->course_id = $course->id;
+        $driver_course->date = $course->ship_date;
+        $driver_course->start_time = $course->start_date;
+        $driver_course->end_time = $course->end_date;
+        $driver_course->break_time = $course->break_time;
+        $driver_course->status = 1;
+        $driver_course->save();
+
+        $response = $this->withHeader('Authorization', "Bearer ". $token)
+            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+                "items" => [
+                    [
+                        "id"=>1,
+                        "driver_id" => $driver->id,
+                        "course_id" => 1,
+                        "date" => $course->ship_date,
+                        "start_time" => "08:00",
+                        "break_time" => "07:00",
+                        "end_time" => "09:00",
+                    ],
+                ]
+            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertExactJson([
+                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
+                "message" => trans('errors.driver_must_one_course_in_day_with_id_special',[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
+                    "course_id"=> $course->id,
+                    "course_name"=> $course->course_name,
+                    "date"=> $course->ship_date,
+                ]),
+                "message_content" => null,
+                "message_internal" => null,
+                "data_error" => null
+            ]);
+    }
+
+    // 5. In NotInShip_dateCourses DriverCourseCreate
     public function testDriverCourseEditNotInShip_dateCourses()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(1);
+        $course = Course::find(8);
         $fake_date = Carbon::parse($course->ship_date)->subDay()->format("Y-m-d");
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
@@ -995,7 +1107,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 1,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => $fake_date,
                     "start_time" => "08:00",
                     "break_time" => "07:00",
@@ -1015,12 +1127,12 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 5. CourseExistDriver DriverCourseCreate
+    // 6. CourseExistDriver DriverCourseCreate
     public function testDriverCourseEditCourseExistDriver()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(1);
+        $course = Course::find(8);
         $token = \JWTAuth::fromUser($user);
 
         $driver_course = new DriverCourse();
@@ -1038,7 +1150,7 @@ class DriverCourseEditTest extends TestCase
                 [
                     "id"=>1,
                     "driver_id" => 2,
-                    "course_id" => 1,
+                    "course_id" => 8,
                     "date" => $course->ship_date,
                     "start_time" => "08:00",
                     "break_time" => "07:00",
