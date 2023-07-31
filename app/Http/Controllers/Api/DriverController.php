@@ -91,7 +91,7 @@ class DriverController extends Controller
      *          mediaType="application/json",
      *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"type","driver_code","driver_name","start_date"},
+     *            required={"type","driver_code","car","driver_name","start_date"},
      *            @OA\Property(
      *              property="type",
      *              format="integer",
@@ -236,16 +236,11 @@ class DriverController extends Controller
      *          mediaType="application/json",
      *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"type","driver_code","driver_name","start_date"},
+     *            required={"type","car","driver_name","start_date"},
      *            @OA\Property(
      *              property="type",
      *              format="integer",
      *              description="type = {'1' => 'manager','2'=>'full-time','3'=> 'part-time','4'=>'associate company'}",
-     *            ),
-     *            @OA\Property(
-     *              property="driver_code",
-     *              format="string",
-     *              description="15 character"
      *            ),
      *            @OA\Property(
      *              property="driver_name",
