@@ -16,7 +16,7 @@ class CreateCashInStatisticalsTable extends Migration
         Schema::create('cash_in_statisticals', function (Blueprint $table) {
             $table->id();
             $table->integer('customer_id');
-            $table->integer('month_line');
+            $table->string('month_line');
             $table->decimal('balance_previous_month', 15)->default(0);
             $table->decimal('receivable_this_month', 15)->default(0);
             $table->decimal('total_cash_in_current', 15)->default(0);
