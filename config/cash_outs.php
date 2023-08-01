@@ -6,6 +6,6 @@ return [
     ],
     'type' => [
         'update' => 1,
-        'delete' => 2,
+        'destroy' => 2,
     ]
 ];

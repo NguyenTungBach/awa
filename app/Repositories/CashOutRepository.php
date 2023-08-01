@@ -53,8 +53,14 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
 
     public function getAllCashOutByDriver($input)
     {
+        $input['filter_month'] = Arr::get($input, 'filter_month', date('Y-m', strtotime(now())));
+        $input['year'] = date('Y', strtotime($input['filter_month']));
+        $input['month'] = date('m', strtotime($input['filter_month']));
         $data = [];
-        $cashOuts = CashOut::where('driver_id', $input['driver_id'])->get();
+        $cashOuts = CashOut::where('driver_id', $input['driver_id'])
+                    ->whereYear('payment_date', '=', $input['year'])
+                    ->whereMonth('payment_date', '=', $input['month'])
+                    ->get();
 
         foreach ($cashOuts as $key => $value) {
             $data[$key]['id'] = $value->id;
@@ -94,6 +100,27 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
                 $cashOutHistory = $this->createCashOutHistory($cashOut);
                 unset($input['_method'], $input['driver_id']);
                 $result = CashOutRepository::update($input, $input['cash_out_id']);
+            }
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception;
+        }
+    }
+
+    public function deleteCashOutByDriver($input)
+    {
+        try {
+            DB::beginTransaction();
+            $result = [];
+            $cashOut = CashOut::where('driver_id', $input['driver_id'])->where('id', $input['cash_out_id'])->first();
+            if (!empty($cashOut)) {
+                $cashOutHistory = $this->createCashOutHistory($cashOut);
+                unset($input['_method'], $input['driver_id']);
+                $result = CashOutRepository::find($input['cash_out_id'])->delete();
             }
             DB::commit();
 

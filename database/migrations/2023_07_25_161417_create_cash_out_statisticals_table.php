@@ -16,7 +16,7 @@ class CreateCashOutStatisticalsTable extends Migration
         Schema::create('cash_out_statisticals', function (Blueprint $table) {
             $table->id();
             $table->integer('driver_id');
-            $table->integer('month_line');
+            $table->string('month_line')->comment('Y-m');
             $table->decimal('balance_previous_month', 15)->default(0);
             $table->decimal('payable_this_month', 15)->default(0);
             $table->decimal('total_cash_out_current', 15)->default(0);

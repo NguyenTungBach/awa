@@ -18,7 +18,7 @@ class CreateCashInsTable extends Migration
             $table->integer('customer_id');
             $table->decimal('cash_in', 15);
             $table->integer('payment_method')->comment('1: 銀行振込 - ngân hàng ck, 2: 口座振替 - bưu điện ck');
-            $table->date('payment_date');
+            $table->dateTime('payment_date');
             $table->text('note')->nullable();
             $table->integer('status')->nullable()->comment('1: on, 2: off');
             $table->timestamps();

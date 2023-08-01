@@ -31,6 +31,8 @@ class CashOutRequest extends FormRequest
         switch (Route::getCurrentRoute()->getActionMethod()) {
             case 'store':
                 return $this->getCustomRuleStore();
+            case 'index':
+                return $this->getCustomRuleIndex();
             case 'update':
                 return $this->getCustomRuleUpdate();
             case 'export':
@@ -56,6 +58,18 @@ class CashOutRequest extends FormRequest
                 new CheckPaymentDate(__('cash_outs.payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
+        ];
+
+        return $rules;
+    }
+
+    public function getCustomRuleIndex(){
+        $rules = [
+            'filter_month' => [
+                'sometimes',
+                'required',
+                'date_format:Y-m'
+            ],
         ];
 
         return $rules;
@@ -100,6 +114,9 @@ class CashOutRequest extends FormRequest
             // note
             'note.string' => __('validation.string', ['attribute' => __('cash_outs.note')]),
             'note.max' => __('validation.max.string', ['attribute' => __('cash_outs.note'), 'max' => 1000]),
+            // filter_month
+            'filter_month.required' => __('validation.required', ['attribute' => 'filter_month']),
+            'filter_month.date_format' => __('validation.date_format', ['attribute' => 'filter_month', 'format' => 'Y-m']),
         ];
     }
 }

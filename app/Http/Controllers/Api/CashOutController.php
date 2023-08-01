@@ -114,6 +114,18 @@ class CashOutController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $input['driver_id'] = request()->route('driver');
+            $input['cash_out_id'] = request()->route('cash_out');
+            $result = $this->repository->deleteCashOutByDriver($input);
+            if (empty($result)) {
+                return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, 'NOT FOUND');
+            }
+
+            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR, $exception->getMessage());
+        }
     }
 }
