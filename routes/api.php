@@ -38,6 +38,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
             Route::post('driver-course/update-course','DriverCourseController@update_course');
             Route::apiResource('driver-course', 'DriverCourseController');
+            Route::apiResource('/driver/{driver}/cash-out', 'CashOutController');
         });
         Route::group(['prefix' => 'auth'], function () {
             Route::post('refresh', 'AuthController@refresh');

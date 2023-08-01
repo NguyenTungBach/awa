@@ -95,7 +95,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
         }
 
-        $courses = $courses->get();
+        $courses = $courses->whereNull('status')->get();
         if (Route::getCurrentRoute()->getActionMethod() == 'export') {
             foreach ($courses as $key => $value) {
                 $data[$key]['id'] = $value->id;

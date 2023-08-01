@@ -13,6 +13,7 @@ use App\Repositories\Contracts\DriverRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Repositories\Contracts\FinalClosingHistoriesRepositoryInterface;
+use App\Repositories\Contracts\CashOutRepositoryInterface;
 use App\Repositories\Contracts\CashInHistoryRepositoryInterface;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\UserRepository;
@@ -28,6 +29,7 @@ use Laravel\Dusk\DuskServiceProvider;
 use Repository\ReportRepository;
 use Repository\CustomerRepository;
 use Repository\FinalClosingHistoriesRepository;
+use Repository\CashOutRepository;
 use Repository\CashInHistoryRepository;
 use Repository\CashInStaticalRepository;
 
@@ -49,6 +51,7 @@ class  AppServiceProvider extends ServiceProvider
         $this->app->bind(DriverRepositoryInterface::class, DriverRepository::class);
         $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
         $this->app->bind(FinalClosingHistoriesRepositoryInterface::class, FinalClosingHistoriesRepository::class);
+        $this->app->bind(CashOutRepositoryInterface::class, CashOutRepository::class);
         $this->app->bind(CashInRepositoryInterface::class, CashInRepository::class);
         $this->app->bind(CashInHistoryRepositoryInterface::class, CashInHistoryRepository::class);
         $this->app->bind(CashInStaticalRepositoryInterface::class, CashInStaticalRepository::class);
