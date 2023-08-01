@@ -101,8 +101,7 @@ class CashInController extends Controller
     {
         try {
             $request->merge(['status' => 1]);
-            $data = $this->repository->create($request->all());
-            return $this->responseJson(200, new CashInResource($data));
+            return $this->repository->create($request->all());
         } catch (\Exception $e) {
             throw $e;
         }

@@ -10,7 +10,9 @@ use App\Http\Requests\DriverCourseRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\BaseResource;
 use App\Models\Calendar;
+use App\Models\CashInStatical;
 use App\Models\Course;
+use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\FinalClosingHistories;
@@ -94,7 +96,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "drivers.driver_code",
                 "drivers.type",
             )
-            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names, GROUP_CONCAT(`courses`.`expressway_fee`) as course_expressway_fee'))
+            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
             ->SortByForDriverCourse($request)
@@ -729,9 +731,124 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $driver_course->status = 1;
                 $driver_course->save();
             }
+            // Cập nhật tiền khách phải trả
+            $this->saveCashInStatic($item['course_id'],$item['date']);
         }
 
         return ResponseService::responseJson(200, new BaseResource($attributes));
+    }
+
+    public function saveCashInStatic($course_id,$date){
+        // Lưu tiền cash in cho CashInStatical
+        $course = Course::find($course_id);
+        $customer = Customer::find($course->customer_id);
+        /*
+         * Truy vấn tổng số tiền driver_code của customer có trong tháng này theo closing_date
+         * */
+        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
+        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
+        $driverCourse = DriverCourse::
+        select(
+            "customers.id as customers_id",
+        )
+            ->addSelect(\DB::raw('SUM(courses.ship_fee) as total_course_ship_fee'))
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->where("customer_id", $course->customer_id)
+            ->whereBetween('driver_courses.date', [$closing_dateStart, $closing_dateEnd])
+            ->groupBy("customers.id")
+            ->first();
+
+        // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
+        $cashInStatical = CashInStatical::
+        where("customer_id",$course->customer_id)
+            ->first();
+
+        // 1.1 Nếu chưa có thì tạo CashInStatical
+        if ($cashInStatical == null){
+            $month_year = Carbon::parse($date)->format('Y-m');
+            CashInStatical::create([
+                "customer_id" => $course->customer_id,
+                "month_line" => $month_year,
+                "balance_previous_month" => 0,
+                "receivable_this_month" => 0,
+                "total_cash_in_current" => $driverCourse->total_course_ship_fee,
+                "status" => 1,
+            ]);
+        } else{
+            // 1.2 Nếu có rồi tìm theo customer_id và date của tháng này theo closing_date
+            $checkMonthForThisDate = Carbon::parse($date)->format('Y-m');
+
+            // Nếu có rồi thì update
+            // Truy vấn số tiền nợ tháng trước, tìm cho đến khi thấy tháng trước đó
+            $cashInStaticalPrevMonth = null;
+            $dem = 1;
+            do{
+                $checkMonth = Carbon::parse($date)->subMonths($dem)->format('Y-m');
+                $cashInStaticalPrevMonth = CashInStatical::
+                where("customer_id",$course->customer_id)
+                    ->where("month_line",$checkMonth)
+                    ->first();
+                $dem++;
+            }while($cashInStaticalPrevMonth !== null);
+
+            $cashInThisDate = CashInStatical::
+            where("customer_id",$course->customer_id)
+            ->where("month_line",$checkMonthForThisDate)
+            ->first();
+            // Nếu date chưa có thì tạo
+            if ($cashInThisDate == null){
+                CashInStatical::create([
+                    "customer_id" => $course->customer_id,
+                    "month_line" => $checkMonthForThisDate,
+                    "balance_previous_month" => $cashInStaticalPrevMonth->total_cash_in_current,
+                    "receivable_this_month" => 0,
+                    "total_cash_in_current" => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+                    "status" => 1,
+                ]);
+            } else{
+                // Cập nhật số tiền sẽ nhận tháng này
+                // Tiền tháng này sẽ bằng tiền tháng trước + tổng tiền sẽ nhận tháng này - tổng tiền đã trả
+                $cashInThisDate->update([
+                'balance_previous_month' => $cashInStaticalPrevMonth->total_cash_in_current,
+                'total_cash_in_current' => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+            ]);
+            }
+        }
+    }
+
+    public function getClosing_dateStart($closing_date,$date){
+        switch ($closing_date){
+            case 1:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-16")->format("Y-m-d");
+            case 2:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-21")->format("Y-m-d");
+            case 3:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-26")->format("Y-m-d");
+            case 4:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::createFromFormat('Y-m', $month_year)->startOfMonth()->format("Y-m-d");
+        }
+    }
+
+    public function getClosing_dateEnd($closing_date,$date){
+        switch ($closing_date){
+            case 1:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-15")->format("Y-m-d");
+            case 2:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-20")->format("Y-m-d");
+            case 3:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-25")->format("Y-m-d");
+            case 4:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
+        }
     }
 
     public function export_shift($request)
