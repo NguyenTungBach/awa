@@ -164,8 +164,8 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
     }
 
     /**
-    * @param Collection $collection
-    */
+     *@param Collection $collection
+     */
     public function collection(Collection $collection)
     {
         $arrCollection = $collection->toArray();
