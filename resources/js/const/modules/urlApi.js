@@ -45,7 +45,7 @@ const PUT_COURSE_SCHEDULE = '/course';
 
 // const POST_COURSE_SCHEDULE = '/course-pattern/updates';
 const GET_EXPORT_COURSE_SCHEDULE = '/course-schedule/export-data';
-const POST_IMPORT_COURSE_SCHEDULE = '/course-schedule/import';
+const POST_IMPORT_COURSE_SCHEDULE = '/course/import';
 
 // Day-off API
 const GET_LIST_DAY_OFF = '/day-off';
@@ -54,7 +54,7 @@ const POST_DAY_OFF = '/day-off';
 // Shift API
 // /api/shift?date=2022-05&start_date=2022-04-30&end_date=2022-05-06&type=week
 const GET_LIST_PRACTICAL = '/parctical-performance';
-const GET_LIST_SHIFT_TABLE = '/shift';
+const GET_LIST_SHIFT_TABLE = '/driver-course';
 const GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK = '/shift/export-to-excel';
 const GET_EXPORT_SHIFT_PDF_ONLY_WEEK = '/shift/export-to-pdf';
 const GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL = '/parctical-performance/export-to-excel';

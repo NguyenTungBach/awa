@@ -518,6 +518,7 @@ import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 import { getList } from '@/api/modules/courseManagement';
 import { getToken } from '@/utils/handleToken';
 // import HeaderFilterVue from '../../../components/HeaderFilter.vue';
+import TOAST_SCHEDULE from '@/toast/modules/scheduleManagement';
 
 export default {
 	name: 'ListSchedule',
@@ -720,18 +721,19 @@ export default {
 
 					const URL = CONSTANT.URL_API.POST_IMPORT_COURSE_SCHEDULE;
 
-					const YEAR = this.pickerYearMonth.year || null;
-					const MONTH = this.pickerYearMonth.month || null;
+					// const YEAR = this.pickerYearMonth.year || null;
+					// const MONTH = this.pickerYearMonth.month || null;
 
-					const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
-					const PARAMS = {
-						for_date: YEAR_MONTH,
-					};
+					// const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
+					// const PARAMS = {
+					// 	for_date: YEAR_MONTH,
+					// };
 
 					const DATA = new FormData();
 					DATA.append('file', this.fileImport);
 
-					const { code } = await postImportFile(URL, DATA, PARAMS);
+					const { code, message } = await postImportFile(URL, DATA);
+					console.log('data', code);
 
 					if (code === 200) {
 						this.fileImport = null;
@@ -739,24 +741,27 @@ export default {
 						TOAST_SCHEDULE_SHIFT.importSuccess();
 						this.resetImportFile();
 						await this.initData();
+					} else {
+					    console.log('data', message);
+						TOAST_SCHEDULE_SHIFT.server(message);
 					}
 				}
 
 				setLoading(false);
 			} catch (error) {
-				const ERROR_CODE = error.response.data.code;
-				const DATA_ERROR = error.response.data.data_error;
-				const ERROR_CONTENT = error.response.data.message_content;
+				// const ERROR_CODE = error.response.data.code;
+				// const DATA_ERROR = error.response.data.data_error;
+				// const ERROR_CONTENT = error.response.data.message_content;
 
-				this.fileImport = null;
+				// this.fileImport = null;
 
-				if (ERROR_CODE === 422 && ERROR_CONTENT === 'codes not imported') {
-					await this.initData();
+				// if (ERROR_CODE === 422 && ERROR_CONTENT === 'codes not imported') {
+				// 	await this.initData();
 
-					this.listCourseImportFaild = DATA_ERROR;
-					this.showModalImportFaild = true;
-				}
-
+				// 	this.listCourseImportFaild = DATA_ERROR;
+				// 	this.showModalImportFaild = true;
+				// }
+				TOAST_SCHEDULE_SHIFT.server(error);
 				setLoading(false);
 			}
 		},
@@ -845,10 +850,10 @@ export default {
 					document.body.appendChild(link);
 					link.click();
 				}).catch((error) => {
-					console.log(error);
+					TOAST_SCHEDULE.server(error.message);
 				});
 				setLoading(false);
-			} catch {
+			} catch (error) {
 				setLoading(false);
 			}
 		},
