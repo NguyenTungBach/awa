@@ -430,6 +430,204 @@ class DriverCourseController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *   path="/api/driver-course/get-all-express-charge",
+     *   tags={"DriverCourse"},
+     *   summary="List Express Charge",
+     *   operationId="driver_course_express_charge",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "customers.customer_code,customers.closing_date,customers.customer_name",
+     *     example = "customers.customer_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_all_express_charge(DriverCourseRequest $request)
+    {
+        $field = isset($request['field']) ? $request['field'] : null;
+        $sortby = isset($request['sortby']) ? $request['sortby'] : null;
+
+        $arraySortby = ['asc', 'desc'];
+
+        if (!$field && $sortby){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
+        }
+
+        $datas = $this->repository->getAllExpressCharge($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);;
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/driver-course/total-express-charge-cost",
+     *   tags={"DriverCourse"},
+     *   summary="Total express charge cost DriverCourse",
+     *   operationId="driver_course_total_express_charge_cost",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "customers.customer_code,customers.closing_date,customers.customer_name",
+     *     example = "customers.customer_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function total_express_charge_cost(DriverCourseRequest $request)
+    {
+        $datas = $this->repository->totalOfExpressChargeCost($request);
+        return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/driver-course/export-shift-express-charge",
+     *   tags={"DriverCourse"},
+     *   summary="Export_shift_express_charge DriverCourse",
+     *   operationId="driver_course_export_shift_express_charge",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "customers.customer_code,customers.closing_date,customers.customer_name",
+     *     example = "customers.customer_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function export_shift_express_charge(DriverCourseRequest $request)
+    {
+        $this->repository->export_shift_express_charge($request);
+        return $this->responseJson(200, null, trans('messages.mes.export_success'));
+    }
+
+    /**
      * @OA\Delete(
      *   path="/driver-course/{id}",
      *   tags={"DriverCourse"},

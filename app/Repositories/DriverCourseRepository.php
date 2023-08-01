@@ -10,7 +10,9 @@ use App\Http\Requests\DriverCourseRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\BaseResource;
 use App\Models\Calendar;
+use App\Models\CashInStatical;
 use App\Models\Course;
+use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\FinalClosingHistories;
@@ -154,7 +156,116 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->groupBy("driver_courses.driver_id")
             ->SortByForDriverCourse($request)
             ->whereBetween('driver_courses.date', [$startDate, $endDate])
-            ->whereNull('driver_courses.deleted_at')->get();
+            ->whereNull('driver_courses.deleted_at')->get()->filter(function ($data) {
+                switch ($data['type']){
+                    case 1:
+                        $data['typeName'] = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $data['typeName'] = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $data['typeName'] = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $data['typeName'] = trans('drivers.type.4');
+                        break;
+                };
+                return $data;
+            });
+        return $datas;
+    }
+
+
+    public function getAllExpressCharge($request)
+    {
+        $month_year = $request->month_year;
+        // Ngày đầu tháng
+        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth();
+
+        // Ngày cuối tháng
+        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth();
+
+        // Tìm tất cả các course để nhóm theo customer_id
+        $datas = Course::
+            select(
+                "customers.id as customers_id",
+                "customers.customer_code",
+                "customers.closing_date",
+                "customers.customer_name",
+                "courses.ship_date",
+            )
+            ->addSelect(\DB::raw('SUM(courses.expressway_fee) as courses_expressway_fee'))
+            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->groupBy("customers.id","courses.ship_date")
+            ->SortByForCourse($request)
+            ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
+            ->whereNull('courses.deleted_at');
+
+        $datas = $datas->get()->filter(function ($data) {
+            switch ($data['closing_date']){
+                case 1:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.1');
+                    break;
+                case 2:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.2');
+                    break;
+                case 3:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.3');
+                    break;
+                case 4:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.4');
+                    break;
+            };
+            return $data;
+        });
+        return $datas;
+    }
+
+    public function totalOfExpressChargeCost($request)
+    {
+        $month_year = $request->month_year;
+        // Ngày đầu tháng
+        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth();
+
+        // Ngày cuối tháng
+        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth();
+
+        // Tìm tất cả các course để nhóm theo customer_id
+        $datas = Course::
+        select(
+            "customers.id as customers_id",
+            "customers.customer_code",
+            "customers.closing_date",
+            "customers.customer_name",
+            "courses.ship_date",
+        )
+            ->addSelect(\DB::raw('SUM(courses.expressway_fee) as total_courses_expressway_fee'))
+            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->groupBy("customers.id")
+            ->SortByForCourse($request)
+            ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
+            ->whereNull('courses.deleted_at');
+
+        $datas = $datas->get()->filter(function ($data) {
+            switch ($data['closing_date']){
+                case 1:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.1');
+                    break;
+                case 2:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.2');
+                    break;
+                case 3:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.3');
+                    break;
+                case 4:
+                    $data['closing_dateName'] = trans('customers.closing_date_lang.4');
+                    break;
+            };
+            return $data;
+        });
         return $datas;
     }
 
@@ -168,15 +279,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // 0.Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
         foreach ($items as $item) {
             if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                if (count($items) > 1){
-                    $checkCourse_id = $item['course_id'];
-                    $course = Course::find($checkCourse_id);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDateFind = $item['date'];
+
+                $result = array_filter($items, function ($item) use ($checkDateFind) {
+                    return $item['date'] === $checkDateFind;
+                });
+                if (count($result) >1){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.all_id_special_must_one',[
                             "driver_id"=> $driver->id,
                             "driver_name"=> $driver->driver_name,
                             "course_id"=> $item['course_id'],
                             "course_name"=> $course->course_name,
+                            "date"=> $checkDateFind,
                         ]));
                 }
             }
@@ -259,6 +376,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ->where('driver_courses.date', $checkDate)
                     ->whereNull('drivers.end_date') // driver không nghỉ hưu
                     ->first();
+
                 if ($checkAllDriverCourseIfSpecial){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.driver_must_one_course_in_day_with_id_special',[
@@ -266,6 +384,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
                             "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
                             "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
+                            "date"=> $checkDate,
                         ]));
                 }
             }
@@ -361,17 +480,24 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
         foreach ($items as $item) {
             if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                if (count($items) > 1){
-                    $checkDriver_id = $item['driver_id'];
-                    $driver = Driver::find($checkDriver_id);
-                    $checkCourse_id = $item['course_id'];
-                    $course = Course::find($checkCourse_id);
+                //Lấy ra và tìm tất cả driver và date mà có course_id đặc biệt
+                $checkDriver_idFind = $item['driver_id'];
+                $driver = Driver::find($checkDriver_idFind);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDateFind = $item['date'];
+
+                $result = array_filter($items, function ($item) use ($checkDriver_idFind, $checkDateFind) {
+                    return $item['driver_id'] === $checkDriver_idFind && $item['date'] === $checkDateFind;
+                });
+                if (count($result) >1){
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.all_id_special_must_one',[
                             "driver_id"=> $item['driver_id'],
                             "driver_name"=> $driver->driver_name,
                             "course_id"=> $item['course_id'],
                             "course_name"=> $course->course_name,
+                            "date"=> $checkDateFind,
                         ]));
                 }
             }
@@ -515,6 +641,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
                             "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
                             "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
+                            "date"=> $checkDate,
                         ]));
                 }
             }
@@ -604,9 +731,124 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $driver_course->status = 1;
                 $driver_course->save();
             }
+            // Cập nhật tiền khách phải trả
+            $this->saveCashInStatic($item['course_id'],$item['date']);
         }
 
         return ResponseService::responseJson(200, new BaseResource($attributes));
+    }
+
+    public function saveCashInStatic($course_id,$date){
+        // Lưu tiền cash in cho CashInStatical
+        $course = Course::find($course_id);
+        $customer = Customer::find($course->customer_id);
+        /*
+         * Truy vấn tổng số tiền driver_code của customer có trong tháng này theo closing_date
+         * */
+        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
+        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
+        $driverCourse = DriverCourse::
+        select(
+            "customers.id as customers_id",
+        )
+            ->addSelect(\DB::raw('SUM(courses.ship_fee) as total_course_ship_fee'))
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->where("customer_id", $course->customer_id)
+            ->whereBetween('driver_courses.date', [$closing_dateStart, $closing_dateEnd])
+            ->groupBy("customers.id")
+            ->first();
+
+        // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
+        $cashInStatical = CashInStatical::
+        where("customer_id",$course->customer_id)
+            ->first();
+
+        // 1.1 Nếu chưa có thì tạo CashInStatical
+        if ($cashInStatical == null){
+            $month_year = Carbon::parse($date)->format('Y-m');
+            CashInStatical::create([
+                "customer_id" => $course->customer_id,
+                "month_line" => $month_year,
+                "balance_previous_month" => 0,
+                "receivable_this_month" => 0,
+                "total_cash_in_current" => $driverCourse->total_course_ship_fee,
+                "status" => 1,
+            ]);
+        } else{
+            // 1.2 Nếu có rồi tìm theo customer_id và date của tháng này theo closing_date
+            $checkMonthForThisDate = Carbon::parse($date)->format('Y-m');
+
+            // Nếu có rồi thì update
+            // Truy vấn số tiền nợ tháng trước, tìm cho đến khi thấy tháng trước đó
+            $cashInStaticalPrevMonth = null;
+            $dem = 1;
+            do{
+                $checkMonth = Carbon::parse($date)->subMonths($dem)->format('Y-m');
+                $cashInStaticalPrevMonth = CashInStatical::
+                where("customer_id",$course->customer_id)
+                    ->where("month_line",$checkMonth)
+                    ->first();
+                $dem++;
+            }while($cashInStaticalPrevMonth !== null);
+
+            $cashInThisDate = CashInStatical::
+            where("customer_id",$course->customer_id)
+            ->where("month_line",$checkMonthForThisDate)
+            ->first();
+            // Nếu date chưa có thì tạo
+            if ($cashInThisDate == null){
+                CashInStatical::create([
+                    "customer_id" => $course->customer_id,
+                    "month_line" => $checkMonthForThisDate,
+                    "balance_previous_month" => $cashInStaticalPrevMonth->total_cash_in_current,
+                    "receivable_this_month" => 0,
+                    "total_cash_in_current" => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+                    "status" => 1,
+                ]);
+            } else{
+                // Cập nhật số tiền sẽ nhận tháng này
+                // Tiền tháng này sẽ bằng tiền tháng trước + tổng tiền sẽ nhận tháng này - tổng tiền đã trả
+                $cashInThisDate->update([
+                'balance_previous_month' => $cashInStaticalPrevMonth->total_cash_in_current,
+                'total_cash_in_current' => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+            ]);
+            }
+        }
+    }
+
+    public function getClosing_dateStart($closing_date,$date){
+        switch ($closing_date){
+            case 1:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-16")->format("Y-m-d");
+            case 2:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-21")->format("Y-m-d");
+            case 3:
+                $month_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                return Carbon::parse($month_year."-26")->format("Y-m-d");
+            case 4:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::createFromFormat('Y-m', $month_year)->startOfMonth()->format("Y-m-d");
+        }
+    }
+
+    public function getClosing_dateEnd($closing_date,$date){
+        switch ($closing_date){
+            case 1:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-15")->format("Y-m-d");
+            case 2:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-20")->format("Y-m-d");
+            case 3:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::parse($month_year."-25")->format("Y-m-d");
+            case 4:
+                $month_year = Carbon::parse($date)->format("Y-m");
+                return Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
+        }
     }
 
     public function export_shift($request)
@@ -626,6 +868,169 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $inputFileType = 'Xlsx';
         $inputFileName = base_path('resources/excels/ShiftExport.xlsx');
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet = $reader->load($inputFileName);
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $styleArrayDate = [
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'FF765E'
+                ],
+            ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
+            ],
+        ];
+
+        $styleArrayDriver = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'FFDDC8'
+                ],
+            ],
+        ];
+
+        $styleArrayTotalExtraCost = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'C36150'
+                ],
+            ],
+        ];
+
+        //Nhập khoảng ngày
+        $start_dateJapan = Calendar::where("date",$start_date)->first();
+        $end_dateJapan = Calendar::where("date",$end_date)->first();
+
+        $start_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->startOfMonth()->format('Y年m月d日')."(".$start_dateJapan['week'].")";
+        $end_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->endOfMonth()->format('Y年m月d日')."(".$end_dateJapan['week'].")";
+
+        $aboutDateJapan = $start_dateJapanCustomString."~".$end_dateJapanCustomString;
+        $sheet->setCellValue('C1', $aboutDateJapan);
+
+        // tạo khung cho calendar
+        $colCalendar = 4;
+        $rowCalendar = 3;
+
+        foreach ($dataCalendars as $dataCalendar){
+            $getDay = Carbon::parse($dataCalendar['date'])->format('d');
+
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,intval($getDay)."(".$dataCalendar['week'].")",DataType::TYPE_STRING);
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar+1,$dataCalendar['rokuyou'],DataType::TYPE_STRING);
+            $colCalendar++;
+        }
+        $sheet->getStyle([4,3,$colCalendar-1,3])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
+        $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
+
+        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+
+        // Truyền dữ liệu tổng vào từng driver
+
+        $styleArrayShiftList = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+        ];
+
+        // Truyền dữ thông tin từng driver
+        $index = 5;
+        foreach ($dataForTotalShiftByClosingDate as $key => $value){
+            $sheet->setCellValue('A'.$index, $value['driver_code']);
+            $sheet->setCellValue('B'.$index, $value['typeName']);
+            $sheet->setCellValue('C'.$index, $value['driver_name']);
+
+            // Truyền thông tin course theo ngày cho từng driver
+            $colCalendarDriver = 4;
+
+            $driver_id = $value['driver_id'];
+            // Kiểm tra từng cột Calendar
+            foreach ($dataCalendars as $dataCalendar){
+                // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
+                foreach ($dataForListShifts as $dataForListShift){
+                    // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
+                    if ($driver_id == $dataForListShift['driver_id'] && $dataCalendar['date'] == $dataForListShift['date']){
+                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['course_names'],DataType::TYPE_STRING);
+                    }
+                }
+                $colCalendarDriver++;
+            }
+            //Truyền dữ liệu tổng vào
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
+
+            //Đặt style
+            $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
+            // Sau khi kiểm tra xong thì mới được đến driver tiếp
+            $index ++;
+        }
+
+        $indexCheckStyle = 5;
+
+        foreach ($dataForTotalShiftByClosingDate as $key => $value){
+            $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+//            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
+            $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+            $sheet->getStyle('C'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+            $indexCheckStyle ++;
+        }
+
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");;
+        header("Content-Disposition: attachment;filename=シフト表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
+        header("Content-Transfer-Encoding: binary ");
+        $writer = new Xlsx($spreadsheet);
+        ob_get_contents();
+        ob_end_clean();
+        $writer->save('php://output');
+        die();
+    }
+
+    public function export_shift_express_charge($request)
+    {
+        ini_set('memory_limit', '-1');
+        set_time_limit(3000000);
+        ini_set('max_execution_time', '0');
+        $dataForListShiftsExpressCharge = $this->getAllExpressCharge($request);
+        $dataForTotalShiftExpressCharge = $this->totalOfExpressChargeCost($request);
+        $getMonth_year = explode("-",$request->month_year);
+        $start_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Y-m-d');
+        $end_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Y-m-d');
+        $dataCalendars = $this->calendarRepository->indexGetData($start_date,$end_date);
+
+        $start_dateForNameFile = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Ymd');
+        $end_dateForNameFile = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Ymd');
+
+        $inputFileType = 'Xlsx';
+        $inputFileName = base_path('resources/excels/ShiftExportExpressCharge.xlsx');
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
         $spreadsheet = $reader->load($inputFileName);
 
@@ -702,7 +1107,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
@@ -716,28 +1121,28 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForTotalShiftByClosingDate as $key => $value){
-            $sheet->setCellValue('A'.$index, $value['driver_code']);
-            $sheet->setCellValue('B'.$index, $value['type']);
-            $sheet->setCellValue('C'.$index, $value['driver_name']);
+        foreach ($dataForTotalShiftExpressCharge as $key => $value){
+            $sheet->setCellValue('A'.$index, $value['customer_code']);
+            $sheet->setCellValue('B'.$index, $value['closing_dateName']);
+            $sheet->setCellValue('C'.$index, $value['customer_name']);
 
             // Truyền thông tin course theo ngày cho từng driver
             $colCalendarDriver = 4;
 
-            $driver_id = $value['driver_id'];
+            $customers_id = $value['customers_id'];
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
                 // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
-                foreach ($dataForListShifts as $dataForListShift){
+                foreach ($dataForListShiftsExpressCharge as $dataForListShift){
                     // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
-                    if ($driver_id == $dataForListShift['driver_id'] && $dataCalendar['date'] == $dataForListShift['date']){
-                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['course_names'],DataType::TYPE_STRING);
+                    if ($customers_id == $dataForListShift['customers_id'] && $dataCalendar['date'] == $dataForListShift['ship_date']){
+                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'],DataType::TYPE_STRING);
                     }
                 }
                 $colCalendarDriver++;
             }
             //Truyền dữ liệu tổng vào
-            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_courses_expressway_fee'],DataType::TYPE_STRING);
 
             //Đặt style
             $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
@@ -747,7 +1152,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForTotalShiftByClosingDate as $key => $value){
+        foreach ($dataForTotalShiftExpressCharge as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
@@ -761,7 +1166,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
         header("Content-Type: application/download");;
-        header("Content-Disposition: attachment;filename=シフト表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
+        header("Content-Disposition: attachment;filename=高速代金表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
         header("Content-Transfer-Encoding: binary ");
         $writer = new Xlsx($spreadsheet);
         ob_get_contents();
@@ -777,8 +1182,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         if ($driver_course == null){
             return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans("errors.not_found"));
         } else{
-            DB::table('driver_courses')->where('id', $id)->delete();
-            return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
+            // Kiểm tra có nằm trong final_closing_histories
+            $month_year = Carbon::parse($driver_course->date)->format("Y-m");
+            $final_closing = FinalClosingHistories::where('month_year', $month_year)
+                ->exists();
+            if ($final_closing){
+                return $this->responseJson(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
+                    "attribute"=> $driver_course->date
+                ]));
+            } else{
+                DB::table('driver_courses')->where('id', $id)->delete();
+                return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
+            }
         }
     }
 }

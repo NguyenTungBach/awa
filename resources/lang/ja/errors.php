@@ -40,6 +40,6 @@ return [
     'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
     'duplicate_driver_id_and_course_id' => 'duplicate driver :driver_id and course_id :course_id ',
     'duplicate_id_shift' => 'duplicate shift update id :id',
-    'all_id_special_must_one' => 'all items have id special must only have one, driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name',
-    'driver_must_one_course_in_day_with_id_special' => 'driver must one course in day with id special, remain driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name',
+    'all_id_special_must_one' => 'all items have id special must only have one in date, driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name, date :date',
+    'driver_must_one_course_in_day_with_id_special' => 'driver must one course in day with id special, remain driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name, date :date',
 ];

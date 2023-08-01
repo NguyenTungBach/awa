@@ -48,6 +48,12 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'export_shift':
                   return $this->getCustomRule();
+              case 'export_shift_express_charge':
+                  return $this->getCustomRule();
+              case 'get_all_express_charge':
+                  return $this->getCustomRule();
+              case 'total_express_charge_cost':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -161,6 +167,39 @@ class DriverCourseRequest extends FormRequest
                      'required',
                      "date_format:Y-m",
                  ],
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'get_all_express_charge'){
+             return [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:customers.customer_code,customers.closing_date,customers.customer_name",
+                 "sortby" => "in:asc,desc"
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'total_express_charge_cost'){
+             return [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:customers.customer_code,customers.closing_date,customers.customer_name",
+                 "sortby" => "in:asc,desc"
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'export_shift_express_charge'){
+             return [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:customers.customer_code,customers.closing_date,customers.customer_name",
+                 "sortby" => "in:asc,desc"
              ];
          }
 
