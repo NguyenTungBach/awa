@@ -807,8 +807,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         //Nhập khoảng ngày
         $start_dateJapan = Calendar::where("date",$start_date)->first();
         $end_dateJapan = Calendar::where("date",$end_date)->first();
-        $start_dateJapanCustomString = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Y年m月d日')."(".$start_dateJapan['week'].")";
-        $end_dateJapanCustomString = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Y年m月d日')."(".$end_dateJapan['week'].")";
+
+        $start_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->startOfMonth()->format('Y年m月d日')."(".$start_dateJapan['week'].")";
+        $end_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->endOfMonth()->format('Y年m月d日')."(".$end_dateJapan['week'].")";
+
         $aboutDateJapan = $start_dateJapanCustomString."~".$end_dateJapanCustomString;
         $sheet->setCellValue('C1', $aboutDateJapan);
 
@@ -1063,8 +1065,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         if ($driver_course == null){
             return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans("errors.not_found"));
         } else{
-            DB::table('driver_courses')->where('id', $id)->delete();
-            return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
+            // Kiểm tra có nằm trong final_closing_histories
+            $month_year = Carbon::parse($driver_course->date)->format("Y-m");
+            $final_closing = FinalClosingHistories::where('month_year', $month_year)
+                ->exists();
+            if ($final_closing){
+                return $this->responseJson(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
+                    "attribute"=> $driver_course->date
+                ]));
+            } else{
+                DB::table('driver_courses')->where('id', $id)->delete();
+                return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
+            }
         }
     }
 }

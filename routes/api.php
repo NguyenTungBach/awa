@@ -32,6 +32,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::delete('course/delete-many', 'CourseController@deleteMultiple');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
+            Route::apiResource('cash-in', 'CashInController');
             Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
             Route::get('driver-course/get-all-express-charge','DriverCourseController@get_all_express_charge');
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
