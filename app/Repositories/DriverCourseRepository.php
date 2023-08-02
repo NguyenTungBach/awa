@@ -10,6 +10,7 @@ use App\Http\Requests\DriverCourseRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\BaseResource;
 use App\Models\Calendar;
+use App\Models\CashIn;
 use App\Models\CashInStatical;
 use App\Models\Course;
 use App\Models\Customer;
@@ -814,14 +815,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             CashInStatical::create([
                 "customer_id" => $course->customer_id,
                 "month_line" => $month_year,
-                "balance_previous_month" => 0,
-                "receivable_this_month" => 0,
+                "balance_previous_month" => 0, // tiền nhận tháng trước
+                "receivable_this_month" => $driverCourse->total_course_ship_fee, // tiền phải nhận tháng này
                 "total_cash_in_current" => $driverCourse->total_course_ship_fee,
                 "status" => 1,
             ]);
         } else{
             // 1.2 Nếu có rồi tìm theo customer_id và date của tháng này theo closing_date
-            $checkMonthForThisDate = Carbon::parse($date)->format('Y-m');
+            $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
 
             // Nếu có rồi thì update
             // Truy vấn số tiền nợ tháng trước, tìm cho đến khi thấy tháng trước đó
@@ -834,7 +835,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ->where("month_line",$checkMonth)
                     ->first();
                 $dem++;
-            }while($cashInStaticalPrevMonth !== null);
+            }while($cashInStaticalPrevMonth == null);
 
             $cashInThisDate = CashInStatical::
             where("customer_id",$course->customer_id)
@@ -845,19 +846,106 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 CashInStatical::create([
                     "customer_id" => $course->customer_id,
                     "month_line" => $checkMonthForThisDate,
-                    "balance_previous_month" => $cashInStaticalPrevMonth->total_cash_in_current,
-                    "receivable_this_month" => 0,
-                    "total_cash_in_current" => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+                    "balance_previous_month" => $cashInStaticalPrevMonth->total_cash_in_current, // tiền nhận tháng trước
+                    "receivable_this_month" => $driverCourse->total_course_ship_fee, // tiền phải nhận tháng này
+                    "total_cash_in_current" => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee,
                     "status" => 1,
                 ]);
             } else{
                 // Cập nhật số tiền sẽ nhận tháng này
                 // Tiền tháng này sẽ bằng tiền tháng trước + tổng tiền sẽ nhận tháng này - tổng tiền đã trả
+                // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
+                $totalCashIn = CashIn::
+                select("customer_id")
+                    ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
+                    ->where("customer_id",$course->customer_id)
+                    ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
+                    ->groupBy("customer_id")
+                    ->first();
+
                 $cashInThisDate->update([
-                'balance_previous_month' => $cashInStaticalPrevMonth->total_cash_in_current,
-                'total_cash_in_current' => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $cashInThisDate->receivable_this_month,
+                'balance_previous_month' => $cashInStaticalPrevMonth->total_cash_in_current, // tiền tháng trước
+                "receivable_this_month" => $driverCourse->total_course_ship_fee, // tiền phải nhận tháng này
+                'total_cash_in_current' => $cashInThisDate->balance_previous_month + $driverCourse->total_course_ship_fee - $totalCashIn->total_cash_in,
             ]);
             }
+        }
+    }
+
+    public function checkClosing_dateForCashInStatical($closing_date,$date){
+        switch ($closing_date){
+            case 1:
+                // 15
+                // So sánh date với ngày 16 tháng trước và 15 tháng này
+                $thisMonth_year = Carbon::parse($date)->format("Y-m");
+                $prevMonth_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                $checkDate = Carbon::parse($date);
+                $date15ThisMonth = Carbon::parse($thisMonth_year."-15");
+                $date16PrevMonth = Carbon::parse($prevMonth_year."-16");
+                // Nếu qua ngày 15 tháng này
+                if ($checkDate->gte($date15ThisMonth)){
+                    // Lấy tháng sau
+                    return Carbon::parse($date)->addMonth()->format("Y-m");
+                }
+                // Nếu nằm trong khoảng ngày 16 tháng trước và 15 tháng này
+                if ($checkDate->gte($date16PrevMonth) && $checkDate->lte($date15ThisMonth)){
+                    // Lấy tháng này
+                    return Carbon::parse($date)->format("Y-m");
+                }
+                // Nếu trước ngày 16 tháng trước
+                if ($checkDate->lte($date16PrevMonth)){
+                    // Lấy tháng trước
+                    return Carbon::parse($date)->subMonth()->format("Y-m");
+                }
+            case 2:
+                // 20
+                // So sánh date với ngày 21 tháng trước và 20 tháng này
+                $thisMonth_year = Carbon::parse($date)->format("Y-m");
+                $prevMonth_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                $checkDate = Carbon::parse($date);
+                $date20ThisMonth = Carbon::parse($thisMonth_year."-20");
+                $date21PrevMonth = Carbon::parse($prevMonth_year."-21");
+                // Nếu qua ngày 20 tháng này
+                if ($checkDate->gte($date20ThisMonth)){
+                    // Lấy tháng sau
+                    return Carbon::parse($date)->addMonth()->format("Y-m");
+                }
+                // Nếu nằm trong khoảng ngày 21 tháng trước và 20 tháng này
+                if ($checkDate->gte($date21PrevMonth) && $checkDate->lte($date20ThisMonth)){
+                    // Lấy tháng này
+                    return Carbon::parse($date)->format("Y-m");
+                }
+                // Nếu trước ngày 21 tháng trước
+                if ($checkDate->lte($date21PrevMonth)){
+                    // Lấy tháng trước
+                    return Carbon::parse($date)->subMonth()->format("Y-m");
+                }
+            case 3:
+                // 25
+                // So sánh date với ngày 26 tháng trước và 25 tháng này
+                $thisMonth_year = Carbon::parse($date)->format("Y-m");
+                $prevMonth_year = Carbon::parse($date)->subMonth()->format("Y-m");
+                $checkDate = Carbon::parse($date);
+                $date25ThisMonth = Carbon::parse($thisMonth_year."-25");
+                $date26PrevMonth = Carbon::parse($prevMonth_year."-26");
+                // Nếu qua ngày 25 tháng này
+                if ($checkDate->gte($date25ThisMonth)){
+                    // Lấy tháng sau
+                    return Carbon::parse($date)->addMonth()->format("Y-m");
+                }
+                // Nếu nằm trong khoảng ngày 26 tháng trước và 25 tháng này
+                if ($checkDate->gte($date26PrevMonth) && $checkDate->lte($date25ThisMonth)){
+                    // Lấy tháng này
+                    return Carbon::parse($date)->format("Y-m");
+                }
+                // Nếu trước ngày 26 tháng trước
+                if ($checkDate->lte($date26PrevMonth)){
+                    // Lấy tháng trước
+                    return Carbon::parse($date)->subMonth()->format("Y-m");
+                }
+            case 4:
+                // cuối tháng
+                return Carbon::parse($date)->format("Y-m");
         }
     }
 
