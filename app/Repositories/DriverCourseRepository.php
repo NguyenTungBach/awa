@@ -868,6 +868,19 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $receivable_this_month = $driverCourse->total_course_ship_fee;
         }
 
+        // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
+        $totalCashIn = 0;
+        $totalCashInQuery = CashIn::
+        select("customer_id")
+            ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
+            ->where("customer_id",$course->customer_id)
+            ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
+            ->groupBy("customer_id")
+            ->first();
+        if ($totalCashInQuery != null){
+            $totalCashIn = $totalCashInQuery->total_cash_in;
+        }
+
         // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
         $cashInStatical = CashInStatical::
         where("customer_id",$course->customer_id)
@@ -881,7 +894,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "month_line" => $month_year,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => $receivable_this_month,
+                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
                 "status" => 1,
             ]);
 
@@ -940,18 +953,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->where("month_line",$checkMonthForThisDate)
             ->first();
 
-            // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
-            $totalCashIn = 0;
-            $totalCashInQuery = CashIn::
-            select("customer_id")
-                ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
-                ->where("customer_id",$course->customer_id)
-                ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
-                ->groupBy("customer_id")
-                ->first();
-            if ($totalCashInQuery != null){
-                $totalCashIn = $totalCashInQuery->total_cash_in;
-            }
             // Nếu chưa có thì tạo
             if ($cashInThisDate == null){
                 CashInStatical::create([
