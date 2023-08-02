@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DriverSeeder::class);
         $this->call(CustomerSeeder::class);
         $this->call(CourseSeeder::class);
-        $this->call(DriverCourseSeeder::class);
+//        $this->call(DriverCourseSeeder::class);
     }
 }

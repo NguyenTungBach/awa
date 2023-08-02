@@ -10,10 +10,12 @@ use App\Http\Resources\CashInResource;
 use App\Models\CashIn;
 use App\Models\CashInStatical;
 use App\Models\Customer;
+use App\Models\DriverCourse;
 use App\Models\FinalClosingHistories;
 use App\Repositories\Contracts\CashInRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +53,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
         $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)
             ->exists();
         if ($checkFinalClosingHistories){
-            return $this->responseJson(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
+            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
                 "attribute"=> $attributes['payment_date']
             ]));
         }
@@ -63,46 +65,90 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
         ->first();
 
         if ($checkCashInPayment){
-            return $this->responseJson(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.unique',[
+            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.unique',[
                 "attribute"=> $attributes['payment_date']
             ]));
         }
 
-        // Lưu tiền cash-in
-        CashIn::create([
-            "customer_id" => $attributes["customer_id"],
-            "cash_in" => $attributes["cash_in"],
-            "payment_method" => $attributes["payment_method"],
-            "payment_date" => $attributes["payment_date"],
-            "status" => 1,
-        ]);
+        try {
+            DB::beginTransaction();
+            // Lưu tiền cash-in
+            CashIn::create([
+                "customer_id" => $attributes["customer_id"],
+                "cash_in" => $attributes["cash_in"],
+                "payment_method" => $attributes["payment_method"],
+                "payment_date" => $attributes["payment_date"],
+                "status" => 1,
+            ]);
 
-
-        // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
-        $totalCashIn = CashIn::
+            // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
+            $totalCashIn = CashIn::
             select("customer_id")
-            ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
-            ->where("customer_id",$attributes["customer_id"])
-            ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
-            ->groupBy("customer_id")
-            ->first();
+                ->addSelect(DB::raw('SUM(cash_in) as total_cash_in'))
+                ->where("customer_id",$attributes["customer_id"])
+                ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
+                ->groupBy("customer_id")
+                ->first();
 
-        // Tìm và cập nhật CashInStatical của customer tháng đó
-        // Số tiền CashInStatical đã được cập nhật hoặc tạo trong driver_course
-        // Truy vấn cập nhật tiền CashInStatical theo customer_id và theo month_line
+            // Số tiền CashInStatical đã được cập nhật hoặc tạo trong driver_course
+            // Truy vấn cập nhật tiền CashInStatical theo customer_id và theo month_line
+            $closing_dateForCashInStatical = $this->checkClosing_dateForCashInStatical($customer->closing_date,$attributes['payment_date']);
+            $cashInStatical = CashInStatical::
+            where("month_line",$closing_dateForCashInStatical)
+                ->where("customer_id",$attributes["customer_id"])
+                ->first();
 
-        $closing_dateForCashInStatical = $this->checkClosing_dateForCashInStatical($customer->closing_date,$attributes['payment_date']);
+            // Truy vấn tổng số tiền phải nhận trong tháng này
+            $driverCourseTotal = DriverCourse::
+            select(
+                "customers.id as customers_id",
+            )
+                ->addSelect(DB::raw('SUM(courses.ship_fee) as total_course_ship_fee'))
+                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+                ->join('customers', 'customers.id', '=', 'courses.customer_id')
+                ->where("customer_id", $attributes["customer_id"])
+                ->whereBetween('driver_courses.date', [$closing_dateStart, $closing_dateEnd])
+                ->groupBy("customers.id")
+                ->first();
+            $getReceivable_this_month = 0;
+            if ($driverCourseTotal != null){
+                $getReceivable_this_month = $driverCourseTotal->total_course_ship_fee;
+            }
 
-        $cashInStatical = CashInStatical::
-        where("month_line",$closing_dateForCashInStatical)
-        ->where("customer_id",$attributes["customer_id"])
-            ->first();
+            // Nếu CashInStatical của tháng này với closing date chưa có thì tạo
+            if ($cashInStatical == null){ // Trường hợp gửi tiền quá hạn sang tháng sau
+                // Truy vấn tiền closing_date tháng trước là tháng gần nhất
+                $cashInStaticalPrevMonth = CashInStatical::
+                where("month_line","<",$closing_dateForCashInStatical)
+                    ->where("customer_id",$attributes["customer_id"])
+                    ->orderBy("month_line", "desc")
+                    ->first();
+                $getBalance_previous_month = 0;
+                if ($cashInStaticalPrevMonth != null){
+                    $getBalance_previous_month = $cashInStaticalPrevMonth->total_cash_in_current;
+                }
 
-        $cashInStatical->update([
-            "total_cash_in_current" => $cashInStatical->balance_previous_month + $cashInStatical->receivable_this_month - $totalCashIn->total_cash_in,
-        ]);
+                CashInStatical::create([
+                    "customer_id"=>$attributes["customer_id"],
+                    "month_line"=>$closing_dateForCashInStatical,
+                    "balance_previous_month"=>$getBalance_previous_month, // Lấy tiền tháng trước
+                    "receivable_this_month"=> $getReceivable_this_month,
+                    "total_cash_in_current"=>$getBalance_previous_month + $getReceivable_this_month - $totalCashIn->total_cash_in
+                ]);
+            } else{
+                // Tìm và cập nhật CashInStatical của customer tháng đó
+                $cashInStatical->update([
+                    "receivable_this_month"=> $getReceivable_this_month, // cập nhật lại số tiền cần nhận
+                    "total_cash_in_current" => $cashInStatical->balance_previous_month + $cashInStatical->receivable_this_month - $totalCashIn->total_cash_in,
+                ]);
+            }
+            DB::commit();
+            return $this->responseJson(200, new CashInResource($attributes)); // TODO: Change the autogenerated stub
+        } catch (\Exception $exception){
+            DB::rollBack();
+            return $exception;
+        }
 
-        return $this->responseJson(200, new CashInResource($attributes)); // TODO: Change the autogenerated stub
     }
 
     public function checkClosing_dateForCashInStatical($closing_date,$date){
@@ -116,7 +162,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 $date15ThisMonth = Carbon::parse($thisMonth_year."-15");
                 $date16PrevMonth = Carbon::parse($prevMonth_year."-16");
                 // Nếu qua ngày 15 tháng này
-                if ($checkDate->gte($date15ThisMonth)){
+                if ($checkDate->gt($date15ThisMonth)){
                     // Lấy tháng sau
                     return Carbon::parse($date)->addMonth()->format("Y-m");
                 }
@@ -124,11 +170,6 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 if ($checkDate->gte($date16PrevMonth) && $checkDate->lte($date15ThisMonth)){
                     // Lấy tháng này
                     return Carbon::parse($date)->format("Y-m");
-                }
-                // Nếu trước ngày 16 tháng trước
-                if ($checkDate->lte($date16PrevMonth)){
-                    // Lấy tháng trước
-                    return Carbon::parse($date)->subMonth()->format("Y-m");
                 }
             case 2:
                 // 20
@@ -139,7 +180,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 $date20ThisMonth = Carbon::parse($thisMonth_year."-20");
                 $date21PrevMonth = Carbon::parse($prevMonth_year."-21");
                 // Nếu qua ngày 20 tháng này
-                if ($checkDate->gte($date20ThisMonth)){
+                if ($checkDate->gt($date20ThisMonth)){
                     // Lấy tháng sau
                     return Carbon::parse($date)->addMonth()->format("Y-m");
                 }
@@ -147,11 +188,6 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 if ($checkDate->gte($date21PrevMonth) && $checkDate->lte($date20ThisMonth)){
                     // Lấy tháng này
                     return Carbon::parse($date)->format("Y-m");
-                }
-                // Nếu trước ngày 21 tháng trước
-                if ($checkDate->lte($date21PrevMonth)){
-                    // Lấy tháng trước
-                    return Carbon::parse($date)->subMonth()->format("Y-m");
                 }
             case 3:
                 // 25
@@ -162,7 +198,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 $date25ThisMonth = Carbon::parse($thisMonth_year."-25");
                 $date26PrevMonth = Carbon::parse($prevMonth_year."-26");
                 // Nếu qua ngày 25 tháng này
-                if ($checkDate->gte($date25ThisMonth)){
+                if ($checkDate->gt($date25ThisMonth)){
                     // Lấy tháng sau
                     return Carbon::parse($date)->addMonth()->format("Y-m");
                 }
@@ -170,11 +206,6 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 if ($checkDate->gte($date26PrevMonth) && $checkDate->lte($date25ThisMonth)){
                     // Lấy tháng này
                     return Carbon::parse($date)->format("Y-m");
-                }
-                // Nếu trước ngày 26 tháng trước
-                if ($checkDate->lte($date26PrevMonth)){
-                    // Lấy tháng trước
-                    return Carbon::parse($date)->subMonth()->format("Y-m");
                 }
             case 4:
                 // cuối tháng
@@ -186,34 +217,80 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
     public function getClosing_dateStart($closing_date,$payment_date){
         switch ($closing_date){
             case 1:
-                $month_year = Carbon::parse($payment_date)->subMonth()->format("Y-m");
-                return Carbon::parse($month_year."-16")->format("Y-m-d");
+                // So sánh date với ngày 16 tháng trước và 15 tháng này
+                return $this->parseByClosingDateStart($payment_date,"-16","-15");
             case 2:
-                $month_year = Carbon::parse($payment_date)->subMonth()->format("Y-m");
-                return Carbon::parse($month_year."-21")->format("Y-m-d");
+                // So sánh date với ngày 21 tháng trước và 20 tháng này
+                return $this->parseByClosingDateStart($payment_date,"-21","-20");
             case 3:
-                $month_year = Carbon::parse($payment_date)->subMonth()->format("Y-m");
-                return Carbon::parse($month_year."-26")->format("Y-m-d");
+                // So sánh date với ngày 26 tháng trước và 25 tháng này
+                return $this->parseByClosingDateStart($payment_date,"-26","-25");
             case 4:
                 $month_year = Carbon::parse($payment_date)->format("Y-m");
                 return Carbon::createFromFormat('Y-m', $month_year)->startOfMonth()->format("Y-m-d");
         }
     }
 
+    public function parseByClosingDateStart($date,$closingDateStart,$closingDateEnd){
+        $thisMonth_year = Carbon::parse($date)->format("Y-m");
+        $prevMonth_year = Carbon::parse($date)->subMonth()->format("Y-m");
+        $checkDate = Carbon::parse($date);
+        $date15ThisMonth = Carbon::parse($thisMonth_year.$closingDateEnd);
+        $date16PrevMonth = Carbon::parse($prevMonth_year.$closingDateStart);
+        // Nếu qua ngày 15 tháng này VD: 16/8-15/9
+        if ($checkDate->gt($date15ThisMonth)){
+            // Lấy tháng sau
+            return Carbon::parse($checkDate)->format("Y-m").$closingDateStart;
+        }
+        // Nếu nằm trong khoảng ngày 16 tháng trước và 15 tháng này VD: 16/7 - 15/8
+        if ($checkDate->gte($date16PrevMonth) && $checkDate->lte($date15ThisMonth)){
+            // Lấy tháng này
+            return Carbon::parse($checkDate)->subMonth()->format("Y-m").$closingDateStart;
+        }
+//        // Nếu trước ngày 16 tháng trước VD: 16/7 - 15/8
+//        if ($checkDate->lt($date16PrevMonth)){
+//            // Lấy tháng trước
+//            return Carbon::parse($checkDate)->subMonth()->format("Y-m").$closingDateStart;
+//        }
+    }
+
     public function getClosing_dateEnd($closing_date,$payment_date){
         switch ($closing_date){
             case 1:
-                $month_year = Carbon::parse($payment_date)->format("Y-m");
-                return Carbon::parse($month_year."-15")->format("Y-m-d");
+                // So sánh date với ngày 16 tháng trước và 15 tháng này
+                return $this->parseByClosingDateEnd($payment_date,"-16","-15");
             case 2:
-                $month_year = Carbon::parse($payment_date)->format("Y-m");
-                return Carbon::parse($month_year."-20")->format("Y-m-d");
+                // So sánh date với ngày 21 tháng trước và 20 tháng này
+                return $this->parseByClosingDateEnd($payment_date,"-21","-20");
             case 3:
-                $month_year = Carbon::parse($payment_date)->format("Y-m");
-                return Carbon::parse($month_year."-25")->format("Y-m-d");
+                // So sánh date với ngày 26 tháng trước và 25 tháng này
+                return $this->parseByClosingDateEnd($payment_date,"-26","-25");
             case 4:
                 $month_year = Carbon::parse($payment_date)->format("Y-m");
                 return Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
         }
+    }
+
+    public function parseByClosingDateEnd($date,$closingDateStart,$closingDateEnd){
+        $thisMonth_year = Carbon::parse($date)->format("Y-m");
+        $prevMonth_year = Carbon::parse($date)->subMonth()->format("Y-m");
+        $checkDate = Carbon::parse($date);
+        $date15ThisMonth = Carbon::parse($thisMonth_year.$closingDateEnd);
+        $date16PrevMonth = Carbon::parse($prevMonth_year.$closingDateStart);
+        // Nếu qua ngày 15 tháng này VD: 16/8-15/9
+        if ($checkDate->gt($date15ThisMonth)){
+            // Lấy tháng sau
+            return Carbon::parse($checkDate)->addMonth()->format("Y-m").$closingDateEnd;
+        }
+        // Nếu nằm trong khoảng ngày 16 tháng trước và 15 tháng này VD: 16/7 - 15/8
+        if ($checkDate->gte($date16PrevMonth) && $checkDate->lte($date15ThisMonth)){
+            // Lấy tháng này
+            return Carbon::parse($checkDate)->format("Y-m").$closingDateEnd;
+        }
+//        // Nếu trước ngày 16 tháng trước VD: 16/6 - 15/7
+//        if ($checkDate->lt($date16PrevMonth)){
+//            // Lấy tháng trước
+//            return Carbon::parse($checkDate)->subMonth()->format("Y-m").$closingDateEnd;
+//        }
     }
 }
