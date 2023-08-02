@@ -387,11 +387,12 @@
                                                         :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idx + 1"
                                                         :date="date"
+														:data-node="emp"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
+                                                        :start-date="emp.driver.start_date"
+                                                        :end-date="emp.driver.end_date"
                                                     />
                                                 </template>
                                             </template>

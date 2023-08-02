@@ -3,7 +3,7 @@
         <div class="show-node" />
     </b-td>
     <b-td
-        v-else-if="dataNode.value !== null && handleDisabledDate(startDate, endDate, dataNode.date)"
+        v-else-if="dataNode"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
         :style="{ backgroundColor: dataNode.color }"
@@ -14,17 +14,15 @@
                 {{ dataNode.value[0].name || '' }}
             </div>
             <div v-else>
-                <template v-if="listText.length <= 2">
+                <template v-if="dataNode">
                     <div
-                        v-for="(course, idx) in listText"
-                        :key="idx"
                         class="show-course"
                     >
-                        {{ course.name }}
+                        {{ dataNode.course_names }}
                     </div>
                 </template>
 
-                <template v-if=" listText.length > 2">
+                <template v-if="listText.length > 2">
                     <b-row>
                         <b-col
                             cols="11"
@@ -146,20 +144,20 @@ export default {
 	},
 
 	created() {
-		this.handleFilterListText();
+		// this.handleFilterListText();
 	},
 
 	methods: {
 		handleDisabledDate,
-		handleFilterListText() {
-			const NOT_SHOW = [
-				CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK,
-			];
+		// handleFilterListText() {
+		// 	const NOT_SHOW = [
+		// 		CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK,
+		// 	];
 
-			if (this.dataNode.value.length > 0) {
-				this.listText = (this.dataNode.value).filter((item) => !NOT_SHOW.includes(item.type));
-			}
-		},
+		// 	if (this.dataNode.value.length > 0) {
+		// 		this.listText = (this.dataNode.value).filter((item) => !NOT_SHOW.includes(item.type));
+		// 	}
+		// },
 
 		onClickNode() {
 			const DATA = {
