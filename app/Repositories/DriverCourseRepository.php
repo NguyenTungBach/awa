@@ -755,8 +755,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
     public function cashOutStatistical($driverId, $date, $courseId)
     {
+        // get driver associate
+        $arrDriver = Driver::where('type', 4)->get()->pluck('id')->toArray();
+        if (!in_array($driverId, $arrDriver)) {
+            return true;
+        }
         $date = date('Y-m', strtotime($date));
-        // $date = "2023-07";
         $cashOutStatisticals = CashOutStatistical::get();
         $arrDriverIdCashOut = $cashOutStatisticals->pluck('driver_id')->toArray();
         $checkDriver = in_array($driverId, $arrDriverIdCashOut);
