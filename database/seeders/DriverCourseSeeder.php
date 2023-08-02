@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\User;
+use App\Models\CashOutStatistical;
 use Carbon\Carbon;
 use Helper\ResponseService;
 use Illuminate\Database\Seeder;
@@ -25,6 +26,7 @@ class DriverCourseSeeder extends Seeder
     {
         //Truncate xóa dữ liệu trong bảng
         DB::table('driver_courses')->truncate();
+        DB::table('cash_out_statisticals')->truncate();
         // Lấy ra danh sách lái xe
         $listDriverIds = Driver::all()->pluck('id')->toArray();
 
@@ -78,6 +80,17 @@ class DriverCourseSeeder extends Seeder
                 "end_time" => $courseRandom->end_date,
                 "status" => 1,
             ]);
+
+            $arrDriverId = Driver::where('type', 4)->get()->pluck('id')->toArray();
+            if (in_array($driverId, $arrDriverId)) {
+                CashOutStatistical::create([
+                    'driver_id' => $driverId,
+                    'month_line' => date('Y-m', strtotime($course->ship_date)),
+                    'balance_previous_month' => 00.00,
+                    'payable_this_month' => $course->associate_company_fee,
+                    'total_cash_out_current' => 00.00,
+                ]);
+            }
         }
     }
 }
