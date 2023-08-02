@@ -8,7 +8,9 @@ namespace Repository;
 
 use App\Models\CashOut;
 use App\Models\CashOutHistory;
+use App\Models\DriverCourse;
 use App\Repositories\Contracts\CashOutRepositoryInterface;
+use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
 use Repository\BaseRepository;
@@ -18,11 +20,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
-class CashOutRepository extends BaseRepository implements CashOutRepositoryInterface
+class CashOutRepository extends BaseRepository implements CashOutRepositoryInterface, CashOutStatisticalRepositoryInterface
 {
-    public function __construct(Application $app)
-    {
+    public function __construct(
+        Application $app,
+        CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository
+    ){
         parent::__construct($app);
+        $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
     }
 
     /**
@@ -38,17 +43,32 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
 
     public function createCashOutByDriver($input)
     {
-        $input['note'] = Arr::get($input, 'note', NULL);
+        try {
+            DB::beginTransaction();
+            $cashOut = [];
+            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id']);
+            if ($checkDriverId) {
+                $input['note'] = Arr::get($input, 'note', NULL);
 
-        $cashOut = CashOut::create([
-            'driver_id' => $input['driver_id'],
-            'cash_out' => $input['cash_out'],
-            'payment_method' => $input['payment_method'],
-            'payment_date' => $input['payment_date'],
-            'note' => $input['note'],
-        ]);
+                $cashOut = CashOut::create([
+                    'driver_id' => $input['driver_id'],
+                    'cash_out' => $input['cash_out'],
+                    'payment_method' => $input['payment_method'],
+                    'payment_date' => $input['payment_date'],
+                    'note' => $input['note'],
+                ]);
+    
+                unset($input['payment_method'], $input['note']);
+                $cashOutCreate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
+            }
+            DB::commit();
 
-        return $cashOut;
+            return $cashOut;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception;
+        }
     }
 
     public function getAllCashOutByDriver($input)
@@ -98,8 +118,13 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
             $cashOut = CashOut::where('driver_id', $input['driver_id'])->where('id', $input['cash_out_id'])->first();
             if (!empty($cashOut)) {
                 $cashOutHistory = $this->createCashOutHistory($cashOut);
+                $driverId = $input['driver_id'];
                 unset($input['_method'], $input['driver_id']);
                 $result = CashOutRepository::update($input, $input['cash_out_id']);
+
+                unset($input['payment_method'], $input['note']);
+                $input['driver_id'] = $driverId;
+                $cashOutUpdate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
             }
             DB::commit();
 
@@ -119,8 +144,13 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
             $cashOut = CashOut::where('driver_id', $input['driver_id'])->where('id', $input['cash_out_id'])->first();
             if (!empty($cashOut)) {
                 $cashOutHistory = $this->createCashOutHistory($cashOut);
+                $driverId = $input['driver_id'];
                 unset($input['_method'], $input['driver_id']);
                 $result = CashOutRepository::find($input['cash_out_id'])->delete();
+
+                $input['driver_id'] = $driverId;
+                $input['payment_date'] = $cashOut->payment_date;
+                $cashOutDelete = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
             }
             DB::commit();
 
@@ -146,5 +176,13 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         ]);
 
         return $create;
+    }
+
+    public function checkExistsDriverCourse($data)
+    {
+        $arrDriverCourseId = DriverCourse::get()->pluck('driver_id')->toArray();
+        $result = in_array($data, $arrDriverCourseId);
+
+        return $result;
     }
 }

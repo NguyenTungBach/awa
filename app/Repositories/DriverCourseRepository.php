@@ -30,14 +30,18 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
+use App\Models\CashOutStatistical;
+use App\Models\CashOut;
+use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 
 class DriverCourseRepository extends BaseRepository implements DriverCourseRepositoryInterface, CalendarRepositoryInterface
 {
 
-    public function __construct(Application $app, CalendarRepositoryInterface $calendarRepository)
+    public function __construct(Application $app, CalendarRepositoryInterface $calendarRepository, CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository)
     {
         parent::__construct($app);
         $this->calendarRepository = $calendarRepository;
+        $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
     }
 
     /**
@@ -707,35 +711,75 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa end
 
-        // Lưu lại hoặc update nếu thỏa mãn tất cả điều kiện
-        foreach ($items as $item){
-            if (isset($item['id'])){
-                $driver_courseUpdate = DriverCourse::find($item['id']);
-                $driver_courseUpdate->update([
-                    "driver_id" => $item['driver_id'],
-                    "course_id" => $item['course_id'],
-                    "date" => $item['date'],
-                    "start_time" => $item['start_time'],
-                    "end_time" => $item['end_time'],
-                    "break_time" => $item['break_time'],
-                    "updated_at" => Carbon::now()
-                ]);
-            } else{
-                $driver_course = new DriverCourse();
-                $driver_course->driver_id = $item['driver_id'];
-                $driver_course->course_id = $item['course_id'];
-                $driver_course->date = $item['date'];
-                $driver_course->start_time = $item['start_time'];
-                $driver_course->end_time = $item['end_time'];
-                $driver_course->break_time = $item['break_time'];
-                $driver_course->status = 1;
-                $driver_course->save();
+        try {
+            DB::beginTransaction();
+            // Lưu lại hoặc update nếu thỏa mãn tất cả điều kiện
+            foreach ($items as $item){
+                if (isset($item['id'])){
+                    $driver_courseUpdate = DriverCourse::find($item['id']);
+                    $driver_courseUpdate->update([
+                        "driver_id" => $item['driver_id'],
+                        "course_id" => $item['course_id'],
+                        "date" => $item['date'],
+                        "start_time" => $item['start_time'],
+                        "end_time" => $item['end_time'],
+                        "break_time" => $item['break_time'],
+                        "updated_at" => Carbon::now()
+                    ]);
+                } else{
+                    $driver_course = new DriverCourse();
+                    $driver_course->driver_id = $item['driver_id'];
+                    $driver_course->course_id = $item['course_id'];
+                    $driver_course->date = $item['date'];
+                    $driver_course->start_time = $item['start_time'];
+                    $driver_course->end_time = $item['end_time'];
+                    $driver_course->break_time = $item['break_time'];
+                    $driver_course->status = 1;
+                    $driver_course->save();
+                }
+                // Cập nhật tiền khách phải trả
+                // $this->saveCashInStatic($item['course_id'],$item['date']);
+                // create or update record cash_out_statisticals
+                $cashOut = $this->cashOutStatistical($item['driver_id'], $item['date'], $item['course_id']);
             }
-            // Cập nhật tiền khách phải trả
-            $this->saveCashInStatic($item['course_id'],$item['date']);
+            DB::commit();
+
+            return ResponseService::responseJson(200, new BaseResource($attributes));
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception;
+        }
+    }
+
+    public function cashOutStatistical($driverId, $date, $courseId)
+    {
+        $date = date('Y-m', strtotime($date));
+        // $date = "2023-07";
+        $cashOutStatisticals = CashOutStatistical::get();
+        $arrDriverIdCashOut = $cashOutStatisticals->pluck('driver_id')->toArray();
+        $checkDriver = in_array($driverId, $arrDriverIdCashOut);
+
+        $arrMonthCashOut = $cashOutStatisticals->pluck('month_line')->toArray();
+        $checkMonth = in_array($date, $arrMonthCashOut);
+        // case create: 
+        // 1: drive = true, month = false
+        // 2: drive = false, month = true
+        // 3: drive = false, month = false
+
+        // case update: 
+        // 1: drive = true, month = true
+
+        if ($checkDriver && $checkMonth) {
+            // update
+            $result = $this->cashOutStatisticalRepository->updateCashOutStatisticalByDriverCourse($driverId, $date, $courseId);
+        }
+        else {
+            // create
+            $result = $this->cashOutStatisticalRepository->createCashOutStatisticalByDriverCourse($driverId, $date);
         }
 
-        return ResponseService::responseJson(200, new BaseResource($attributes));
+        return $result;
     }
 
     public function saveCashInStatic($course_id,$date){
