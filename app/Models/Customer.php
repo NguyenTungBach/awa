@@ -38,4 +38,14 @@ class Customer extends Model
     {
         return $this->hasMany(Course::class, 'customer_id');
     }
+
+    public function scopeSortByForCustomer($query)
+    {
+        if (request()->filled('field') && request()->filled('sortby')) {
+            $field = request()->get('field');
+            $sortby = request()->get('sortby');
+            $query->orderBy($field, $sortby);
+        }
+        return $query;
+    }
 }

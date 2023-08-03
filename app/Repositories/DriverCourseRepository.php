@@ -226,7 +226,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'type' => $driver->type,
                 'typeName' => $driver->typeName,
                 'dataShift' => [],
-                'total_money' => 0,
+                'total_money' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
                 if ($driver->id == $dataConvert['driver_id']){
@@ -237,6 +237,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 foreach ($dataTotalByDriverIds as $dataTotalByDriverId){
                     if($dataTotalByDriverId->driver_id == $driver->id){
                         $driverConvert['total_money'] = $dataTotalByDriverId->total_money;
+                        break;
                     }
                 }
             }
@@ -302,7 +303,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // Tìm tất cả các course để nhóm theo customer_id
         $datas = Course::
             select(
-                "customers.id as customers_id",
+                "customers.id as customer_id",
                 "customers.customer_code",
                 "customers.closing_date",
                 "customers.customer_name",
@@ -316,7 +317,47 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
             ->whereNull('courses.deleted_at');
 
-        $datas = $datas->get()->filter(function ($data) {
+        $datas = $datas->get();
+
+        // Tìm tất cả các course để nhóm theo customer_id
+        $dataTotal = Course::
+        select(
+            "customers.id as customer_id",
+            "customers.customer_code",
+            "customers.closing_date",
+            "customers.customer_name",
+            "courses.ship_date",
+        )
+            ->addSelect(\DB::raw('SUM(courses.expressway_fee) as total_courses_expressway_fee'))
+            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->groupBy("customers.id")
+            ->SortByForCourse($request)
+            ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
+            ->whereNull('courses.deleted_at')->get();
+
+        $groupedDatas = collect($datas)->groupBy('customer_id');
+
+        $listDataConverts = [];
+        foreach ($groupedDatas as $checkDatas){
+            $dataConverts = [
+                'customer_id' => $checkDatas[0]->customer_id,
+                'customer_code' => $checkDatas[0]->customer_code,
+                'customer_name' => $checkDatas[0]->customer_name,
+                'closing_date' => $checkDatas[0]->closing_date,
+                'data_ship_date' => [],
+            ];
+            foreach ($checkDatas as $checkData){
+                $dataConverts['data_ship_date'][] = [
+                    "ship_date"=> $checkData['ship_date'],
+                    "courses_expressway_fee"=> $checkData['courses_expressway_fee'],
+                ];
+            }
+
+            $listDataConverts[] = $dataConverts;
+        }
+
+        $listCustomer = Customer::query()->SortByForCustomer($request)->get()->filter(function ($data) {
             switch ($data['closing_date']){
                 case 1:
                     $data['closing_dateName'] = trans('customers.closing_date_lang.1');
@@ -333,7 +374,36 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             };
             return $data;
         });
-        return $datas;
+
+        $dataConvertForCustomer = [];
+        foreach ($listCustomer as $customer){
+            $driverConvert = [
+                'customer_code' => $customer->customer_code,
+                'customer_id' => $customer->id,
+                'customer_name' => $customer->customer_name,
+                'closing_date' => $customer->closing_date,
+                'closing_dateName' => $customer->closing_dateName,
+                'dataShiftExpress' => [],
+                'total_courses_expressway_fee' => '',
+            ];
+            foreach ($listDataConverts as $dataConvert){
+                if ($customer->id == $dataConvert['customer_id']){
+                    $driverConvert['dataShiftExpress'] = $dataConvert;
+                }
+            }
+            if (count($dataTotal) != 0){
+                foreach ($dataTotal as $dataTotalByCustomerId){
+                    if($dataTotalByCustomerId->customer_id == $customer->id){
+                        $driverConvert['total_courses_expressway_fee'] = $dataTotalByCustomerId->total_courses_expressway_fee;
+                        break;
+                    }
+                }
+            }
+            $dataConvertForDriver[] = $driverConvert;
+        }
+
+
+        return $dataConvertForDriver;
     }
 
     public function totalOfExpressChargeCost($request)
@@ -1392,17 +1462,19 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
-                // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
-                foreach ($value['dataShift']['data_by_date'] as $dataByDate){
-                    // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
-                    if ($dataCalendar['date'] == $dataByDate['date']){
-                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names'],DataType::TYPE_STRING);
+                if (count($value['dataShift']) != null){
+                    // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
+                    foreach ($value['dataShift']['data_by_date'] as $dataByDate){
+                        // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
+                        if ($dataCalendar['date'] == $dataByDate['date']){
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names'],DataType::TYPE_STRING);
+                        }
                     }
                 }
                 $colCalendarDriver++;
             }
             //Truyền dữ liệu tổng vào
-            if ($value['total_money'] != 0){
+            if ($value['total_money'] != ""){
                 $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
             }
 
@@ -1443,7 +1515,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         set_time_limit(3000000);
         ini_set('max_execution_time', '0');
         $dataForListShiftsExpressCharge = $this->getAllExpressCharge($request);
-        $dataForTotalShiftExpressCharge = $this->totalOfExpressChargeCost($request);
+//        $dataForTotalShiftExpressCharge = $this->totalOfExpressChargeCost($request);
         $getMonth_year = explode("-",$request->month_year);
         $start_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Y-m-d');
         $end_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Y-m-d');
@@ -1544,28 +1616,30 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForTotalShiftExpressCharge as $key => $value){
+        foreach ($dataForListShiftsExpressCharge as $key => $value){
             $sheet->setCellValue('A'.$index, $value['customer_code']);
             $sheet->setCellValue('B'.$index, $value['closing_dateName']);
             $sheet->setCellValue('C'.$index, $value['customer_name']);
 
             // Truyền thông tin course theo ngày cho từng driver
             $colCalendarDriver = 4;
-
-            $customers_id = $value['customers_id'];
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
-                // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
-                foreach ($dataForListShiftsExpressCharge as $dataForListShift){
-                    // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
-                    if ($customers_id == $dataForListShift['customers_id'] && $dataCalendar['date'] == $dataForListShift['ship_date']){
-                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'],DataType::TYPE_STRING);
+                if (count($value['dataShiftExpress']) != null){
+                    // Truyền dữ liệu giao hàng
+                    foreach ($value['dataShiftExpress']['data_ship_date'] as $dataForListShift){
+                        // Nếu course này cùng date với calendar thì truyền giá trị
+                        if ($dataCalendar['date'] == $dataForListShift['ship_date']){
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'],DataType::TYPE_STRING);
+                        }
                     }
                 }
                 $colCalendarDriver++;
             }
             //Truyền dữ liệu tổng vào
-            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_courses_expressway_fee'],DataType::TYPE_STRING);
+            if ($value['total_courses_expressway_fee'] != ""){
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_courses_expressway_fee'],DataType::TYPE_STRING);
+            }
 
             //Đặt style
             $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
@@ -1575,7 +1649,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForTotalShiftExpressCharge as $key => $value){
+        foreach ($dataForListShiftsExpressCharge as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
