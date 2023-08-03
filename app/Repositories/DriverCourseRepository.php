@@ -135,24 +135,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->groupBy("driver_courses.driver_id")
                 ->SortByForDriverCourse($request)
                 ->whereBetween('driver_courses.date', [$startDate, $endDate])
-                ->whereNull('driver_courses.deleted_at')->get()->filter(function ($data) {
-                    switch ($data['type']){
-                        case 1:
-                            $data['typeName'] = trans('drivers.type.1');
-                            break;
-                        case 2:
-                            $data['typeName'] = trans('drivers.type.2');
-                            break;
-                        case 3:
-                            $data['typeName'] = trans('drivers.type.3');
-                            break;
-                        case 4:
-                            $data['typeName'] = trans('drivers.type.4');
-                            break;
-                    };
-                    return $data;
-                });
-
+                ->whereNull('driver_courses.deleted_at')->get();
         }
 
         $datas = $datas->get()->filter(function ($data) {
@@ -191,18 +174,17 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             return $data;
         });
 
-
         $groupedDatas = collect($datas)->groupBy('driver_id');
 
         $listDataConverts = [];
         foreach ($groupedDatas as $checkDatas){
             $dataConverts = [
-                'driver_code' => $checkDatas[0]->driver_code,
+//                'driver_code' => $checkDatas[0]->driver_code,
                 'driver_id' => $checkDatas[0]->driver_id,
-                'driver_name' => $checkDatas[0]->driver_name,
-                'driver_courses_id' => $checkDatas[0]->driver_courses_id,
-                'type' => $checkDatas[0]->type,
-                'typeName' => $checkDatas[0]->typeName,
+//                'driver_name' => $checkDatas[0]->driver_name,
+//                'driver_courses_id' => $checkDatas[0]->driver_courses_id,
+//                'type' => $checkDatas[0]->type,
+//                'typeName' => $checkDatas[0]->typeName,
                 'data_by_date' => [],
             ];
             foreach ($checkDatas as $checkData){
@@ -223,7 +205,44 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $listDataConverts[] = $dataConverts;
         }
 
-        return $listDataConverts;
+        $listDrivers = Driver::query()->SortByForDriver($request)->get()->filter(function ($data) {
+            switch ($data['type']){
+                case 1:
+                    $data['typeName'] = trans('drivers.type.1');
+                    break;
+                case 2:
+                    $data['typeName'] = trans('drivers.type.2');
+                    break;
+                case 3:
+                    $data['typeName'] = trans('drivers.type.3');
+                    break;
+                case 4:
+                    $data['typeName'] = trans('drivers.type.4');
+                    break;
+            }
+            return $data;
+        });
+
+        $dataConvertForDriver = [];
+        foreach ($listDrivers as $driver){
+            $driverConvert = [
+                'driver_code' => $driver->driver_code,
+                'driver_id' => $driver->driver_id,
+                'driver_name' => $driver->driver_name,
+                'type' => $driver->type,
+                'typeName' => $driver->typeName,
+                'dataShift' => [],
+            ];
+            foreach ($listDataConverts as $dataConvert){
+                if ($driver->id == $dataConvert['driver_id']){
+                    $driverConvert['dataShift'] = $dataConvert;
+                }
+            }
+
+            $dataConvertForDriver[] = $driverConvert;
+        }
+
+        return $dataConvertForDriver;
     }
 
     public function totalOfExtraCost($request)
