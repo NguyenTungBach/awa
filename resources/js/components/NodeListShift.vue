@@ -14,7 +14,7 @@
                 {{ dataNode.value[0].name || '' }}
             </div>
             <div v-else>
-                <template v-if="dataNode">
+                <template v-if="idxComponent === Number((dataNode.date).slice(-2))">
                     <div
                         class="show-course"
                     >

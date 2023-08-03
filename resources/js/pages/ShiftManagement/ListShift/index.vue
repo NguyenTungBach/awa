@@ -293,15 +293,15 @@
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
-                                            @click="onSortTable('driver_code', 'shiftTable')"
+                                            @click="onSortTable('drivers.driver_code', 'shiftTable')"
                                         >
                                             {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -311,15 +311,15 @@
                                         </b-th>
                                         <b-th
                                             class="th-type-employee"
-                                            @click="onSortTable('flag', 'shiftTable')"
+                                            @click="onSortTable('drivers.type', 'shiftTable')"
                                         >
                                             {{ $t('LIST_SHIFT.TABLE_FLAG') }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -364,30 +364,13 @@
                                             <td class="td-full-name text-center">
                                                 {{ emp.driver_name }}
                                             </td>
-                                            <!-- <template
-                                                v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                            >
-                                                <template v-for="(date, idxDate) in pickerWeek.listDate">
-                                                    <NodeListShift
-                                                        :key="`date-${idxDate}`"
-                                                        :idx-component="idxDate + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
-                                                        :date="date.date"
-                                                        :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
-                                                    />
-                                                </template>
-                                            </template> -->
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
                                                     <NodeListShift
                                                         :key="`date-${date}-${idxDate}`"
-                                                        :idx-component="idx + 1"
+                                                        :idx-component="idxDate + 1"
                                                         :date="date"
-														:data-node="emp"
+                                                        :data-node="emp"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
@@ -1202,6 +1185,7 @@ export default {
 			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
 
 			await this.onClickSelectWeekMonth(TYPE);
+			// await this.handleGetListShift();
 			// await this.onClickSelectTable();
 		},
 
@@ -1317,7 +1301,8 @@ export default {
 				let PARAMS = {};
 
 				if (this.sortTable.shiftTable.sortBy) {
-					PARAMS[this.sortTable.shiftTable.sortBy] = this.sortTable.shiftTable.sortType ? 'asc' : 'desc';
+					PARAMS.field = this.sortTable.shiftTable.sortBy;
+					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
 				}
 				const YEAR = this.pickerYearMonth.year;
 				const MONTH = this.pickerYearMonth.month;
@@ -1328,9 +1313,9 @@ export default {
 
 				PARAMS = cleanObject(PARAMS);
 
-				if (PARAMS.field) {
-					PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
-				}
+				// if (PARAMS.field) {
+				// 	PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
+				// }
 				console.log('param', PARAMS);
 
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
@@ -1458,15 +1443,15 @@ export default {
 
 		async onSortTable(col, table) {
 			switch (col) {
-				case 'driver_code':
-					if (this.sortTable[table].sortBy === 'driver_code') {
+				case 'drivers.driver_code':
+					if (this.sortTable[table].sortBy === 'drivers.driver_code') {
 						if (this.sortTable[table].sortType) {
 							this.sortTable[table].sortType = !this.sortTable[table].sortType;
 						} else {
 							this.sortTable[table].sortType = true;
 						}
 					} else {
-						this.sortTable[table].sortBy = 'driver_code';
+						this.sortTable[table].sortBy = 'drivers.driver_code';
 						this.sortTable[table].sortType = true;
 					}
 
@@ -1482,15 +1467,15 @@ export default {
 
 					break;
 
-				case 'flag':
-					if (this.sortTable[table].sortBy === 'flag') {
+				case 'drivers.type':
+					if (this.sortTable[table].sortBy === 'drivers.type') {
 						if (this.sortTable[table].sortType) {
 							this.sortTable[table].sortType = !this.sortTable[table].sortType;
 						} else {
 							this.sortTable[table].sortType = true;
 						}
 					} else {
-						this.sortTable[table].sortBy = 'flag';
+						this.sortTable[table].sortBy = 'drivers.type';
 						this.sortTable[table].sortType = true;
 					}
 
