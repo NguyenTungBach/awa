@@ -326,7 +326,7 @@ export default {
 		FORM_PATH_RETIREMENT_DATE: '退職日',
 		DIRECTOR: '主任',
 		FUNERAL_ONLY_DRIVER: '葬儀のみドライバー',
-		TYPE_DRIVER: '社員区分',
+		TYPE_EMPLOYEE: '社員区分',
 		EMPLOYEE_NUMBER: '社員番号',
 		FULL_NAME: '氏名',
 		CHARACTER: '車両情報',

@@ -224,7 +224,6 @@ export default {
 		},
 
 		handleSort(ctx) {
-			console.log('sort:', ctx);
 			this.sortTable = {
 				sortBy: ctx.sortBy,
 				sortType: ctx.sortDesc ? 'asc' : 'desc',

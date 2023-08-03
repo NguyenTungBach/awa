@@ -6,19 +6,19 @@ const TEXT_ENROLLMENT_STATUS_ENROLLED = 'LIST_DRIVER.ENROLLMENT_STATUS_ENROLLED'
 
 const LIST_FLAG = [
 	{
-		value: 'lead',
+		value: 1,
 		text: 'CREATE_DRIVER.LEADER',
 	},
 	{
-		value: 'full',
+		value: 2,
 		text: 'CREATE_DRIVER.FULL_TIME',
 	},
 	{
-		value: 'part',
+		value: 3,
 		text: 'CREATE_DRIVER.PART_TIME',
 	},
 	{
-		value: 'associate',
+		value: 4,
 		text: 'CREATE_DRIVER.ASSOCIATE_COMPANY',
 	},
 ];

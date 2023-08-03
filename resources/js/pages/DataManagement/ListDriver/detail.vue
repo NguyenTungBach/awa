@@ -107,8 +107,19 @@
                                                 {{ $t('DETAIL_DRIVER.FORM_PATH_BASIC_INFORMATION') }}
                                             </TitlePathForm>
 
-                                            <div class="item-form">
+                                            <!-- <div class="item-form">
                                                 <p>{{ $t(isForm.typeDriver) }}</p>
+                                            </div> -->
+
+                                            <div class="item-form">
+                                                <b-row>
+                                                    <b-col>
+                                                        <DetailForm
+                                                            :label="$t('CREATE_DRIVER.TYPE_EMPLOYEE')"
+                                                            :value="isForm.typeDriver"
+                                                        />
+                                                    </b-col>
+                                                </b-row>
                                             </div>
 
                                             <div class="item-form">
@@ -286,11 +297,11 @@ import { getDriver } from '@/api/modules/driver';
 import { getListDriverCourse } from '@/api/modules/driverCourse';
 import DetailForm from '@/components/DetailForm';
 import { setLoading } from '@/utils/handleLoading';
-import { YmdtoStringYmd, getTextLoop, getTextCodeDay } from '@/utils/convertTime';
+import { getTextLoop, getTextCodeDay } from '@/utils/convertTime';
 import TitlePathForm from '@/components/TitlePathForm';
 import { convertValueToText } from '@/utils/handleSelect';
-import { loopCallback, splitStr2Array, getValueShortDayByText } from '@/utils/helper';
-import { formatNumber } from '@/utils/formatNumber';
+// import { loopCallback, splitStr2Array, getValueShortDayByText } from '@/utils/helper';
+// import { formatNumber } from '@/utils/formatNumber';
 
 export default {
 	name: 'DetailDriver',
@@ -386,14 +397,16 @@ export default {
 				if (DRIVER.code === 200) {
 					const DATA = DRIVER.data;
 
-					this.isForm.typeDriver = convertValueToText(this.isForm.optionsTypeDriver, DATA.flag);
+					// this.isForm.typeDriver = convertValueToText(this.isForm.optionsTypeDriver, DATA.flag);
+					this.isForm.typeDriver = DATA.typeName;
 					this.isForm.employeeNumber = DATA.driver_code;
 					this.isForm.fullname = DATA.driver_name;
-					this.isForm.hireDate = YmdtoStringYmd(DATA.start_date);
-					this.isForm.dateOfBirth = YmdtoStringYmd(DATA.birth_day);
-					this.isForm.grade = formatNumber(DATA.grade);
-					this.isForm.availableDays = DATA.working_day;
-					this.isForm.seletedDateInWeek = (loopCallback(splitStr2Array(DATA.day_of_week, ','), getValueShortDayByText)).sort();
+					this.isForm.hireDate = DATA.start_date;
+					this.isForm.character = DATA.car;
+					// this.isForm.dateOfBirth = YmdtoStringYmd(DATA.birth_day);
+					// this.isForm.grade = formatNumber(DATA.grade);
+					// this.isForm.availableDays = DATA.working_day;
+					// this.isForm.seletedDateInWeek = (loopCallback(splitStr2Array(DATA.day_of_week, ','), getValueShortDayByText)).sort();
 
 					this.isForm.retirementDate = DATA.end_date;
 					this.isForm.notes = DATA.note;
@@ -543,7 +556,7 @@ export default {
                     padding: 10px 20px;
 
                     .item-form {
-                        margin: 15px 0;
+                        margin: 40px 0;
 
                         font-size: 18px;
                     }

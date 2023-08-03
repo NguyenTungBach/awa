@@ -110,7 +110,6 @@
                                             v-model="isForm.course_name"
                                             type="text"
                                         />
-
                                     </b-input-group>
                                 </b-col>
                                 <b-row>
@@ -449,6 +448,7 @@ import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
 import { setLoading } from '@/utils/handleLoading';
+import { formatArray2Time } from '@/utils/convertTime';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { cleanObject } from '@/utils/handleObject';
@@ -550,9 +550,9 @@ export default {
 				customer_id: this.isForm.customer_name,
 				course_name: this.isForm.course_name,
 				ship_date: this.isForm.ship_date,
-				start_date: this.isForm.start_time,
-				end_date: this.isForm.end_time,
-				break_time: this.isForm.break_time,
+				start_date: (this.isForm.start_time).slice(0, 5),
+				end_date: (this.isForm.end_time).slice(0, 5),
+				break_time: (this.isForm.break_time).slice(0, 5),
 				departure_place: this.isForm.departure_place,
 				arrival_place: this.isForm.arrival_place,
 				ship_fee: this.isForm.freight_cost,

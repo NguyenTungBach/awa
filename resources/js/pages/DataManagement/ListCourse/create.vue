@@ -96,7 +96,6 @@
                                                             id="input-course-id"
                                                             v-model="isForm.course_id"
                                                             type="text"
-                                                            max-length="10"
                                                             onpaste="return false;"
                                                             ondrop="return false;"
                                                             autocomplete="off"
@@ -260,7 +259,6 @@
                                                             id="input-course-name"
                                                             v-model="isForm.customer_phone"
                                                             type="number"
-                                                            maxlength="11"
                                                         />
                                                     </b-input-group>
                                                 </div>

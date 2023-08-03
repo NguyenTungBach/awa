@@ -293,15 +293,15 @@
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
-                                            @click="onSortTable('driver_code', 'shiftTable')"
+                                            @click="onSortTable('drivers.driver_code', 'shiftTable')"
                                         >
                                             {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -311,15 +311,15 @@
                                         </b-th>
                                         <b-th
                                             class="th-type-employee"
-                                            @click="onSortTable('flag', 'shiftTable')"
+                                            @click="onSortTable('drivers.type', 'shiftTable')"
                                         >
                                             {{ $t('LIST_SHIFT.TABLE_FLAG') }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -359,43 +359,40 @@
                                                 {{ emp.driver_code }}
                                             </td>
                                             <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsTypeDriver, emp.flag)) }}
+                                                {{ $t(convertValueToText(optionsTypeDriver, emp.driver.type)) }}
                                             </b-td>
                                             <td class="td-full-name text-center">
                                                 {{ emp.driver_name }}
                                             </td>
-                                            <template
-                                                v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                            >
-                                                <template v-for="(date, idxDate) in pickerWeek.listDate">
-                                                    <NodeListShift
-                                                        :key="`date-${idxDate}`"
-                                                        :idx-component="idxDate + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
-                                                        :date="date.date"
-                                                        :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
-                                                    />
-                                                </template>
-                                            </template>
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
                                                     <NodeListShift
-                                                        :key="`date-${date}`"
-                                                        :idx-component="idx + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
+                                                        :key="`date-${date}-${idxDate}`"
+                                                        :idx-component="idxDate + 1"
                                                         :date="date"
+                                                        :data-node="emp"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
+                                                        :start-date="emp.driver.start_date"
+                                                        :end-date="emp.driver.end_date"
                                                     />
                                                 </template>
                                             </template>
+                                            <!-- aaa
+                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                {{ date }}
+                                                <NodeListShift
+                                                    :key="`date-${date}-${idxDate}`"
+                                                    :idx-component="idx + 1"
+                                                    :date="date"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.driver_code"
+                                                    :driver-name="emp.driver_name"
+                                                    :start-date="emp.start_date"
+                                                    :end-date="emp.end_date"
+                                                />
+                                            </template> -->
                                             <b-td class="td-total-shift">
                                                 {{ totalShift }}
                                             </b-td>
@@ -406,122 +403,123 @@
 
                         </template>
                         <!-- Table Salary -->
-                        <b-table-simple
-                            v-show="(selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)"
-                            bordered
-                            class="table-salary"
-                            no-border-collapse
-                        >
-                            <b-thead>
-                                <b-tr>
-                                    <b-th class="fix-header" colspan="3" />
+                        <template v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE">
+                            <b-table-simple
+                                bordered
+                                class="table-salary"
+                                no-border-collapse
+                            >
+                                <b-thead>
+                                    <b-tr>
+                                        <b-th class="fix-header" colspan="3" />
 
-                                    <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`" class="th-show-date">
-                                        <div>
-                                            {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                        </div>
-                                    </b-th>
+                                        <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`" class="th-show-date">
+                                            <div>
+                                                {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                            </div>
+                                        </b-th>
 
-                                    <b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALES_MONTH") }}
-                                    </b-th>
-                                    <b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALES_CLOSING_DATE") }}
-                                    </b-th>
-                                    <b-th rowspan="2" class="th-total">
-                                        {{ $t("LIST_SHIFT.SALES_INVOICE") }}
-                                    </b-th>
+                                        <b-th rowspan="2" class="th-total">
+                                            {{ $t("LIST_SHIFT.SALES_MONTH") }}
+                                        </b-th>
+                                        <b-th rowspan="2" class="th-total">
+                                            {{ $t("LIST_SHIFT.SALES_CLOSING_DATE") }}
+                                        </b-th>
+                                        <b-th rowspan="2" class="th-total">
+                                            {{ $t("LIST_SHIFT.SALES_INVOICE") }}
+                                        </b-th>
 
-                                </b-tr>
+                                    </b-tr>
 
-                                <b-tr>
-                                    <b-th class="th-employee-number" @click="onSortTable('driver_code', 'salaryTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
-                                        <i
-                                            v-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
+                                    <b-tr>
+                                        <b-th class="th-employee-number" @click="onSortTable('driver_code', 'salaryTable')">
+                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
+                                            <i
+                                                v-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === true"
+                                                class="fad fa-sort-up icon-sort"
+                                            />
+                                            <i
+                                                v-else-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === false"
+                                                class="fad fa-sort-down icon-sort"
+                                            />
+                                            <i
+                                                v-else
+                                                class="fa-solid fa-sort icon-sort-default"
+                                            />
+                                        </b-th>
 
-                                    <b-th class="th-type-employee" @click="onSortTable('flag', 'salaryTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
-                                        <i
-                                            v-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
-                                    </b-th>
+                                        <b-th class="th-type-employee" @click="onSortTable('flag', 'salaryTable')">
+                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
+                                            <i
+                                                v-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === true"
+                                                class="fad fa-sort-up icon-sort"
+                                            />
+                                            <i
+                                                v-else-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === false"
+                                                class="fad fa-sort-down icon-sort"
+                                            />
+                                            <i
+                                                v-else
+                                                class="fa-solid fa-sort icon-sort-default"
+                                            />
+                                        </b-th>
 
-                                    <b-th class="th-full-name">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
-                                    </b-th>
+                                        <b-th class="th-full-name">
+                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
+                                        </b-th>
 
-                                    <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`">
-                                        <span>
-                                            {{ listCalendar[date - 1] || '' }}
-                                        </span>
-                                    </b-th>
+                                        <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`">
+                                            <span>
+                                                {{ listCalendar[date - 1] || '' }}
+                                            </span>
+                                        </b-th>
 
-                                </b-tr>
-                            </b-thead>
+                                    </b-tr>
+                                </b-thead>
 
-                            <b-tbody>
-                                <b-tr v-for="(driverSalary, index) in listSalary" :key="driverSalary.id">
-                                    <b-td class="td-employee-number">
-                                        {{ driverSalary.driver_code }}
-                                    </b-td>
+                                <b-tbody>
+                                    <b-tr v-for="(driverSalary, index) in listSalary" :key="driverSalary.id">
+                                        <b-td class="td-employee-number">
+                                            {{ driverSalary.driver_code }}
+                                        </b-td>
 
-                                    <b-td class="td-type-employee">
-                                        25 日
-                                        <!-- {{ $t(convertValueToText(optionsTypeDriver, driverSalary.flag)) }} -->
-                                    </b-td>
+                                        <b-td class="td-type-employee">
+                                            25 日
+                                            <!-- {{ $t(convertValueToText(optionsTypeDriver, driverSalary.flag)) }} -->
+                                        </b-td>
 
-                                    <b-td class="td-full-name text-center">
-                                        {{ driverSalary.driver_name }}
-                                    </b-td>
+                                        <b-td class="td-full-name text-center">
+                                            {{ driverSalary.driver_name }}
+                                        </b-td>
 
-                                    <b-td v-for="salary in driverSalary.shift_list" :id="salary.date" :key="`salary-${salary.date}`">
-                                        {{ salary.value }}
-                                    </b-td>
+                                        <b-td v-for="salary in driverSalary.shift_list" :id="salary.date" :key="`salary-${salary.date}`">
+                                            {{ salary.value }}
+                                        </b-td>
 
-                                    <b-td>
-                                        {{ listTotalSalaryMonth[index].value }}
-                                    </b-td>
-                                    <b-td>0</b-td>
-                                    <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
-                                </b-tr>
-                            </b-tbody>
-                            <b-tbody>
-                                <b-tr>
-                                    <b-td class="td-total" colspan="3">
-                                        <span>
-                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
-                                        </span>
-                                    </b-td>
+                                        <b-td>
+                                            {{ listTotalSalaryMonth[index].value }}
+                                        </b-td>
+                                        <b-td>0</b-td>
+                                        <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
+                                    </b-tr>
+                                </b-tbody>
+                                <b-tbody>
+                                    <b-tr>
+                                        <b-td class="td-total" colspan="3">
+                                            <span>
+                                                {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                            </span>
+                                        </b-td>
 
-                                    <b-td v-for="total in listTotalSalaryDay" :key="`total-${total.id}`" class="text-center">
-                                        {{ total.value }}
-                                    </b-td>
-                                    <b-td>0</b-td>
-                                    <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
-                                </b-tr>
-                            </b-tbody>
-                        </b-table-simple>
+                                        <b-td v-for="total in listTotalSalaryDay" :key="`total-${total.id}`" class="text-center">
+                                            {{ total.value }}
+                                        </b-td>
+                                        <b-td>0</b-td>
+                                        <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
+                                    </b-tr>
+                                </b-tbody>
+                            </b-table-simple>
+                        </template>
                         <!-- table Hight way -->
                         <template v-if="selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE">
                             <b-table-simple
@@ -899,7 +897,7 @@ import { hasRole } from '@/utils/hasRole';
 import LineGray from '@/components/LineGray';
 import { setLoading } from '@/utils/handleLoading';
 import { format2Digit } from '@/utils/generateTime';
-import CalendarWeek from '@/components/CalendarWeek';
+// import CalendarWeek from '@/components/CalendarWeek';
 import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
@@ -908,7 +906,7 @@ import { getListPractical, getListShift, getListMessageResponseAI } from '@/api/
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
-import { convertValueWhenNull, convertStatusToText } from '@/utils/handleListShift';
+import { convertStatusToText } from '@/utils/handleListShift';
 // import CalendarMultipleWeek from '@/components/CalendarMultipleWeek';
 // import CalendarMonth from '@/components/CalendarMonth';
 // import Notification from '@/toast/notification';
@@ -919,7 +917,7 @@ export default {
 	components: {
 		LineGray,
 		NodeListShift,
-		CalendarWeek,
+		// CalendarWeek,
 		// CalendarMultipleWeek,
 		// CalendarMonth,
 		// CalendarFreeMonth,
@@ -1187,6 +1185,7 @@ export default {
 			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
 
 			await this.onClickSelectWeekMonth(TYPE);
+			// await this.handleGetListShift();
 			// await this.onClickSelectTable();
 		},
 
@@ -1234,61 +1233,97 @@ export default {
 			}
 		},
 
+		// async handleGetListShift() {
+		// 	try {
+		// 		this.listShift.length = 0;
+
+		// 		const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
+
+		// 		let PARAMS = {
+		// 			type: TYPE,
+		// 		};
+
+		// 		if (this.sortTable.shiftTable.sortBy) {
+		// 			PARAMS[this.sortTable.shiftTable.sortBy] = this.sortTable.shiftTable.sortType ? 'asc' : 'desc';
+		// 		}
+
+		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+		// 			const START = this.pickerWeek.start;
+		// 			const END = this.pickerWeek.end;
+
+		// 			PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
+		// 			PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
+
+		// 			const YEAR = this.pickerYearMonth.year;
+		// 			const MONTH = this.pickerYearMonth.month;
+
+		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+		// 			PARAMS.date = YEAR_MONTH;
+		// 		}
+
+		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+		// 			const YEAR = this.pickerYearMonth.year;
+		// 			const MONTH = this.pickerYearMonth.month;
+
+		// 			const START = `${YEAR}-${format2Digit(MONTH)}-01`;
+		// 			const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
+
+		// 			PARAMS.start_date = START;
+		// 			PARAMS.end_date = END;
+
+		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+		// 			PARAMS.date = YEAR_MONTH;
+		// 		}
+
+		// 		PARAMS = cleanObject(PARAMS);
+
+		// 		if (PARAMS.field) {
+		// 			PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
+		// 		}
+
+		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
+
+		// 		if (code === 200) {
+		// 			this.listShift = convertValueWhenNull(data);
+
+		// 			this.reloadTable();
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+		// },
 		async handleGetListShift() {
 			try {
 				this.listShift.length = 0;
 
-				const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
-
-				let PARAMS = {
-					type: TYPE,
-				};
+				let PARAMS = {};
 
 				if (this.sortTable.shiftTable.sortBy) {
-					PARAMS[this.sortTable.shiftTable.sortBy] = this.sortTable.shiftTable.sortType ? 'asc' : 'desc';
+					PARAMS.field = this.sortTable.shiftTable.sortBy;
+					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
 				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
 
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-					const START = this.pickerWeek.start;
-					const END = this.pickerWeek.end;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-					PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
-					PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
-
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
-
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-					PARAMS.date = YEAR_MONTH;
-				}
-
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
-
-					const START = `${YEAR}-${format2Digit(MONTH)}-01`;
-					const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-
-					PARAMS.start_date = START;
-					PARAMS.end_date = END;
-
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-					PARAMS.date = YEAR_MONTH;
-				}
+				PARAMS.month_year = YEAR_MONTH;
 
 				PARAMS = cleanObject(PARAMS);
 
-				if (PARAMS.field) {
-					PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
-				}
+				// if (PARAMS.field) {
+				// 	PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
+				// }
+				console.log('param', PARAMS);
 
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					this.listShift = convertValueWhenNull(data);
-
+					// this.listShift = convertValueWhenNull(data);
+					this.listShift = data;
+					console.log('data', this.listShift);
 					this.reloadTable();
 				}
 			} catch (error) {
@@ -1408,15 +1443,15 @@ export default {
 
 		async onSortTable(col, table) {
 			switch (col) {
-				case 'driver_code':
-					if (this.sortTable[table].sortBy === 'driver_code') {
+				case 'drivers.driver_code':
+					if (this.sortTable[table].sortBy === 'drivers.driver_code') {
 						if (this.sortTable[table].sortType) {
 							this.sortTable[table].sortType = !this.sortTable[table].sortType;
 						} else {
 							this.sortTable[table].sortType = true;
 						}
 					} else {
-						this.sortTable[table].sortBy = 'driver_code';
+						this.sortTable[table].sortBy = 'drivers.driver_code';
 						this.sortTable[table].sortType = true;
 					}
 
@@ -1432,15 +1467,15 @@ export default {
 
 					break;
 
-				case 'flag':
-					if (this.sortTable[table].sortBy === 'flag') {
+				case 'drivers.type':
+					if (this.sortTable[table].sortBy === 'drivers.type') {
 						if (this.sortTable[table].sortType) {
 							this.sortTable[table].sortType = !this.sortTable[table].sortType;
 						} else {
 							this.sortTable[table].sortType = true;
 						}
 					} else {
-						this.sortTable[table].sortBy = 'flag';
+						this.sortTable[table].sortBy = 'drivers.type';
 						this.sortTable[table].sortType = true;
 					}
 
@@ -2456,7 +2491,7 @@ export default {
 								color: $white;
 								text-align: center;
                                 vertical-align: middle;
-
+								min-width: 100px;
 								padding: 5px 0;
 
                                 top: 0;
@@ -2483,7 +2518,7 @@ export default {
                                 top: 0;
                                 left: 0;
 
-								width: 150px;
+								min-width: 150px;
 							}
 
 							th.th-type-employee {
@@ -2492,7 +2527,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                width: 180px;
+                                min-width: 180px;
 
                                 cursor: pointer;
                             }
@@ -2501,9 +2536,9 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 300px;
+                                left: 330px;
 
-                                width: 240px;
+                                min-width: 240px;
 
                                 cursor: pointer;
 							}
@@ -2560,7 +2595,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 300px;
+								left: 330px;
                             }
 						}
 					}
@@ -2635,7 +2670,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 300px;
+                                left: 330px;
 
                                 width: 240px;
 
@@ -2692,7 +2727,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 300px;
+								left: 330px;
                             }
 
                             td.td-total {

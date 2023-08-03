@@ -250,7 +250,6 @@ export default {
 				};
 
 				PARAMS = cleanObject(PARAMS);
-                console.log('param:', PARAMS);
 
 				if (PARAMS.order_by) {
 					PARAMS.sort_by = PARAMS.sort_by ? 'asc' : 'desc';

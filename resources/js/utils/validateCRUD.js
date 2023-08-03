@@ -60,14 +60,14 @@ function validateUser(user, list = ['user_code', 'user_name', 'password', 'role'
 	};
 }
 
-function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'day_of_week', 'working_time', 'note']) {
+function validateDriver(driver, list = ['type', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'car', 'working_day', 'day_of_week', 'working_time', 'note']) {
 // function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'working_time', 'note']) {
 	if (
 		!driver.driver_code && list.includes('driver_code') ||
         !driver.driver_name && list.includes('driver_name') ||
         !driver.start_date && list.includes('start_date') ||
-        !driver.birth_day && list.includes('birth_day') ||
-        !driver.working_day && list.includes('working_day')
+        !driver.type && list.includes('type') ||
+        !driver.car && list.includes('car')
 	) {
 		return {
 			status: false,
