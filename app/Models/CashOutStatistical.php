@@ -20,4 +20,9 @@ class CashOutStatistical extends Model
         'payable_this_month',
         'total_cash_out_current',
     ];
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
 }
