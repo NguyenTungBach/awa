@@ -51,4 +51,14 @@ class Driver extends Model
         return $query;
     }
 
+    public function driverCourses()
+    {
+        return $this->hasMany(DriverCourse::class, 'driver_id', 'id');
+    }
+
+    public function cashOutStatistical()
+    {
+        return $this->hasMany(CashOutStatistical::class, 'driver_id', 'id');
+    }
+
 }

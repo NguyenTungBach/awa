@@ -1,8 +1,4 @@
 <?php
-/**
- * Created by VeHo.
- * Year: 2023-07-25
- */
 
 namespace App\Http\Requests;
 
@@ -10,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 
-class FinalClosingHistoriesRequest extends FormRequest
+class PaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,8 +26,6 @@ class FinalClosingHistoriesRequest extends FormRequest
     public function rules()
     {
         switch (Route::getCurrentRoute()->getActionMethod()){
-            case 'store':
-                return $this->getCustomRuleStore();
             case 'index':
                 return $this->getCustomRuleIndex();
             default:
@@ -39,31 +33,20 @@ class FinalClosingHistoriesRequest extends FormRequest
         }
     }
 
-    public function getCustomRuleStore(){
-        $rules = [
-            'month_year' => [
-                'required',
-                'date_format:Y-m'
-            ],
-            'type' => [
-                'required',
-                Rule::in(config('final_closing.type'))
-            ],
-        ];
-
-        return $rules;
-    }
-
     public function getCustomRuleIndex(){
         $rules = [
-            'type' => [
+            'order_by' => [
                 'sometimes',
-                Rule::in(config('final_closing.type'))
+                Rule::in(['drivers.id', 'drivers.driver_code', 'drivers.driver_name'])
+            ],
+            'sort_by' => [
+                'sometimes',
+                Rule::in(SORT_BY)
             ],
             'month_year' => [
                 'sometimes',
                 'date_format:Y-m'
-            ],
+            ]
         ];
 
         return $rules;
@@ -72,12 +55,12 @@ class FinalClosingHistoriesRequest extends FormRequest
     public function messages()
     {
         return [
+            // order_by
+            'order_by.in' => __('validation.in', ['attribute' => 'order_by']),
+            // sort_by
+            'sort_by.in' => __('validation.in', ['attribute' => 'sort_by']),
             // month_year
-            'month_year.required' => __('validation.required', ['attribute' => 'month_year']),
             'month_year.date_format' => __('validation.date_format', ['attribute' => 'month_year', 'format' => 'Y-m']),
-            // type
-            'type.required' => __('validation.required', ['attribute' => 'type']),
-            'type.in' => __('validation.in', ['attribute' => 'type']),
         ];
     }
 }
