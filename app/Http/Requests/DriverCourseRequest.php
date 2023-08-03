@@ -206,7 +206,7 @@ class DriverCourseRequest extends FormRequest
          if(Route::getCurrentRoute()->getActionMethod() == 'export_shift'){
              return [
                  "closing_date" => [
-                     'required',
+//                     'required',
                      "in:24,25",
                  ],
                  "month_year" => [

@@ -156,16 +156,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             };
             switch ($data['course_names']){
                 case "公休":
-                    $data['course_names_color'] = trans('course.color_course.公休');
+                    $data['course_names_color'] = trans('courses.color_course.公休');
                     break;
                 case "希望休":
-                    $data['course_names_color'] = trans('course.color_course.希望休');
+                    $data['course_names_color'] = trans('courses.color_course.希望休');
                     break;
                 case "有給休暇":
-                    $data['course_names_color'] = trans('course.color_course.有給休暇');
+                    $data['course_names_color'] = trans('courses.color_course.有給休暇');
                     break;
                 case "半休":
-                    $data['course_names_color'] = trans('course.color_course.半休');
+                    $data['course_names_color'] = trans('courses.color_course.半休');
                     break;
                 default:
                     $data['course_names_color'] = "";
@@ -195,13 +195,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "course_names_color"=> $checkData['course_names_color']
                 ];
             }
-            if (count($dataTotalByDriverIds) != 0){
-                foreach ($dataTotalByDriverIds as $dataTotalByDriverId){
-                    if($dataTotalByDriverId->driver_id == $checkDatas[0]->driver_id){
-                        $dataConverts['total_money'] = $dataTotalByDriverId->total_money;
-                    }
-                }
-            }
+
             $listDataConverts[] = $dataConverts;
         }
 
@@ -227,18 +221,25 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         foreach ($listDrivers as $driver){
             $driverConvert = [
                 'driver_code' => $driver->driver_code,
-                'driver_id' => $driver->driver_id,
+                'driver_id' => $driver->id,
                 'driver_name' => $driver->driver_name,
                 'type' => $driver->type,
                 'typeName' => $driver->typeName,
                 'dataShift' => [],
+                'total_money' => 0,
             ];
             foreach ($listDataConverts as $dataConvert){
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
                 }
             }
-
+            if (count($dataTotalByDriverIds) != 0){
+                foreach ($dataTotalByDriverIds as $dataTotalByDriverId){
+                    if($dataTotalByDriverId->driver_id == $driver->id){
+                        $driverConvert['total_money'] = $dataTotalByDriverId->total_money;
+                    }
+                }
+            }
             $dataConvertForDriver[] = $driverConvert;
         }
 
@@ -288,7 +289,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             });
         return $datas;
     }
-
 
     public function getAllExpressCharge($request)
     {
@@ -1393,7 +1393,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
                 // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
-                foreach ($value['data_by_date'] as $dataByDate){
+                foreach ($value['dataShift']['data_by_date'] as $dataByDate){
                     // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
                     if ($dataCalendar['date'] == $dataByDate['date']){
                         $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names'],DataType::TYPE_STRING);
@@ -1402,7 +1402,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $colCalendarDriver++;
             }
             //Truyền dữ liệu tổng vào
-            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
+            if ($value['total_money'] != 0){
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
+            }
 
             //Đặt style
             $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
