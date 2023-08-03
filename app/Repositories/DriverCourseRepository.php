@@ -118,23 +118,67 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
 
         $datas = $datas->get()->filter(function ($data) {
-            switch ($data['driver']['type']){
+//            $data->driver->start_date = explode(" ",$data->driver->start_date)[0];
+            switch ($data['type']){
                 case 1:
-                    $data['driver']['typeName'] = trans('drivers.type.1');
+                    $data['typeName'] = trans('drivers.type.1');
                     break;
                 case 2:
-                    $data['driver']['typeName'] = trans('drivers.type.2');
+                    $data['typeName'] = trans('drivers.type.2');
                     break;
                 case 3:
-                    $data['driver']['typeName'] = trans('drivers.type.3');
+                    $data['typeName'] = trans('drivers.type.3');
                     break;
                 case 4:
-                    $data['driver']['typeName'] = trans('drivers.type.4');
+                    $data['typeName'] = trans('drivers.type.4');
                     break;
             };
+            switch ($data['course_names']){
+                case "公休":
+                    $data['course_names_color'] = trans('course.color_course.公休');
+                    break;
+                case "希望休":
+                    $data['course_names_color'] = trans('course.color_course.希望休');
+                    break;
+                case "有給休暇":
+                    $data['course_names_color'] = trans('course.color_course.有給休暇');
+                    break;
+                case "半休":
+                    $data['course_names_color'] = trans('course.color_course.半休');
+                    break;
+                default:
+                    $data['course_names_color'] = "";
+                    break;
+            }
             return $data;
         });
-        return $datas;
+
+
+        $groupedDatas = collect($datas)->groupBy('driver_id');
+
+        $listDataConverts = [];
+        foreach ($groupedDatas as $checkDatas){
+            $dataConverts = [
+                'driver_code' => $checkDatas[0]->driver_code,
+                'driver_name' => $checkDatas[0]->driver_name,
+                'driver_courses_id' => $checkDatas[0]->driver_courses_id,
+                'type' => $checkDatas[0]->type,
+                'typeName' => $checkDatas[0]->typeName,
+                'data_by_date' => [],
+            ];
+            foreach ($checkDatas as $checkData){
+                $dataConverts['data_by_date'][] = [
+                    "date"=> $checkData['date'],
+                    "course_ids"=> $checkData['course_ids'],
+                    "course_names"=> $checkData['course_names'],
+                    "course_names_color"=> $checkData['course_names_color']
+                ];
+            }
+            $listDataConverts[] = $dataConverts;
+        }
+
+
+        return $listDataConverts;
     }
 
     public function totalOfExtraCost($request)
@@ -1016,7 +1060,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
                             ->join('customers', 'customers.id', '=', 'courses.customer_id')
                             ->where("customer_id", $course->customer_id)
-                            ->whereBetween('driver_courses.date', [$closing_dateStart, $closing_dateEnd])
+                            ->whereBetween('driver_courses.date', [$updateStartDateByClosingDate, $updateEndDateByClosingDate])
                             ->groupBy("customers.id")
                             ->first();
 
@@ -1026,7 +1070,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         select("customer_id")
                             ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
                             ->where("customer_id",$course->customer_id)
-                            ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
+                            ->whereBetween('payment_date', [$updateStartDateByClosingDate,$updateEndDateByClosingDate])
                             ->groupBy("customer_id")
                             ->first();
                         if ($totalCashInQuery != null){

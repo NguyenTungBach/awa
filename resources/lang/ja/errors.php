@@ -33,6 +33,7 @@ return [
     'driver_can_not_delete' => 'driver id :driver_id, driver_name :driver_name have course_id :course_id, course_name :course_name can not delete',
     'driver_course_id_not_found' => 'driver course id :id not found',
     'unique' => ':attribute already exists',
+    'attribute_not_found' => ':attribute with :id not_found',
     'has_been_assigned' => ':attribute has been assigned',
     'end_date_retirement' => ':attribute already in retirement :end_date',
     'unlike_ship_date' => ':attribute not unlike ship date :ship_date',

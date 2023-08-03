@@ -16,4 +16,10 @@ return [
     'meal_fee' => '食事補助金額',
     'note' => 'メモ',
     'file' => 'ファイル',
+    'color_course'=> [
+        '公休' => "#EAE7AC",
+        '希望休' => "#EDD1A7",
+        '有給休暇' => "#EEAAAA",
+        '半休' => "#FFF1E4",
+    ]
 ];
