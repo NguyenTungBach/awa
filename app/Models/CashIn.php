@@ -33,5 +33,8 @@ class CashIn extends Model
         'data' => 'array'
     ];
 
-
+    public function customer(){
+        return $this->belongsTo(Customer::class,'customer_id','id')
+            ->select('id', 'customer_code', 'customer_name','closing_date', 'person_charge', 'post_code', 'address', 'phone', 'status');
+    }
 }

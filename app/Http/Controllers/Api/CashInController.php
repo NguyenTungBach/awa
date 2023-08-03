@@ -70,8 +70,7 @@ class CashInController extends Controller
      */
     public function index(CashInRequest $request)
     {
-        $data = $this->repository->paginate($request->per_page);
-        return $this->responseJson(200, BaseResource::collection($data));
+        return $this->repository->listCashIn($request);
     }
 
     /**
@@ -146,8 +145,22 @@ class CashInController extends Controller
     public function show($id)
     {
         try {
-            $department = $this->repository->find($id);
-            return $this->responseJson(200, new BaseResource($department));
+            $data = $this->repository->with("customer")->find($id);
+            switch ($data->customer->closing_date){
+                case 1:
+                    $data->customer->closing_dateName = trans("customers.closing_date_lang.1");
+                    break;
+                case 2:
+                    $data->customer->closing_dateName = trans("customers.closing_date_lang.2");
+                    break;
+                case 3:
+                    $data->customer->closing_dateName = trans("customers.closing_date_lang.3");
+                    break;
+                case 4:
+                    $data->customer->closing_dateName = trans("customers.closing_date_lang.4");
+                    break;
+            }
+            return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -205,8 +218,7 @@ class CashInController extends Controller
     public function update(CashInRequest $request, $id)
     {
         $attributes = $request->except([]);
-        $data = $this->repository->update($attributes, $id);
-        return $this->responseJson(200, new BaseResource($data));
+        return $this->repository->update($attributes, $id);
     }
 
     /**
@@ -239,7 +251,6 @@ class CashInController extends Controller
      */
     public function destroy($id)
     {
-        $this->repository->delete($id);
-        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
+        return $this->repository->delete($id);
     }
 }

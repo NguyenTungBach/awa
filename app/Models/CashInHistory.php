@@ -15,9 +15,20 @@ class CashInHistory extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'cash_in_historys';
+    protected $table = 'cash_in_histories';
 
-    protected $fillable = [];
+    protected $fillable = [
+        "customer_id",
+        "cash_in_id",
+        "type",
+        "cash_in",
+        "payment_method",
+        "payment_date",
+        "note",
+        "status",
+        "created_at",
+        "updated_at",
+    ];
 
     protected $dates = ['deleted_at'];
 

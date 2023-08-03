@@ -33,6 +33,8 @@ class CashInRequest extends FormRequest
                     return $this->getCustomRule();
                 case 'store':
                     return $this->getCustomRule();
+              case 'index':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -41,7 +43,11 @@ class CashInRequest extends FormRequest
      public function getCustomRule(){
         if(Route::getCurrentRoute()->getActionMethod() == 'update'){
             return [
-
+                "customer_id"=>["required","numeric"],
+                "cash_in"=>["required","numeric"],
+                "payment_method"=>["required","numeric"],
+                "payment_date"=>["required","date_format:Y-m-d"],
+                "note" => ["max:1000"],
             ];
         }
         if(Route::getCurrentRoute()->getActionMethod() == 'store'){
@@ -53,6 +59,15 @@ class CashInRequest extends FormRequest
                 "note" => ["max:1000"],
             ];
         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'index'){
+             return  [
+                 "customer_id"=>["required","numeric"],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+             ];
+         }
      }
 
     public function messages()
