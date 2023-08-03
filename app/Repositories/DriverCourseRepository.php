@@ -90,6 +90,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
     public function getAll($request)
     {
         $getMonth_year = explode("-",$request->month_year);
+        $month_year = $request->month_year;
 
         // Nhóm tất cả những course nằm trong driver
         $datas = $this->model->query()
@@ -110,11 +111,48 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->whereMonth("driver_courses.date",$getMonth_year[1])
             ->whereNull('driver_courses.deleted_at');
 
+        $dataTotalByDriverIds = [];
         if ($request->has('closing_date')){
-            $month_year = $request->month_year;
             $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
             $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
-            $datas->whereBetween('driver_courses.date', [$startDate, $endDate]);
+//            $datas->whereBetween('driver_courses.date', [$startDate, $endDate]);
+
+            // Nhóm tất cả những course nằm trong driver
+            $dataTotalByDriverIds = $this->model->query()
+                ->select(
+                    "driver_courses.driver_id",
+                    "drivers.driver_name",
+                    "drivers.driver_code",
+                    "drivers.type",
+                )
+                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names
+            ,SUM(CASE WHEN
+            `driver_courses`.`date` BETWEEN '$startDate' AND '$endDate'
+            THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
+            as `total_money`"))
+                ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+                ->groupBy("driver_courses.driver_id")
+                ->SortByForDriverCourse($request)
+                ->whereBetween('driver_courses.date', [$startDate, $endDate])
+                ->whereNull('driver_courses.deleted_at')->get()->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    };
+                    return $data;
+                });
+
         }
 
         $datas = $datas->get()->filter(function ($data) {
@@ -160,6 +198,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         foreach ($groupedDatas as $checkDatas){
             $dataConverts = [
                 'driver_code' => $checkDatas[0]->driver_code,
+                'driver_id' => $checkDatas[0]->driver_id,
                 'driver_name' => $checkDatas[0]->driver_name,
                 'driver_courses_id' => $checkDatas[0]->driver_courses_id,
                 'type' => $checkDatas[0]->type,
@@ -174,9 +213,15 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "course_names_color"=> $checkData['course_names_color']
                 ];
             }
+            if (count($dataTotalByDriverIds) != 0){
+                foreach ($dataTotalByDriverIds as $dataTotalByDriverId){
+                    if($dataTotalByDriverId->driver_id == $checkDatas[0]->driver_id){
+                        $dataConverts['total_money'] = $dataTotalByDriverId->total_money;
+                    }
+                }
+            }
             $listDataConverts[] = $dataConverts;
         }
-
 
         return $listDataConverts;
     }
@@ -1215,7 +1260,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         set_time_limit(3000000);
         ini_set('max_execution_time', '0');
         $dataForListShifts = $this->getAll($request);
-        $dataForTotalShiftByClosingDate = $this->totalOfExtraCost($request);
+//        $dataForTotalShiftByClosingDate = $this->totalOfExtraCost($request);
         $getMonth_year = explode("-",$request->month_year);
         $start_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Y-m-d');
         $end_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Y-m-d');
@@ -1318,7 +1363,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForTotalShiftByClosingDate as $key => $value){
+        foreach ($dataForListShifts as $key => $value){
             $sheet->setCellValue('A'.$index, $value['driver_code']);
             $sheet->setCellValue('B'.$index, $value['typeName']);
             $sheet->setCellValue('C'.$index, $value['driver_name']);
@@ -1326,14 +1371,13 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             // Truyền thông tin course theo ngày cho từng driver
             $colCalendarDriver = 4;
 
-            $driver_id = $value['driver_id'];
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
                 // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
-                foreach ($dataForListShifts as $dataForListShift){
+                foreach ($value['data_by_date'] as $dataByDate){
                     // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
-                    if ($driver_id == $dataForListShift['driver_id'] && $dataCalendar['date'] == $dataForListShift['date']){
-                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['course_names'],DataType::TYPE_STRING);
+                    if ($dataCalendar['date'] == $dataByDate['date']){
+                        $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names'],DataType::TYPE_STRING);
                     }
                 }
                 $colCalendarDriver++;
@@ -1349,7 +1393,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForTotalShiftByClosingDate as $key => $value){
+        foreach ($dataForListShifts as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
