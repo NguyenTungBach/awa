@@ -39,6 +39,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::post('driver-course/update-course','DriverCourseController@update_course');
             Route::apiResource('driver-course', 'DriverCourseController');
             Route::apiResource('/driver/{driver}/cash-out', 'CashOutController');
+            Route::get('/driver-cash-out-statistical/export', 'CashOutStatisticalController@export');
             Route::apiResource('/driver-cash-out-statistical', 'CashOutStatisticalController');
         });
         Route::group(['prefix' => 'auth'], function () {
