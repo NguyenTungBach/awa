@@ -9,6 +9,8 @@ use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use Illuminate\Http\Response;
 use App\Http\Resources\CashOutStatisticalResource;
+use App\Exports\CashOutStatisticalExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CashOutStatisticalController extends Controller
 {
@@ -59,6 +61,18 @@ class CashOutStatisticalController extends Controller
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
+        }
+    }
+
+    public function export(CashOutStatisticalRequest $request)
+    {
+        try {
+            $input = $request->all();
+
+            return Excel::download(new CashOutStatisticalExport($input), '運行情報一覧.xlsx');
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
         }
     }
 }

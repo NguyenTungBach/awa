@@ -23,8 +23,8 @@
 <div>
     <table>
         <tbody>
-            <tr>
-                <th bgcolor="{{ $itemColor }}" style="color: #000000; font-size: 20pt; border-bottom: 1px SOLID #000000" class="custom-row" colspan="2">運行情報一覧</th>
+            <tr style="height: 19px">
+                <th bgcolor="{{ $itemColor }}" style="color: #000000; font-size: 20pt; border-bottom: 1px SOLID #000000; height: 19px" class="custom-row" colspan="2">運行情報一覧</th>
             </tr>
             <tr></tr>
             <tr>
