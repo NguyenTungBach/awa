@@ -54,6 +54,8 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'total_express_charge_cost':
                   return $this->getCustomRule();
+              case 'salesList':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -215,6 +217,17 @@ class DriverCourseRequest extends FormRequest
                  ],
                  "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
                  "sortby" => "in:asc,desc"
+             ];
+         }
+
+         if(Route::getCurrentRoute()->getActionMethod() == 'salesList'){
+             return  [
+                 "field" => "in:customers.customer_code,customers.type,customers.customer_name",
+                 "sortby" => "in:asc,desc",
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
              ];
          }
      }

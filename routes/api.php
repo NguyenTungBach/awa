@@ -19,6 +19,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     Route::get('auth/bothutesthoi/ahii', 'AuthController@testAI');
     Route::get('driver-course/export-shift','DriverCourseController@export_shift');
     Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
+    Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');
+    Route::get('cash-in-statical/export-cash-in-statical','CashInStaticalController@exportCashInStatical');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');
         Route::get('calendar/index', 'CalendarController@index');
@@ -33,6 +35,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::apiResource('cash-in', 'CashInController');
+            Route::apiResource('cash-in-statical', 'CashInStaticalController');
+            Route::get('driver-course/sales-list', 'DriverCourseController@salesList');
+            Route::get('driver-course/sales-detail/{id}', 'DriverCourseController@salesDetail');
             Route::get('driver-course/total-extra-cost','DriverCourseController@total_extra_cost');
             Route::get('driver-course/get-all-express-charge','DriverCourseController@get_all_express_charge');
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
