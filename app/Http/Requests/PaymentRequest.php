@@ -28,6 +28,8 @@ class PaymentRequest extends FormRequest
         switch (Route::getCurrentRoute()->getActionMethod()){
             case 'index':
                 return $this->getCustomRuleIndex();
+            case 'export':
+                return $this->getCustomRuleIndex();
             default:
                 return [];
         }

@@ -39,7 +39,6 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
         $input['month_year'] = Arr::get($input, 'month_year', Carbon::now()->format('Y-m'));
         
-        // dd($input['month_year']);
         $startOfMonth = Carbon::createFromDate($input['month_year'])->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::createFromDate($input['month_year'])->endOfMonth()->format('Y-m-d');
         $monthYear = $input['month_year'];
@@ -71,15 +70,26 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             // driver_courses
             // $data[$key]['driver_course'] = $value->driverCourses;
             $sum = 0;
-            foreach ($value->driverCourses as $k => $item) {
-                if (isset($item['associate_company_fee'])) {
-                    $sum += $item['associate_company_fee'];
+            if ($value->driverCourses->isEmpty()) {
+                // empty
+                $data[$key]['course_id'] = 0;
+                $data[$key]['course_name'] = 0;
+                $data[$key]['date'] = 0;
+                $data[$key]['ship_date'] = 0;
+                $data[$key]['associate_company_fee'] = 0;
+
+            } else {
+                // not empty
+                foreach ($value->driverCourses as $k => $item) {
+                    if (isset($item['associate_company_fee'])) {
+                        $sum += $item['associate_company_fee'];
+                    }
+                    $data[$key]['course_id'] = $item->course_id;
+                    $data[$key]['course_name'] = $item->course_name;
+                    $data[$key]['date'] = $item->date;
+                    $data[$key]['ship_date'] = $item->ship_date;
+                    $data[$key]['associate_company_fee'] = $item->associate_company_fee;
                 }
-                $data[$key]['course_id'] = $item->course_id;
-                $data[$key]['course_name'] = $item->course_name;
-                $data[$key]['date'] = $item->date;
-                $data[$key]['ship_date'] = $item->ship_date;
-                $data[$key]['associate_company_fee'] = $item->associate_company_fee;
             }
             $data[$key]['payable_this_month'] = $sum;
         }
