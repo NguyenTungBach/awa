@@ -11,6 +11,7 @@ use App\Http\Requests\CashInRequest;
 use App\Repositories\Contracts\CashInRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\CashInResource;
+use Helper\ResponseService;
 use Illuminate\Http\Request;
 
 class CashInController extends Controller
@@ -40,20 +41,24 @@ class CashInController extends Controller
      *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
      *     )
      *   ),
-     *   @OA\Parameter(
-     *     name="page",
-     *     in="query",
+     *  @OA\Parameter(
+     *     name="customer_id",
+     *     description = "customer_id",
+     *     in="path",
+     *     required=true,
      *     @OA\Schema(
-     *      type="integer",
+     *     type="string",
      *     ),
-     *   ),
-     *   @OA\Parameter(
-     *     name="per_page",
-     *     in="query",
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
      *     @OA\Schema(
-     *      type="integer",
+     *     type="string",
      *     ),
-     *   ),
+     *     ),
      *   @OA\Response(
      *     response=401,
      *     description="Login false",

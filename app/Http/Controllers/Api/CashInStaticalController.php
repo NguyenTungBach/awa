@@ -40,20 +40,33 @@ class CashInStaticalController extends Controller
      *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
      *     )
      *   ),
-     *   @OA\Parameter(
-     *     name="page",
-     *     in="query",
+     *  @OA\Parameter(
+     *     name="field",
+     *     description = "customer_code,customer_name,balance_previous_month,receivable_this_month,total_account_receivable,total_cash_in_of_current_month,total_cash_in_current",
+     *     in="path",
+     *     required=true,
      *     @OA\Schema(
-     *      type="integer",
+     *     type="string",
      *     ),
-     *   ),
-     *   @OA\Parameter(
-     *     name="per_page",
-     *     in="query",
+     *     ),
+     *  @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     in="path",
+     *     required=true,
      *     @OA\Schema(
-     *      type="integer",
+     *     type="string",
      *     ),
-     *   ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
      *   @OA\Response(
      *     response=401,
      *     description="Login false",
@@ -70,8 +83,69 @@ class CashInStaticalController extends Controller
      */
     public function index(CashInStaticalRequest $request)
     {
-        $data = $this->repository->paginate($request->per_page);
-        return $this->responseJson(200, BaseResource::collection($data));
+        $data = $this->repository->getListCashInStatical($request);
+        return $this->responseJson(200, new BaseResource($data));
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/export-cash-in-statical",
+     *   tags={"CashInStatical"},
+     *   summary="Export CashInStatical",
+     *   operationId="export_cash_in_statical",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="field",
+     *     description = "customer_code,customer_name,balance_previous_month,receivable_this_month,total_account_receivable,total_cash_in_of_current_month,total_cash_in_current",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exportCashInStatical(CashInStaticalRequest $request)
+    {
+        $this->repository->exportCashInStatical($request);
+        return $this->responseJson(200, null, trans('messages.mes.export_success'));
     }
 
     /**
@@ -143,11 +217,10 @@ class CashInStaticalController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(CashInStaticalRequest $request,$id)
     {
         try {
-            $department = $this->repository->find($id);
-            return $this->responseJson(200, new BaseResource($department));
+            return $this->repository->getCashInStatical($request,$id);
         } catch (\Exception $e) {
             throw $e;
         }

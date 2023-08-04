@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DriverCourseRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
+use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
@@ -659,4 +660,179 @@ class DriverCourseController extends Controller
     {
         return $this->repository->delete($id);
     }
+
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/salesList",
+     *   tags={"DriverCourse"},
+     *   summary="Sales List",
+     *   operationId="sales_list_index",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="field",
+     *     description = "customers.customer_code,customers.type,customers.customer_name",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function salesList(DriverCourseRequest $request)
+    {
+        $data = $this->repository->salesList($request);
+        return ResponseService::responseJson(200, new BaseResource($data));
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/export-sales-list",
+     *   tags={"DriverCourse"},
+     *   summary="Export Sales List",
+     *   operationId="export_sales_list",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="field",
+     *     description = "customers.customer_code,customers.type,customers.customer_name",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exportSalesList(DriverCourseRequest $request)
+    {
+        $this->repository->exportSaleList($request);
+        return $this->responseJson(200, null, trans('messages.mes.export_success'));
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/sales-detail/{id}",
+     *   tags={"DriverCourse"},
+     *   summary="Sales Detail",
+     *   operationId="sales_detail_index",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function salesDetail(DriverCourseRequest $request,$id)
+    {
+        // Kiểm tra customer có tồn tại không
+        $customer = Customer::find($id);
+        if ($customer == null){
+            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.attribute_not_found',[
+                "attribute"=> "customer",
+                "id"=> $id
+            ]));
+        }
+
+        $data = $this->repository->saleDetail($request,$id);
+        return ResponseService::responseJson(200, new BaseResource($data));
+    }
+
 }

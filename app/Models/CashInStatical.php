@@ -34,4 +34,13 @@ class CashInStatical extends Model
         'data' => 'array'
     ];
 
+    public function scopeSortByForCashInStatic($query)
+    {
+        if (request()->filled('field') && request()->filled('sortby')) {
+            $field = request()->get('field');
+            $sortby = request()->get('sortby');
+            $query->orderBy($field, $sortby);
+        }
+        return $query;
+    }
 }
