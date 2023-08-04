@@ -42,6 +42,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('/driver-cash-out-statistical/export', 'CashOutStatisticalController@export');
             Route::apiResource('/driver-cash-out-statistical', 'CashOutStatisticalController');
             Route::apiResource('/final-closing', 'FinalClosingHistoriesController');
+            Route::get('/payment/export', 'PaymentController@export');
             Route::apiResource('/payment', 'PaymentController');
         });
         Route::group(['prefix' => 'auth'], function () {

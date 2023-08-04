@@ -83,14 +83,14 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
                     ->get();
 
         foreach ($cashOuts as $key => $value) {
-            $data[$key]['id'] = $value->id;
-            $data[$key]['driver_id'] = $value->driver_id;
-            $data[$key]['payment_date'] = date('Y/m/d', strtotime($value->payment_date));
-            $data[$key]['cash_out'] = $value->cash_out;
-            $data[$key]['payment_method'] = __('cash_outs.payment_method_lang.'.$value->payment_method);
-            $data[$key]['note'] = empty($value->note) ? '' : $value->note;
+            $data['list_cash_out'][$key]['id'] = $value->id;
+            $data['list_cash_out'][$key]['driver_id'] = $value->driver_id;
+            $data['list_cash_out'][$key]['payment_date'] = date('Y/m/d', strtotime($value->payment_date));
+            $data['list_cash_out'][$key]['cash_out'] = $value->cash_out;
+            $data['list_cash_out'][$key]['payment_method'] = __('cash_outs.payment_method_lang.'.$value->payment_method);
+            $data['list_cash_out'][$key]['note'] = empty($value->note) ? '' : $value->note;
         }
-        $data[]['total_cash_out_month'] = $cashOuts->sum('cash_out');
+        $data['total'][]['total_cash_out_month'] = $cashOuts->sum('cash_out');
 
         $result = $data;
 
