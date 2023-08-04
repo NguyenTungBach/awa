@@ -122,70 +122,57 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
         $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
         $input['month_line'] = Arr::get($input, 'month_line', Carbon::now()->format('Y-m'));
 
-        $cashOutStatisticals = DB::table('cash_out_statisticals')
-            ->rightJoin('drivers', 'cash_out_statisticals.driver_id', '=', 'drivers.id')
-            ->where('drivers.type', 4)
-            ->get();
+        $monthLine = $input['month_line'];
 
-        $collection = $cashOutStatisticals->sortBy([
-            [$input['order_by'], $input['sort_by']],
-        ]);
+        // dieu kien de fillter month
+        // 1: cashOutStatistical.month_line thuoc input['month_year']: where('cashOutStatistical.month_line', $monthYear)
+
+        $drivers = Driver::where('type', 4)
+                    ->with(['cashOutStatistical' => function ($query) use($monthLine) {
+                        $query->where('month_line', $monthLine);
+                    }]);
+
+        $drivers = $drivers->get();
 
         $data = [];
-        // $collectionWithMonth = $collection->where('month_line', $input['month_line']);
-        foreach ($collection as $key => $value) {
-            $driverIdValue = empty($value->driver_id) ? 0 : $value->driver_id;
-            $monthLineValue = empty($value->month_line) ? 0 : $value->month_line;
-            $balancePreviousMonthValue = empty($value->balance_previous_month) ? 0 : $value->balance_previous_month;
-            $payableThisMonthValue = empty($value->payable_this_month) ? 0 : $value->payable_this_month;
-            $totalCashOutCurrentValue = empty($value->total_cash_out_current) ? 0 : $value->total_cash_out_current;
-
+        foreach ($drivers as $key => $value) {
+            // drivers
             $data[$key]['id'] = $value->id;
-            $data[$key]['driver_id'] = $driverIdValue;
+            $data[$key]['type'] = $value->type;
             $data[$key]['driver_code'] = $value->driver_code;
             $data[$key]['driver_name'] = $value->driver_name;
-            $data[$key]['month_line'] = $monthLineValue;
-            // no cuoi thang truoc
-            $data[$key]['balance_previous_month'] = $balancePreviousMonthValue;
-            // no thang nay
-            $data[$key]['payable_this_month'] = $payableThisMonthValue;
-            // tong no thang nay
-            $data[$key]['total_payable'] = $balancePreviousMonthValue + $payableThisMonthValue;
-            // so tien da tra thang nay
-            $data[$key]['total_cash_out_current'] = $totalCashOutCurrentValue;
-            // no lai thang nay
-            $data[$key]['balance_current'] = $balancePreviousMonthValue + $payableThisMonthValue - $totalCashOutCurrentValue;
+            // driver_courses
+            // $data[$key]['cash_out_statistical'] = $value->cashOutStatistical;
+            if ($value->cashOutStatistical->isEmpty()) {
+                // empty
+                $data[$key]['month_line'] = 0;
+                // no cuoi thang truoc
+                $data[$key]['balance_previous_month'] = 0;
+                // no thang nay
+                $data[$key]['payable_this_month'] = 0;
+                // tong no thang nay
+                $data[$key]['total_payable'] = 0;
+                // so tien da tra thang nay
+                $data[$key]['total_cash_out_current'] = 0;
+                // no lai thang nay
+                $data[$key]['balance_current'] = 0;
+            } else {
+                // not empty
+                foreach ($value->cashOutStatistical as $k => $item) {
+                    $data[$key]['month_line'] = $item['month_line'];
+                    // no cuoi thang truoc
+                    $data[$key]['balance_previous_month'] = $item['balance_previous_month'];
+                    // no thang nay
+                    $data[$key]['payable_this_month'] = $item['payable_this_month'];
+                    // tong no thang nay
+                    $data[$key]['total_payable'] = $item['balance_previous_month'] + $item['payable_this_month'];
+                    // so tien da tra thang nay
+                    $data[$key]['total_cash_out_current'] = $item['total_cash_out_current'];
+                    // no lai thang nay
+                    $data[$key]['balance_current'] = $item['balance_previous_month'] + $item['payable_this_month'] - $item['total_cash_out_current'];
+                }
+            }
         }
-
-        // $dataNull = [];
-        // // $collectionNotMonth = $collection->where('month_line', '<',$input['month_line']);
-        // $collectionNotMonth = $collection->whereBetween('month_line', [NULL, '2023-06']);
-        // dd('not month', $collectionNotMonth);
-
-        // foreach ($collectionNotMonth as $key => $value) {
-        //     dd($value);
-        //     $driverIdValue = empty($value->driver_id) ? 0 : $value->driver_id;
-        //     $monthLineValue = empty($value->month_line) ? 0 : $value->month_line;
-        //     $balancePreviousMonthValue = empty($value->balance_previous_month) ? 0 : $value->balance_previous_month;
-        //     $payableThisMonthValue = empty($value->payable_this_month) ? 0 : $value->payable_this_month;
-        //     $totalCashOutCurrentValue = empty($value->total_cash_out_current) ? 0 : $value->total_cash_out_current;
-
-        //     $dataNull[$key]['id'] = $value->id;
-        //     $dataNull[$key]['driver_id'] = $driverIdValue;
-        //     $dataNull[$key]['driver_code'] = $value->driver_code;
-        //     $dataNull[$key]['driver_name'] = $value->driver_name;
-        //     $dataNull[$key]['month_line'] = $monthLineValue;
-        //     // no cuoi thang truoc
-        //     $dataNull[$key]['balance_previous_month'] = $balancePreviousMonthValue;
-        //     // no thang nay
-        //     $dataNull[$key]['payable_this_month'] = $payableThisMonthValue;
-        //     // tong no thang nay
-        //     $dataNull[$key]['total_payable'] = $balancePreviousMonthValue + $payableThisMonthValue;
-        //     // so tien da tra thang nay
-        //     $dataNull[$key]['total_cash_out_current'] = $totalCashOutCurrentValue;
-        //     // no lai thang nay
-        //     $dataNull[$key]['balance_current'] = $balancePreviousMonthValue + $payableThisMonthValue - $totalCashOutCurrentValue;
-        // }
 
         $result = $data;
 
@@ -201,6 +188,8 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
         $result['driver_code'] = $result->driver->driver_code;
         $result['driver_name'] = $result->driver->driver_name;
+        $result['total_payable'] = $result->balance_previous_month + $result->payable_this_month;
+        $result['balance_current'] = $result->balance_previous_month + $result->payable_this_month - $result->total_cash_out_current;
         unset($result['driver']);
 
         return $result;

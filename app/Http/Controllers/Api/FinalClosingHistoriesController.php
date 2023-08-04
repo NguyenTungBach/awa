@@ -12,11 +12,12 @@ use App\Repositories\Contracts\FinalClosingHistoriesRepositoryInterface;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\FinalClosingHistoriesResource;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Http\Response;
 
 class FinalClosingHistoriesController extends Controller
 {
-
-     /**
+    /**
      * var Repository
      */
     protected $repository;
@@ -70,8 +71,14 @@ class FinalClosingHistoriesController extends Controller
      */
     public function index(FinalClosingHistoriesRequest $request)
     {
-        $data = $this->repository->paginate($request->per_page);
-        return $this->responseJson(200, BaseResource::collection($data));
+        try {
+            $result = $this->repository->getAll($request->all());
+
+            return $this->responseJson(Response::HTTP_OK, FinalClosingHistoriesResource::collection($result), LIST_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());
+        }
     }
 
     /**
@@ -100,10 +107,16 @@ class FinalClosingHistoriesController extends Controller
     public function store(FinalClosingHistoriesRequest $request)
     {
         try {
-            $data = $this->repository->create($request->all());
-            return $this->responseJson(200, new FinalClosingHistoriesResource($data));
-        } catch (\Exception $e) {
-            throw $e;
+            $request['date'] = Carbon::now()->format('Y-m-d');
+            $result = $this->repository->createFinalClosing($request->all());
+            if (empty($result)) {
+                return $this->responseJsonError(Response::HTTP_NOT_FOUND, CREATE_ERROR, 'NOT FOUND DRIVER IN DRIVER COURSE');
+            }
+
+            return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource($result), CREATE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $exception->getMessage());
         }
     }
 
@@ -146,67 +159,13 @@ class FinalClosingHistoriesController extends Controller
     public function show($id)
     {
         try {
-            $department = $this->repository->find($id);
-            return $this->responseJson(200, new BaseResource($department));
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
+            $result = $this->repository->getDetail($id);
 
-    /**
-     * @OA\Post(
-     *   path="/api/final-closing-histories/{id}",
-     *   tags={"FinalClosingHistories"},
-     *   summary="Update FinalClosingHistories",
-     *   operationId="final_closing_histories_update",
-     *   @OA\Parameter(
-     *     name="id",
-     *     in="path",
-     *     required=true,
-     *     @OA\Schema(
-     *      type="string",
-     *     ),
-     *   ),
-     *   @OA\RequestBody(
-     *       @OA\MediaType(
-     *          mediaType="application/json",
-     *          example={"name":"string"},
-     *          @OA\Schema(
-     *            required={"name"},
-     *            @OA\Property(
-     *              property="name",
-     *              format="string",
-     *            ),
-     *         )
-     *      )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":{"id": 1,"name":  "............."}}
-     *     ),
-     *   ),
-     *   @OA\Response(
-     *     response=403,
-     *     description="Access Deny permission",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":403,"message":"Access Deny permission"}
-     *     ),
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(FinalClosingHistoriesRequest $request, $id)
-    {
-        $attributes = $request->except([]);
-        $data = $this->repository->update($attributes, $id);
-        return $this->responseJson(200, new BaseResource($data));
+            return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource($result), SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, $exception->getMessage());
+        }
     }
 
     /**
@@ -239,7 +198,11 @@ class FinalClosingHistoriesController extends Controller
      */
     public function destroy($id)
     {
-        $this->repository->delete($id);
-        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
+        $result =  $this->repository->deleteFinalClosing($id);
+        if ($result) {
+            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+        }
+
+        return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
     }
 }
