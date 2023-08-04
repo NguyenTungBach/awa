@@ -127,18 +127,14 @@
                                             </span>
                                         </label>
                                         <b-input-group class="mb-3">
-                                            <b-form-input
-                                                id="input-start-time"
-                                                v-model="isForm.start_time"
-                                                type="text"
-                                            />
-                                            <b-input-group-append>
-                                                <b-form-timepicker
-                                                    v-model="isForm.start_time"
-                                                    button-only
-                                                    right
+                                            <div class="item-form">
+                                                <SelectMultiple
+                                                    :options="isForm.listTime"
+                                                    :value="isForm.start_time"
+                                                    :formatter="formatter"
+                                                    @select="getSelectStartTime"
                                                 />
-                                            </b-input-group-append>
+                                            </div>
                                         </b-input-group>
                                     </b-col>
                                     <b-col
@@ -155,18 +151,14 @@
                                             </span>
                                         </label>
                                         <b-input-group class="mb-3">
-                                            <b-form-input
-                                                id="input-end-time"
-                                                v-model="isForm.end_time"
-                                                type="text"
-                                            />
-                                            <b-input-group-append>
-                                                <b-form-timepicker
-                                                    v-model="isForm.end_time"
-                                                    button-only
-                                                    right
+                                            <div class="item-form">
+                                                <SelectMultiple
+                                                    :options="isForm.listTime"
+                                                    :value="isForm.end_time"
+                                                    :formatter="formatter"
+                                                    @select="getSelectEndTime"
                                                 />
-                                            </b-input-group-append>
+                                            </div>
                                         </b-input-group>
                                     </b-col>
                                     <b-col
@@ -183,18 +175,14 @@
                                             </span>
                                         </label>
                                         <b-input-group class="mb-3">
-                                            <b-form-input
-                                                id="input-break-time"
-                                                v-model="isForm.break_time"
-                                                type="text"
-                                            />
-                                            <b-input-group-append>
-                                                <b-form-timepicker
-                                                    v-model="isForm.break_time"
-                                                    button-only
-                                                    right
+                                            <div class="item-form">
+                                                <SelectMultiple
+                                                    :options="isForm.listTime"
+                                                    :value="isForm.break_time"
+                                                    :formatter="formatter"
+                                                    @select="getSelectBreakTime"
                                                 />
-                                            </b-input-group-append>
+                                            </div>
                                         </b-input-group>
                                     </b-col>
                                 </b-row>
@@ -448,7 +436,8 @@ import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import TitlePathForm from '@/components/TitlePathForm';
 import { setLoading } from '@/utils/handleLoading';
-import { formatArray2Time } from '@/utils/convertTime';
+import SelectMultiple from '@/components/SelectMultiple';
+// import { formatArray2Time } from '@/utils/convertTime';
 // import { format2Digit } from '@/utils/generateTime';
 // import NodeSchedule from '@/components/NodeSchedule';
 // import { cleanObject } from '@/utils/handleObject';
@@ -458,6 +447,7 @@ import TOAST_SCHEDULE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import { getListSchedule, postImportFile, postListSchedule } from '@/api/modules/courseSchedule';
 // import { validateSizeFile, validateFileCSV } from '@/utils/validate';
 // import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
+// import { convertTimeToSelect, convertBreakTimeNumberToTime } from '@/utils/convertTime';
 // import { validateCourse } from '@/utils/validateCRUD';
 import { postCourse } from '@/api/modules/courseSchedule';
 import { getList } from '@/api/modules/courseManagement';
@@ -468,6 +458,7 @@ export default {
 		LineGray,
 		// NodeSchedule,
 		TitlePathForm,
+		SelectMultiple,
 	},
 
 	data() {
@@ -483,9 +474,9 @@ export default {
 				customer_id: '',
 				course_name: '',
 				ship_date: '',
-				start_time: '',
-				end_time: '',
-				break_time: '',
+				start_time: [null, null],
+				end_time: [null, null],
+				break_time: [null, null],
 				customer_name: null,
 				departure_place: '',
 				arrival_place: '',
@@ -496,6 +487,7 @@ export default {
 				bonus_amount: '',
 				note: '',
 				optionListCustomer: [],
+				listTime: [],
 			},
 		};
 	},
@@ -513,12 +505,68 @@ export default {
 	},
 
 	methods: {
+		genereateOptionTime(min = 0, max = 23) {
+			const result = [];
+
+			for (let i = min; i <= max; i++) {
+				result.push({
+					value: i < 10 ? `0${i}` : `${i}`,
+					text: i < 10 ? `0${i}` : `${i}`,
+					disabled: false,
+				});
+			}
+
+			return [result,
+				[
+					{
+						value: '00',
+						text: '00',
+					},
+					{
+						value: '15',
+						text: '15',
+					},
+					{
+						value: '30',
+						text: '30',
+					},
+					{
+						value: '45',
+						text: '45',
+					},
+				],
+			];
+		},
+
+		formatter(arr) {
+			for (let idx = 0; idx < arr.length; idx++) {
+				if (!arr[idx]) {
+					return arr.join('');
+				}
+			}
+
+			return arr.join(':');
+		},
+
+		getSelectStartTime(select) {
+			this.isForm.start_time = select;
+		},
+
+		getSelectEndTime(select) {
+			this.isForm.end_time = select;
+		},
+
+		getSelectBreakTime(select) {
+			this.isForm.break_time = select;
+		},
+
 		onClickReturn() {
 			this.$router.push({ name: 'ListSchedule' });
 		},
 
 		async initDate() {
 			await this.handleGetCustomer();
+			this.isForm.listTime = this.genereateOptionTime();
 		},
 
 		async handleGetCustomer() {
@@ -550,9 +598,9 @@ export default {
 				customer_id: this.isForm.customer_name,
 				course_name: this.isForm.course_name,
 				ship_date: this.isForm.ship_date,
-				start_date: (this.isForm.start_time).slice(0, 5),
-				end_date: (this.isForm.end_time).slice(0, 5),
-				break_time: (this.isForm.break_time).slice(0, 5),
+				start_date: this.formatter(this.isForm.start_time),
+				end_date: this.formatter(this.isForm.end_time),
+				break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
 				departure_place: this.isForm.departure_place,
 				arrival_place: this.isForm.arrival_place,
 				ship_fee: this.isForm.freight_cost,
@@ -629,15 +677,14 @@ export default {
                 }
 
                 .zone-form {
-                    &__body {
-                        .item-form {
-                            margin-bottom: 10px;
-                            font-size: 18px;
-                        }
+                    .item-form {
+                    margin-bottom: 10px;
+                    font-size: 18px;
+                    width: 100%;
+                    }
 
-                        .select-multiple {
-                            width: 100%;
-                        }
+                    .select-multiple {
+                        width: 100%;
                     }
                     .date{
                         padding: 0;

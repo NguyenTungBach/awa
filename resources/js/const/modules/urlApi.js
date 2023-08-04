@@ -55,6 +55,7 @@ const POST_DAY_OFF = '/day-off';
 // /api/shift?date=2022-05&start_date=2022-04-30&end_date=2022-05-06&type=week
 const GET_LIST_PRACTICAL = '/parctical-performance';
 const GET_LIST_SHIFT_TABLE = '/driver-course';
+const GET_TOTAL_EXTRA_COST = '/driver-course/total-extra-cost';
 const GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK = '/shift/export-to-excel';
 const GET_EXPORT_SHIFT_PDF_ONLY_WEEK = '/shift/export-to-pdf';
 const GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL = '/parctical-performance/export-to-excel';
@@ -65,6 +66,9 @@ const POST_UPDATE_COURSE_BASE = '/shift/edits';
 const POST_CHECK_DATA_RESULT = '/shift/check-data-result';
 const POST_ADD_LIST_SHIFT = '/shift';
 const GET_MESSAGE_RESPONSE_AI = '/shift/get-message-response-ai';
+
+// Cash Disbusement
+const GET_LIST_CASH_DISBUSEMENT = '/driver-cash-out-statistical';
 
 export default {
 	// Auth API
@@ -121,6 +125,7 @@ export default {
 	// Shift API
 	GET_LIST_PRACTICAL,
 	GET_LIST_SHIFT_TABLE,
+	GET_TOTAL_EXTRA_COST,
 	GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK,
 	GET_EXPORT_SHIFT_PDF_ONLY_WEEK,
 	GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL,
@@ -131,4 +136,7 @@ export default {
 	POST_CHECK_DATA_RESULT,
 	POST_ADD_LIST_SHIFT,
 	GET_MESSAGE_RESPONSE_AI,
+
+	// Cash Disbusement
+	GET_LIST_CASH_DISBUSEMENT,
 };
