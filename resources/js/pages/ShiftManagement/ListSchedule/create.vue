@@ -592,7 +592,6 @@ export default {
 		},
 
 		async onClickSave() {
-			console.log('isform:', this.isForm);
 			setLoading(true);
 			const course = {
 				customer_id: this.isForm.customer_name,

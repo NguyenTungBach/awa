@@ -34,6 +34,7 @@ const getters = {
 	warningNotSaveDriver: state => state.listDriver.warningNotSave,
 	warningNotSaveCourse: state => state.course.warningNotSave,
 	warningNotSaveCoursePattern: state => state.listCoursePattern.warningNotSave,
+	idRouter: state => state.listCash.idRouter,
 };
 
 export default getters;

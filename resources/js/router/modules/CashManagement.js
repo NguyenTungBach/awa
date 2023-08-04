@@ -68,7 +68,7 @@ const CashManagement = {
 			component: () => import(/* webpackChunkName: "List Schedule" */ '@/pages/CashManagement/CashDisbursement/index.vue'),
 		},
 		{
-			path: 'list-cash-disbursement-create',
+			path: 'list-cash-disbursement-create/:id',
 			name: 'ListCashDisbursementCreate',
 			meta: {
 				title: 'ROUTER.LIST_CASH_DISBURSEMENT',

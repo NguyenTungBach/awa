@@ -69,6 +69,11 @@ const GET_MESSAGE_RESPONSE_AI = '/shift/get-message-response-ai';
 
 // Cash Disbusement
 const GET_LIST_CASH_DISBUSEMENT = '/driver-cash-out-statistical';
+const GET_DETAIL_CASH_DISBURSEMENT = '/driver-cash-out-statistical';
+const GET_LIST_CASH_OUT = '/driver';
+const DELETE_CASH_OUT = '/driver';
+const POST_CASH_OUT = '/driver';
+const PUT_CASH_OUT = '/driver';
 
 export default {
 	// Auth API
@@ -139,4 +144,9 @@ export default {
 
 	// Cash Disbusement
 	GET_LIST_CASH_DISBUSEMENT,
+	GET_DETAIL_CASH_DISBURSEMENT,
+	GET_LIST_CASH_OUT,
+	DELETE_CASH_OUT,
+	POST_CASH_OUT,
+	PUT_CASH_OUT,
 };

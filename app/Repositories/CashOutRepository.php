@@ -90,9 +90,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
             $data['list_cash_out'][$key]['payment_method'] = __('cash_outs.payment_method_lang.'.$value->payment_method);
             $data['list_cash_out'][$key]['note'] = empty($value->note) ? '' : $value->note;
         }
-        $data['total'][]['total_cash_out_month'] = $cashOuts->sum('cash_out');
-
-        $result = $data;
+        $result = ['data_list_cash_out'=> $data, 'total_cash_out_month' =>$cashOuts->sum('cash_out')];
 
         return $result;
     }

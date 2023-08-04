@@ -14,6 +14,7 @@ import handleAI from './modules/handleAI';
 import calendar from './modules/calendar';
 import user from './modules/user';
 import course from './modules/course';
+import listCash from './modules/listCashOut';
 
 import getters from './getters';
 
@@ -33,6 +34,7 @@ const modules = {
 	calendar,
 	user,
 	course,
+	listCash,
 };
 
 const store = new Vuex.Store({
