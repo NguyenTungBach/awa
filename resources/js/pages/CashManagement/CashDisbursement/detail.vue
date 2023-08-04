@@ -31,7 +31,7 @@
                                         class="btn-edit btn-color-active"
                                         @click="onClickCreate()"
                                     >
-                                        {{ $t('APP.BUTTON_EDIT') }}
+                                        {{ $t('APP.BUTTON_CREATE') }}
                                     </b-button>
                                 </div>
                             </b-col>
@@ -69,7 +69,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_ID')"
-                                                        :value="isForm.course_id"
+                                                        :value="isForm.driver_code"
                                                     />
                                                 </div>
                                             </b-col>
@@ -80,7 +80,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_NAME')"
-                                                        :value="isForm.course_name"
+                                                        :value="isForm.driver_name"
                                                     />
                                                 </div>
                                             </b-col>
@@ -91,7 +91,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_CURRENT_MONTH_BALANCE')"
-                                                        :value="isForm.course_current_month_balance"
+                                                        :value="isForm.balance_current"
                                                     />
                                                 </div>
                                             </b-col>
@@ -101,7 +101,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_BALANCE_AT_END_OF_PREVIOUS_MONTH')"
-                                                        :value="isForm.course_balance_at_end_of_previous_month"
+                                                        :value="isForm.balance_previous_month"
                                                     />
                                                 </div>
                                             </b-col>
@@ -111,7 +111,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_ACCOUNTS_RECEIVABLE')"
-                                                        :value="isForm.course_accounts_receivable"
+                                                        :value="isForm.payable_this_month"
                                                     />
                                                 </div>
                                             </b-col>
@@ -121,7 +121,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL_ACCOUNTS_RECEIVABLE')"
-                                                        :value="isForm.course_total_account_receivable"
+                                                        :value="isForm.total_payable"
                                                     />
                                                 </div>
                                             </b-col>
@@ -194,19 +194,19 @@
                                             <template v-for="(course, idx) in listCashDeital">
                                                 <b-tr :key="`item-cash-${idx + 1}`">
                                                     <b-td class="td-cash-id" :colspan="1">
-                                                        {{ course.no }}
+                                                        {{ course.id }}
                                                     </b-td>
                                                     <b-td class="td-cash-name" :colspan="2">
-                                                        {{ course.date }}
+                                                        {{ course.payment_date }}
                                                     </b-td>
                                                     <b-td class="td-cash-balance" :colspan="2">
-                                                        {{ course.deposit_amount }}
+                                                        {{ course.cash_out }}
                                                     </b-td>
                                                     <b-td class="td-cash-account-receiable" :colspan="2">
                                                         {{ course.payment_method }}
                                                     </b-td>
                                                     <b-td class="td-cash-total-account-receiable" :colspan="3">
-                                                        {{ course.remarks }}
+                                                        {{ course.note }}
                                                     </b-td>
                                                     <b-td class="td-cash-edit td-control" :colspan="1">
                                                         <i class="fas fa-pen" @click="onClickEdit(course.id)" />
@@ -214,7 +214,7 @@
                                                     <b-td class="td-cash-delete td-control" :colspan="1">
                                                         <i
                                                             class="fas fa-trash-alt"
-                                                            @click="onClickShowModalDelete()"
+                                                            @click="onClickShowModalDelete(course.id)"
                                                         />
                                                     </b-td>
                                                 </b-tr>
@@ -224,7 +224,7 @@
                                                     {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL') }}
                                                 </b-th>
                                                 <b-td>
-                                                    {{ isForm.total }}
+                                                    {{ totalCashOut }}
                                                 </b-td>
                                             </b-tr>
                                         </b-tbody>
@@ -260,6 +260,7 @@
                         <b-button
                             pill
                             class="mr-2 btn-color-active-import"
+                            @click="handleOK()"
                         >
                             OK
                         </b-button>
@@ -271,6 +272,12 @@
 </template>
 <script>
 import LineGray from '@/components/LineGray';
+import CONSTANT from '@/const';
+import { setLoading } from '@/utils/handleLoading';
+import { getDetailDisbursement, getListCashOut, deleteCashOut } from '@/api/modules/cashDisbursement';
+// import { cleanObject } from '@/utils/handleObject';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
+import { format2Digit } from '@/utils/generateTime';
 import DetailForm from '@/components/DetailForm';
 import TitlePathForm from '@/components/TitlePathForm';
 export default {
@@ -287,14 +294,16 @@ export default {
 			showModalDelete: false,
 			// idCashOut: null,
 			isForm: {
-				course_id: '',
-				course_name: '',
-				course_current_month_balance: '',
-				course_balance_at_end_of_previous_month: '',
-				course_accounts_receivable: '',
-				course_total_account_receivable: '',
-				total: '122.55',
+				driver_code: '',
+				driver_name: '',
+				balance_current: '',
+				balance_previous_month: '',
+				payable_this_month: '',
+				total_payable: '',
 			},
+
+			totalCashOut: '',
+			scopeID: '',
 
 			listCashDeital: [
 				{
@@ -317,7 +326,23 @@ export default {
 		};
 	},
 
+	computed: {
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
+	},
+
+	created() {
+		this.initData();
+	},
+
 	methods: {
+		async initData() {
+			this.idCash = this.$route.params.id || null;
+			await this.handleGetDetailDisbursement();
+			await this.handleGetlistCashOut();
+		},
+
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashDisbursement' });
 		},
@@ -327,6 +352,8 @@ export default {
 		},
 
 		onClickEdit(idCashOut) {
+			this.$store.dispatch('listCash/setIdRouter', this.$route.params.id);
+			console.log('get id', this.$route);
 			this.$router.push({ name: 'ListCashDisbursementEdit', params: { id: idCashOut }});
 		},
 
@@ -334,8 +361,76 @@ export default {
 			this.showModalDelete = false;
 		},
 
-		onClickShowModalDelete() {
+		onClickShowModalDelete(scope) {
+			this.scopeID = scope;
 			this.showModalDelete = true;
+		},
+
+		async handleOK() {
+			try {
+				this.showModalDelete = false;
+				if (this.scopeID) {
+					setLoading(true);
+					const URL = `${CONSTANT.URL_API.DELETE_CASH_OUT}/${this.idCash}/cash-out/${this.scopeID}`;
+					const DELETE_CASH_OUT = await deleteCashOut(URL);
+					if (DELETE_CASH_OUT.code === 200) {
+						TOAST_CASH_MANAGEMENT.delete();
+						await this.handleGetlistCashOut();
+					}
+					setLoading(false);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetDetailDisbursement() {
+			try {
+				if (this.idCash) {
+					setLoading(true);
+					const PARAMS = {};
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
+
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+					PARAMS.month_line = YEAR_MONTH;
+					const URL = `${CONSTANT.URL_API.GET_DETAIL_CASH_DISBURSEMENT}/${this.idCash}`;
+					const response = await getDetailDisbursement(URL, PARAMS);
+					if (response.code === 200) {
+						const DATA = response.data;
+						this.isForm.driver_code = DATA.driver_code;
+						this.isForm.driver_name = DATA.driver_name;
+						this.isForm.balance_current = DATA.balance_current ? Number(DATA.balance_current).toLocaleString() + '円' : '';
+						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month).toLocaleString() + '円' : '';
+						this.isForm.payable_this_month = DATA.payable_this_month ? Number(DATA.payable_this_month).toLocaleString() + '円' : '';
+						this.isForm.total_payable = DATA.total_payable ? Number(DATA.total_payable).toLocaleString() + '円' : '';
+					} else {
+						TOAST_CASH_MANAGEMENT.warning(response.message_content);
+					}
+					setLoading(false);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetlistCashOut() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_OUT}/${this.idCash}/cash-out`;
+				const params = {};
+				const response = await getListCashOut(URL, params);
+				if (response.code === 200) {
+					this.listCashDeital = response.data.data_list_cash_out.list_cash_out;
+					this.totalCashOut = response.data.total_cash_out_month;
+				} else {
+					TOAST_CASH_MANAGEMENT.warning(response.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };
@@ -383,7 +478,7 @@ export default {
                         border: 1px solid rgb(211, 211, 211);
                     }
                     .th-remarks {
-                        min-width: 200px;
+                        min-width: 170px;
                         text-align: center;
                         background-color: #FFF4E4;
                     }

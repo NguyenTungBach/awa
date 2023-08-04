@@ -29,6 +29,7 @@
                                     <b-button
                                         pill
                                         class="btn-color-active btn-save"
+                                        @click="handleOnClickSave()"
                                     >
                                         {{ $t('APP.BUTTON_SAVE') }}
                                     </b-button>
@@ -117,7 +118,8 @@
                                                     </label>
                                                     <b-form-input
                                                         id="input-deposit-day"
-                                                        v-model="isForm.character"
+                                                        v-model="isForm.cash_out"
+                                                        type="number"
                                                     />
                                                 </b-col>
                                                 <b-col
@@ -151,7 +153,7 @@
                                                         <b-input-group>
                                                             <b-form-select
                                                                 id="input-payment-method"
-                                                                v-model="isForm.exclusive"
+                                                                v-model="isForm.payment_method"
                                                                 :options="optionsClosingDay"
                                                             />
                                                         </b-input-group>
@@ -191,22 +193,26 @@
 </template>
 <script>
 import LineGray from '@/components/LineGray';
-// import TitlePathForm from '@/components/TitlePathForm';
+import CONSTANT from '@/const';
+import { setLoading } from '@/utils/handleLoading';
+import { postCashOut } from '@/api/modules/cashDisbursement';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 
 export default {
 	name: 'CashCreate',
 	components: {
 		LineGray,
-		// TitlePathForm,
 	},
 
 	data() {
 		return {
 			isForm: {
+				id: '',
 				payment_day: '',
+				cash_out: '',
 				dateOfBirth: '',
 				retirementDate: '',
-				exclusive: '',
+				payment_method: '',
 				note: '',
 			},
 
@@ -229,9 +235,41 @@ export default {
 		},
 	},
 
+	created() {
+		this.initData();
+	},
+
 	methods: {
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashDisbursement' });
+		},
+
+		async initData() {
+			this.isForm.id = this.$route.params.id || null;
+		},
+
+		async handleOnClickSave() {
+			try {
+				setLoading(true);
+				const PARAMS = {
+					payment_date: this.isForm.payment_day,
+					cash_out: this.isForm.cash_out,
+					payment_method: this.isForm.payment_method,
+					note: this.isForm.note,
+				};
+				const URL = `${CONSTANT.URL_API.POST_CASH_OUT}/${this.isForm.id}/cash-out`;
+				const response = await postCashOut(URL, PARAMS);
+				if (response.code === 200) {
+					TOAST_CASH_MANAGEMENT.success();
+					this.$router.push({ name: 'ListCashDisbursementDetail', params: { id: this.isForm.id }});
+				} else {
+					TOAST_CASH_MANAGEMENT.warning(response.message);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+				setLoading(false);
+			}
 		},
 	},
 };

@@ -150,12 +150,13 @@ export default {
 	},
 
 	props: {
-        halfDayOff: {
+		halfDayOff: {
 			type: Array,
 			default: () => {
 				return [];
 			},
-        },
+		},
+
 		listSelect: {
 			type: Array,
 			default: () => {

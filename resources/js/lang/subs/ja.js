@@ -67,6 +67,10 @@ export default {
 		LIST_SHIFT_VALIDATE_TIME_START_END_COURSE: '終業時間は始業時間より後の時間を選択してください。',
 		LIST_SHIFT_VALIDATE_TIME_BREAK_COURSE: '休憩時間が長すぎます。',
 		LIST_SHIFT_VALIDATE_DUPLICATE_TIME_COURSE: 'この時間は既に登録されています。',
+		// CASH MANAGEMENT
+		CASH_OUT_DELETE_SUCCESS: 'キャッシュアウトの削除成功',
+		CASH_OUT_CREATE_SUCCESS: 'キャッシュアウトの成功を生み出す',
+		CASH_OUT_UPDATE_SCUCCESS: 'キャッシュピットの更新成功',
 	},
 	APP: {
 		PLEASE_WAIT: 'しばらくお待ちください...',
@@ -78,6 +82,7 @@ export default {
 		BUTTON_RETURN: '戻る',
 		BUTTON_EDIT: '編集',
 		BUTTON_SAVE: '保存',
+		BUTTON_CREATE: '作成',
 		BUTTON_CHANGE: '変更',
 		BUTTON_OK: 'OK',
 		BUTTON_GO_TO_HOME: 'ホームに戻る',

@@ -33,7 +33,7 @@ class CashOutController extends Controller
             $request['driver_id'] = $request->route('driver');
             $result = $this->repository->getAllCashOutByDriver($request->all());
 
-            return $this->responseJson(Response::HTTP_OK, CashOutResource::collection($result), LIST_SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, new CashOutResource($result), LIST_SUCCESS);
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());

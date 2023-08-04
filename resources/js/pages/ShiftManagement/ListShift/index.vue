@@ -393,9 +393,16 @@
                                                     :end-date="emp.end_date"
                                                 />
                                             </template> -->
-                                            <b-td class="td-total-shift">
-                                                {{ totalShift }}
-                                            </b-td>
+                                            <template v-if="listTotalExtraCost.length !== 0">
+                                                <template v-for="(total, index) in listTotalExtraCost">
+                                                    <b-td v-if="index === idx" :key="`total-${index}`" class="td-total-shift">
+                                                        {{ total.total_money }}
+                                                    </b-td>
+                                                </template>
+                                            </template>
+                                            <template v-else>
+                                                <b-td class="td-total-shift" />
+                                            </template>
                                         </tr>
                                     </template>
                                 </b-tbody>
@@ -883,6 +890,7 @@
                 <b-button
                     pill
                     class="mr-2 btn-color-active-import"
+                    @click="handleChoseClosingDate()"
                 >
                     OK
                 </b-button>
@@ -930,11 +938,11 @@ export default {
 			showModalClosingDate: false,
 			optionsClosingDate: [
 				{
-					value: 1,
+					value: '24',
 					text: '24日',
 				},
 				{
-					value: 2,
+					value: '25',
 					text: '25日',
 				},
 			],
@@ -973,6 +981,7 @@ export default {
 
 			listCalendar: [],
 			listShift: [],
+			listTotalExtraCost: [],
 			listTableCourse: [],
 			listSalary: [],
 
@@ -1098,6 +1107,7 @@ export default {
 						setLoading(true);
 						await this.handleGetListCalendar();
 						await this.handleGetListShift();
+						// await this.handleGetTotalExtraCost();
 						setLoading(false);
 
 						break;
@@ -1233,6 +1243,11 @@ export default {
 			}
 		},
 
+		handleChoseClosingDate() {
+			this.handleGetTotalExtraCost();
+			this.showModalClosingDate = false;
+		},
+
 		// async handleGetListShift() {
 		// 	try {
 		// 		this.listShift.length = 0;
@@ -1324,6 +1339,36 @@ export default {
 					// this.listShift = convertValueWhenNull(data);
 					this.listShift = data;
 					console.log('data', this.listShift);
+					this.reloadTable();
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		// API TOTAL SHIFT
+
+		async handleGetTotalExtraCost() {
+			try {
+				let PARAMS = {
+					closing_date: this.closingDate,
+				};
+				if (this.sortTable.shiftTable.sortBy) {
+					PARAMS.field = this.sortTable.shiftTable.sortBy;
+					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+
+				PARAMS = cleanObject(PARAMS);
+
+				const { code, data } = await getListShift(CONSTANT.URL_API.GET_TOTAL_EXTRA_COST, PARAMS);
+				if (code === 200) {
+					this.listTotalExtraCost = data;
 					this.reloadTable();
 				}
 			} catch (error) {

@@ -37,6 +37,7 @@
                                     <b-th
                                         class="th-sort th-id th-course-id"
                                         :rowspan="2"
+                                        @click="onSortTable('driver_code')"
                                     >
                                         <b-row class="row-cashDisbursement-id">
                                             <b-col>
@@ -45,11 +46,11 @@
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_code' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_code' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -63,6 +64,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('driver_name')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -71,11 +73,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_name' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_name' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -89,6 +91,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('balance_previous_month')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -97,11 +100,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_banlance' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_banlance' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -115,6 +118,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('payable_this_month')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -123,11 +127,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_accounts_receivable' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_accounts_receivable' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -141,6 +145,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('total_payable')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -149,11 +154,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_total_accounts_receivable' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_total_accounts_receivable' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -167,6 +172,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('total_cash_out_current')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -175,11 +181,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_monthly_deposit_amount' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_monthly_deposit_amount' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -193,6 +199,7 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('balance_current')"
                                     >
                                         <b-row>
                                             <b-col>
@@ -201,11 +208,11 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_current_month_balance' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_current_month_balance' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -232,25 +239,25 @@
                                 <template v-for="(course, idx) in listCash">
                                     <b-tr :key="`item-cash-${idx + 1}`">
                                         <b-td class="td-cash-id">
-                                            {{ course.id }}
+                                            {{ course.driver_code }}
                                         </b-td>
                                         <b-td class="td-cash-name" :colspan="3">
-                                            {{ course.name }}
+                                            {{ course.driver_name }}
                                         </b-td>
                                         <b-td class="td-cash-balance" :colspan="3">
-                                            {{ course.balance }}
+                                            {{ course.balance_previous_month }}
                                         </b-td>
                                         <b-td class="td-cash-account-receiable" :colspan="3">
-                                            {{ course.account_receivable }}
+                                            {{ course.payable_this_month }}
                                         </b-td>
                                         <b-td class="td-cash-total-account-receiable" :colspan="3">
-                                            {{ course.total_account_receivable }}
+                                            {{ course.total_payable }}
                                         </b-td>
                                         <b-td class="td-cash-month-deposit-amount" :colspan="3">
-                                            {{ course.monthly_deposit_amount }}
+                                            {{ course.total_cash_out_current }}
                                         </b-td>
                                         <b-td class="td-cash-current-month-balance" :colspan="3">
-                                            {{ course.current_month_balance }}
+                                            {{ course.balance_current }}
                                         </b-td>
                                         <b-td class="text-center td-control" :colspan="2">
                                             <i
@@ -270,6 +277,12 @@
 </template>
 <script>
 import LineGray from '@/components/LineGray';
+import { format2Digit } from '@/utils/generateTime';
+import { getCashDisbursement } from '@/api/modules/cashDisbursement';
+import { cleanObject } from '@/utils/handleObject';
+import { setLoading } from '@/utils/handleLoading';
+import CONSTANT from '@/const';
+
 export default {
 	name: 'ListCashDisbursement',
 	components: {
@@ -324,9 +337,156 @@ export default {
 		};
 	},
 
+	computed: {
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
+	},
+
+	watch: {
+		sortTable: {
+			handler: function() {
+				this.handleGetCashDisbursement();
+			},
+
+			deep: true,
+		},
+	},
+
+	created() {
+		this.initData();
+	},
+
 	methods: {
 		onClickDetail(scopeId) {
 			this.$router.push({ name: 'ListCashDisbursementDetail', params: { id: scopeId }});
+		},
+
+		initData() {
+			this.handleGetCashDisbursement();
+		},
+
+		async handleGetCashDisbursement() {
+			try {
+				setLoading(true);
+				let PARAMS = {
+					order_by: this.sortTable.sortBy,
+					sort_by: this.sortTable.sortType,
+				};
+				if (PARAMS.order_by) {
+					PARAMS.sort_by = PARAMS.sort_by ? 'asc' : 'desc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_line = YEAR_MONTH;
+
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_LIST_CASH_DISBUSEMENT;
+				const response = await getCashDisbursement(URL, PARAMS);
+				if (response.code === 200) {
+					this.listCash = response.data;
+				} else {
+					this.listCash = [];
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		onSortTable(col) {
+			switch (col) {
+				case 'driver_code':
+					if (this.sortTable.sortBy === 'driver_code') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'driver_code';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'driver_name':
+					if (this.sortTable.sortBy === 'driver_name') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'driver_name';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'balance_previous_month':
+					if (this.sortTable.sortBy === 'balance_previous_month') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'balance_previous_month';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'payable_this_month':
+					if (this.sortTable.sortBy === 'payable_this_month') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'payable_this_month';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'total_payable':
+					if (this.sortTable.sortBy === 'total_payable') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'total_payable';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'total_cash_out_current':
+					if (this.sortTable.sortBy === 'total_cash_out_current') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'total_cash_out_current';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'balance_current':
+					if (this.sortTable.sortBy === 'balance_current') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'balance_current';
+						this.sortTable.sortType = true;
+					}
+					break;
+				default:
+					console.log('Handle sort table faild');
+					break;
+			}
 		},
 	},
 };

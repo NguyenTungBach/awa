@@ -6,11 +6,11 @@
         v-else-if="dataNode"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
-        :style="{ backgroundColor: dataNode.color }"
+        :style="{ backgroundColor: dataNode.course_names_color }"
         @click="onClickNode"
     >
         <div :class="['show-node']">
-            <div v-if="isDayOff(dataNode.color)">
+            <div v-if="isDayOff(dataNode.course_names_color)">
                 {{ dataNode.value[0].name || '' }}
             </div>
             <div v-else>

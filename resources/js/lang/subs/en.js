@@ -95,6 +95,11 @@ export default {
 		LIST_SHIFT_VALIDATE_TIME_START_END_COURSE: 'Time of selection component overlaps',
 		LIST_SHIFT_VALIDATE_TIME_BREAK_COURSE: 'Break time of selection component overlaps',
 		LIST_SHIFT_VALIDATE_DUPLICATE_TIME_COURSE: 'The time of the overlap',
+
+		// CASH MANAGEMENT
+		CASH_OUT_DELETE_SUCCESS: 'Delete cash out success',
+		CASH_OUT_CREATE_SUCCESS: 'Create cash out success',
+		CASH_OUT_UPDATE_SCUCCESS: 'Update cash pit success',
 	},
 	APP: {
 		PLEASE_WAIT: 'Please wait...',
@@ -107,6 +112,7 @@ export default {
 		BUTTON_BULK_DELETE: 'Bulk delete',
 		BUTTON_RETURN: 'Return',
 		BUTTON_EDIT: 'Edit',
+		BUTTON_CREATE: 'Create',
 		BUTTON_SAVE: 'Save',
 		BUTTON_CHANGE: 'Change',
 		BUTTON_OK: 'OK',

@@ -191,22 +191,26 @@
 </template>
 <script>
 import LineGray from '@/components/LineGray';
-// import TitlePathForm from '@/components/TitlePathForm';
+import CONSTANT from '@/const';
+import { setLoading } from '@/utils/handleLoading';
+import { getListCashOut } from '@/api/modules/cashDisbursement';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 
 export default {
 	name: 'CashCreate',
 	components: {
 		LineGray,
-		// TitlePathForm,
 	},
 
 	data() {
 		return {
 			isForm: {
+				id: '',
 				payment_day: '',
+				cash_out: '',
 				dateOfBirth: '',
 				retirementDate: '',
-				exclusive: '',
+				payment_method: '',
 				note: '',
 			},
 
@@ -225,13 +229,48 @@ export default {
 
 	computed: {
 		language() {
+			console.log('id', this.$store.getters.idRouter);
 			return this.$store.getters.language;
 		},
 	},
 
+	created() {
+		this.initData();
+	},
+
 	methods: {
+
+		initData() {
+			this.isForm.id = this.$route.params.id || null;
+			// this.handleGetlistCashOut();
+		},
+
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashDisbursement' });
+		},
+
+		async handleGetlistCashOut() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_OUT}/${this.idCash}/cash-out`;
+				const params = {};
+				const response = await getListCashOut(URL, params);
+				if (response.code === 200) {
+					response.data.data_list_cash_out.list_cash_out.forEach(element => {
+						if (element.id === this.isForm.id) {
+							this.isForm.payment_day = element.payment_date;
+							this.isForm.cash_out = element.cash_out;
+							this.isForm.payment_method = element.payment_method;
+							this.isForm.note = element.note;
+						}
+					});
+				} else {
+					TOAST_CASH_MANAGEMENT.warning(response.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };
