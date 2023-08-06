@@ -33,7 +33,7 @@ class PaymentController extends Controller
         try {
             $result = $this->repository->getAll($request->all());
 
-            return $this->responseJson(Response::HTTP_OK, PaymentResource::collection($result), LIST_SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, new PaymentResource($result), LIST_SUCCESS);
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, LIST_ERROR, $exception->getMessage());

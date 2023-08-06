@@ -53,7 +53,8 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
                         $query->join('courses', 'driver_courses.course_id', '=', 'courses.id');
                         $query->whereBetween('courses.ship_date', [$startOfMonth, $endOfMonth]);
                         // dd($query->toSql());
-                    }]);
+                    }])
+                    ->orderBy($input['order_by'], $input['sort_by']);
                     // ->with(['cashOutStatistical' => function ($query) use($monthYear) {
                     //     $query->where('month_line', $monthYear);
                     // }]);
@@ -61,40 +62,72 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         $drivers = $drivers->get();
 
         $data = [];
+        $totalPayable = 0;
+        $totalPayableDay = [];
         foreach ($drivers as $key => $value) {
             // drivers
             $data[$key]['id'] = $value->id;
             $data[$key]['type'] = $value->type;
             $data[$key]['driver_code'] = $value->driver_code;
             $data[$key]['driver_name'] = $value->driver_name;
+            $data[$key]['closing_date'] = '25日';
             // driver_courses
             // $data[$key]['driver_course'] = $value->driverCourses;
+
             $sum = 0;
+            $totals = [];
             if ($value->driverCourses->isEmpty()) {
                 // empty
-                $data[$key]['course_id'] = 0;
-                $data[$key]['course_name'] = 0;
-                $data[$key]['date'] = 0;
-                $data[$key]['ship_date'] = 0;
-                $data[$key]['associate_company_fee'] = 0;
-
+                $data[$key]['courses']['course_id'] = 0;
+                $data[$key]['courses']['course_name'] = 0;
+                $data[$key]['courses']['date'] = 0;
+                $data[$key]['courses']['ship_date'] = 0;
+                $data[$key]['courses']['associate_company_fee'] = 0;
             } else {
                 // not empty
                 foreach ($value->driverCourses as $k => $item) {
                     if (isset($item['associate_company_fee'])) {
                         $sum += $item['associate_company_fee'];
                     }
-                    $data[$key]['course_id'] = $item->course_id;
-                    $data[$key]['course_name'] = $item->course_name;
-                    $data[$key]['date'] = $item->date;
-                    $data[$key]['ship_date'] = $item->ship_date;
-                    $data[$key]['associate_company_fee'] = $item->associate_company_fee;
+                    $shipDate = $item['ship_date'];
+                    $associateCompanyFee = floatval($item['associate_company_fee']);
+                    // neu ton tai ship date => += associate_company_fee, neu khong ton tai ship date = associate_company_fee
+                    if (isset($totals[$shipDate])) {
+                        $totals[$shipDate] += $associateCompanyFee;
+                    } else {
+                        $totals[$shipDate] = $associateCompanyFee;
+                    }
+                    $data[$key]['courses'][$k]['course_id'] = $item->course_id;
+                    $data[$key]['courses'][$k]['course_name'] = $item->course_name;
+                    $data[$key]['courses'][$k]['date'] = $item->date;
+                    $data[$key]['courses'][$k]['ship_date'] = $item->ship_date;
+                    $data[$key]['courses'][$k]['associate_company_fee'] = $item->associate_company_fee;
                 }
             }
+
+            // tinh tong tien ngay theo tung driver
+            $data[$key]['total_payable_day'] = $totals;
+            // tinh tong tien tat ca theo ngay
+            foreach ($data[$key]['total_payable_day'] as $date => $amount) {
+                if (isset($totalPayableDay[$date])) {
+                    $totalPayableDay[$date] += $amount;
+                } else {
+                    $totalPayableDay[$date] = $amount;
+                }
+            }
+
+            // tinh tong tien thang theo tung driver
             $data[$key]['payable_this_month'] = $sum;
+            // tinh tong tien tat ca theo thang
+            $payableThisMonth = floatval($data[$key]['payable_this_month']);
+            $totalPayable += $payableThisMonth;
         }
 
-        $result = $data;
+        $result = [
+            'list_data' => $data,
+            'sum_total_day' => $totalPayableDay,
+            'sum_total_month' => $totalPayable
+        ];
 
         return $result;
     }

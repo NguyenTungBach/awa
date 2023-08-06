@@ -36,14 +36,14 @@
                 @endforeach
             </tr>
             @foreach ($result as $key => $items)
-            @php
-                unset($items['id'], $items['driver_id'], $items['month_line']);
-            @endphp
             <tr>
-                @foreach ($items as $k => $item)
-                    
-                    <td bgcolor="{{ $itemColor }}" class="">{{ $item }}</td>
-                @endforeach
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['driver_code'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['driver_name'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['balance_previous_month'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['payable_this_month'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['total_payable'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['total_cash_out_current'] }}</td>
+                <td bgcolor="{{ $itemColor }}" class="">{{ $items['balance_current'] }}</td>
             </tr>
             @endforeach
         </tbody>
