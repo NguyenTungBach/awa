@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PDF Export</title>
+    <style type="text/css">
+        body{
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .m-0{
+            margin: 0px;
+        }
+        .p-0{
+            padding: 0px;
+        }
+        .pt-5{
+            padding-top:5px;
+        }
+        .mt-10{
+            margin-top:10px;
+        }
+        .text-center{
+            text-align:center !important;
+        }
+        .w-100{
+            width: 100%;
+        }
+        .w-50{
+            width:50%;
+        }
+        .w-85{
+            width:85%;
+        }
+        .w-33{
+            width:33%;
+        }
+        .w-15{
+            width:15%;
+        }
+        .logo img{
+            width:200px;
+            height:60px;
+        }
+        .gray-color{
+            color:#5D5D5D;
+        }
+        .text-bold{
+            font-weight: bold;
+        }
+        .border{
+            border:1px solid black;
+        }
+        table tr,th,td{
+            border: 1px solid #d2d2d2;
+            border-collapse:collapse;
+            padding:7px 8px;
+        }
+        table tr th{
+            background: #F4F4F4;
+            font-size:15px;
+        }
+        table tr td{
+            font-size:13px;
+        }
+        table{
+            border-collapse:collapse;
+        }
+        .box-text p{
+            line-height:10px;
+        }
+        .float-left{
+            float:left;
+        }
+        .total-part{
+            font-size:16px;
+            line-height:12px;
+        }
+        .total-right p{
+            padding-right:20px;
+        }
+    </style>
+<body>
+<div class="head-title">
+    <div class="w-33 float-left">
+        <p class="text-center m-0 p-0">&nbsp;</p>
+    </div>
+    <div class="w-33 float-left mt-0">
+        <h1 class="text-center m-0 p-0">内容</h1>
+    </div>
+    <div class="w-33 float-left mt-0">
+        <p class="m-0 pt-5 text-bold" style="font-size: 10px;text-align: right">Payment require: {{$data['payment_require']}}</p>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+<div class="add-detail mt-10">
+    <div class="w-33 float-left mt-0">
+        <p class="m-0 pt-5 text-bold w-100">荷主郵便番号 <span class="gray-color">{{$data['post_code']}}</span></p>
+        <p class="m-0 pt-5 text-bold w-100">荷主住所 <span class="gray-color">{{$data['address']}}</span></p>
+    </div>
+    <div class="w-33 float-left logo mt-0">
+        <p class="m-0 pt-5 text-bold w-100 text-center" style="font-size: 10px">{{$data['aboutDateJapan']}}</p>
+        <p class="m-0 pt-5 text-bold w-100 text-center">未日締　{{$data['month_choose']}}月分</p>
+    </div>
+    <div class="w-33 float-left logo mt-0">
+        <pre class="m-0 text-bold w-100">〒770-8001
+徳島県徳島市津田海岸町11125-23
+適格事業者登録番号：T2480001000065
+
+阿波急行運輸株式会社
+TEL (088) 662-2226㈹　FAX (088) 662-2216
+
+取引銀行　　徳島大正銀行　本店営業部
+当座預金　６４９６３５１
+        </pre>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+<div class="add-detail mt-10">
+    <div class="w-50 float-left mt-10">
+        <p class="m-0 pt-5 text-bold w-100">荷主名 {{$data['customer_name']}}</p>
+    </div>
+    <div class="w-50 float-left logo mt-10">
+        <p class="m-0 pt-5 text-bold w-100">
+        </p>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+<div class="table-section bill-tbl w-50 mt-10">
+    <div class="w-100 text-center float-left mt-10">
+        <table class="table w-100 mt-10">
+            <tr>
+                <th class="w-25">運賃合計</th>
+                <th class="w-25">Total Ship Fee Closing Date</th>
+                <th class="w-25">運賃消費税</th>
+                <th class="w-25">今回御請求額</th>
+            </tr>
+            <tr>
+                <td style="text-align: right">
+                    {{$data['total_ship_fee_by_closing_date']}}
+                </td>
+                <td style="text-align: right">
+                    {{$data['total_ship_fee_by_month']}}
+                </td>
+                <td style="text-align: right">
+                    {{$data['total_ship_fee_by_month'] * 0.1}}
+                </td>
+                <td style="text-align: right">
+                    {{$data['total_ship_fee_by_month'] + ($data['total_ship_fee_by_month'] * 0.1)}}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+<div class="table-section bill-tbl w-100 mt-10">
+    <table class="table w-100 mt-10">
+        <tr>
+            <th >運行年月日</th>
+            <th >発地</th>
+            <th >着地</th>
+            <th >運賃</th>
+        </tr>
+        <?php
+            if (count($data['date_ship_fee']) != 0){
+                foreach ($data['date_ship_fee'] as $course){
+        ?>
+        <tr>
+            <td style="text-align: center">{{$course['ship_date']}}</td>
+            <td style="text-align: center">{{$course['departure_place']}}</td>
+            <td style="text-align: center">{{$course['arrival_place']}}</td>
+            <td style="text-align: center">{{$course['ship_fee']}}</td>
+        </tr>
+        <?php
+            }
+        }
+        ?>
+{{--        <tr>--}}
+{{--            <td colspan="7">--}}
+{{--                <div class="total-part">--}}
+{{--                    <div class="total-left w-85 float-left" align="right">--}}
+{{--                        <p>Sub Total</p>--}}
+{{--                        <p>Tax (18%)</p>--}}
+{{--                        <p>Total Payable</p>--}}
+{{--                    </div>--}}
+{{--                    <div class="total-right w-15 float-left text-bold" align="right">--}}
+{{--                        <p>$7600</p>--}}
+{{--                        <p>$400</p>--}}
+{{--                        <p>$8000.00</p>--}}
+{{--                    </div>--}}
+{{--                    <div style="clear: both;"></div>--}}
+{{--                </div>--}}
+{{--            </td>--}}
+{{--        </tr>--}}
+    </table>
+</div>
+</body>
+</html>
