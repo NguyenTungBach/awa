@@ -195,6 +195,9 @@ class DriverController extends Controller
             $data = $this->repository->find($id);
             if ($data != null){
                 $data->checkEnd_date = $data->end_date !== null;
+                if ($data->end_date !== null){
+                    $data->end_date = explode(" ",$data->end_date);
+                }
                 switch ($data->type){
                     case 1:
                         $data->typeName = trans('drivers.type.1');
