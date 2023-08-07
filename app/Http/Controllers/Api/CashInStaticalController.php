@@ -148,38 +148,42 @@ class CashInStaticalController extends Controller
         return $this->responseJson(200, null, trans('messages.mes.export_success'));
     }
 
-    /**
-     * @OA\Post(
-     *   path="/api/cash-in-statical",
-     *   tags={"CashInStatical"},
-     *   summary="Add new CashInStatical",
-     *   operationId="cash_in_statical_create",
-     *   @OA\Parameter(name="name", in="query", required=true,
-     *     @OA\Schema(type="string"),
-     *   ),
-     *
-     *   @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":{"id": 1,"name": "......"}}
-     *     )
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function store(CashInStaticalRequest $request)
-    {
-        try {
-            $data = $this->repository->create($request->all());
-            return $this->responseJson(200, new CashInStaticalResource($data));
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
+//    /**
+//     * @OA\Post(
+//     *   path="/api/cash-in-statical",
+//     *   tags={"CashInStatical"},
+//     *   summary="Add new CashInStatical",
+//     *   operationId="cash_in_statical_create",
+//     *   @OA\Parameter(
+//     *      name="id",
+//     *      in="path",
+//     *      required=true,
+//     *     @OA\Schema(
+//     *      type="string",
+//     *     ),
+//     *   ),
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"data":{"id": 1,"name": "......"}}
+//     *     )
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * @return \Illuminate\Http\JsonResponse
+//     * @throws \Exception
+//     */
+//    public function store(CashInStaticalRequest $request)
+//    {
+//        try {
+//            $data = $this->repository->create($request->all());
+//            return $this->responseJson(200, new CashInStaticalResource($data));
+//        } catch (\Exception $e) {
+//            throw $e;
+//        }
+//    }
 
     /**
      * @OA\Get(
@@ -195,6 +199,15 @@ class CashInStaticalController extends Controller
      *      type="string",
      *     ),
      *   ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",
@@ -226,93 +239,93 @@ class CashInStaticalController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *   path="/api/cash-in-statical/{id}",
-     *   tags={"CashInStatical"},
-     *   summary="Update CashInStatical",
-     *   operationId="cash_in_statical_update",
-     *   @OA\Parameter(
-     *     name="id",
-     *     in="path",
-     *     required=true,
-     *     @OA\Schema(
-     *      type="string",
-     *     ),
-     *   ),
-     *   @OA\RequestBody(
-     *       @OA\MediaType(
-     *          mediaType="application/json",
-     *          example={"name":"string"},
-     *          @OA\Schema(
-     *            required={"name"},
-     *            @OA\Property(
-     *              property="name",
-     *              format="string",
-     *            ),
-     *         )
-     *      )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":{"id": 1,"name":  "............."}}
-     *     ),
-     *   ),
-     *   @OA\Response(
-     *     response=403,
-     *     description="Access Deny permission",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":403,"message":"Access Deny permission"}
-     *     ),
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(CashInStaticalRequest $request, $id)
-    {
-        $attributes = $request->except([]);
-        $data = $this->repository->update($attributes, $id);
-        return $this->responseJson(200, new BaseResource($data));
-    }
+//    /**
+//     * @OA\Post(
+//     *   path="/api/cash-in-statical/{id}",
+//     *   tags={"CashInStatical"},
+//     *   summary="Update CashInStatical",
+//     *   operationId="cash_in_statical_update",
+//     *   @OA\Parameter(
+//     *     name="id",
+//     *     in="path",
+//     *     required=true,
+//     *     @OA\Schema(
+//     *      type="string",
+//     *     ),
+//     *   ),
+//     *   @OA\RequestBody(
+//     *       @OA\MediaType(
+//     *          mediaType="application/json",
+//     *          example={"name":"string"},
+//     *          @OA\Schema(
+//     *            required={"name"},
+//     *            @OA\Property(
+//     *              property="name",
+//     *              format="string",
+//     *            ),
+//     *         )
+//     *      )
+//     *   ),
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"data":{"id": 1,"name":  "............."}}
+//     *     ),
+//     *   ),
+//     *   @OA\Response(
+//     *     response=403,
+//     *     description="Access Deny permission",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":403,"message":"Access Deny permission"}
+//     *     ),
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * Display a listing of the resource.
+//     *
+//     * @return \Illuminate\Http\JsonResponse
+//     */
+//    public function update(CashInStaticalRequest $request, $id)
+//    {
+//        $attributes = $request->except([]);
+//        $data = $this->repository->update($attributes, $id);
+//        return $this->responseJson(200, new BaseResource($data));
+//    }
 
-    /**
-     * @OA\Delete(
-     *   path="/api/cash-in-statical/{id}",
-     *   tags={"CashInStatical"},
-     *   summary="Delete CashInStatical",
-     *   operationId="cash_in_statical_delete",
-     *   @OA\Parameter(
-     *      name="id",
-     *      in="path",
-     *      required=true,
-     *     @OA\Schema(
-     *      type="string",
-     *     ),
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":"Send request success"}
-     *     )
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function destroy($id)
-    {
-        $this->repository->delete($id);
-        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
-    }
+//    /**
+//     * @OA\Delete(
+//     *   path="/api/cash-in-statical/{id}",
+//     *   tags={"CashInStatical"},
+//     *   summary="Delete CashInStatical",
+//     *   operationId="cash_in_statical_delete",
+//     *   @OA\Parameter(
+//     *      name="id",
+//     *      in="path",
+//     *      required=true,
+//     *     @OA\Schema(
+//     *      type="string",
+//     *     ),
+//     *   ),
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"data":"Send request success"}
+//     *     )
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * @param int $id
+//     * @return \Illuminate\Http\JsonResponse
+//     * @throws \Exception
+//     */
+//    public function destroy($id)
+//    {
+//        $this->repository->delete($id);
+//        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
+//    }
 }

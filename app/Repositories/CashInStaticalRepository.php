@@ -309,12 +309,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             $totalCashIn = $totalCashInQuery->total_cash_in;
         }
 
-        // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
+        // 1. Kiểm tra xem Customer này đã từng có CashInStatical chưa
         $cashInStatical = CashInStatical::
         where("customer_id",$customer_id)
             ->first();
 
-        // 1.1 Nếu chưa có thì tạo CashInStatical
+        // 1.1 Nếu chưa từng có thì tạo CashInStatical
         if ($cashInStatical == null){
             CashInStatical::create([
                 "customer_id" => $customer_id,
@@ -326,7 +326,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             ]);
 
         } else{
-            // Nếu có rồi thì update
+            // Nếu đã từng có rồi thì tìm update
             // Truy vấn số tiền nợ tháng gần nhất bằng cách tìm đến toàn bộ CashInStatical theo thời gian
             // Kiểm tra xem Customer này đã có CashInStatical tháng này chưa
 
@@ -469,6 +469,8 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
          * */
         $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
         $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
+        // Vì đang theo date nên cần lấy ra closing_date cho tháng này
+        $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
 
         $driverCourse = DriverCourse::
         select(
@@ -500,17 +502,16 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             $totalCashIn = $totalCashInQuery->total_cash_in;
         }
 
-        // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
+        // 1. Kiểm tra xem Customer này đã từng có CashInStatical chưa
         $cashInStatical = CashInStatical::
         where("customer_id",$customer_id)
             ->first();
 
-        // 1.1 Nếu chưa có thì tạo CashInStatical
+        // 1.1 Nếu chưa từng có thì tạo CashInStatical
         if ($cashInStatical == null){
-            $month_year = Carbon::parse($date)->format('Y-m');
             CashInStatical::create([
                 "customer_id" => $customer_id,
-                "month_line" => $month_year,
+                "month_line" => $checkMonthForThisDate,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
                 "total_cash_in_current" => $receivable_this_month - $totalCashIn,
@@ -518,10 +519,9 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             ]);
 
         } else{
-            // 1.2 Nếu có rồi tìm theo customer_id và date của tháng này theo closing_date
-            $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
+            // 1.2
 
-            // Nếu có rồi thì update
+            // Nếu đã từng có rồi thì update
             // Truy vấn số tiền nợ tháng gần nhất bằng cách tìm đến toàn bộ CashInStatical theo thời gian
             // Kiểm tra xem Customer này đã có CashInStatical tháng này chưa
 

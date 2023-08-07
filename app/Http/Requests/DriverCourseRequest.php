@@ -56,6 +56,10 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'salesList':
                   return $this->getCustomRule();
+              case 'salesDetail':
+                  return $this->getCustomRule();
+              case 'exportSalesDetailPDF':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -221,6 +225,26 @@ class DriverCourseRequest extends FormRequest
          }
 
          if(Route::getCurrentRoute()->getActionMethod() == 'salesList'){
+             return  [
+                 "field" => "in:customers.customer_code,customers.type,customers.customer_name",
+                 "sortby" => "in:asc,desc",
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'salesDetail'){
+             return  [
+                 "field" => "in:customers.customer_code,customers.type,customers.customer_name",
+                 "sortby" => "in:asc,desc",
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'exportSalesDetailPDF'){
              return  [
                  "field" => "in:customers.customer_code,customers.type,customers.customer_name",
                  "sortby" => "in:asc,desc",

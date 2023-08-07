@@ -21,11 +21,15 @@ use App\Models\User;
 use App\Repositories\Contracts\CalendarRepositoryInterface;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\Contracts\DriverCourseRepositoryInterface;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use Mpdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -1936,7 +1940,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         die();
     }
 
-    public function saleDetail($request,$id){
+    public function saleDetailByClosingDate($request,$id){
         // Truy vấn customer theo id
         $customer = Customer::find($id);
         switch ($customer['closing_date']){
@@ -1961,6 +1965,17 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $startDateByClosingDate = $this->cashInStaticalRepository->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
         $endDateByClosingDate = $this->cashInStaticalRepository->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
 
+        // Lấy khoảng ngày theo tiếng nhật
+        $start_dateClosingDateJapan = Calendar::where("date",$startDateByClosingDate)->first();
+        $end_dateClosingDateJapan = Calendar::where("date",$endDateByClosingDate)->first();
+        $payment_requireJapan = Calendar::where("date",$endDateByClosingDate)->first();
+
+        $start_dateJapanCustomString = Carbon::parse($startDateByClosingDate)->format('Y年m月d日')."(".$start_dateClosingDateJapan['week'].")";
+        $end_dateJapanCustomString = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$end_dateClosingDateJapan['week'].")";
+        $payment_require = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$payment_requireJapan['week'].")";
+
+        $aboutDateJapan = "'".$start_dateJapanCustomString."~"."'".$end_dateJapanCustomString;
+
         // Truy vấn Tổng toàn bộ DriverCourse từng customer theo tháng và theo closing date
         $dataConvert = [
             "customer_id" =>$customer->id,
@@ -1970,30 +1985,40 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             "endDateByClosingDate" =>$endDateByClosingDate,
             "fistDayMonth" =>$fistDayMonth,
             "lastDayMonth" =>$lastDayMonth,
+            "aboutDateJapan" =>$aboutDateJapan,
+            "payment_require" =>$payment_require,
             "closing_dateName" =>$customer->closing_dateName,
+            "month_choose" => Carbon::parse($request->month_year)->format("m"),
             "customer_name" =>$customer->customer_name,
+            "person_charge" =>$customer->person_charge,
+            "address" =>$customer->address,
+            "post_code" =>$customer->post_code,
+            "phone" =>$customer->phone,
+            "note" =>$customer->note,
             "date_ship_fee" =>[],
             "total_ship_fee_by_closing_date" => "",
-            "total_ship_fee_by_month" => "",
+//            "total_ship_fee_by_month" => "",
         ];
 
-        // Truy vấn toàn bộ DriverCourse và trong tháng
-        $driverCourseMonthQueries = DriverCourse::
+        // Truy vấn toàn bộ DriverCourse theo customer và theo closing date
+        $driverCourseMonthClosingDateQueries = DriverCourse::
         select(
             "courses.customer_id as courses_customer_id",
-            "courses.ship_fee as courses_ship_fee",
+            "courses.*",
             "driver_courses.date",
+            "drivers.car",
         )
-            ->addSelect(DB::raw('SUM(courses.ship_fee) as courses_ship_fee'))
+//            ->addSelect(DB::raw('SUM(courses.ship_fee) as courses_ship_fee'))
             ->where("courses.customer_id",$customer->id)
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
             ->join('customers', 'customers.id', '=', 'courses.customer_id')
-            ->groupBy("courses.customer_id","driver_courses.date")
-            ->whereBetween('driver_courses.date', [$fistDayMonth, $lastDayMonth])
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+//            ->groupBy("courses.customer_id","driver_courses.date")
+            ->whereBetween('driver_courses.date', [$startDateByClosingDate, $endDateByClosingDate])
             ->get();
-        if (count($driverCourseMonthQueries) != 0){
-            foreach ($driverCourseMonthQueries as $driverCourseMonthQuery){
-                $dataConvert['date_ship_fee'][] = $driverCourseMonthQuery;
+        if (count($driverCourseMonthClosingDateQueries) != 0){
+            foreach ($driverCourseMonthClosingDateQueries as $driverCourseMonthClosingDateQuery){
+                $dataConvert['date_ship_fee'][] = $driverCourseMonthClosingDateQuery;
             }
         }
 
@@ -2014,23 +2039,46 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $dataConvert['total_ship_fee_by_closing_date'] = $driverCourseClosingDateQuery->total_ship_fee_by_closing_date;
         }
 
-        // Truy vấn Tổng toàn bộ CashIn từng customer theo tháng
-        $cashInTotalMonthQuery = DriverCourse::
-        select(
-            "courses.customer_id as courses_customer_id",
-            "driver_courses.date",
-        )
-            ->addSelect(DB::raw('SUM(courses.ship_fee) as total_ship_fee_by_month'))
-            ->where("courses.customer_id",$customer->id)
-            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->join('customers', 'customers.id', '=', 'courses.customer_id')
-            ->whereBetween('driver_courses.date', [$fistDayMonth, $lastDayMonth])
-            ->groupBy("courses.customer_id")
-            ->first();
-
-        if ($cashInTotalMonthQuery){
-            $dataConvert['total_ship_fee_by_month'] = $cashInTotalMonthQuery->total_ship_fee_by_month;
-        }
+//        // Truy vấn Tổng toàn bộ CashIn từng customer theo tháng
+//        $cashInTotalMonthQuery = DriverCourse::
+//        select(
+//            "courses.customer_id as courses_customer_id",
+//            "driver_courses.date",
+//        )
+//            ->addSelect(DB::raw('SUM(courses.ship_fee) as total_ship_fee_by_month'))
+//            ->where("courses.customer_id",$customer->id)
+//            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+//            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+//            ->whereBetween('driver_courses.date', [$fistDayMonth, $lastDayMonth])
+//            ->groupBy("courses.customer_id")
+//            ->first();
+//
+//        if ($cashInTotalMonthQuery){
+//            $dataConvert['total_ship_fee_by_month'] = $cashInTotalMonthQuery->total_ship_fee_by_month;
+//        }
         return $dataConvert;
+    }
+
+    public function exportSalesDetailPDF($request,$id){
+        $data = $this->saleDetailByClosingDate($request,$id);
+
+        $fontDirs = public_path('fonts/');
+        // specify the font
+        $fontData = [
+            'inter' => [
+                'R' => 'rounded-mgenplus-1c-regular.ttf',
+            ],
+        ];
+        $mpdf = new Mpdf([
+            'fontDir' => $fontDirs,
+            'fontdata' => $fontData,
+            'default_font' => 'MY_FONT_NAME',
+            'format' => 'A4-L'
+        ]);
+        $html = view('exportSaleDetailPDF', ['data' => $data])->render();
+        $mpdf->WriteHTML($html);
+        return $mpdf->Output("laraveltuts.pdf","D");
+
+//        return view('testPDF', ['data'  => $data]);
     }
 }

@@ -20,6 +20,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     Route::get('driver-course/export-shift','DriverCourseController@export_shift');
     Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
     Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');
+    Route::get('driver-course/export-sale-detail-pdf/{id}', 'DriverCourseController@exportSalesDetailPDF');
     Route::get('cash-in-statical/export-cash-in-statical','CashInStaticalController@exportCashInStatical');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');

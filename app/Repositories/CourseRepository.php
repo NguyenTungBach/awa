@@ -134,7 +134,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         $result = CourseRepository::with('customer')->find($id);
         $result['customer_name'] = $result->customer->customer_name;
-        $result['ship_date'] = date('Y年m月d日', strtotime($result->start_date));
+        $result['ship_date'] = date('Y年m月d日', strtotime($result->ship_date));
         $result['start_date'] = date('H:i', strtotime($result->start_date));
         $result['end_date'] = date('H:i', strtotime($result->end_date));
         $result['break_time'] = date('H:i', strtotime($result->break_time));

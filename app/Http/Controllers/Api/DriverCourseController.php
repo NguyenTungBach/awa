@@ -831,8 +831,49 @@ class DriverCourseController extends Controller
             ]));
         }
 
-        $data = $this->repository->saleDetail($request,$id);
+        $data = $this->repository->saleDetailByClosingDate($request,$id);
         return ResponseService::responseJson(200, new BaseResource($data));
     }
 
+    /**
+     * @OA\Get(
+     *   path="/api/driver-course/export-sale-detail-pdf/{id}",
+     *   tags={"DriverCourse"},
+     *   summary="Sales Detail PDF",
+     *   operationId="sales_detail_PDF",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exportSalesDetailPDF(DriverCourseRequest $request,$id)
+    {
+        return $this->repository->exportSalesDetailPDF($request,$id);
+    }
 }
