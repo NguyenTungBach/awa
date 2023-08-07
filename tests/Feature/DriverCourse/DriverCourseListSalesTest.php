@@ -75,7 +75,7 @@ class DriverCourseListSalesTest extends TestCase
         ])->assertStatus(CODE_SUCCESS);
     }
 
-    /////////List Start//////////
+    /////////List Sale Start//////////
 //    public function testDriverCourseListSalesWrongField()
 //    {
 //        $user = User::where('user_code', '=', '1122')->first();
@@ -186,5 +186,5 @@ class DriverCourseListSalesTest extends TestCase
             'month_year' => "2023-07",
         ])->assertStatus(CODE_SUCCESS);
     }
-    /////////List End//////////
+    /////////List Sale End//////////
 }
