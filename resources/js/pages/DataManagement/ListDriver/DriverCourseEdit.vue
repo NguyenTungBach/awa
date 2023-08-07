@@ -411,18 +411,18 @@ import { removeDirtyItemInArray } from '@/utils/handleArray';
 import TOAST_DRIVER from '@/toast/modules/driverManagement';
 import TOAST_DRIVER_COURSE from '@/toast/modules/driverCourse';
 import { getTextShortDayByCodeDay } from '@/utils/convertTime';
-import TableEditDriverCourse from '@/components/TableEditDriverCourse';
+// import TableEditDriverCourse from '@/components/TableEditDriverCourse';
 import { loopCallback, splitStr2Array, getValueShortDayByText } from '@/utils/helper';
 import { getListDriverCourse, postListDriverCourse } from '@/api/modules/driverCourse';
 import { formatNumber } from '@/utils/formatNumber';
-import { validInputNumber } from '@/utils/handleInput';
+// import { validInputNumber } from '@/utils/handleInput';
 
 export default {
 	name: 'DriverCourseEdit',
 	components: {
 		LineGray,
 		TitlePathForm,
-		TableEditDriverCourse,
+		// TableEditDriverCourse,
 	},
 
 	data() {

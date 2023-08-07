@@ -359,6 +359,7 @@ export default {
 		BUTTON_SIGN_UP: 'Sign up',
 		TABLE_TITLE_EMPLOYEE_NUMBER: 'Crew code',
 		TABLE_TITLE_FULL_NAME: 'Crew name',
+		TABLE_TITLE_TYPE_NAME: 'Employee classification',
 		TABLE_TITLE_ENROLLMENT_STATUS: 'Enrollment status',
 		TABLE_TITLE_DETAIL: 'Detail',
 		TABLE_TITLE_DELETE: 'Delete',

@@ -200,7 +200,7 @@
                                                         {{ course.payment_date }}
                                                     </b-td>
                                                     <b-td class="td-cash-balance" :colspan="2">
-                                                        {{ course.cash_out }}
+                                                        {{ Number(course.cash_out) }}
                                                     </b-td>
                                                     <b-td class="td-cash-account-receiable" :colspan="2">
                                                         {{ course.payment_method }}
@@ -352,9 +352,7 @@ export default {
 		},
 
 		onClickEdit(idCashOut) {
-			this.$store.dispatch('listCash/setIdRouter', this.$route.params.id);
-			console.log('get id', this.$route);
-			this.$router.push({ name: 'ListCashDisbursementEdit', params: { id: idCashOut }});
+			this.$router.push({ name: 'ListCashDisbursementEdit', params: { driverID: this.idCash, cashOutID: idCashOut }});
 		},
 
 		handleCloseModalDelete() {

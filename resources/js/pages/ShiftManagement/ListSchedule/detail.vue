@@ -211,6 +211,7 @@
                                     :md="12"
                                     :lg="12"
                                     :xl="12"
+                                    class="note-detail"
                                 >
                                     <p>{{ isForm.note ? isForm.note : '-' }}</p>
                                 </b-col>
@@ -377,6 +378,12 @@ export default {
                 }
                 .item-form{
                     margin-top: 40px;
+
+                    .note-detail {
+                        max-width: 100%;
+                        overflow: hidden;
+                        word-wrap: break-word;
+                    }
                 }
                 .item-not{
                     margin: 40px 0;

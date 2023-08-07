@@ -74,6 +74,8 @@ const GET_LIST_CASH_OUT = '/driver';
 const DELETE_CASH_OUT = '/driver';
 const POST_CASH_OUT = '/driver';
 const PUT_CASH_OUT = '/driver';
+const GET_DETAIL_CASH_OUT = '/driver';
+const EXPORT_EXCEL_CASH_OUT = '/driver-cash-out-statistical/export';
 
 export default {
 	// Auth API
@@ -149,4 +151,6 @@ export default {
 	DELETE_CASH_OUT,
 	POST_CASH_OUT,
 	PUT_CASH_OUT,
+	GET_DETAIL_CASH_OUT,
+	EXPORT_EXCEL_CASH_OUT,
 };

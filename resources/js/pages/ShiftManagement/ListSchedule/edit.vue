@@ -724,7 +724,7 @@ export default {
 				const Data = await editCourse(`${CONSTANT.URL_API.PUT_COURSE_SCHEDULE}/${this.isForm.customer_id}`, params);
 
 				if (Data.code === 200) {
-					this.goToCourseList();
+					this.goToCouseDetail();
 					TOAST_SCHEDULE_SHIFT.update();
 				}
 				setLoading(false);
@@ -733,9 +733,10 @@ export default {
 			}
 		},
 
-		goToCourseList() {
+		goToCouseDetail() {
 			// this.$router.push({ name: 'ListCourseIndex' });
-			this.$router.push({ name: 'ListSchedule' });
+			this.$router.push({ name: 'ListScheduleDetail', params: { id: this.$route.params.id || null }});
+			// this.$router.push({ name: 'ListSchedule' });
 		},
 	},
 

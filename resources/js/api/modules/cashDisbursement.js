@@ -20,6 +20,6 @@ export function postCashOut(url, params) {
 	return request.postRequest(url, params);
 }
 
-export function updateCashOut(url, params) {
+export function putCashOut(url, params) {
 	return request.putRequest(url, params);
 }

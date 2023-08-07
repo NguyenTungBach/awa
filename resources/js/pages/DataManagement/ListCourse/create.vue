@@ -306,6 +306,7 @@ import { postCourse } from '@/api/modules/courseManagement';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
+// import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
 	name: 'CourseCreate',

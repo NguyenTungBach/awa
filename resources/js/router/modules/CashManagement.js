@@ -88,7 +88,7 @@ const CashManagement = {
 			component: () => import(/* webpackChunkName: "List Schedule Edit" */ '@/pages/CashManagement/CashDisbursement/detail.vue'),
 		},
 		{
-			path: 'list-cash-disbursement-edit/:id',
+			path: 'driver/:driverID/list-cash-disbursement-edit/:cashOutID',
 			name: 'ListCashDisbursementEdit',
 			meta: {
 				title: 'ROUTER.LIST_CASH_DISBURSEMENT',

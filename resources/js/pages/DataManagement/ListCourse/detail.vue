@@ -192,6 +192,7 @@ import TitlePathForm from '@/components/TitlePathForm';
 import { getCourse } from '@/api/modules/courseManagement';
 // import { convertBreakTimeNumberToTime } from '@/utils/convertTime';
 import { convertValueToText } from '@/utils/handleSelect';
+import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
 	name: 'CourseCreate',
@@ -272,7 +273,7 @@ export default {
 						this.isForm.client_manager = DATA.person_charge;
 						this.isForm.post_code = DATA.post_code;
 						this.isForm.note = DATA.note;
-						this.isForm.client_phone = DATA.phone;
+						this.isForm.client_phone = formartPhoneNumber(DATA.phone);
 						this.isForm.address = DATA.address;
 
 						setLoading(false);
