@@ -1966,12 +1966,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $endDateByClosingDate = $this->cashInStaticalRepository->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
 
         // Lấy khoảng ngày theo tiếng nhật
-        $start_dateJapan = Calendar::where("date",$fistDayMonth)->first();
-        $end_dateJapan = Calendar::where("date",$lastDayMonth)->first();
+        $start_dateClosingDateJapan = Calendar::where("date",$startDateByClosingDate)->first();
+        $end_dateClosingDateJapan = Calendar::where("date",$endDateByClosingDate)->first();
         $payment_requireJapan = Calendar::where("date",$endDateByClosingDate)->first();
 
-        $start_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->startOfMonth()->format('Y年m月d日')."(".$start_dateJapan['week'].")";
-        $end_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->endOfMonth()->format('Y年m月d日')."(".$end_dateJapan['week'].")";
+        $start_dateJapanCustomString = Carbon::parse($startDateByClosingDate)->format('Y年m月d日')."(".$start_dateClosingDateJapan['week'].")";
+        $end_dateJapanCustomString = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$end_dateClosingDateJapan['week'].")";
         $payment_require = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$payment_requireJapan['week'].")";
 
         $aboutDateJapan = "'".$start_dateJapanCustomString."~"."'".$end_dateJapanCustomString;
