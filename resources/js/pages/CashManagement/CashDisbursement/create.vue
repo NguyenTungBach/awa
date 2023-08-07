@@ -219,11 +219,11 @@ export default {
 			optionsClosingDay: [
 				{
 					value: 1,
-					text: '入金方法',
+					text: '銀行振込',
 				},
 				{
 					value: 2,
-					text: '方法',
+					text: '口座振替',
 				},
 			],
 		};

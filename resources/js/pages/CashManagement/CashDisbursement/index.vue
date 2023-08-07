@@ -17,7 +17,7 @@
                 <div
                     class="zone-right"
                 >
-                    <div class="item-function btn-excel">
+                    <div class="item-function btn-excel" @click="onClickExport()">
                         <div class="show-icon">
                             <i class="fas fa-file-excel" />
                         </div>
@@ -70,7 +70,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_NAME') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
@@ -97,7 +97,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_BALANCE_AT_END_OF_PREVIOUS_MONTH') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === true"
@@ -124,7 +124,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_ACCOUNTS_RECEIVABLE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === true"
@@ -151,7 +151,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL_ACCOUNTS_RECEIVABLE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === true"
@@ -178,7 +178,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_MONTHLY_DEPOSIT_AMOUNT') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === true"
@@ -205,7 +205,7 @@
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_CURRENT_MONTH_BALANCE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
                                                         v-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === true"
@@ -281,7 +281,10 @@ import { format2Digit } from '@/utils/generateTime';
 import { getCashDisbursement } from '@/api/modules/cashDisbursement';
 import { cleanObject } from '@/utils/handleObject';
 import { setLoading } from '@/utils/handleLoading';
+import { getToken } from '@/utils/handleToken';
 import CONSTANT from '@/const';
+import axios from 'axios';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 
 export default {
 	name: 'ListCashDisbursement',
@@ -391,6 +394,46 @@ export default {
 				} else {
 					this.listCash = [];
 				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async onClickExport() {
+			try {
+				setLoading(true);
+				let params = {
+					order_by: this.sortTable.sortBy,
+					sort_by: this.sortTable.sortType,
+				};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				params.month_line = YEAR_MONTH;
+
+				params = cleanObject(params);
+				const URL = `/api${CONSTANT.URL_API.EXPORT_EXCEL_CASH_OUT}`;
+				await axios.get(URL, {
+					params: params,
+					responseType: 'blob',
+					headers: {
+						'Accept-Language': this.$store.getters.language,
+						'Authorization': getToken(),
+						'accept': 'application/json',
+					},
+				}).then((response) => {
+					const url = window.URL.createObjectURL(new Blob([response.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'download.xlsx');
+					document.body.appendChild(link);
+					link.click();
+				}).catch((error) => {
+					TOAST_CASH_MANAGEMENT.warning(error.massage);
+				});
 				setLoading(false);
 			} catch (error) {
 				console.log(error);
@@ -577,10 +620,15 @@ export default {
 
                                 th.th-sort {
                                     cursor: pointer;
+                                    .icon-sorts {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
 
-                                    i.icon-sort-default {
-                                        color: $white;
-                                        opacity: 0.7;
+                                        i.icon-sort-default {
+                                            color: $white;
+                                            opacity: 0.7;
+                                        }
                                     }
                                 }
 

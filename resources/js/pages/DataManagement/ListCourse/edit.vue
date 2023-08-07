@@ -245,6 +245,7 @@
                                                         <b-form-input
                                                             id="input-course-email"
                                                             v-model="isForm.customer_phone"
+                                                            type="number"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -292,6 +293,7 @@ import { getCourse, putCourse } from '@/api/modules/courseManagement';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
+import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
 	name: 'CourseEdit',
@@ -443,7 +445,7 @@ export default {
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
 				post_code: this.isForm.customer_postCode,
 				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
-				phone: this.isForm.customer_phone,
+				phone: formartPhoneNumber(this.isForm.customer_phone),
 				note: this.isForm.note ? this.isForm.note.trim() : '',
 			};
 		},
@@ -474,7 +476,7 @@ export default {
 					this.isForm.customer_manager = DATA.person_charge;
 					this.isForm.customer_postCode = DATA.post_code;
 					this.isForm.customer_address = DATA.address;
-					this.isForm.customer_phone = DATA.phone;
+					this.isForm.customer_phone = formartPhoneNumber(DATA.phone);
 					this.isForm.note = DATA.note;
 					console.log('form:', this.isForm);
 					setLoading(false);

@@ -42,7 +42,7 @@
                             </template>
 
                             <template #cell(status)="scope">
-                                {{ getTextEnrollmentStatus(scope.item.status) }}
+                                {{ getTextEnrollmentStatus(scope.item.end_date) }}
                             </template>
 
                             <template #cell(detail)="scope">
@@ -127,6 +127,8 @@ export default {
 				created_at: null,
 				updated_at: null,
 			},
+
+			currentDate: null,
 		};
 	},
 
@@ -134,11 +136,16 @@ export default {
 		fields() {
 			return [
 				{ key: 'driver_code', label: this.$t('LIST_DRIVER.TABLE_TITLE_EMPLOYEE_NUMBER'), sortable: true, thClass: 'base-th th-employee-number' },
+				{ key: 'typeName', label: this.$t('LIST_DRIVER.TABLE_TITLE_TYPE_NAME'), sortable: true, thClass: 'base-th th-type-name' },
 				{ key: 'driver_name', label: this.$t('LIST_DRIVER.TABLE_TITLE_FULL_NAME'), sortable: true, thClass: 'base-th th-driver-name' },
-				{ key: 'typeName', label: this.$t('LIST_DRIVER.TABLE_TITLE_ENROLLMENT_STATUS'), sortable: false, thClass: 'base-th text-center th-enrollment', tdClass: 'text-center' },
+				{ key: 'status', label: this.$t('LIST_DRIVER.TABLE_TITLE_ENROLLMENT_STATUS'), sortable: true, thClass: 'base-th text-center th-enrollment', tdClass: 'text-center' },
 				{ key: 'detail', label: this.$t('LIST_DRIVER.TABLE_TITLE_DETAIL'), sortable: false, thClass: 'text-center base-th base-th-control', tdClass: 'text-center base-td-control' },
 				{ key: 'delete', label: this.$t('LIST_DRIVER.TABLE_TITLE_DELETE'), sortable: false, thClass: 'text-center base-th base-th-control', tdClass: 'text-center base-td-control' },
 			];
+		},
+
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
 		},
 	},
 
@@ -157,11 +164,21 @@ export default {
 		this.initData();
 	},
 
+	mounted() {
+		this.getCurrentDate();
+	},
+
 	methods: {
 		formatNumberCode,
 
 		async initData() {
 			await this.handleGetList();
+		},
+
+		getCurrentDate() {
+			const today = new Date();
+			// Định dạng ngày thành chuỗi yyyy-MM-dd để sử dụng trong input type="date"
+			this.currentDate = today.toISOString().slice(0, 10);
 		},
 
 		async handleGetList() {
@@ -192,23 +209,42 @@ export default {
 			}
 		},
 
-		getTextEnrollmentStatus(status) {
-			switch (status) {
-				case CONSTANT.LIST_DRIVER.ENROLLMENT_STATUS_RETIRED:
-					return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
-				case CONSTANT.LIST_DRIVER.ENROLLMENT_STATUS_ENROLLED:
-					return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
-				default:
-					return '';
+		// handleStyle(end_date) {
+		// 	const today = new Date();
+		// 	const endDate = new Date(end_date);
+		// 	if (today === endDate) {
+		// 		return 'background: #dbdbdb';
+		// 	} else if (end_date === null) {
+		// 		return '';
+		// 	}
+		// },
+
+		getTextEnrollmentStatus(end_date) {
+			const today = new Date();
+			const endDate = new Date(end_date);
+			if (end_date === null) {
+				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
+			} else if (today >= endDate) {
+				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
+			} else {
+				return '';
 			}
+			// switch (end_date) {
+			// 	case end_date !== null:
+			// 		return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
+			// 	case end_date:
+			// 		return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
+			// 	default:
+			// 		return '';
+			// }
 		},
 
 		rowClass(item) {
-			if (!item) {
+			const today = new Date();
+			const endDate = new Date(item.end_date);
+			if (item.end_date === null) {
 				return '';
-			}
-
-			if (item.status === CONSTANT.LIST_DRIVER.ENROLLMENT_STATUS_ENROLLED) {
+			} else if (today >= endDate) {
 				return 'employee-retired';
 			}
 
@@ -309,7 +345,7 @@ export default {
                 }
 
                 .th-employee-number {
-                    width: 250px;
+                    width: 150px;
                 }
 
                 .th-enrollment {

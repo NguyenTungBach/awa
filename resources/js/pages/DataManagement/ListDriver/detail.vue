@@ -116,7 +116,7 @@
                                                     <b-col>
                                                         <DetailForm
                                                             :label="$t('CREATE_DRIVER.TYPE_EMPLOYEE')"
-                                                            :value="isForm.typeDriver"
+                                                            :value="$t(isForm.typeDriver)"
                                                         />
                                                     </b-col>
                                                 </b-row>
@@ -237,7 +237,7 @@
                                                 <b-col>
                                                     <b-row>
                                                         <b-col>
-                                                            <div class="item-form">
+                                                            <div class="item-form note-detail">
                                                                 <p>{{ isForm.notes ? isForm.notes : '-' }}</p>
                                                             </div>
                                                         </b-col>
@@ -397,8 +397,8 @@ export default {
 				if (DRIVER.code === 200) {
 					const DATA = DRIVER.data;
 
-					// this.isForm.typeDriver = convertValueToText(this.isForm.optionsTypeDriver, DATA.flag);
-					this.isForm.typeDriver = DATA.typeName;
+					this.isForm.typeDriver = convertValueToText(this.isForm.optionsTypeDriver, DATA.type);
+					// this.isForm.typeDriver = DATA.typeName;
 					this.isForm.employeeNumber = DATA.driver_code;
 					this.isForm.fullname = DATA.driver_name;
 					this.isForm.hireDate = DATA.start_date;
@@ -559,6 +559,11 @@ export default {
                         margin: 40px 0;
 
                         font-size: 18px;
+                    }
+                    .note-detail {
+                        max-width: 100%;
+                        overflow: hidden;
+                        word-wrap: break-word;
                     }
 
                     ::v-deep .zone-table {

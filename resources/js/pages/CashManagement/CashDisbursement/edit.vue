@@ -29,6 +29,7 @@
                                     <b-button
                                         pill
                                         class="btn-color-active btn-save"
+                                        @click="handleOnClickSave()"
                                     >
                                         {{ $t('APP.BUTTON_SAVE') }}
                                     </b-button>
@@ -117,7 +118,7 @@
                                                     </label>
                                                     <b-form-input
                                                         id="input-deposit-day"
-                                                        v-model="isForm.character"
+                                                        v-model="isForm.cash_out"
                                                     />
                                                 </b-col>
                                                 <b-col
@@ -151,7 +152,7 @@
                                                         <b-input-group>
                                                             <b-form-select
                                                                 id="input-payment-method"
-                                                                v-model="isForm.exclusive"
+                                                                v-model="isForm.payment_method"
                                                                 :options="optionsClosingDay"
                                                             />
                                                         </b-input-group>
@@ -193,7 +194,7 @@
 import LineGray from '@/components/LineGray';
 import CONSTANT from '@/const';
 import { setLoading } from '@/utils/handleLoading';
-import { getListCashOut } from '@/api/modules/cashDisbursement';
+import { getListCashOut, putCashOut } from '@/api/modules/cashDisbursement';
 import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 
 export default {
@@ -205,7 +206,8 @@ export default {
 	data() {
 		return {
 			isForm: {
-				id: '',
+				cashOutID: '',
+				driverID: '',
 				payment_day: '',
 				cash_out: '',
 				dateOfBirth: '',
@@ -217,11 +219,11 @@ export default {
 			optionsClosingDay: [
 				{
 					value: 1,
-					text: '入金方法',
+					text: '銀行振込',
 				},
 				{
 					value: 2,
-					text: '方法',
+					text: '口座振替',
 				},
 			],
 		};
@@ -229,7 +231,6 @@ export default {
 
 	computed: {
 		language() {
-			console.log('id', this.$store.getters.idRouter);
 			return this.$store.getters.language;
 		},
 	},
@@ -241,31 +242,59 @@ export default {
 	methods: {
 
 		initData() {
-			this.isForm.id = this.$route.params.id || null;
-			// this.handleGetlistCashOut();
+			this.isForm.cashOutID = this.$route.params.cashOutID || null;
+			this.isForm.driverID = this.$route.params.driverID || null;
+			this.handleGetlistCashOut();
 		},
 
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashDisbursement' });
 		},
 
+		goToDetailCashOut() {
+			this.$router.push({ name: 'ListCashDisbursementDetail', params: { id: this.isForm.driverID }});
+		},
+
 		async handleGetlistCashOut() {
 			try {
 				setLoading(true);
-				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_OUT}/${this.idCash}/cash-out`;
+				const URL = `${CONSTANT.URL_API.GET_DETAIL_CASH_OUT}/${this.isForm.driverID}/cash-out/${this.isForm.cashOutID}`;
 				const params = {};
 				const response = await getListCashOut(URL, params);
 				if (response.code === 200) {
-					response.data.data_list_cash_out.list_cash_out.forEach(element => {
-						if (element.id === this.isForm.id) {
-							this.isForm.payment_day = element.payment_date;
-							this.isForm.cash_out = element.cash_out;
-							this.isForm.payment_method = element.payment_method;
-							this.isForm.note = element.note;
+					const DATA = response.data;
+					const convertDate = `${(DATA.payment_date).slice(0, 4)}-${(DATA.payment_date).slice(5, 7)}-${(DATA.payment_date).slice(8, 10)}`;
+					this.isForm.payment_day = convertDate;
+					this.isForm.cash_out = Number(DATA.cash_out);
+					this.optionsClosingDay.forEach(element => {
+						if (element.text === DATA.payment_method) {
+							this.isForm.payment_method = element.value;
 						}
 					});
+					this.isForm.note = DATA.note;
 				} else {
 					TOAST_CASH_MANAGEMENT.warning(response.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleOnClickSave() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.GET_DETAIL_CASH_OUT}/${this.isForm.driverID}/cash-out/${this.isForm.cashOutID}`;
+				const params = {
+					payment_date: this.isForm.payment_day,
+					cash_out: this.isForm.cash_out,
+					payment_method: this.isForm.payment_method,
+					note: this.isForm.note,
+				};
+				const DATA = await putCashOut(URL, params);
+				if (DATA.code === 200) {
+					this.goToDetailCashOut();
+					TOAST_CASH_MANAGEMENT.update();
 				}
 				setLoading(false);
 			} catch (error) {
