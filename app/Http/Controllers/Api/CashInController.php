@@ -84,10 +84,40 @@ class CashInController extends Controller
      *   tags={"CashIn"},
      *   summary="Add new CashIn",
      *   operationId="cash_in_create",
-     *   @OA\Parameter(name="name", in="query", required=true,
-     *     @OA\Schema(type="string"),
+     *   @OA\RequestBody(
+     *       @OA\MediaType(
+     *          mediaType="application/json",
+     *          example={"customer_id": 1,"cash_in": "100","payment_method": 1,"payment_date": "2023-08-14"},
+     *          @OA\Schema(
+     *            required={"customer_id","cash_in","payment_method","payment_date"},
+     *            @OA\Property(
+     *              property="customer_id",
+     *              format="integer",
+     *              description="customer_id",
+     *            ),
+     *            @OA\Property(
+     *              property="cash_in",
+     *              format="integer",
+     *              description="money cash in"
+     *            ),
+     *            @OA\Property(
+     *              property="payment_method",
+     *              format="string",
+     *              description="1: 銀行振込 - ngân hàng ck, 2: 口座振替 - bưu điện ck"
+     *            ),
+     *            @OA\Property(
+     *              property="payment_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="note",
+     *              format="string",
+     *              description="1000 character"
+     *            ),
+     *         )
+     *      )
      *   ),
-     *
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",
@@ -188,12 +218,33 @@ class CashInController extends Controller
      *   @OA\RequestBody(
      *       @OA\MediaType(
      *          mediaType="application/json",
-     *          example={"name":"string"},
+     *          example={"customer_id": 1,"cash_in": "100","payment_method": 1,"payment_date": "2023-08-14"},
      *          @OA\Schema(
-     *            required={"name"},
+     *            required={"customer_id","cash_in","payment_method","payment_date"},
      *            @OA\Property(
-     *              property="name",
+     *              property="customer_id",
+     *              format="integer",
+     *              description="customer_id",
+     *            ),
+     *            @OA\Property(
+     *              property="cash_in",
+     *              format="integer",
+     *              description="money cash in"
+     *            ),
+     *            @OA\Property(
+     *              property="payment_method",
      *              format="string",
+     *              description="1: 銀行振込 - ngân hàng ck, 2: 口座振替 - bưu điện ck"
+     *            ),
+     *            @OA\Property(
+     *              property="payment_date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="note",
+     *              format="string",
+     *              description="1000 character"
      *            ),
      *         )
      *      )

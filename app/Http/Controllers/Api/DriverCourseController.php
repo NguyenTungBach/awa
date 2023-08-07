@@ -831,7 +831,7 @@ class DriverCourseController extends Controller
             ]));
         }
 
-        $data = $this->repository->saleDetail($request,$id);
+        $data = $this->repository->saleDetailByClosingDate($request,$id);
         return ResponseService::responseJson(200, new BaseResource($data));
     }
 
