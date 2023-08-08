@@ -91,7 +91,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
             'list_cash_in'=>$listCashIn,
             'total_cash_in'=>$totalCashIn,
         ];
-        return ResponseService::responseJson(200, new BaseResource($data));
+        return $data;
     }
 
     public function create(array $attributes)

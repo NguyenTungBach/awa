@@ -263,8 +263,33 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         // Tạo xong thì truy vấn lại
         $cashInStatical = CashInStatical::
-        where("customer_id",$id)
+            select(
+                "cash_in_statisticals.customer_id",
+                "customers.customer_code",
+                "customers.customer_name",
+                "cash_in_statisticals.month_line",
+                "cash_in_statisticals.balance_previous_month",
+                "cash_in_statisticals.receivable_this_month",
+            )
+            ->addSelect(DB::raw('(cash_in_statisticals.balance_previous_month + cash_in_statisticals.receivable_this_month) as total_account_receivable'))
+            ->addSelect("cash_in_statisticals.total_cash_in_current")
+            ->where("cash_in_statisticals.customer_id",$id)
+            ->join('customers', 'customers.id', '=', 'cash_in_statisticals.customer_id')
             ->where("month_line",$request->month_year)->first();
+        // Truy vấn tổng tiền khách đã trả trong tháng closing date
+
+        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
+        $getClosingDateByMonthEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+
+        //Truy vấn lại lấy ra tổng tiền Cash In của customer trong tháng
+        $totalCashIn = CashIn::query()
+            ->select("customer_id")
+            ->addSelect(DB::raw('SUM(cash_in) as total_cash_in'))
+            ->where("customer_id",$id)
+            ->whereBetween('payment_date', [$getClosingDateByMonthStart, $getClosingDateByMonthEnd])
+            ->groupBy("customer_id")->first();
+
+        $cashInStatical->total_cash_in = $totalCashIn->total_cash_in;
 
         return $this->responseJson(200, new BaseResource($cashInStatical));
     }
