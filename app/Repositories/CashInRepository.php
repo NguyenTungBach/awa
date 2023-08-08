@@ -89,7 +89,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
             ->groupBy("customer_id")->first();
         $data = [
             'list_cash_in'=>$listCashIn,
-            'total_cash_in'=>$totalCashIn,
+            'total_cash_in'=>$totalCashIn ?? 0,
         ];
         return $data;
     }
