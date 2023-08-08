@@ -117,77 +117,77 @@ class DriverCourseController extends Controller
         return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $datas);;
     }
 
-    /**
-     * @OA\Post(
-     *   path="/api/driver-course",
-     *   tags={"DriverCourse"},
-     *   summary="Add Update new DriverCourse",
-     *   operationId="driver_course_create",
-     *   @OA\RequestBody(
-     *       @OA\MediaType(
-     *          mediaType="application/json",
-     *          example={
-     *              "driver_id": "1",
-     *              "items" : {
-     *                  {
-     *                      "course_id": 4,
-     *                      "date": "2023-07-25",
-     *                      "start_time": "08:00",
-     *                      "end_time": "18:00",
-     *                      "break_time": "12:00"
-     *                  },
-     *                  {
-     *                      "course_id": 2,
-     *                      "date": "2023-07-25",
-     *                      "start_time": "08:00",
-     *                      "end_time": "18:00",
-     *                      "break_time": "12:00"
-     *                  },
-     *              }
-     *          },
-     *          @OA\Schema(
-     *            required={"driver_id","items"},
-     *            @OA\Property(
-     *              property="driver_id",
-     *              type="integer",
-     *            ),
-     *            @OA\Property(
-     *              property="items",
-     *              type="array",
-     *              @OA\Items(
-     *                  required={"course_id","date","start_time","end_time","break_time"},
-     *                  @OA\Property(property="course_id", type="interger" ),
-     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
-     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
-     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
-     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
-     *               )
-     *            ),
-     *         )
-     *      )
-     *   ),
-     *     @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":{"id": 1,"name": "......"}}
-     *     )
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function store(DriverCourseRequest $request)
-    {
-        try {
-            $request->merge(['status' => 1]);
-            return $this->repository->create($request->all());
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
+//    /**
+//     * @OA\Post(
+//     *   path="/api/driver-course",
+//     *   tags={"DriverCourse"},
+//     *   summary="Add new DriverCourse",
+//     *   operationId="driver_course_create",
+//     *   @OA\RequestBody(
+//     *       @OA\MediaType(
+//     *          mediaType="application/json",
+//     *          example={
+//     *              "driver_id": "1",
+//     *              "items" : {
+//     *                  {
+//     *                      "course_id": 4,
+//     *                      "date": "2023-07-25",
+//     *                      "start_time": "08:00",
+//     *                      "end_time": "18:00",
+//     *                      "break_time": "12:00"
+//     *                  },
+//     *                  {
+//     *                      "course_id": 2,
+//     *                      "date": "2023-07-25",
+//     *                      "start_time": "08:00",
+//     *                      "end_time": "18:00",
+//     *                      "break_time": "12:00"
+//     *                  },
+//     *              }
+//     *          },
+//     *          @OA\Schema(
+//     *            required={"driver_id","items"},
+//     *            @OA\Property(
+//     *              property="driver_id",
+//     *              type="integer",
+//     *            ),
+//     *            @OA\Property(
+//     *              property="items",
+//     *              type="array",
+//     *              @OA\Items(
+//     *                  required={"course_id","date","start_time","end_time","break_time"},
+//     *                  @OA\Property(property="course_id", type="interger" ),
+//     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
+//     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
+//     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
+//     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
+//     *               )
+//     *            ),
+//     *         )
+//     *      )
+//     *   ),
+//     *     @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"data":{"id": 1,"name": "......"}}
+//     *     )
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * @return \Illuminate\Http\JsonResponse
+//     * @throws \Exception
+//     */
+//    public function store(DriverCourseRequest $request)
+//    {
+//        try {
+//            $request->merge(['status' => 1]);
+//            return $this->repository->create($request->all());
+//        } catch (\Exception $e) {
+//            throw $e;
+//        }
+//    }
 
     /**
      * @OA\Get(

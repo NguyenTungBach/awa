@@ -30,7 +30,7 @@ class CashInStaticalController extends Controller
      * @OA\Get(
      *   path="/api/cash-in-statical",
      *   tags={"CashInStatical"},
-     *   summary="List CashInStatical",
+     *   summary="Cash receipt list CashInStatical",
      *   operationId="cash_in_statical_index",
      *   @OA\Response(
      *     response=200,
@@ -91,7 +91,7 @@ class CashInStaticalController extends Controller
      * @OA\Get(
      *   path="/api/export-cash-in-statical",
      *   tags={"CashInStatical"},
-     *   summary="Export CashInStatical",
+     *   summary="Export cash receipt list CashInStatical",
      *   operationId="export_cash_in_statical",
      *   @OA\Response(
      *     response=200,
@@ -189,7 +189,7 @@ class CashInStaticalController extends Controller
      * @OA\Get(
      *   path="/api/cash-in-statical/{id}",
      *   tags={"CashInStatical"},
-     *   summary="Detail CashInStatical",
+     *   summary="Cash receipt detail CashInStatical",
      *   operationId="cash_in_statical_show",
      *   @OA\Parameter(
      *     name="id",
