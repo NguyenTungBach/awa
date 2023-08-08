@@ -289,7 +289,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             ->whereBetween('payment_date', [$getClosingDateByMonthStart, $getClosingDateByMonthEnd])
             ->groupBy("customer_id")->first();
 
-        $cashInStatical->total_cash_in = $totalCashIn->total_cash_in;
+        $cashInStatical->total_cash_in = $totalCashIn->total_cash_in ?? 0;
 
         return $this->responseJson(200, new BaseResource($cashInStatical));
     }
