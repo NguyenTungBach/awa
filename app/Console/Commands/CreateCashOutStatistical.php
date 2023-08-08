@@ -59,9 +59,9 @@ class CreateCashOutStatistical extends Command
             $result = CashOutStatistical::create([
                 'driver_id' => $statisOut->driver_id,
                 'month_line' => $item,
-                'balance_previous_month' => $statisOut->balance_previous_month,
-                'payable_this_month' => $statisOut->payable_this_month,
-                'total_cash_out_current' => $statisOut->total_cash_out_current,
+                'balance_previous_month' => ($statisOut->balance_previous_month + $statisOut->payable_this_month - $statisOut->total_cash_out_current), // ( balance_previous_month + payable_this_month - total_cash_out_current )
+                'payable_this_month' => 00.00, // 00.00
+                'total_cash_out_current' => 00.00, // 00.00
             ]);
         }
 
