@@ -10,9 +10,20 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Carbon\Carbon;
 use App\Models\Calendar;
 use Illuminate\Support\Arr;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\Exportable;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class PaymentExport implements FromView
+class PaymentExport implements FromView, ShouldAutoSize, WithStyles
 {
+    use Exportable;
+
     protected array $input;
 
     public function __construct(array $input)
@@ -42,5 +53,28 @@ class PaymentExport implements FromView
             'title' => $title,
             'calendar' => $calendar,
         ]);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getRowDimension(3)->setRowHeight(25);
+        $sheet->getRowDimension(4)->setRowHeight(25);
+
+        return [
+            'A1' => [
+                'font' => [
+                    'size' => 20, // Set the font size here
+                    'name' => 'Calibri',
+                ],
+                'borders' => [
+                    'outline' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ],
+        ];
     }
 }

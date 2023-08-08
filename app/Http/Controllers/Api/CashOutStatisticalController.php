@@ -69,7 +69,7 @@ class CashOutStatisticalController extends Controller
         try {
             $input = $request->all();
 
-            return Excel::download(new CashOutStatisticalExport($input), '運行情報一覧.xlsx');
+            return Excel::download(new CashOutStatisticalExport($input), '出金情報一覧.xlsx');
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());

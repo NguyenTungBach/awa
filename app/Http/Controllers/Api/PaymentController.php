@@ -45,7 +45,7 @@ class PaymentController extends Controller
         try {
             $input = $request->all();
 
-            return Excel::download(new PaymentExport($input), '運行情報一覧.xlsx');
+            return Excel::download(new PaymentExport($input), '支払代金表.xlsx');
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
