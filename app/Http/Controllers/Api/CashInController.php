@@ -75,7 +75,9 @@ class CashInController extends Controller
      */
     public function index(CashInRequest $request)
     {
-        return $this->repository->listCashIn($request);
+        $data = $this->repository->listCashIn($request);
+        return ResponseService::responseJson(200, new BaseResource($data));
+
     }
 
     /**

@@ -196,7 +196,7 @@ class DriverController extends Controller
             if ($data != null){
                 $data->checkEnd_date = $data->end_date !== null;
                 if ($data->end_date !== null){
-                    $data->end_date = explode(" ",$data->end_date);
+                    $data->end_date = explode(" ",$data->end_date)[0];
                 }
                 switch ($data->type){
                     case 1:

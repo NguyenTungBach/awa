@@ -4,7 +4,10 @@
 namespace Tests;
 
 
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
 
 trait CreateDuskTestApplication
 {
@@ -17,7 +20,11 @@ trait CreateDuskTestApplication
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
         $app->make(Kernel::class)->bootstrap();
-
+        Artisan::call('migrate:fresh --seed');
+        $getYearNow = Carbon::now()->format("Y");
+        $client = new Client();
+        $response = $client->get("http://localhost:8000/api/calendar/setup-data?targetyyyy=$getYearNow"); // Gọi API bằng phương thức GET
+        $apiResponse = $response->getBody()->getContents();
         return $app;
     }
 }

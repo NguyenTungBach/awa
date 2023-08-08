@@ -92,6 +92,9 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
             ->SortByForDriver($request)->get()
             ->filter(function ($driver) {
                 $driver->checkEnd_date = $driver->end_date !== null;
+                if ($driver->end_date !== null){
+                    $driver->end_date = explode(" ",$driver->end_date)[0];
+                }
                 switch ($driver->type){
                     case 1:
                         $driver->typeName = trans('drivers.type.1');
