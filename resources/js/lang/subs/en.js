@@ -148,7 +148,7 @@ export default {
 
 		DATA_MANAGEMENT: 'Data Management',
 		LIST_DRIVER: 'List Driver',
-		LIST_COURSE: 'List Course',
+		LIST_COURSE: 'List Customer',
 		LIST_COURSE_PATTERN: 'List Course Pattern',
 		LIST_USER: 'List User',
 

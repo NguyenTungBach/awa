@@ -65,7 +65,7 @@ class UserCrudTest extends DuskTestCase
             ->click('.btn-save')->pause(2000)
             ->waitFor('.toast-body')
             ->assertSee('Update user success')
-            ->pause(5000);
+            ->pause(3000);
     }
 
     private function deleteUser($browser){

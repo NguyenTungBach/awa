@@ -27,15 +27,15 @@ class DriverListCrudTest extends DuskTestCase
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginAdminGeneral($browser);
-            $this->listUser($browser);
+            $this->listDriver($browser);
             $this->createDriver($browser);
             $this->editDriver($browser);
-            $this->listUser($browser);
+            $this->listDriver($browser);
             $this->deleteDriver($browser);
         });
     }
 
-    private function listUser(Browser $browser)
+    private function listDriver(Browser $browser)
     {
         $browser->pause(2000)
             ->mouseover('div.show-menu > ul > li:nth-child(2) > span')
