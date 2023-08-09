@@ -17,7 +17,7 @@
                 <div
                     class="zone-right"
                 >
-                    <div class="item-function btn-excel">
+                    <div class="item-function btn-excel" @click="onClickExport()">
                         <div class="show-icon">
                             <i class="fas fa-file-excel" />
                         </div>
@@ -37,6 +37,7 @@
                                     <b-th
                                         class="th-sort th-id th-course-id"
                                         :rowspan="2"
+                                        @click="onSortTable('customer_code')"
                                     >
                                         <b-row class="row-cashCiept-id">
                                             <b-col>
@@ -45,11 +46,11 @@
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_code' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'customer_code' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_code' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'customer_code' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -63,19 +64,20 @@
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
+                                        @click="onSortTable('customer_name')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_NAME') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_name' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_name' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'customer_name' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -87,21 +89,22 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name"
                                         :colspan="3"
+                                        @click="onSortTable('balance_previous_month')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_BALANCE_AT_END_OF_PREVIOUS_MONTH') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_banlance' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_banlance' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -113,21 +116,22 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name"
                                         :colspan="3"
+                                        @click="onSortTable('receivable_this_month')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CASH_ACCOUNTS_RECEIVABLE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_accounts_receivable' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'receivable_this_month' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_accounts_receivable' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'receivable_this_month' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -139,21 +143,22 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name"
                                         :colspan="3"
+                                        @click="onSortTable('total_account_receivable')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_TOTAL_ACCOUNTS_RECEIVABLE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_total_accounts_receivable' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'total_account_receivable' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_total_accounts_receivable' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'total_account_receivable' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -165,21 +170,22 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name"
                                         :colspan="3"
+                                        @click="onSortTable('total_cash_in_of_current_month')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_MONTHLY_DEPOSIT_AMOUNT') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_monthly_deposit_amount' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'total_cash_in_of_current_month' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_monthly_deposit_amount' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'total_cash_in_of_current_month' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -191,21 +197,22 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name"
                                         :colspan="3"
+                                        @click="onSortTable('total_cash_in_current')"
                                     >
                                         <b-row>
                                             <b-col>
                                                 {{ $t('LIST_CASH.TABLE_CURRENT_MONTH_BALANCE') }}
                                             </b-col>
-                                            <b-col>
+                                            <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'cash_current_month_balance' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'total_cash_in_current' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'cash_current_month_balance' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'total_cash_in_current' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -217,7 +224,7 @@
                                         </b-row>
                                     </b-th>
                                     <b-th
-                                        class="th-sort th-name th-course-name"
+                                        class="th-sort th-name th-detail"
                                         :colspan="2"
                                     >
                                         <b-row>
@@ -232,30 +239,30 @@
                                 <template v-for="(course, idx) in listCash">
                                     <b-tr :key="`item-cash-${idx + 1}`">
                                         <b-td class="td-cash-id">
-                                            {{ course.id }}
+                                            {{ course.customer_code }}
                                         </b-td>
                                         <b-td class="td-cash-name" :colspan="3">
-                                            {{ course.name }}
+                                            {{ course.customer_name }}
                                         </b-td>
                                         <b-td class="td-cash-balance" :colspan="3">
-                                            {{ course.balance }}
+                                            {{ course.balance_previous_month }}
                                         </b-td>
                                         <b-td class="td-cash-account-receiable" :colspan="3">
-                                            {{ course.account_receivable }}
+                                            {{ course.receivable_this_month }}
                                         </b-td>
                                         <b-td class="td-cash-total-account-receiable" :colspan="3">
                                             {{ course.total_account_receivable }}
                                         </b-td>
                                         <b-td class="td-cash-month-deposit-amount" :colspan="3">
-                                            {{ course.monthly_deposit_amount }}
+                                            {{ course.total_cash_in_of_current_month }}
                                         </b-td>
                                         <b-td class="td-cash-current-month-balance" :colspan="3">
-                                            {{ course.current_month_balance }}
+                                            {{ course.total_cash_in_current }}
                                         </b-td>
                                         <b-td class="text-center td-control" :colspan="2">
                                             <i
                                                 class="fas fa-eye"
-                                                @click="onClickDetail(course.id)"
+                                                @click="onClickDetail(course.customer_id)"
                                             />
                                         </b-td>
                                     </b-tr>
@@ -270,6 +277,15 @@
 </template>
 <script>
 import LineGray from '@/components/LineGray';
+import { format2Digit } from '@/utils/generateTime';
+import { getCashReciept } from '@/api/modules/cashDisbursement';
+import { cleanObject } from '@/utils/handleObject';
+import { setLoading } from '@/utils/handleLoading';
+import { getToken } from '@/utils/handleToken';
+import CONSTANT from '@/const';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
+import axios from 'axios';
+
 export default {
 	name: 'ListCash',
 	components: {
@@ -324,9 +340,191 @@ export default {
 		};
 	},
 
+	computed: {
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
+	},
+
+	watch: {
+		sortTable: {
+			handler: function() {
+				this.handleGetCashReciept();
+			},
+
+			deep: true,
+		},
+	},
+
+	created() {
+		this.initData();
+	},
+
 	methods: {
 		onClickDetail(scopeId) {
 			this.$router.push({ name: 'ListCashReceiptDetail', params: { id: scopeId }});
+		},
+
+		initData() {
+			this.handleGetCashReciept();
+		},
+
+		async handleGetCashReciept() {
+			try {
+				setLoading(true);
+				let PARAMS = {
+					field: this.sortTable.sortBy,
+					sortby: this.sortTable.sortType,
+				};
+				if (PARAMS.field) {
+					PARAMS.sortby = PARAMS.sortby ? 'desc' : 'asc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_LIST_CASH_RECIEPT;
+				const response = await getCashReciept(URL, PARAMS);
+				if (response.code === 200) {
+					this.listCash = response.data;
+				} else {
+					this.listCash = [];
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async onClickExport() {
+			try {
+				setLoading(true);
+				let params = {
+					field: this.sortTable.sortBy,
+					sortby: this.sortTable.sortType,
+				};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				params.month_year = YEAR_MONTH;
+				params = cleanObject(params);
+				const URL = `/api${CONSTANT.URL_API.EXPORT_EXCEL_CASH_RECIEPT}`;
+				await axios.get(URL, {
+					params: params,
+					responseType: 'blob',
+					headers: {
+						'Accept-Language': this.$store.getters.language,
+						'Authorization': getToken(),
+						'accept': 'application/json',
+					},
+				}).then((response) => {
+					const url = window.URL.createObjectURL(new Blob([response.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'download.xlsx');
+					document.body.appendChild(link);
+					link.click();
+				}).catch((error) => {
+					TOAST_CASH_MANAGEMENT.warning(error.massage);
+				});
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		onSortTable(col) {
+			switch (col) {
+				case 'customer_code':
+					if (this.sortTable.sortBy === 'customer_code') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'customer_code';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'customer_name':
+					if (this.sortTable.sortBy === 'customer_name') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'customer_name';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'balance_previous_month':
+					if (this.sortTable.sortBy === 'balance_previous_month') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'balance_previous_month';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'receivable_this_month':
+					if (this.sortTable.sortBy === 'receivable_this_month') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'receivable_this_month';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'total_account_receivable':
+					if (this.sortTable.sortBy === 'total_account_receivable') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'total_account_receivable';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'total_cash_in_of_current_month':
+					if (this.sortTable.sortBy === 'total_cash_in_of_current_month') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'total_cash_in_of_current_month';
+						this.sortTable.sortType = true;
+					}
+					break;
+				case 'total_cash_in_current':
+					if (this.sortTable.sortBy === 'total_cash_in_current') {
+						if (this.sortTable.sortType) {
+							this.sortTable.sortType = !this.sortTable.sortType;
+						} else {
+							this.sortTable.sortType = true;
+						}
+					} else {
+						this.sortTable.sortBy = 'total_cash_in_current';
+						this.sortTable.sortType = true;
+					}
+					break;
+				default:
+					console.log('Handle sort table faild');
+					break;
+			}
 		},
 	},
 };
@@ -418,9 +616,15 @@ export default {
                                 th.th-sort {
                                     cursor: pointer;
 
-                                    i.icon-sort-default {
-                                        color: $white;
-                                        opacity: 0.7;
+                                    .icon-sorts {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
+
+                                        i.icon-sort-default {
+                                            color: $white;
+                                            opacity: 0.7;
+                                        }
                                     }
                                 }
 
@@ -430,6 +634,14 @@ export default {
 
                                 th.th-control {
                                     width: 15px;
+                                }
+
+                                th.th-detail {
+                                    min-width: 30px;
+                                }
+
+                                th.th-course-name {
+                                    min-width: 250px;
                                 }
                             }
 

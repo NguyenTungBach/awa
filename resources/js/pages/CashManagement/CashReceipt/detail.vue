@@ -69,7 +69,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_ID')"
-                                                        :value="isForm.course_id"
+                                                        :value="isForm.customer_code"
                                                     />
                                                 </div>
                                             </b-col>
@@ -80,7 +80,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_NAME')"
-                                                        :value="isForm.course_name"
+                                                        :value="isForm.customer_name"
                                                     />
                                                 </div>
                                             </b-col>
@@ -91,7 +91,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CURRENT_MONTH_BALANCE')"
-                                                        :value="isForm.course_current_month_balance"
+                                                        :value="isForm.total_cash_in_current"
                                                     />
                                                 </div>
                                             </b-col>
@@ -101,7 +101,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_BALANCE_AT_END_OF_PREVIOUS_MONTH')"
-                                                        :value="isForm.course_balance_at_end_of_previous_month"
+                                                        :value="isForm.balance_previous_month"
                                                     />
                                                 </div>
                                             </b-col>
@@ -111,7 +111,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_CASH_ACCOUNTS_RECEIVABLE')"
-                                                        :value="isForm.course_accounts_receivable"
+                                                        :value="isForm.receivable_this_month"
                                                     />
                                                 </div>
                                             </b-col>
@@ -121,7 +121,7 @@
                                                 <div class="item-form">
                                                     <DetailForm
                                                         :label="$t('LIST_CASH.TABLE_TOTAL_ACCOUNTS_RECEIVABLE')"
-                                                        :value="isForm.course_total_account_receivable"
+                                                        :value="isForm.total_account_receivable"
                                                     />
                                                 </div>
                                             </b-col>
@@ -194,19 +194,19 @@
                                             <template v-for="(course, idx) in listCashDeital">
                                                 <b-tr :key="`item-cash-${idx + 1}`">
                                                     <b-td class="td-cash-id" :colspan="1">
-                                                        {{ course.no }}
+                                                        {{ idx + 1 }}
                                                     </b-td>
                                                     <b-td class="td-cash-name" :colspan="2">
-                                                        {{ course.date }}
+                                                        {{ course.payment_date }}
                                                     </b-td>
                                                     <b-td class="td-cash-balance" :colspan="2">
-                                                        {{ course.deposit_amount }}
+                                                        {{ Number(course.cash_in) }}
                                                     </b-td>
-                                                    <b-td class="td-cash-account-receiable" :colspan="2">
-                                                        {{ course.payment_method }}
+                                                    <b-td class="td-payment_method" :colspan="2">
+                                                        {{ handlePaymentMethod(course.payment_method) }}
                                                     </b-td>
                                                     <b-td class="td-cash-total-account-receiable" :colspan="3">
-                                                        {{ course.remarks }}
+                                                        {{ course.note }}
                                                     </b-td>
                                                     <b-td class="td-cash-edit td-control" :colspan="1">
                                                         <i class="fas fa-pen" @click="onClickEdit(course.id)" />
@@ -214,7 +214,7 @@
                                                     <b-td class="td-cash-delete td-control" :colspan="1">
                                                         <i
                                                             class="fas fa-trash-alt"
-                                                            @click="onClickShowModalDelete()"
+                                                            @click="onClickShowModalDelete(course.id)"
                                                         />
                                                     </b-td>
                                                 </b-tr>
@@ -223,7 +223,7 @@
                                                 <b-th class="total-cash" :colspan="4">
                                                     {{ $t('LIST_CASH.TABLE_TOTAL') }}
                                                 </b-th>
-                                                <b-td>
+                                                <b-td class="total-cash-in">
                                                     {{ isForm.total }}
                                                 </b-td>
                                             </b-tr>
@@ -260,6 +260,7 @@
                         <b-button
                             pill
                             class="mr-2 btn-color-active-import"
+                            @click="handleOK()"
                         >
                             OK
                         </b-button>
@@ -273,6 +274,11 @@
 import LineGray from '@/components/LineGray';
 import DetailForm from '@/components/DetailForm';
 import TitlePathForm from '@/components/TitlePathForm';
+import { setLoading } from '@/utils/handleLoading';
+import CONSTANT from '@/const';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
+import { getDetailCashReciept, getCashIn, deleteCashIn } from '@/api/modules/cashDisbursement';
+import { format2Digit } from '@/utils/generateTime';
 export default {
 	name: 'CashDetail',
 	components: {
@@ -287,14 +293,16 @@ export default {
 			showModalDelete: false,
 			// idCashIn: null,
 			isForm: {
-				course_id: '',
-				course_name: '',
-				course_current_month_balance: '',
-				course_balance_at_end_of_previous_month: '',
-				course_accounts_receivable: '',
-				course_total_account_receivable: '',
+				customer_code: '',
+				customer_name: '',
+				total_cash_in_current: '',
+				balance_previous_month: '',
+				receivable_this_month: '',
+				total_account_receivable: '',
 				total: '122.55',
 			},
+
+			scopeID: '',
 
 			listCashDeital: [
 				{
@@ -317,7 +325,28 @@ export default {
 		};
 	},
 
+	computed: {
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
+	},
+
+	created() {
+		this.initData();
+	},
+
 	methods: {
+
+		async initData() {
+			this.idCash = this.$route.params.id || null;
+			await this.handleGetListCashIn();
+			await this.handleGetDetailReciept();
+		},
+
+		handlePaymentMethod(cashIn) {
+			return cashIn === 1 ? '銀行振込' : '振込';
+		},
+
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashReceipt' });
 		},
@@ -334,8 +363,81 @@ export default {
 			this.showModalDelete = false;
 		},
 
-		onClickShowModalDelete() {
+		onClickShowModalDelete(scope) {
+			this.scopeID = scope;
 			this.showModalDelete = true;
+		},
+
+		async handleOK() {
+			try {
+				this.showModalDelete = false;
+				if (this.scopeID) {
+					setLoading(true);
+					const URL = `${CONSTANT.URL_API.DELETE_CASH_IN}/${this.scopeID}`;
+					const Delete_cash_in = await deleteCashIn(URL);
+					if (Delete_cash_in.code === 200) {
+						TOAST_CASH_MANAGEMENT.deleteCashIn();
+						await this.handleGetListCashIn();
+					}
+					setLoading(false);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetDetailReciept() {
+			try {
+				if (this.idCash) {
+					setLoading(true);
+					const PARAMS = {};
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+					PARAMS.month_year = YEAR_MONTH;
+					const URL = `${CONSTANT.URL_API.GET_DETAIL_CASH_RECIEPT}/${this.idCash}`;
+					const response = await getDetailCashReciept(URL, PARAMS);
+					if (response.code === 200) {
+						const DATA = response.data;
+						this.isForm.customer_code = DATA.customer_code;
+						this.isForm.customer_name = DATA.customer_name;
+						this.isForm.total_cash_in_current = DATA.total_cash_in_current ? Number(DATA.total_cash_in_current).toLocaleString() + '円' : '';
+						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month).toLocaleString() + '円' : '';
+						this.isForm.receivable_this_month = DATA.receivable_this_month ? Number(DATA.receivable_this_month).toLocaleString() + '円' : '';
+						this.isForm.total_account_receivable = DATA.total_account_receivable ? Number(DATA.total_account_receivable).toLocaleString() + '円' : '';
+					} else {
+						TOAST_CASH_MANAGEMENT.warning(response.message_content);
+					}
+					setLoading(false);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetListCashIn() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_IN}`;
+				const params = {
+					customer_id: this.idCash,
+				};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				params.month_year = YEAR_MONTH;
+				const response = await getCashIn(URL, params);
+				if (response.code === 200) {
+					this.listCashDeital = response.data.list_cash_in;
+					this.isForm.total = response.data.total_cash_in.total_cash_in ? Number(response.data.total_cash_in.total_cash_in).toLocaleString() : '';
+				} else {
+					this.listCashDeital = [];
+					TOAST_CASH_MANAGEMENT.warning(response.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };
@@ -403,6 +505,12 @@ export default {
                             font-size: 18px;
                             cursor: pointer;
                         }
+                    }
+                    td.td-cash-balance {
+                       text-align: end;
+                    }
+                    td.total-cash-in {
+                        text-align: end;
                     }
                 }
             }
