@@ -3,6 +3,7 @@
 namespace Repository;
 
 use App\Models\CashOutStatistical;
+use App\Models\FinalClosingHistories;
 use App\Models\CashOut;
 use App\Models\Course;
 use App\Models\DriverCourse;
@@ -193,5 +194,39 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
         unset($result['driver']);
 
         return $result;
+    }
+
+    public function updateCashOutStatisticalByCourse($input)
+    {
+        // course_id find course, ship_date
+        $course = Course::find($input['course_id']);
+        // course_id, ship_date => driver_course => get driver_id, date
+        $driverCourse = DriverCourse::where('course_id', $course->id)->where('date', $course->ship_date)->first();
+        $month = date('Y-m', strtotime($driverCourse->date));
+        // driver_id, date => cash_out_statistical
+        $statistical = CashOutStatistical::where('driver_id', $driverCourse->driver_id)->where('month_line', $month)->first();
+
+        // spec: change associate_company_fee => change payable_this_month of cash_out_statistical
+        // payable_this_month =  sum(associate_company_fee) all off this month
+        // case 1: update couse when month < month now => update cash_out_statistical to now
+        // get all driver_course by driver_id and where between month course change
+        $startOfMonth = Carbon::create($statistical->month_line)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($statistical->month_line)->endOfMonth()->format('Y-m-d');
+        $driverCourses = DriverCourse::where('driver_id', $statistical->driver_id)->whereBetween('date', [$startOfMonth, $endOfMonth])->get();
+        // get all course by driver_course
+        $arrCourse = $driverCourses->pluck('course_id')->toArray();
+        $arrAssociateFee = [];
+        foreach ($arrCourse as $key => $value) {
+            // dd('$value', $value);
+            $arrAssociateFee[$key] = Course::find($value)->associate_company_fee;
+        }
+
+        dd('arrAssociateFee', array_sum($arrAssociateFee));
+
+        // 
+        // case 2: update couse when month = month now => update cash_out_statistical now
+
+        dd('input update', $input);
+
     }
 }

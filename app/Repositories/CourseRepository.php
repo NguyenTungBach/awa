@@ -7,7 +7,9 @@
 namespace Repository;
 
 use App\Models\Course;
+use App\Models\FinalClosingHistories;
 use App\Repositories\Contracts\CourseRepositoryInterface;
+use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use Helper\Common;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
@@ -17,12 +19,16 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use App\Models\DriverCourse;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
-class CourseRepository extends BaseRepository implements CourseRepositoryInterface
+class CourseRepository extends BaseRepository implements CourseRepositoryInterface, CashOutStatisticalRepositoryInterface
 {
-    public function __construct(Application $app)
-    {
+    public function __construct(
+        Application $app,
+        CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository
+    ){
         parent::__construct($app);
+        $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
     }
 
     /**
@@ -145,9 +151,41 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function updateCourse($input, $id)
     {
-        $result = CourseRepository::update($input, $id);
+        try {
+            DB::beginTransaction();
+            $cashOut = [];
+            $checkCourseId = $this->checkExistsDriverCourse($id);
+            $checkFinal = $this->checkFinalClosing($id);
+            // // true, false => update statistical, course
+            // // true, true => not update statistical, course
+            // // false => update course
+            // if (!empty($input['associate_company_fee']) && $checkCourseId) {
+            //     if (!$checkFinal) {
+            //         $input['course_id'] = $id;
+            //         unset($input['_method']);
+            //         $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
+            //         dd('cashOutStatisticalUpdate', $cashOutStatistical);
 
-        return $result;
+            //         dd('update course when update statis');
+            //         $result = CourseRepository::update($input, $id);
+            //     } else {
+            //         dd(1);
+            //         return 'not update course';
+            //     }
+            // } else {
+            //     dd('update course');
+            //     $result = CourseRepository::update($input, $id);
+            // }
+            // dd(1);
+
+            DB::commit();
+    
+            return $result;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+    
+            return $exception;
+        }
     }
 
     public function deleteCourse($id)
@@ -209,6 +247,24 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $courseName = Course::find($input);
             $result = $courseName->course_name;
         }
+
+        return $result;
+    }
+
+    public function checkExistsDriverCourse($data)
+    {
+        $arrDriverCourse = DriverCourse::get()->pluck('course_id')->toArray();
+        $result = in_array($data, $arrDriverCourse);
+
+        return $result;
+    }
+
+    public function checkFinalClosing($id)
+    {
+        $course = Course::find($id);
+        $month = date('Y-m', strtotime($course->ship_date));
+        $finalClosing = FinalClosingHistories::where('type', 2)->get()->pluck('month_year')->toArray();
+        $result = in_array($month, $finalClosing);
 
         return $result;
     }
