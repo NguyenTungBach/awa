@@ -655,8 +655,6 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         }
     }
 
-
-
     public function checkClosing_dateForCashInStatical($closing_date,$date){
         switch ($closing_date){
             case 1:
