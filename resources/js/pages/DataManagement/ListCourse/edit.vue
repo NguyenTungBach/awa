@@ -508,7 +508,7 @@ export default {
 						if (COURSE.code === 200) {
 							// this.goToList();
 							this.goToDetail();
-							TOAST_COURSE_MANAGEMENT.success();
+							TOAST_COURSE_MANAGEMENT.update();
 						}
 
 						setLoading(false);
