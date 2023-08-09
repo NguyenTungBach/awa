@@ -26,10 +26,11 @@ class LogoutTest extends DuskTestCase
 
     public function logoutSuccess($browser)
     {
-        $browser->visit('/shift-management/list-shift')->pause(5000)
-            ->mouseover('.show-profile')->pause(5000)
-            ->mouseover('.menu-profile')->pause(5000)->click('.menu-profile')->pause(5000)
-            ->waitFor('.toast-header')->pause(5000)->assertSee('成功')
-            ->assertSeeIn('.toast-header', '成功')->assertPathIs('/');
+        $browser
+            ->mouseover('.show-profile')->pause(2000)
+            ->mouseover('.menu-profile')->pause(2000)->click('.menu-profile')
+            ->waitFor('.toast-body')->assertSee('Logout success')
+            ->assertSeeIn('.toast-body', 'Logout success')
+            ->assertPathIs('/login')->pause(2000);
     }
 }

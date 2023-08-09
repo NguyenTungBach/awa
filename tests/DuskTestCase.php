@@ -69,13 +69,15 @@ abstract class DuskTestCase extends BaseTestCase
     public function login($browser)
     {
         $browser->visit('/')->waitFor('.login-btn')
-            ->type('#user_id', '1122')
-            ->type('#password', 'abc12345678')
+            ->type('#user_id', '1122')->pause(1000)
+            ->type('#password', 'abc12345678')->pause(1000)
             ->press('.login-btn')
             ->waitFor('.toast-body')->assertSee('Login success')
             ->assertSeeIn('.toast-body', 'Login success')
-            ->pause(2000)
-            ->assertPathIs('/shift-management/list-shift');
+            ->pause(5000)
+            ->waitFor('.zone-table')
+            ->assertPathIs('/shift-management/list-shift')
+            ->waitFor('div.show-menu > ul > li:nth-child(2) > span');
     }
 
     public function loginFaild($browser, $account, $password, $shouldSee = null) {
