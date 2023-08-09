@@ -194,6 +194,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     }
 
     public function cashInStatisticalCheckUpdateIfShipFreeChange($input,$id){
+        // Trên đã check closing_history cho course
         // Tìm đến course kiểm tra xem có thay đổi ship_free hay không bao gồm cả trường hợp ngày đặc biệt
         $course = Course::find($id);
         // Kiểm tra Course đã được gán trong SHIFT nào chưa nếu có thì mới cần cập nhật
