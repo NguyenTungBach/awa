@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Models\Course;
 use App\Models\FinalClosingHistories;
+use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\Contracts\CourseRepositoryInterface;
 use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use Helper\Common;
@@ -25,10 +26,12 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 {
     public function __construct(
         Application $app,
-        CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository
+        CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository,
+        CashInStaticalRepositoryInterface  $cashInStaticalRepository
     ){
         parent::__construct($app);
         $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
+        $this->cashInStaticalRepository = $cashInStaticalRepository;
     }
 
     /**
@@ -179,13 +182,33 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             // dd(1);
 
             DB::commit();
-    
-            return $result;
+
+            $this->cashInStatisticalCheckUpdateIfShipFreeChange($input,$id);
+
+//            return $result;
         } catch (\Exception $exception) {
             DB::rollBack();
-    
+
             return $exception;
         }
+    }
+
+    public function cashInStatisticalCheckUpdateIfShipFreeChange($input,$id){
+        // Tìm đến course kiểm tra xem có thay đổi ship_free hay không bao gồm cả trường hợp ngày đặc biệt
+        $course = Course::find($id);
+        // Kiểm tra Course đã được gán trong SHIFT nào chưa nếu có thì mới cần cập nhật
+        $driver_courseCheck = DriverCourse::where("course_id",$id)->first();
+        // Nếu thấy có thì mới update
+        if ($driver_courseCheck){
+            // Kiểm tra nốt trường hợp ship_fee đổi tiền
+            if ($input['ship_fee'] != $course->ship_fee){
+                // Cập nhật nếu thỏa mãn điều kiện trên
+                // Cập nhật lại CashInStatic theo khách và ngày
+                // Lưu ý đã được check trường hợp bỏ qua id đặc biệt
+                $this->cashInStaticalRepository->saveCashInStatic($course->customer_id,$input['ship_date']);
+            }
+        }
+
     }
 
     public function deleteCourse($id)
