@@ -77,6 +77,16 @@ const PUT_CASH_OUT = '/driver';
 const GET_DETAIL_CASH_OUT = '/driver';
 const EXPORT_EXCEL_CASH_OUT = '/driver-cash-out-statistical/export';
 
+// Cash Reciept
+const GET_LIST_CASH_RECIEPT = '/cash-in-statical';
+const EXPORT_EXCEL_CASH_RECIEPT = '/cash-in-statical/export-cash-in-statical';
+const GET_DETAIL_CASH_RECIEPT = '/cash-in-statical';
+const GET_LIST_CASH_IN = '/cash-in';
+const DELETE_CASH_IN = '/cash-in';
+const GET_DETAIL_CASH_IN = '/cash-in';
+const PUST_CASH_IN = '/cash-in';
+const POST_CASH_IN = '/cash-in';
+
 export default {
 	// Auth API
 	POST_LOGIN,
@@ -153,4 +163,14 @@ export default {
 	PUT_CASH_OUT,
 	GET_DETAIL_CASH_OUT,
 	EXPORT_EXCEL_CASH_OUT,
+
+	// Cash Reciept
+	GET_LIST_CASH_RECIEPT,
+	EXPORT_EXCEL_CASH_RECIEPT,
+	GET_DETAIL_CASH_RECIEPT,
+	GET_LIST_CASH_IN,
+	DELETE_CASH_IN,
+	GET_DETAIL_CASH_IN,
+	PUST_CASH_IN,
+	POST_CASH_IN,
 };

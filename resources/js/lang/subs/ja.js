@@ -71,6 +71,10 @@ export default {
 		CASH_OUT_DELETE_SUCCESS: 'キャッシュアウトの削除成功',
 		CASH_OUT_CREATE_SUCCESS: 'キャッシュアウトの成功を生み出す',
 		CASH_OUT_UPDATE_SCUCCESS: 'キャッシュピットの更新成功',
+
+		CASH_IN_CREATE_SUCCESS: '成功して現金を生み出す',
+		CASH_IN_DELETE_SUCCESS: '現金の削除に成功しました',
+		CASH_IN_UPDATE_SCUCCESS: 'キャッシュの更新が成功しました',
 	},
 	APP: {
 		PLEASE_WAIT: 'しばらくお待ちください...',

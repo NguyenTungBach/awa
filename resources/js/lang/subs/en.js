@@ -100,6 +100,10 @@ export default {
 		CASH_OUT_DELETE_SUCCESS: 'Delete cash out success',
 		CASH_OUT_CREATE_SUCCESS: 'Create cash out success',
 		CASH_OUT_UPDATE_SCUCCESS: 'Update cash pit success',
+
+		CASH_IN_CREATE_SUCCESS: 'Create cash in success',
+		CASH_IN_DELETE_SUCCESS: 'Delete cash in success',
+		CASH_IN_UPDATE_SCUCCESS: 'Update cash in success',
 	},
 	APP: {
 		PLEASE_WAIT: 'Please wait...',

@@ -19,7 +19,7 @@ const CashManagement = {
 			component: () => import(/* webpackChunkName: "List Shift" */ '@/pages/CashManagement/CashReceipt/index.vue'),
 		},
 		{
-			path: 'list-cash-receipt-create',
+			path: 'list-cash-receipt-create/:id',
 			name: 'ListCashReceiptCreate',
 			meta: {
 				title: 'ROUTER.LIST_CASH_RECEIPT',

@@ -194,7 +194,7 @@
                                             <template v-for="(course, idx) in listCashDeital">
                                                 <b-tr :key="`item-cash-${idx + 1}`">
                                                     <b-td class="td-cash-id" :colspan="1">
-                                                        {{ course.id }}
+                                                        {{ idx + 1 }}
                                                     </b-td>
                                                     <b-td class="td-cash-name" :colspan="2">
                                                         {{ course.payment_date }}
@@ -223,7 +223,7 @@
                                                 <b-th class="total-cash" :colspan="4">
                                                     {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL') }}
                                                 </b-th>
-                                                <b-td>
+                                                <b-td class="total-cash-out">
                                                     {{ totalCashOut }}
                                                 </b-td>
                                             </b-tr>
@@ -339,8 +339,8 @@ export default {
 	methods: {
 		async initData() {
 			this.idCash = this.$route.params.id || null;
-			await this.handleGetDetailDisbursement();
 			await this.handleGetlistCashOut();
+			await this.handleGetDetailDisbursement();
 		},
 
 		onClickReturn() {
@@ -494,6 +494,12 @@ export default {
                             font-size: 18px;
                             cursor: pointer;
                         }
+                    }
+                    td.td-cash-balance {
+                       text-align: end;
+                    }
+                    td.total-cash-out {
+                        text-align: end;
                     }
                 }
             }

@@ -11,7 +11,7 @@
     >
         <div :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
-                {{ dataNode.value[0].name || '' }}
+                {{ dataNode.course_names || '' }}
             </div>
             <div v-else>
                 <template v-if="idxComponent === Number((dataNode.date).slice(-2))">
