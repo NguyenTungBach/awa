@@ -914,8 +914,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         "updated_at" => Carbon::now()
                     ]);
                     // Update lại CashInStatic
-                    // Nếu nằm trong id đặc biệt (không phải khách) thì được phép cần cập nhật
-                    if (!in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)){
+                    // Nếu không nằm trong id đặc biệt (không phải khách) thì được phép cần cập nhật
+                    if (!in_array($courseBeforeUpdate->id, DriverCourse::ALL_ID_SPECIAL)){
                         $this->cashInStaticalRepository->saveCashInStatic($courseBeforeUpdate->customer_id,$dateBeforeUpdate);
                     }
                 } else{
@@ -930,7 +930,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     $driver_course->save();
                 }
 
-                // Nếu nằm trong id đặc biệt (không phải khách) thì được phép cần cập nhật
+                // Nếu không nằm trong id đặc biệt (không phải khách) thì được phép cần cập nhật
                 if (!in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)){
                     // Cập nhật tiền khách phải trả
                     $course = Course::find($item['course_id']);
