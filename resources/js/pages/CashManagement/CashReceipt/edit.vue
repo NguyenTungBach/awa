@@ -29,6 +29,7 @@
                                     <b-button
                                         pill
                                         class="btn-color-active btn-save"
+                                        @click="handleOnClickSave()"
                                     >
                                         {{ $t('LIST_CASH.BUTTON_KEEP') }}
                                     </b-button>
@@ -84,13 +85,13 @@
                                                     <b-input-group class="mb-3">
                                                         <b-form-input
                                                             id="input-payment-day"
-                                                            v-model="isForm.payment_day"
+                                                            v-model="isForm.payment_date"
                                                             type="text"
                                                             autocomplete="off"
                                                         />
                                                         <b-input-group-append>
                                                             <b-form-datepicker
-                                                                v-model="isForm.payment_day"
+                                                                v-model="isForm.payment_date"
                                                                 button-only
                                                                 right
                                                                 :locale="language"
@@ -117,7 +118,7 @@
                                                     </label>
                                                     <b-form-input
                                                         id="input-deposit-day"
-                                                        v-model="isForm.character"
+                                                        v-model="isForm.cash_in"
                                                     />
                                                 </b-col>
                                                 <b-col
@@ -151,7 +152,7 @@
                                                         <b-input-group>
                                                             <b-form-select
                                                                 id="input-payment-method"
-                                                                v-model="isForm.exclusive"
+                                                                v-model="isForm.payment_method"
                                                                 :options="optionsClosingDay"
                                                             />
                                                         </b-input-group>
@@ -192,6 +193,10 @@
 <script>
 import LineGray from '@/components/LineGray';
 // import TitlePathForm from '@/components/TitlePathForm';
+import CONSTANT from '@/const';
+import { setLoading } from '@/utils/handleLoading';
+import { getDetailCashIn, pustCashIn } from '@/api/modules/cashDisbursement';
+import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 
 export default {
 	name: 'CashCreate',
@@ -203,21 +208,24 @@ export default {
 	data() {
 		return {
 			isForm: {
-				payment_day: '',
+				customer_id: '',
+				cashIn: '',
+				cash_in: '',
+				payment_date: '',
 				dateOfBirth: '',
 				retirementDate: '',
-				exclusive: '',
+				payment_method: '',
 				note: '',
 			},
 
 			optionsClosingDay: [
 				{
 					value: 1,
-					text: '入金方法',
+					text: '銀行振込',
 				},
 				{
 					value: 2,
-					text: '方法',
+					text: '口座振替',
 				},
 			],
 		};
@@ -229,9 +237,68 @@ export default {
 		},
 	},
 
+	created() {
+		this.initData();
+	},
+
 	methods: {
 		onClickReturn() {
 			this.$router.push({ name: 'ListCashReceipt' });
+		},
+
+		goToDetailCashIn() {
+			this.$router.push({ name: 'ListCashReceiptDetail', params: { id: this.isForm.customer_id }});
+		},
+
+		initData() {
+			this.isForm.cashIn = this.$route.params.id || null;
+			this.handleGetDetailCashIn();
+		},
+
+		async handleGetDetailCashIn() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.GET_DETAIL_CASH_IN}/${this.isForm.cashIn}`;
+				const params = {};
+				const response = await getDetailCashIn(URL, params);
+				if (response.code === 200) {
+					const DATA = response.data;
+					this.isForm.cash_in = Number(DATA.cash_in);
+					this.isForm.payment_date = DATA.payment_date;
+					this.isForm.payment_method = DATA.payment_method;
+					this.isForm.note = DATA.note;
+					this.isForm.customer_id = DATA.customer_id;
+				} else {
+					TOAST_CASH_MANAGEMENT.warning(response.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleOnClickSave() {
+			try {
+				setLoading(true);
+				const URL = `${CONSTANT.URL_API.PUST_CASH_IN}/${this.isForm.cashIn}`;
+				const params = {
+					customer_id: this.isForm.customer_id,
+					cash_in: this.isForm.cash_in,
+					payment_method: this.isForm.payment_method,
+					payment_date: this.isForm.payment_date,
+					note: this.isForm.note,
+				};
+				const DATA = await pustCashIn(URL, params);
+				if (DATA.code === 200) {
+					this.goToDetailCashIn();
+					TOAST_CASH_MANAGEMENT.updateCashIn();
+				} else {
+					TOAST_CASH_MANAGEMENT.warning(DATA.message_content);
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };

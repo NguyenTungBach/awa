@@ -126,7 +126,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-group-code">
+                                                    <label for="customer-closing-day">
                                                         {{ $t('CUSTOMER_CREATE.CLOSING_DAY') }}
                                                     </label>
                                                     <span class="text-danger">
@@ -173,7 +173,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-manager">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
                                                         <span class="text-danger">
                                                             *
@@ -181,7 +181,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-manager"
                                                             v-model="isForm.customer_manager"
                                                         />
                                                     </b-input-group>
@@ -223,7 +223,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-address">
                                                         {{ $t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT') }}
                                                         <span class="text-danger">
                                                             *
@@ -231,7 +231,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-address"
                                                             v-model="isForm.customer_address"
                                                         />
                                                     </b-input-group>
@@ -248,7 +248,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-id">
+                                                    <label for="input-course-phone">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_PHONE') }}
                                                         <span class="text-danger">
                                                             *
@@ -256,7 +256,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-name"
+                                                            id="input-course-phone"
                                                             v-model="isForm.customer_phone"
                                                             type="number"
                                                         />

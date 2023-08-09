@@ -359,7 +359,7 @@
                                                 {{ emp.driver_code }}
                                             </td>
                                             <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsTypeDriver, emp.driver.type)) }}
+                                                {{ $t(convertValueToText(optionsTypeDriver, emp.type)) }}
                                             </b-td>
                                             <td class="td-full-name text-center">
                                                 {{ emp.driver_name }}
@@ -367,15 +367,14 @@
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
                                                     <NodeListShift
+														v-if="emp.dataShift"
                                                         :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
                                                         :date="date"
-                                                        :data-node="emp.data_by_date[idxDate]"
+                                                        :data-node="emp.dataShift.data_by_date[idxDate]"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
-                                                        :start-date="emp.driver.start_date"
-                                                        :end-date="emp.driver.end_date"
                                                     />
                                                 </template>
                                             </template>
@@ -1325,6 +1324,7 @@ export default {
 				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
 				PARAMS.month_year = YEAR_MONTH;
+				PARAMS.closing_date = this.closingDate;
 
 				PARAMS = cleanObject(PARAMS);
 
