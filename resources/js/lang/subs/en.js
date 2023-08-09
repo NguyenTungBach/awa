@@ -48,9 +48,9 @@ export default {
 		DRIVER_COURSE_MANAGEMENT_DELETE_SUCCESS: 'Delete driver course success',
 
 		// COURSE MANAGEMENT
-		COURSE_MANAGEMENT_CREATE_SUCCESS: 'Create course success',
-		COURSE_MANAGEMENT_UPDATE_SUCCESS: 'Update course success',
-		COURSE_MANAGEMENT_DELETE_SUCCESS: 'Delete course success',
+		COURSE_MANAGEMENT_CREATE_SUCCESS: 'Create customer success',
+		COURSE_MANAGEMENT_UPDATE_SUCCESS: 'Update customer success',
+		COURSE_MANAGEMENT_DELETE_SUCCESS: 'Delete customer success',
 
 		COURSE_MANAGEMENT_VALIDATE_REQUIRED: 'Some items have not been entered or selected.',
 		COURSE_MANAGEMENT_VALIDATE_COURSE_CODE: 'Course code must be 1 to 15 digits',
@@ -152,7 +152,7 @@ export default {
 
 		DATA_MANAGEMENT: 'Data Management',
 		LIST_DRIVER: 'List Driver',
-		LIST_COURSE: 'List Course',
+		LIST_COURSE: 'List Customer',
 		LIST_COURSE_PATTERN: 'List Course Pattern',
 		LIST_USER: 'List User',
 
