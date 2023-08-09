@@ -14,7 +14,7 @@
                 {{ dataNode.course_names || '' }}
             </div>
             <div v-else>
-                <template v-if="idxComponent === Number((dataNode.date).slice(-2))">
+                <template v-if="handleChangeToMonth(idxComponent) === (dataNode.date).slice(-2)">
                     <div
                         class="show-course"
                     >
@@ -158,6 +158,9 @@ export default {
 		// 		this.listText = (this.dataNode.value).filter((item) => !NOT_SHOW.includes(item.type));
 		// 	}
 		// },
+		handleChangeToMonth(index) {
+			return index < 10 ? `0${index}` : `${index}`;
+		},
 
 		onClickNode() {
 			const DATA = {

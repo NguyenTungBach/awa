@@ -204,12 +204,13 @@
                                                 </label>
                                                 <div class="item-form-postCode">
                                                     <b-form-input
-                                                        v-model="postalCode_first" type="number"
+                                                        id="postCode-first" v-model="postalCode_first"
+                                                        type="number"
                                                         min="1"
                                                         max="3"
                                                     />
                                                     <span class="postCode">-</span>
-                                                    <b-form-input v-model="postalCode_last" type="number" maxlength="4" />
+                                                    <b-form-input id="postCode-second" v-model="postalCode_last" type="number" maxlength="4" />
                                                 </div>
                                             </b-col>
                                         </b-row>
