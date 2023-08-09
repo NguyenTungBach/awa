@@ -231,7 +231,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'driver_name' => $driver->driver_name,
                 'type' => $driver->type,
                 'typeName' => $driver->typeName,
-                'dataShift' => [],
+                'dataShift' => null,
                 'total_money' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
