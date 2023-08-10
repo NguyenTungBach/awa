@@ -270,6 +270,8 @@ class DriverCourseController extends Controller
      *                  },
      *              }
      *          },
+     *          @OA\Schema(
+     *            required={"delete_shifts","items"},
      *            @OA\Property(
      *              property="delete_shifts",
      *              type="array",
@@ -283,7 +285,7 @@ class DriverCourseController extends Controller
      *              property="items",
      *              type="array",
      *              @OA\Items(
-     *                  required={"course_id","driver_id","course_id","start_time","end_time","break_time"},
+     *                  required={"course_id","driver_id","course_id","date","start_time","end_time","break_time"},
      *                  @OA\Property(property="id", type="interger" ),
      *                  @OA\Property(property="driver_id", type="interger" ),
      *                  @OA\Property(property="course_id", type="interger" ),

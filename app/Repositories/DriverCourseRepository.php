@@ -195,6 +195,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ];
             foreach ($checkDatas as $checkData){
                 $dataConverts['data_by_date'][] = [
+                    'driver_id' => $checkDatas[0]->driver_id,
                     "date"=> $checkData['date'],
                     "course_ids"=> $checkData['course_ids'],
                     "course_names"=> $checkData['course_names'],

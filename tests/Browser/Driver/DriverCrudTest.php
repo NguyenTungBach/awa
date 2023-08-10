@@ -13,7 +13,7 @@ use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 use Faker\Factory as Faker;
 
-class DriverListCrudTest extends DuskTestCase
+class DriverCrudTest extends DuskTestCase
 {
     /**
      * A Dusk test example.
@@ -50,12 +50,22 @@ class DriverListCrudTest extends DuskTestCase
 //        $browser->visit('/data-management/list-driver-create');
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
         $browser->click('#select-type-driver > div:nth-child(1) > label')->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-empolyee-number',"001122")->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-fullname','Bach Driver')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $getDate = Carbon::now()->format('Y-m-d');
         $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
         $browser->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-character','29E2-12362')->pause(1000);
+        //Validate
+        $browser->type('#input-date-hire-date','2023/01-08')->pause(1000);
+        $getDate = Carbon::now()->format('Y-m-d');
+        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
+        $browser->pause(1000);
+
         $browser->click('.btn-save')->waitFor('.toast-body')
             ->assertSee('Create driver success')->pause(4000);
 

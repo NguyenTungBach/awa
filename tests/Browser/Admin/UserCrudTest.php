@@ -24,7 +24,6 @@ class UserCrudTest extends DuskTestCase
 
         $this->browse(function ($browser) {
             $browser->maximize();
-            $browser->pause(5000);
             $this->loginAdminGeneral($browser);
             $this->listUser($browser);
             $this->createUser($browser);
@@ -47,9 +46,12 @@ class UserCrudTest extends DuskTestCase
         $browser->pause(3000);
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
         $browser->type('#input-user-id',"001122")->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-user-name','Bach Admin')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->click('#input-user-authority')->pause(1000);
         $browser->click('#input-user-authority > option:nth-child(3)')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-user-password',"abc12345678")->pause(1000);
         $browser->click('.btn-save')
             ->waitFor('.toast-body')

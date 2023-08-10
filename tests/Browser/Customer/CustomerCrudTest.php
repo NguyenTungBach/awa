@@ -49,13 +49,20 @@ class CustomerCrudTest extends DuskTestCase
         $browser->pause(2000);
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
         $browser->type('#input-course-id',"001122")->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-name','Bach Customer')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->click('#customer-closing-day')->pause(1000);
         $browser->click('#customer-closing-day > option:nth-child(4)')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-manager','abc')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-first','123')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-second','4544')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-address','address test create')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-phone','01234567892')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->assertSee('Create customer success')
             ->pause(4000);
