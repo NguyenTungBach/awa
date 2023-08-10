@@ -17,6 +17,7 @@ return [
     'end_date_retirement' => ':attribute already in retirement :end_date',
     'unlike_ship_date' => ':attribute not unlike ship date :ship_date',
     'final_closing_histories' => ':attribute already in final closing',
+    'shift_not_delete_in_final_closing_histories' => ':attribute not delete in final closing',
     'duplicate_course_id_and_date' => 'duplicate course_id :course_id and date :date ',
     'duplicate_driver_id_and_course_id' => 'duplicate driver :driver_id and course_id :course_id ',
     'duplicate_id_shift' => 'duplicate shift update id :id',

@@ -60,6 +60,8 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'exportSalesDetailPDF':
                   return $this->getCustomRule();
+              case 'destroy':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -89,6 +91,18 @@ class DriverCourseRequest extends FormRequest
          }
         if(Route::getCurrentRoute()->getActionMethod() == 'update_course'){
             return [
+                "delete_shifts"=> [
+                    'required',
+                    'array',
+                ],
+                "delete_shifts.*.shift_id"=> [
+                    'required',
+                    Rule::exists('driver_course', 'id'),
+                ],
+                "delete_shifts.*.driver_id"=> [
+                    'required',
+                    Rule::exists('drivers', 'id'),
+                ],
                 "items"=> [
                     'required',
                 ],
