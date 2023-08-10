@@ -898,6 +898,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         try {
             DB::beginTransaction();
+            // Xóa các driver_course theo id và cập nhật lại Cash In
+            if (count($item['delete_shifts']) != 0){
+                $this->deleteAll($item['delete_shifts']);
+            }
+
             // Lưu lại hoặc update nếu thỏa mãn tất cả điều kiện
             foreach ($items as $item){
                 if (isset($item['id'])){
@@ -1035,176 +1040,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 //        // Truy vấn cash_in_statisticals cần cập nhật theo date(lấy ra month_year theo closing_date) và customer_id
 //
 //    }
-
-    public function saveCashInStatic($course_id,$date){
-        // Lưu tiền cash in cho CashInStatical
-        $course = Course::find($course_id);
-        $customer = Customer::find($course->customer_id);
-        /*
-         * Truy vấn tổng số tiền driver_code của customer có trong tháng này theo closing_date
-         * */
-        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
-        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
-
-        $driverCourse = $this->model->
-        select(
-            "customers.id as customers_id",
-        )
-            ->addSelect(DB::raw('SUM(courses.ship_fee) as total_course_ship_fee'))
-            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->join('customers', 'customers.id', '=', 'courses.customer_id')
-            ->where("customer_id", $course->customer_id)
-            ->whereBetween('driver_courses.date', [$closing_dateStart, $closing_dateEnd])
-            ->groupBy("customers.id")
-            ->first();
-
-        $receivable_this_month = 0;
-        if ($driverCourse != null){
-            $receivable_this_month = $driverCourse->total_course_ship_fee;
-        }
-
-        // Truy vấn tổng tất cả cash-in của customer đó có trong khoảng closing date để cập nhật tiền cash-in-statics
-        $totalCashIn = 0;
-        $totalCashInQuery = CashIn::
-        select("customer_id")
-            ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
-            ->where("customer_id",$course->customer_id)
-            ->whereBetween('payment_date', [$closing_dateStart,$closing_dateEnd])
-            ->groupBy("customer_id")
-            ->first();
-        if ($totalCashInQuery != null){
-            $totalCashIn = $totalCashInQuery->total_cash_in;
-        }
-
-        // 1. Kiểm tra xem Customer này đã có CashInStatical chưa
-        $cashInStatical = CashInStatical::
-        where("customer_id",$course->customer_id)
-            ->first();
-
-        // 1.1 Nếu chưa có thì tạo CashInStatical
-        if ($cashInStatical == null){
-            $month_year = Carbon::parse($date)->format('Y-m');
-            CashInStatical::create([
-                "customer_id" => $course->customer_id,
-                "month_line" => $month_year,
-                "balance_previous_month" => 0, // tiền nhận tháng trước
-                "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
-                "status" => 1,
-            ]);
-
-        } else{
-            // 1.2 Nếu có rồi tìm theo customer_id và date của tháng này theo closing_date
-            $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
-
-            // Nếu có rồi thì update
-            // Truy vấn số tiền nợ tháng gần nhất bằng cách tìm đến toàn bộ CashInStatical theo thời gian
-            // Kiểm tra xem Customer này đã có CashInStatical tháng này chưa
-
-            $cashInStaticalPrevMonth = CashInStatical::
-            where("customer_id",$course->customer_id)
-                ->where("month_line","<",$checkMonthForThisDate)
-                ->orderBy("month_line", "desc")
-                ->first();
-
-            $balance_previous_month = 0;
-            if($cashInStaticalPrevMonth){
-                $balance_previous_month = $cashInStaticalPrevMonth->total_cash_in_current;
-            }
-
-            $cashInThisDate = CashInStatical::
-            where("customer_id",$course->customer_id)
-            ->where("month_line",$checkMonthForThisDate)
-            ->first();
-
-            // Nếu chưa có thì tạo
-            if ($cashInThisDate == null){
-                CashInStatical::create([
-                    "customer_id" => $course->customer_id,
-                    "month_line" => $checkMonthForThisDate,
-                    "balance_previous_month" => $balance_previous_month, // tiền nhận tháng trước
-                    "receivable_this_month" => $receivable_this_month, // tiền tổng tiền phải nhận tháng này
-                    "total_cash_in_current" => $balance_previous_month + $receivable_this_month - $totalCashIn,
-                    "status" => 1,
-                ]);
-            } else{
-                // Cập nhật số tiền sẽ nhận tháng này
-                // Tiền tháng này sẽ bằng tiền tháng trước + tổng tiền sẽ nhận tháng này - tổng tiền đã trả
-                $cashInThisDate->update([
-                    'balance_previous_month' => $balance_previous_month, // tiền tháng trước
-                    "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                    'total_cash_in_current' => $balance_previous_month + $receivable_this_month - $totalCashIn,
-                ]);
-                // Kiểm tra xem có tháng các tháng còn lại không để cập nhật
-                $checkCashInStaticalUpdates = CashInStatical::
-                where("customer_id",$course->customer_id)
-                    ->where("month_line",">",$checkMonthForThisDate)
-                    ->orderBy("month_line", "asc")
-                    ->get();
-                // Nếu có thì cập nhật các bản ghi còn lại
-                $update_balance_previous_month = $balance_previous_month;
-                if (count($checkCashInStaticalUpdates) != 0){
-                    foreach ($checkCashInStaticalUpdates as $cashInStaticalUpdate){
-                        // 1. Truy vấn tổng số tiền trong theo từng tháng theo closing date
-                        // 1.1 Lấy ra khoảng thời gian theo closing_date
-                        $updateStartDateByClosingDate = "";
-                        $updateEndDateByClosingDate = "";
-                        switch ($customer->closing_date){
-                            case 1:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."16";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."15";
-                                break;
-                            case 2:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."21";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."20";
-                                break;
-                            case 3:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."26";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."25";
-                                break;
-                            case 4:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
-                                break;
-                        }
-                        // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
-                        $updateByDriverCourseTotal = DriverCourse::
-                        select(
-                            "customers.id as customers_id",
-                        )
-                            ->addSelect(\DB::raw('SUM(courses.ship_fee) as total_course_ship_fee'))
-                            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-                            ->join('customers', 'customers.id', '=', 'courses.customer_id')
-                            ->where("customer_id", $course->customer_id)
-                            ->whereBetween('driver_courses.date', [$updateStartDateByClosingDate, $updateEndDateByClosingDate])
-                            ->groupBy("customers.id")
-                            ->first();
-
-                        // 1.3 truy vấn tổng số tiền phải nhận trong tháng cần update lại theo closing date
-                        $updateByTotalCashIn = 0;
-                        $totalCashInQuery = CashIn::
-                        select("customer_id")
-                            ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
-                            ->where("customer_id",$course->customer_id)
-                            ->whereBetween('payment_date', [$updateStartDateByClosingDate,$updateEndDateByClosingDate])
-                            ->groupBy("customer_id")
-                            ->first();
-                        if ($totalCashInQuery != null){
-                            $updateByTotalCashIn = $totalCashInQuery->total_cash_in;
-                        }
-
-                        // 1.4 Update lại tiền
-                        $cashInStaticalUpdate->update([
-                            'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
-                            "receivable_this_month" => $updateByDriverCourseTotal, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn,
-                        ]);
-                        $update_balance_previous_month = $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn;
-                    }
-                }
-            }
-        }
-    }
 
     public function checkClosing_dateForCashInStatical($closing_date,$date){
         switch ($closing_date){
@@ -1654,26 +1489,72 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         die();
     }
 
-    public function delete($id)
+    public function deleteAll($deleteShifts)
     {
-        $driver_course = $this->model->find($id);
-
-        if ($driver_course == null){
-            return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans("errors.not_found"));
-        } else{
-            // Kiểm tra có nằm trong final_closing_histories
-            $month_year = Carbon::parse($driver_course->date)->format("Y-m");
-            $final_closing = FinalClosingHistories::where('month_year', $month_year)
-                ->exists();
-            if ($final_closing){
-                return $this->responseJson(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
-                    "attribute"=> $driver_course->date
+        // Kiểm tra ids cho từng Shift
+        foreach ($deleteShifts as $infoDeleteShift){
+            //1. Kiểm tra xem shift này có tồn tại không
+            $deleteShift = DriverCourse::find($infoDeleteShift["shift_id"]);
+            if ($deleteShift == null){
+                return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.attribute_not_found',[
+                    "attribute"=> "driver_course",
+                    "id"=> $infoDeleteShift["shift_id"]
                 ]));
-            } else{
-                DB::table('driver_courses')->where('id', $id)->delete();
-                return $this->responseJson(200, $driver_course, trans('messages.mes.delete_success'));
             }
+            //2. Kiểm tra xem driver_id này có tồn tại không
+            $driver = Driver::find($infoDeleteShift["driver_id"]);
+            if ($driver == null){
+                return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.attribute_not_found',[
+                    "attribute"=> "driver",
+                    "id"=> $infoDeleteShift["driver_id"]
+                ]));
+            }
+
+            //3. Kiểm tra có được phép xóa không, xem trong bảng final_closing_histories start
+            $driver = Driver::find($infoDeleteShift["driver_id"]);
+            $course = Course::find($deleteShift->course_id);
+            $checkDate = $course->ship_date;
+            $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
+
+            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
+                ->exists();
+            // Nếu có tồn tại (không là duy nhất)
+            if ($checkFinalClosingHistories){
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                    trans("errors.shift_not_delete_in_final_closing_histories" ,[
+                        "attribute"=> "driver_id: $driver, driver_name: $driver->driver_name, course_id: $deleteShift->course_id, course_name: $course->course_name, and date: $checkDate"
+                    ]));
+            }
+            //3. Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories end
         }
+
+        try {
+            DB::beginTransaction();
+            // Nếu thỏa mãn các điều kiện trên thì tiến hành xóa và update lại Cash In static
+            foreach ($deleteShifts as $infoDeleteShift){
+                // Lấy ra Shift cần xóa
+                $deleteShift = DriverCourse::find($infoDeleteShift["shift_id"]);
+
+                // Nếu course nằm trong id đặc biệt thì chỉ cần xóa và không cần cập nhật Cash In Static
+                if (in_array($deleteShift->course_id, DriverCourse::ALL_ID_SPECIAL)){
+                    DB::table('driver_courses')->where('id', $infoDeleteShift["shift_id"])->delete();
+                } else{
+                    // Lấy ra course để customer lấy ra customer trước khi xóa để cập nhật Cash In static
+                    $course = Course::find($deleteShift->course_id);
+
+                    DB::table('driver_courses')->where('id', $infoDeleteShift["shift_id"])->delete();
+                    // Sau khi xóa hoàn toàn thì cập nhật lại Cash In static
+                    $this->cashInStaticalRepository->saveCashInStatic($course->customer_id,$deleteShift->date);
+                }
+
+                // Phần của Yến
+            }
+            DB::commit();
+        } catch (\Exception $exception){
+            DB::rollBack();
+            return $exception->getMessage();
+        }
+
     }
 
     public function salesList($request){

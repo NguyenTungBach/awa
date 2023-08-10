@@ -244,6 +244,12 @@ class DriverCourseController extends Controller
      *     @OA\MediaType(
      *      mediaType="application/json",
      *          example={
+     *              "delete_shifts" : {
+     *                  {
+     *                      "shift_id": 1,
+     *                      "driver_id":1,
+     *                  }
+     *              },
      *              "items" : {
      *                  {
      *                      "id": 1,
@@ -264,8 +270,15 @@ class DriverCourseController extends Controller
      *                  },
      *              }
      *          },
-     *          @OA\Schema(
-     *            required={"items"},
+     *            @OA\Property(
+     *              property="delete_shifts",
+     *              type="array",
+     *              @OA\Items(
+     *                  required={"shift_id","driver_id"},
+     *                  @OA\Property(property="shift_id", type="interger" ),
+     *                  @OA\Property(property="driver_id", type="interger" ),
+     *               )
+     *            ),
      *            @OA\Property(
      *              property="items",
      *              type="array",
@@ -628,38 +641,38 @@ class DriverCourseController extends Controller
         return $this->responseJson(200, null, trans('messages.mes.export_success'));
     }
 
-    /**
-     * @OA\Delete(
-     *   path="/driver-course/{id}",
-     *   tags={"DriverCourse"},
-     *   summary="Delete DriverCourse",
-     *   operationId="driver_course_delete",
-     *   @OA\Parameter(
-     *      name="id",
-     *      in="path",
-     *      required=true,
-     *     @OA\Schema(
-     *      type="string",
-     *     ),
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Send request success",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      example={"code":200,"data":"Send request success"}
-     *     )
-     *   ),
-     *   security={{"auth": {}}},
-     * )
-     * @param int $id
-     * @return int
-     * @throws \Exception
-     */
-    public function destroy($id)
-    {
-        return $this->repository->delete($id);
-    }
+//    /**
+//     * @OA\Delete(
+//     *   path="/driver-course/{id}",
+//     *   tags={"DriverCourse"},
+//     *   summary="Delete DriverCourse",
+//     *   operationId="driver_course_delete",
+//     *   @OA\Parameter(
+//     *      name="ids",
+//     *      in="path",
+//     *      required=true,
+//     *     @OA\Schema(
+//     *      type="string",
+//     *     ),
+//     *   ),
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":200,"data":"Send request success"}
+//     *     )
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * @param int $id
+//     * @return int
+//     * @throws \Exception
+//     */
+//    public function destroy(DriverCourseRequest $driverCourseRequest,$id)
+//    {
+//        return $this->repository->deleteAll($driverCourseRequest,$id);
+//    }
 
     /**
      * @OA\Get(
