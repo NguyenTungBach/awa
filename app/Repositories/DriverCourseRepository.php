@@ -1280,7 +1280,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
-                if (count($value['dataShift']) != 0 || $value['dataShift'] != null){
+                if ($value['dataShift'] != null){
                     // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
                     foreach ($value['dataShift']['data_by_date'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
@@ -1443,7 +1443,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $colCalendarDriver = 4;
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
-                if (count($value['dataShiftExpress']) != 0 || $value['dataShiftExpress'] != null){
+                if ($value['dataShiftExpress'] != null){
                     // Truyền dữ liệu giao hàng
                     foreach ($value['dataShiftExpress']['data_ship_date'] as $dataForListShift){
                         // Nếu course này cùng date với calendar thì truyền giá trị
@@ -1591,7 +1591,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "closing_date" =>$customer->closing_date,
                 "closing_dateName" =>$customer->closing_dateName,
                 "customer_name" =>$customer->customer_name,
-                "date_ship_fee" =>[],
+                "date_ship_fee" =>null,
                 "total_ship_fee_by_closing_date" => "",
                 "total_ship_fee_by_month" => "",
             ];
@@ -1778,7 +1778,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
             // Kiểm tra từng cột Calendar
             foreach ($dataCalendars as $dataCalendar){
-                if (count($value['date_ship_fee']) != 0 || $value['date_ship_fee'] != null){
+                if ($value['date_ship_fee'] != null){
                     // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
                     foreach ($value['date_ship_fee'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị

@@ -64,6 +64,9 @@ class CustomerCrudTest extends DuskTestCase
         $browser->type('#input-course-address','address test create')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-phone','01234567892')->pause(1000);
+        $browser->type('#input-course-name','Bach Customerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-course-name','Bach Customer')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->assertSee('Create customer success')
             ->pause(4000);
     }

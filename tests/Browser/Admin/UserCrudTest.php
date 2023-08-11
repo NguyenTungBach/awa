@@ -53,6 +53,9 @@ class UserCrudTest extends DuskTestCase
         $browser->click('#input-user-authority > option:nth-child(3)')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-user-password',"abc12345678")->pause(1000);
+        $browser->type('#input-user-name','Bach Adminzxcnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-user-name','Bach Admin')->pause(1000);
         $browser->click('.btn-save')
             ->waitFor('.toast-body')
             ->assertSee('Create user success')

@@ -2,6 +2,8 @@ import store from '@/store';
 import router from '@/router';
 import UserList from '@/pages/DataManagement/ListUser/index';
 import { mount, createLocalVue } from '@vue/test-utils';
+import i18n from '@/lang';
+import CONSTANT from '@/const';
 
 describe('TEST COMPONENT USER LIST', () => {
 	test('Check render page', () => {
@@ -40,7 +42,7 @@ describe('TEST COMPONENT USER LIST', () => {
 			router,
 		});
 
-		const BUTTON = wrapper.find('.btn-color-sign-up');
+		const BUTTON = wrapper.find('div:nth-child(2) > div > button');
 		expect(BUTTON.exists()).toBe(true);
 		expect(BUTTON.text()).toEqual('APP.BUTTON_SIGN_UP');
 
@@ -60,7 +62,7 @@ describe('TEST COMPONENT USER LIST', () => {
 			},
 		});
 
-		const BUTTON = wrapper.find('.btn-color-sign-up');
+		const BUTTON = wrapper.find('div:nth-child(2) > div > button');
 		await BUTTON.trigger('click');
 		expect(goToCreate).toHaveBeenCalled();
 
@@ -83,6 +85,7 @@ describe('TEST COMPONENT USER LIST', () => {
 			{ key: 'delete', label: 'LIST_USER.DELETE', sortable: false, thClass: 'text-center base-th base-th-control', tdClass: 'text-center base-td-control' },
 		];
 
+		// Kiểm tra trường
 		const HEADER = wrapper.vm.fields;
 
 		let idx = 0;
@@ -158,9 +161,9 @@ describe('TEST COMPONENT USER LIST', () => {
 			const COLUMN_USER_AUTHORITY = COLUMNS.at(2);
 
 			if (DATA[idx].role === 'admin') {
-				expect(COLUMN_USER_AUTHORITY.text()).toEqual('システム管理者');
+				expect(COLUMN_USER_AUTHORITY.text()).toEqual(i18n.t(CONSTANT.LIST_USER.TEXT_ROLE_SYSTEM_ADMINISTRATOR));
 			} else {
-				expect(COLUMN_USER_AUTHORITY.text()).toEqual('ドライバー');
+				expect(COLUMN_USER_AUTHORITY.text()).toEqual(i18n.t(CONSTANT.LIST_USER.TEXT_ROLE_DRIVER));
 			}
 
 			idx++;
