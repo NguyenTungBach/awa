@@ -292,4 +292,53 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         return $result;
     }
+
+    public function listCourseShift($request){
+        // Lấy ra tất cả các Course đặc biệt
+        $courseSpecials = Course::
+            select(
+                "id",
+                "customer_id",
+                "course_name",
+                "ship_date",
+                "start_date",
+                "end_date",
+                "break_time",
+            )
+            ->where('courses.customer_id',0)
+            ->get();
+
+        // Lấy ra tất cả các Course trong ngày hôm đó không bao gồm Course đặc biệt
+        $courseByShipDates = Course::
+        select(
+            "id",
+            "customer_id",
+            "course_name",
+            "ship_date",
+            "start_date",
+            "end_date",
+            "break_time",
+        )
+            ->where('courses.ship_date',$request->date)
+            ->whereNotIn('courses.customer_id',[0])
+            ->get();
+
+        $resultCourseShifts = $courseSpecials->concat($courseByShipDates);
+
+        // Lấy ra tất cả các driver_course có trong ngày hôm đó
+        $driver_courses = DriverCourse::where("date",$request->date)->get();
+        foreach ($driver_courses as $driver_course){
+            // Nếu shift này đã được chỉ định bởi driver thì điền vào
+            foreach ($resultCourseShifts as $resultCourseShift){
+                if ($driver_course->course_id == $resultCourseShift['id']){
+                    $resultCourseShift['driver_id'] = $driver_course->driver_id;
+                    break;
+                } else{
+                    $resultCourseShift['driver_id'] = null;
+                }
+            }
+        }
+
+        return $resultCourseShifts;
+    }
 }

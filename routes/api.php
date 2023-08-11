@@ -33,6 +33,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('course/export', 'CourseController@export');
             Route::post('course/import', 'CourseController@import');
             Route::delete('course/delete-many', 'CourseController@deleteMultiple');
+            Route::get('course/course-shift', 'CourseController@listCourseShift');
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::apiResource('cash-in', 'CashInController');
