@@ -390,7 +390,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'customer_name' => $customer->customer_name,
                 'closing_date' => $customer->closing_date,
                 'closing_dateName' => $customer->closing_dateName,
-                'dataShiftExpress' => [],
+                'dataShiftExpress' => null,
                 'total_courses_expressway_fee' => '',
             ];
             foreach ($listDataConverts as $dataConvert){

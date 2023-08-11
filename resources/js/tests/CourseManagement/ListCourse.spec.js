@@ -40,7 +40,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 			router,
 		});
 
-		const BUTTON = wrapper.find('.btn-color-sign-up');
+		const BUTTON = wrapper.find('div:nth-child(2) > div > button');
 		expect(BUTTON.exists()).toBe(true);
 		expect(BUTTON.text()).toEqual('APP.BUTTON_SIGN_UP');
 
@@ -60,7 +60,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 			},
 		});
 
-		const BUTTON = wrapper.find('.btn-color-sign-up');
+		const BUTTON = wrapper.find('div:nth-child(2) > div > button');
 		await BUTTON.trigger('click');
 		expect(onClickSignUp).toHaveBeenCalled();
 
@@ -86,12 +86,12 @@ describe('TEST COMPONENT LIST COURSE', () => {
 			'LIST_COURSE.TABLE_OPERATIONAL_INFORMATION',
 			'LIST_COURSE.TABLE_DETAIL',
 			'LIST_COURSE.TABLE_DELETE',
-			'LIST_COURSE.TABLE_START_TIME',
-			'LIST_COURSE.TABLE_CLOSING_TIME',
-			'LIST_COURSE.TABLE_BREAK_TIME',
+			// 'LIST_COURSE.TABLE_START_TIME',
+			// 'LIST_COURSE.TABLE_CLOSING_TIME',
+			// 'LIST_COURSE.TABLE_BREAK_TIME',
 		];
 
-		expect(LIST_HEADER.length).toBe(8);
+		expect(LIST_HEADER.length).toBe(5);
 		for (let i = 0; i < LIST_HEADER.length; i++) {
 			expect(LIST_HEADER.at(i).text()).toEqual(CONST_LIST_HEADER[i]);
 		}
@@ -231,7 +231,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 		for (let i = 0; i < LIST_BODY.length; i++) {
 			const LIST_TD = LIST_BODY.at(i).findAll('td');
 
-			const DETAIL = LIST_TD.at(5).find('i.fa-eye');
+			const DETAIL = LIST_TD.at(3).find('i.fa-eye');
 
 			expect(DETAIL.exists()).toBe(true);
 		}
@@ -295,7 +295,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 		for (let i = 0; i < LIST_BODY.length; i++) {
 			const LIST_TD = LIST_BODY.at(i).findAll('td');
 
-			const DETAIL = LIST_TD.at(5).find('i.fa-eye');
+			const DETAIL = LIST_TD.at(3).find('i.fa-eye');
 
 			expect(DETAIL.exists()).toBe(true);
 
@@ -359,7 +359,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 		for (let i = 0; i < LIST_BODY.length; i++) {
 			const LIST_TD = LIST_BODY.at(i).findAll('td');
 
-			const DETAIL = LIST_TD.at(6).find('i.fa-trash-alt');
+			const DETAIL = LIST_TD.at(4).find('i.fa-trash-alt');
 
 			expect(DETAIL.exists()).toBe(true);
 		}
@@ -424,7 +424,7 @@ describe('TEST COMPONENT LIST COURSE', () => {
 		for (let i = 0; i < LIST_BODY.length; i++) {
 			const LIST_TD = LIST_BODY.at(i).findAll('td');
 
-			const DETAIL = LIST_TD.at(6).find('i.fa-trash-alt');
+			const DETAIL = LIST_TD.at(4).find('i.fa-trash-alt');
 
 			expect(DETAIL.exists()).toBe(true);
 
