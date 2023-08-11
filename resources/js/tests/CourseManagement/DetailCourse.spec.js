@@ -27,7 +27,7 @@ describe('TEST COMPONENT COURSE DETAIL', () => {
 		});
 
 		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toBe('COURSE_DETAIL.TITLE_COURSE_DETAIL');
+		expect(TITLE.text()).toBe('CUSTOMER_DETAIL.TITLE_CUSTOMER_DETAIL');
 
 		wrapper.destroy();
 	});

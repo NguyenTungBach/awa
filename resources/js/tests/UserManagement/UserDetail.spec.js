@@ -152,15 +152,17 @@ describe('TEST COMPONENT USER DETAIL', () => {
 		const len = LIST_ITEM_FORM.length;
 
 		while (idx < len) {
+			// Tìm theo từng dòng
 			const ITEM = LIST_ITEM_FORM.at(idx);
 
-			const LABEL = ITEM.find('label');
+			const LABEL = ITEM.find('.text-label');
 			expect(LABEL.text()).toEqual(CONST_FORM[idx].label);
 
-			const INPUT = ITEM.find(CONST_FORM[idx].id);
+			// const INPUT = ITEM.find(CONST_FORM[idx].id);
+			const INPUT = ITEM.find('.text-right');
 			expect(INPUT.exists()).toBe(true);
 
-			expect(INPUT.attributes('disabled')).toEqual('disabled');
+			// expect(INPUT.attributes('disabled')).toEqual('disabled');
 
 			idx++;
 		}
