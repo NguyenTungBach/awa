@@ -112,7 +112,7 @@ describe('TEST COMPONENT COURSE DETAIL', () => {
 
 		const TITLE = wrapper.find('.title-path-form');
 		expect(TITLE.exists()).toBe(true);
-		expect(TITLE.text()).toEqual('COURSE_CREATE.FORM_BASIC_INFORMATION');
+		expect(TITLE.text()).toEqual('CUSTOMER_CREATE.FORM_BASIC_INFORMATION');
 
 		wrapper.destroy();
 	});

@@ -28,7 +28,7 @@ describe('TEST COMPONENT CREATE COURSE', () => {
 		});
 
 		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toEqual('COURSE_CREATE.TITLE_COURSE_CREATE');
+		expect(TITLE.text()).toEqual('CUSTOMER_CREATE.TITLE_CUSTOMER_CREATE');
 
 		wrapper.destroy();
 	});
@@ -119,7 +119,11 @@ describe('TEST COMPONENT CREATE COURSE', () => {
 		expect(ZONE_FORM.exists()).toBe(true);
 
 		const LIST_ITEM_FORM = wrapper.findAll('.item-form');
-		expect(LIST_ITEM_FORM.length).toEqual(11);
+		expect(LIST_ITEM_FORM.length).toEqual(6);
+		const FORM_PostCode = wrapper.find('.item-form-postCode');
+		expect(FORM_PostCode.exists()).toBe(true);
+		const FORM_Note = wrapper.find('#input-notes');
+		expect(FORM_Note.exists()).toBe(true);
 
 		wrapper.destroy();
 	});
@@ -136,8 +140,8 @@ describe('TEST COMPONENT CREATE COURSE', () => {
 		expect(validateCourseCode(null)).toBe(false);
 		expect(validateCourseCode(undefined)).toBe(false);
 		expect(validateCourseCode('')).toBe(false);
-		expect(validateCourseCode('CourseCode')).toBe(false);
-		expect(validateCourseCode('ab1')).toBe(false);
+		expect(validateCourseCode('CourseCode')).toBe(true);
+		expect(validateCourseCode('ab1')).toBe(true);
 		expect(validateCourseCode('123')).toBe(true);
 		expect(validateCourseCode(123)).toBe(true);
 

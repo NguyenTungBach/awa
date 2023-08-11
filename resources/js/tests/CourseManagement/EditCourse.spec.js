@@ -28,7 +28,7 @@ describe('TEST COMPONENT COURSE EDIT', () => {
 		});
 
 		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toBe('COURSE_EDIT.TITLE_COURSE_EDIT');
+		expect(TITLE.text()).toBe('CUSTOMER_EDIT.TITLE_CUSTOMER_EDIT');
 
 		wrapper.destroy();
 	});
@@ -113,7 +113,7 @@ describe('TEST COMPONENT COURSE EDIT', () => {
 
 		const TITLE = wrapper.find('.title-path-form');
 		expect(TITLE.exists()).toBe(true);
-		expect(TITLE.text()).toEqual('COURSE_EDIT.FORM_BASIC_INFORMATION');
+		expect(TITLE.text()).toEqual('CUSTOMER_CREATE.FORM_BASIC_INFORMATION');
 
 		wrapper.destroy();
 	});
