@@ -322,10 +322,13 @@ class CourseController extends Controller
         } catch (ValidationException $exception) {
             return $this->responseJsonError(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                ERROR, 
+                ERROR,
                 collect($exception->failures())
                 ->map(fn(Failure $failure) => str_replace(':row', $failure->row(), $failure->errors()[0]))->all()
             );
         }
     }
+
+    // Phần bách thêm api
+
 }

@@ -65,7 +65,9 @@ class DriverCrudTest extends DuskTestCase
         $getDate = Carbon::now()->format('Y-m-d');
         $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
         $browser->pause(1000);
-
+        $browser->type('#input-fullname','Bach Driverzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-fullname','Bach Driver')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')
             ->assertSee('Create driver success')->pause(4000);
 
