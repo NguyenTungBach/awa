@@ -84,7 +84,7 @@ describe('TEST COMPONENT DRIVER EDIT', () => {
 	});
 
 	test('Check click button save', async() => {
-		const onClickSaveDriver = jest.fn();
+		const onClickSave = jest.fn();
 
 		const localVue = createLocalVue();
 		const wrapper = mount(DriverEdit, {
@@ -92,13 +92,14 @@ describe('TEST COMPONENT DRIVER EDIT', () => {
 			store,
 			router,
 			methods: {
-				onClickSaveDriver,
+				onClickSave,
 			},
 		});
 
 		const BUTTON = wrapper.find('.btn-save');
+		expect(BUTTON.exists()).toBe(true);
 		await BUTTON.trigger('click');
-		expect(onClickSaveDriver).toHaveBeenCalled();
+		expect(onClickSave).toHaveBeenCalled();
 
 		wrapper.destroy();
 	});
@@ -118,18 +119,7 @@ describe('TEST COMPONENT DRIVER EDIT', () => {
 		wrapper.destroy();
 	});
 
-	test('Check function validate edit', () => {
-		const localVue = createLocalVue();
-		const wrapper = mount(DriverEdit, {
-			localVue,
-			store,
-			router,
-		});
-
-		wrapper.destroy();
-	});
-
-	test('Check function validate edit', () => {
+	test('Check function validate create', () => {
 		expect(validateDriver({})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 		expect(validateDriver({
 			driver_code: '123',
@@ -147,43 +137,20 @@ describe('TEST COMPONENT DRIVER EDIT', () => {
 			driver_code: '123',
 			driver_name: 'ABC',
 			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
 		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 		expect(validateDriver({
 			driver_code: '123',
 			driver_name: 'ABC',
 			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
+			type: 1,
+		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 		expect(validateDriver({
-			driver_code: '123.1',
+			driver_code: '123',
 			driver_name: 'ABC',
 			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
+			type: 1,
+			car: 'E29-12362',
 		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123123123123123123123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 	});
 
 	test('Check validate fullname', () => {
@@ -204,213 +171,20 @@ describe('TEST COMPONENT DRIVER EDIT', () => {
 			driver_code: '123',
 			driver_name: 'ABC',
 			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
 		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 		expect(validateDriver({
 			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '123.1',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '1231',
 			driver_name: '123123123123123123123123123123123123123',
 			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
+			type: '2',
+			car: 'E29-12362',
 		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME', 'status': false });
 		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-	});
-
-	test('Check validate hiredate', () => {
-		expect(validateDriver({})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
 			driver_code: '123',
 			driver_name: 'ABC',
 			start_date: '2022-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
+			type: '2',
+			car: 'E29-12362',
 		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '123.1',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123123123123123123123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-	});
-
-	test('Check validate date of birth', () => {
-		expect(validateDriver({})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '123.1',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123123123123123123123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-	});
-
-	test('Check validate available days', () => {
-		expect(validateDriver({})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
-		expect(validateDriver({
-			driver_code: '123',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '123.1',
-			driver_name: 'ABC',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': null, 'status': true });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123123123123123123123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '2',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME', 'status': false });
-		expect(validateDriver({
-			driver_code: '1231',
-			driver_name: '123123123123',
-			start_date: '2022-01-01',
-			birth_day: '2000-01-01',
-			working_day: '',
-		})).toStrictEqual({ 'message': 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_REQUIRED', 'status': false });
 	});
 });

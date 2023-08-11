@@ -96,6 +96,13 @@ function validateDriver(driver, list = ['type', 'driver_code', 'driver_name', 's
 		};
 	}
 
+	if (!validUsername(driver.driver_name) || !(driver.driver_name.length >= 1 && driver.driver_name.length <= 20) && list.includes('driver_name')) {
+		return {
+			status: false,
+			message: 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_NAME',
+		};
+	}
+
 	return {
 		status: true,
 		message: null,
