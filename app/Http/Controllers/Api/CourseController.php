@@ -330,5 +330,33 @@ class CourseController extends Controller
     }
 
     // Phần bách thêm api
+    /**
+     * @OA\GET(
+     *   path="/api/course/course-shift",
+     *   tags={"Course"},
+     *   summary="List Course Shift",
+     *   operationId="course_shift",
+     *   @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     example = "2023-08-01",
+     *     in="path",
+     *     required=true,
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":"Send request success"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * */
+    public function listCourseShift(CourseRequest $request)
+    {
+        $data = $this->repository->listCourseShift($request);
 
+        return $this->responseJson(200, new BaseResource($data));
+    }
 }

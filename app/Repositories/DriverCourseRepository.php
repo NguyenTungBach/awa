@@ -861,48 +861,49 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không end
 
-        // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa start
-        foreach ($items as $item){
-            $checkDriver_id = $item['driver_id'];
-            $driver = Driver::find($checkDriver_id);
-            $checkCourse_id = $item['course_id'];
-            $course = Course::find($checkCourse_id);
-            $checkDate = $item['date'];
-
-            // Nếu trường hợp course_id nằm trong id đặc biệt thì bỏ qua
-            if (in_array($checkCourse_id, DriverCourse::ALL_ID_SPECIAL)){
-                continue;
-            }
-
-            /*
-             * Kiểm tra courses này đã tồn tại trong driver_courses nào chưa
-             * và driver_courses phải có drivers.end_date chưa nghỉ hưu
-             */
-            $checkUnique = DriverCourse::
-            join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
-                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-//                ->where('driver_courses.driver_id', $checkDriver_id)
-                ->where('driver_courses.course_id', $checkCourse_id)
-                ->whereNotIn('driver_courses.driver_id', [$checkDriver_id])
-//                ->where('driver_courses.date', $checkDate)
-                ->whereNull('drivers.end_date') // driver không nghỉ hưu
-                ->first();
-            // Nếu có driver khác chỉ định rồi thì báo lỗi
-            if ($checkUnique){
-                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans("errors.has_been_assigned" ,[
-                        "attribute"=> "driver_id: $checkUnique->driver_id, driver_name: $checkUnique->driver_name, course_id: $checkUnique->course_id, course_name: $course->course_name and date: $checkUnique->date"
-                    ]));
-            }
-        }
-        // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa end
-
         try {
             DB::beginTransaction();
             // Xóa các driver_course theo id và cập nhật lại Cash In
             if (count($item['delete_shifts']) != 0){
                 $this->deleteAll($item['delete_shifts']);
             }
+
+            // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa start
+            foreach ($items as $item){
+                $checkDriver_id = $item['driver_id'];
+                $driver = Driver::find($checkDriver_id);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDate = $item['date'];
+
+                // Nếu trường hợp course_id nằm trong id đặc biệt thì bỏ qua
+                if (in_array($checkCourse_id, DriverCourse::ALL_ID_SPECIAL)){
+                    continue;
+                }
+
+                /*
+                 * Kiểm tra courses này đã tồn tại trong driver_courses nào chưa
+                 * và driver_courses phải có drivers.end_date chưa nghỉ hưu
+                 */
+                $checkUnique = DriverCourse::
+                join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+                    ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+//                ->where('driver_courses.driver_id', $checkDriver_id)
+                    ->where('driver_courses.course_id', $checkCourse_id)
+                    ->whereNotIn('driver_courses.driver_id', [$checkDriver_id])
+//                ->where('driver_courses.date', $checkDate)
+                    ->whereNull('drivers.end_date') // driver không nghỉ hưu
+                    ->first();
+                // Nếu có driver khác chỉ định rồi thì báo lỗi
+                if ($checkUnique){
+                    DB::rollBack(); // Roll back lại toàn bộ không cho xóa
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans("errors.has_been_assigned" ,[
+                            "attribute"=> "driver_id: $checkUnique->driver_id, driver_name: $checkUnique->driver_name, course_id: $checkUnique->course_id, course_name: $course->course_name and date: $checkUnique->date"
+                        ]));
+                }
+            }
+            // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa end
 
             // Lưu lại hoặc update nếu thỏa mãn tất cả điều kiện
             foreach ($items as $item){
