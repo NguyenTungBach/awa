@@ -262,6 +262,7 @@
                         <template v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE">
                             <b-table-simple
                                 :key="`shift-table-${reRender}`"
+                                class="shift-table"
                                 bordered
                                 no-border-collapse
                             >
@@ -2560,7 +2561,7 @@ export default {
 								text-align: center;
                                 vertical-align: middle;
 								min-width: 100px;
-								padding: 5px 0;
+								padding: 20px 0;
 
                                 top: 0;
 							}
