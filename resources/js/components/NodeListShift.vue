@@ -355,6 +355,7 @@ export default {
         &:hover {
             background-color: $main !important;
             color: $white;
+            cursor: pointer;
         }
     }
 

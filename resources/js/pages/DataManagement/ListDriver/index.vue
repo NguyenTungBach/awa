@@ -223,11 +223,11 @@ export default {
 			const today = new Date();
 			const endDate = end_date !== null ? new Date(end_date) : null;
 			if (end_date === null) {
-				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
-			} else if (today >= endDate) {
 				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
+			} else if (today >= endDate) {
+				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
 			} else {
-				return '';
+				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
 			}
 			// switch (end_date) {
 			// 	case end_date !== null:
@@ -243,7 +243,7 @@ export default {
 			console.log('addd', item);
 			const today = new Date();
 			const endDate = item.end_date !== null ? new Date(item.end_date) : null;
-			if (item.end_date === null) {
+			if (item.end_date === null || item.end_date > today) {
 				return '';
 			} else if (today >= endDate) {
 				return 'employee-retired';

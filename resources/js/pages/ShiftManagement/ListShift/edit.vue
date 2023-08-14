@@ -129,10 +129,9 @@
                                     <b-td class="td-full-name text-center">
                                         {{ emp.driver_name }}
                                     </b-td>
-                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                        <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                            <template v-if="emp.dataShift">
-                                                <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
+                                    <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                        <template v-if="emp.dataShift">
+                                            <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
                                                     <NodeListShift
                                                         v-if="(dataDate.date).slice(-2) === handleChangeToMonth(idxDate + 1)"
                                                         :key="`date-${date}-${idxDate}-${index}`"
@@ -156,30 +155,31 @@
                                                         :driver-name="emp.driver_name"
                                                     />
                                                 </template> -->
-                                                <NodeListShift
-                                                    :key="`date-${date}-${idxDate}`"
-                                                    :idx-component="idxDate + 1"
-                                                    :date="date"
-                                                    :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
-                                                    :data-node="emp.dataShift.data_by_date[idxDate]"
-                                                    :emp-data="emp"
-                                                    :driver-code="emp.driver_code"
-                                                    :driver-name="emp.driver_name"
-                                                />
-                                            </template>
-
                                             <NodeListShift
-                                                v-else
-                                                :key="`dateNull-${date}-${idxDate}`"
+                                                :key="`date-${date}-${idxDate}`"
                                                 :idx-component="idxDate + 1"
-                                                :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                 :date="date"
-                                                :data-node="emp.dataShift"
+                                                :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                :data-node="emp.dataShift.data_by_date[idxDate]"
                                                 :emp-data="emp"
+                                                :is-edit="true"
                                                 :driver-code="emp.driver_code"
                                                 :driver-name="emp.driver_name"
                                             />
                                         </template>
+
+                                        <NodeListShift
+                                            v-else
+                                            :key="`dateNull-${date}-${idxDate}`"
+                                            :idx-component="idxDate + 1"
+                                            :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                            :date="date"
+                                            :is-edit="true"
+                                            :data-node="emp.dataShift"
+                                            :emp-data="emp"
+                                            :driver-code="emp.driver_code"
+                                            :driver-name="emp.driver_name"
+                                        />
                                     </template>
                                 </b-tr>
                             </template>
@@ -468,7 +468,7 @@ export default {
 		async createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
-				await this.handleGetListCourse();
+				await this.handleGetListCourse(data.dateDriver);
 				console.log('dataaaaa', data);
 				await this.detailShift(data.id, data.dateDriver);
 
@@ -647,41 +647,57 @@ export default {
 			this.$bus.off('LIST_SHITF_CLICK_NODE');
 		},
 
-		async handleGetListCourse() {
-			const LABOUR = {
-				value: 'L-0',
-				text: this.$t('LIST_SHIFT.LABOUR'),
-				flag: 'yes',
-				status: 'on',
-				start_time: '',
-				end_time: '',
-				break_time: '',
-				disabled: false,
-			};
+		async handleGetListCourse(dateDriver) {
+			// const LABOUR = {
+			// 	value: 'L-0',
+			// 	text: this.$t('LIST_SHIFT.LABOUR'),
+			// 	flag: 'yes',
+			// 	status: 'on',
+			// 	start_time: '',
+			// 	end_time: '',
+			// 	break_time: '',
+			// 	disabled: false,
+			// };
 			try {
-				const { code, data } = await getList(CONSTANT.URL_API.GET_LIST_COURSE);
-				console.log('dataaaacccc', data);
+				const param = {
+					date: dateDriver,
+				};
+				const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
 				if (code === 200) {
 					this.listCourse = [];
 
-					this.listCourse.push(LABOUR);
+					// this.listCourse.push(LABOUR);
 					const len = data.length;
 					let idx = 0;
 
 					while (idx < len) {
-						this.listCourse.push({
-							value: data[idx].course_code,
-							text: data[idx].course_name,
-							status: data[idx].status,
-							flag: data[idx].flag,
-							start_time: data[idx].start_time,
-							end_time: data[idx].end_time,
-							break_time: data[idx].break_time,
-							disabled: false,
-						});
+						if (data[idx].driver_id !== null) {
+							this.listCourse.push({
+								value: data[idx].id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								// flag: data[idx].flag,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: true,
+							});
+						} else {
+							this.listCourse.push({
+								value: data[idx].id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								// flag: data[idx].flag,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: false,
+							});
+						}
 
 						idx++;
 					}
+					console.log('driver:', this.listCourse);
 				} else {
 					this.listCourse.length = 0;
 				}
@@ -812,7 +828,6 @@ export default {
 				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
 				PARAMS.month_year = YEAR_MONTH;
-				PARAMS.closing_date = this.closingDate;
 
 				PARAMS = cleanObject(PARAMS);
 

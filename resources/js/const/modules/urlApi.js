@@ -34,6 +34,7 @@ const GET_LIST_COURSE_PATERN = '/course-pattern';
 const POST_COURSE_PATTERN = '/course-pattern/updates';
 
 // Course Schedule API
+const GET_COURSE_SHIFT = '/course/course-shift';
 const GET_LIST_COURSE_SCHEDULE = '/course';
 const DELETE_COURSE_SCHEDULE = '/course';
 const POST_COURSE_SCHEDULE = '/course';
@@ -126,6 +127,7 @@ export default {
 	POST_COURSE_PATTERN,
 
 	// Course Schedule API
+	GET_COURSE_SHIFT,
 	GET_LIST_COURSE_SCHEDULE,
 	POST_COURSE_SCHEDULE,
 	DELETE_COURSE_SCHEDULE,
