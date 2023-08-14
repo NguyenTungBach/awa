@@ -240,6 +240,9 @@ class CourseController extends Controller
     {
         try {
             $result = $this->repository->updateCourse($request->all(), $id);
+            if (empty($result)) {
+                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, UPDATE_ERROR, 'CAN NOT UPDATE BECAUSE FINAL CLOSING ALREADY EXISTS');
+            }
 
             return $this->responseJson(Response::HTTP_OK, $result, UPDATE_SUCCESS);
         } catch (\Exception $exception) {
@@ -329,7 +332,6 @@ class CourseController extends Controller
         }
     }
 
-    // Phần bách thêm api
     /**
      * @OA\GET(
      *   path="/api/course/course-shift",

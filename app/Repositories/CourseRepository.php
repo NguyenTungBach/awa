@@ -156,40 +156,38 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         try {
             DB::beginTransaction();
-            $cashOut = [];
+            $result = [];
             $checkCourseId = $this->checkExistsDriverCourse($id);
             $checkFinal = $this->checkFinalClosing($id);
-            // // true, false => update statistical, course
-            // // true, true => not update statistical, course
-            // // false => update course
-            // if (!empty($input['associate_company_fee']) && $checkCourseId) {
-            //     if (!$checkFinal) {
-            //         $input['course_id'] = $id;
-            //         unset($input['_method']);
-            //         $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
-            //         dd('cashOutStatisticalUpdate', $cashOutStatistical);
+            // true, false => update statistical, course
+            // true, true => not update statistical, course
+            // false => update course
+            if ($checkCourseId) {
+                if (!$checkFinal) {
+                    $result = CourseRepository::update($input, $id);
+                    $input['course_id'] = $id;
+                    unset($input['_method']);
+                    if (!empty($input['associate_company_fee'])) {
+                        $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
+                    }
 
-            //         dd('update course when update statis');
-            //         $result = CourseRepository::update($input, $id);
-            //     } else {
-            //         dd(1);
-            //         return 'not update course';
-            //     }
-            // } else {
-            //     dd('update course');
-            //     $result = CourseRepository::update($input, $id);
-            // }
-            // dd(1);
+                    if (!empty($input['ship_fee'])) {
+                        $this->cashInStatisticalCheckUpdateIfShipFreeChange($input,$id);
+                    }
+                } else {
+                    return $result;
+                }
+            } else {
+                $result = CourseRepository::update($input, $id);
+            }
 
             DB::commit();
 
-            $this->cashInStatisticalCheckUpdateIfShipFreeChange($input,$id);
-
-//            return $result;
+            return $result;
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception;
+            throw $exception->getMessage();
         }
     }
 
