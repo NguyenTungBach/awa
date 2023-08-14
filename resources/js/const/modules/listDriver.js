@@ -23,6 +23,25 @@ const LIST_FLAG = [
 	},
 ];
 
+const LIST_DATE = [
+	{
+		value: 1,
+		text: '15日',
+	},
+	{
+		value: 2,
+		text: '20日',
+	},
+	{
+		value: 3,
+		text: '25日',
+	},
+	{
+		value: 4,
+		text: '末日',
+	},
+];
+
 const LIST_WORKING_TIME = [
 	{
 		value: 'daily',
@@ -41,5 +60,6 @@ export default {
 	TEXT_ENROLLMENT_STATUS_ENROLLED,
 
 	LIST_FLAG,
+	LIST_DATE,
 	LIST_WORKING_TIME,
 };

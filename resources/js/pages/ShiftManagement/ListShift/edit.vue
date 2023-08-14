@@ -60,7 +60,7 @@
                                     :colspan="3"
                                     class="fix-header"
                                 />
-                                <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
+                                <!-- <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
                                     <template v-for="(date, idx) in pickerWeek.listDate">
                                         <b-th
                                             :key="`date-${idx}`"
@@ -71,35 +71,29 @@
                                             </div>
                                         </b-th>
                                     </template>
-                                </template>
-                                <template
-                                    v-if="
-                                        selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH
-                                    "
-                                >
-                                    <template v-for="date in pickerYearMonth.numberDate">
-                                        <b-th
-                                            :key="`date-${date}`"
-                                            class="th-show-date"
-                                        >
-                                            <div>
-                                                {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                            </div>
-                                        </b-th>
-                                    </template>
+                                </template> -->
+                                <template v-for="date in pickerYearMonth.numberDate">
+                                    <b-th
+                                        :key="`date-${date}`"
+                                        class="th-show-date"
+                                    >
+                                        <div>
+                                            {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                        </div>
+                                    </b-th>
                                 </template>
                             </b-tr>
                             <b-tr>
                                 <b-th class="th-employee-number">
                                     {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
                                 </b-th>
-                                <b-th class="th-flag">
+                                <b-th class="th-type-employee">
                                     {{ $t('LIST_SHIFT.TABLE_DRIVER_TYPE') }}
                                 </b-th>
                                 <b-th class="th-full-name">
                                     {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
                                 </b-th>
-                                <template
+                                <!-- <template
                                     v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                 >
                                     <template v-for="idx in pickerWeek.listDate.length">
@@ -109,17 +103,13 @@
                                             </div>
                                         </b-th>
                                     </template>
-                                </template>
-                                <template
-                                    v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                >
-                                    <template v-for="date in pickerYearMonth.numberDate">
-                                        <b-th :key="`date-${date}`">
-                                            <span>
-                                                {{ listCalendar[date - 1] }}
-                                            </span>
-                                        </b-th>
-                                    </template>
+                                </template> -->
+                                <template v-for="date in pickerYearMonth.numberDate">
+                                    <b-th :key="`date-${date}`">
+                                        <span>
+                                            {{ listCalendar[date - 1] }}
+                                        </span>
+                                    </b-th>
                                 </template>
                             </b-tr>
                         </b-thead>
@@ -132,44 +122,62 @@
                                         {{ emp.driver_code }}
                                     </b-td>
 
-                                    <b-td class="td-flag text-center">
-                                        {{ $t(convertValueToText(optionsTypeDriver, emp.flag)) }}
+                                    <b-td class="td-type-employee">
+                                        {{ $t(convertValueToText(optionsTypeDriver, emp.type)) }}
                                     </b-td>
 
                                     <b-td class="td-full-name text-center">
                                         {{ emp.driver_name }}
                                     </b-td>
-                                    <template
-                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                    >
-                                        <template v-for="(date, idxDate) in pickerWeek.listDate">
+                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                        <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                            <template v-if="emp.dataShift">
+                                                <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
+                                                    <NodeListShift
+                                                        v-if="(dataDate.date).slice(-2) === handleChangeToMonth(idxDate + 1)"
+                                                        :key="`date-${date}-${idxDate}-${index}`"
+                                                        :idx-component="idxDate + 1"
+                                                        :date="date"
+                                                        :data-node="dataDate"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                        :emp-data="emp"
+                                                        :driver-code="emp.driver_code"
+                                                        :driver-name="emp.driver_name"
+                                                    />
+                                                    <NodeListShift
+                                                        v-else
+                                                        :key="`date-${date}-${idxDate}-${index}`"
+                                                        :idx-component="idxDate + 1"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                        :date="date"
+                                                        :data-node="emp.dataShift"
+                                                        :emp-data="emp"
+                                                        :driver-code="emp.driver_code"
+                                                        :driver-name="emp.driver_name"
+                                                    />
+                                                </template> -->
+                                                <NodeListShift
+                                                    :key="`date-${date}-${idxDate}`"
+                                                    :idx-component="idxDate + 1"
+                                                    :date="date"
+                                                    :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                    :data-node="emp.dataShift.data_by_date[idxDate]"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.driver_code"
+                                                    :driver-name="emp.driver_name"
+                                                />
+                                            </template>
+
                                             <NodeListShift
-                                                :key="`date-${idxDate}`"
+                                                v-else
+                                                :key="`dateNull-${date}-${idxDate}`"
                                                 :idx-component="idxDate + 1"
-                                                :date="date.date"
-                                                :data-node="emp.shift_list[idxDate]"
-                                                :driver-code="emp.driver_code"
-                                                :driver-name="emp.driver_name"
-                                                :is-edit="true"
-                                                :start-date="emp.start_date"
-                                                :end-date="emp.end_date"
-                                            />
-                                        </template>
-                                    </template>
-                                    <template
-                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                    >
-                                        <template v-for="date in pickerYearMonth.numberDate">
-                                            <NodeListShift
-                                                :key="`date-${date}`"
-                                                :idx-component="date"
+                                                :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                 :date="date"
-                                                :data-node="emp.shift_list[date - 1]"
+                                                :data-node="emp.dataShift"
+                                                :emp-data="emp"
                                                 :driver-code="emp.driver_code"
                                                 :driver-name="emp.driver_name"
-                                                :is-edit="true"
-                                                :start-date="emp.start_date"
-                                                :end-date="emp.end_date"
                                             />
                                         </template>
                                     </template>
@@ -191,15 +199,15 @@
             <template #default>
                 <div class="detail-node">
                     <div
-                        v-for="(item, idx) in nodeEmit.dataNode.value"
+                        v-for="(item, idx) in nodeEmit"
                         :key="`item-detail-node-${idx}`"
                         class="item-node"
                     >
-                        <span class="type-node">
-                            {{ item.name }}
+                        <span v-if="item.course" class="type-node">
+                            {{ item.course.course_name }}
                         </span>
                         <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
+                        <b-row>
                             <b-col>
                                 <div class="item-time">
                                     <span>始業時間: {{ item.start_time }}</span>
@@ -207,7 +215,7 @@
                             </b-col>
                         </b-row>
                         <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
+                        <b-row>
                             <b-col>
                                 <div class="item-time">
                                     <span>終業時間: {{ item.end_time }}</span>
@@ -215,7 +223,7 @@
                             </b-col>
                         </b-row>
                         <!-- <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.type)"> -->
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.type) && item.type !== 'H-0'">
+                        <b-row>
                             <b-col>
                                 <div class="item-time">
                                     <span>休憩時間: {{ convertBreakTimeNumberToTime(item.break_time) }}</span>
@@ -299,7 +307,8 @@ import EditNodeListShift from '@/components/EditNodeListShift';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { getListShift, postUpdateCellShift } from '@/api/modules/shiftManagement';
 import { convertValueToText } from '@/utils/handleSelect';
-import { convertValueWhenNull } from '@/utils/handleListShift';
+import { cleanObject } from '@/utils/handleObject';
+// import { convertValueWhenNull } from '@/utils/handleListShift';
 import { convertBreakTimeNumberToTime, convertTextToSelectTime, getYearMonthFromDate, convertTimeCourse, formatArray2Time } from '@/utils/convertTime';
 import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
@@ -330,13 +339,7 @@ export default {
 
 			listShift: [],
 
-			nodeEmit: {
-				index: '',
-				date: '',
-				driverCode: '',
-				driverName: '',
-				dataNode: '',
-			},
+			nodeEmit: [],
 
 			listCourse: [],
 
@@ -409,6 +412,10 @@ export default {
 			setLoading(false);
 		},
 
+		handleChangeToMonth(index) {
+			return index < 10 ? `0${index}` : `${index}`;
+		},
+
 		handleGetAllCourseWork(idx = null) {
 			const result = [];
 
@@ -441,215 +448,194 @@ export default {
 			return result;
 		},
 
-		createdEmit() {
+		async detailShift(idDriverCourse, date) {
+			try {
+				const PARAMS = {};
+				this.nodeEmit = [];
+				// const YEAR = this.pickerYearMonth.year;
+				// const MONTH = this.pickerYearMonth.month;
+				// const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				PARAMS.date = date;
+				const { code, data } = await getListShift(`${CONSTANT.URL_API.GET_DETAIL_SHIFT}/${idDriverCourse}`, PARAMS);
+				if (code === 200) {
+					this.nodeEmit = data;
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
 				await this.handleGetListCourse();
+				console.log('dataaaaa', data);
+				await this.detailShift(data.id, data.dateDriver);
 
-				this.nodeEmit = data;
+				// const DATE_CHECK = data.dateDriver;
+				// const lenListUpdate = this.listUpdate.length;
+				// let idxUpdate = 0;
+				// const listCheck = [];
 
-				// check course choosed
-				// console.log('list shift: ', this.listShift);
+				// if (lenListUpdate > 0) {
+				// 	while (idxUpdate < lenListUpdate) {
+				// 		if (this.listUpdate[idxUpdate].date_edit === DATE_CHECK) {
+				// 			listCheck.push(this.listUpdate[idxUpdate]);
+				// 		}
 
-				// console.log(data);
+				// 		idxUpdate++;
+				// 	}
+				// }
 
-				const DATE_CHECK = data.dataNode.date;
-				const lenListUpdate = this.listUpdate.length;
-				let idxUpdate = 0;
-				const listCheck = [];
-
-				if (lenListUpdate > 0) {
-					while (idxUpdate < lenListUpdate) {
-						if (this.listUpdate[idxUpdate].date_edit === DATE_CHECK) {
-							listCheck.push(this.listUpdate[idxUpdate]);
-						}
-
-						idxUpdate++;
-					}
-				}
-
-				const listCourseTypeCheck = [];
-				let TYPE_CHECK = '';
-				idxUpdate = 0;
-				let idx = 0;
-				if (listCheck.length > 0) {
-					while (idxUpdate < listCheck.length) {
-						while (idx < listCheck[idxUpdate].shift_list_update.length) {
-							TYPE_CHECK = listCheck[idxUpdate].shift_list_update[idx].type;
-							listCourseTypeCheck.push(TYPE_CHECK);
-
-							idx++;
-						}
-
-						idx = 0;
-						idxUpdate++;
-					}
-
-					TYPE_CHECK = '';
-				}
-
-				TYPE_CHECK = '';
-				idxUpdate = 0;
-				idx = 0;
-				let INDEX_DATE_CHECK = -1;
-				if (this.listShift.length > 0) {
-					while (idx < this.listShift[0].shift_list.length) {
-						if (this.listShift[0].shift_list[idx].date === DATE_CHECK) {
-							INDEX_DATE_CHECK = idx;
-							break;
-						}
-
-						idx++;
-					}
-
-					idx = 0;
-					if (INDEX_DATE_CHECK !== -1) {
-						while (idxUpdate < this.listShift.length) {
-							if (this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length > 0) {
-								while (idx < this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length) {
-									TYPE_CHECK = this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value[idx].type;
-									listCourseTypeCheck.push(TYPE_CHECK);
-
-									idx++;
-								}
-							}
-
-							idx = 0;
-							idxUpdate++;
-						}
-					}
-				}
-
-				// check course choosed
-
-				this.listNodeEditSelected.length = 0;
-
-				const OLD_SELECTED = this.nodeEmit.dataNode.value || [];
-
-				const lenOldSelected = OLD_SELECTED.length;
-				let idxOldSelected = 0;
-
-				while (idxOldSelected < lenOldSelected) {
-					const OLD_DATA = {
-						type: null,
-						start_time: [null, null],
-						end_time: [null, null],
-						break_time: [null, null],
-					};
-
-					OLD_DATA.type = OLD_SELECTED[idxOldSelected].type;
-					OLD_DATA.start_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].start_time);
-					OLD_DATA.end_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].end_time);
-					OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
-
-					this.listNodeEditSelected.push(OLD_DATA);
-
-					idxOldSelected++;
-				}
-
-				const lenListSelected = this.listNodeEditSelected.length;
-				let idxListSelected = 0;
-
-				while (idxListSelected < lenListSelected) {
-					const SELECTED = this.listNodeEditSelected[idxListSelected];
-
-					const SELECTED_TYPE = SELECTED.type;
-					const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
-
-					if (FIND_SELECTED) {
-						const DATA_COURSE = {
-							flag: FIND_SELECTED.flag,
-							start_time: FIND_SELECTED.start_time,
-							end_time: FIND_SELECTED.end_time,
-							break_time: FIND_SELECTED.break_time,
-						};
-
-						this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
-					} else {
-						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
-							this.listNodeEditSelected[idxListSelected].course = {
-								flag: 'yes',
-								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
-								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
-								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
-							};
-						} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-							this.listNodeEditSelected[idxListSelected].course = {
-								flag: 'yes',
-								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
-								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
-								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
-							};
-						} else {
-							this.listNodeEditSelected[idxListSelected].course = {
-								flag: null,
-								start_time: null,
-								end_time: null,
-								break_time: null,
-							};
-						}
-					}
-
-					idxListSelected++;
-				}
-				//
-				// idx = 0;
+				// const listCourseTypeCheck = [];
+				// let TYPE_CHECK = '';
 				// idxUpdate = 0;
-				// const lenCheck = listCourseTypeCheck.length;
-				// let listCourseCanChoose = [];
-
-				// if (lenCheck > 0) {
-				// 	while (idxUpdate < this.listCourse.length) {
-				//         let check = false;
-
-				// 		while (idx < lenCheck) {
-				// 			if (this.listCourse[idxUpdate].value === listCourseTypeCheck[idx]) {
-				// 				check = true;
-				//                 listCourseCanChoose.push({
-				//                     ...this.listCourse[idxUpdate],
-				//                     disabled: true
-				//                 });
-
-				// 				break;
-				// 			}
+				// let idx = 0;
+				// if (listCheck.length > 0) {
+				// 	while (idxUpdate < listCheck.length) {
+				// 		while (idx < listCheck[idxUpdate].shift_list_update.length) {
+				// 			TYPE_CHECK = listCheck[idxUpdate].shift_list_update[idx].type;
+				// 			listCourseTypeCheck.push(TYPE_CHECK);
 
 				// 			idx++;
-				// 		}
-				// 		if (check === false) {
-				//             listCourseCanChoose.push({
-				//                 ...this.listCourse[idxUpdate],
-				//                 disabled: false
-				//             });
 				// 		}
 
 				// 		idx = 0;
 				// 		idxUpdate++;
 				// 	}
+
+				// 	TYPE_CHECK = '';
 				// }
 
-				// if (listCourseCanChoose.length > 0) {
-				// 	this.listCourse = JSON.parse(JSON.stringify(listCourseCanChoose));
+				// TYPE_CHECK = '';
+				// idxUpdate = 0;
+				// idx = 0;
+				// let INDEX_DATE_CHECK = -1;
+				// if (this.listShift.length > 0) {
+				// 	while (idx < this.listShift[0].shift_list.length) {
+				// 		if (this.listShift[0].shift_list[idx].date === DATE_CHECK) {
+				// 			INDEX_DATE_CHECK = idx;
+				// 			break;
+				// 		}
+
+				// 		idx++;
+				// 	}
+
+				// 	idx = 0;
+				// 	if (INDEX_DATE_CHECK !== -1) {
+				// 		while (idxUpdate < this.listShift.length) {
+				// 			if (this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length > 0) {
+				// 				while (idx < this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value.length) {
+				// 					TYPE_CHECK = this.listShift[idxUpdate].shift_list[INDEX_DATE_CHECK].value[idx].type;
+				// 					listCourseTypeCheck.push(TYPE_CHECK);
+
+				// 					idx++;
+				// 				}
+				// 			}
+
+				// 			idx = 0;
+				// 			idxUpdate++;
+				// 		}
+				// 	}
 				// }
 
-				const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
-				this.courseDisabled = COURSE_DISABLED;
+				// // check course choosed
 
-				const lenCourse = this.listCourse.length;
-				let idxCourse = 0;
+				// this.listNodeEditSelected.length = 0;
 
-				while (idxCourse < lenCourse) {
-					if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
-						this.listCourse[idx].disabled = true;
-					} else {
-						this.listCourse[idx].disabled = false;
-					}
+				// const OLD_SELECTED = this.nodeEmit || [];
 
-					idxCourse++;
-				}
+				// const lenOldSelected = OLD_SELECTED.length;
+				// let idxOldSelected = 0;
+
+				// while (idxOldSelected < lenOldSelected) {
+				// 	const OLD_DATA = {
+				// 		type: null,
+				// 		start_time: [null, null],
+				// 		end_time: [null, null],
+				// 		break_time: [null, null],
+				// 	};
+
+				// 	OLD_DATA.type = OLD_SELECTED[idxOldSelected].type;
+				// 	OLD_DATA.start_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].start_time);
+				// 	OLD_DATA.end_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].end_time);
+				// 	OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
+
+				// 	this.listNodeEditSelected.push(OLD_DATA);
+
+				// 	idxOldSelected++;
+				// }
+
+				// const lenListSelected = this.listNodeEditSelected.length;
+				// let idxListSelected = 0;
+
+				// while (idxListSelected < lenListSelected) {
+				// 	const SELECTED = this.listNodeEditSelected[idxListSelected];
+
+				// 	const SELECTED_TYPE = SELECTED.type;
+				// 	const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
+
+				// 	if (FIND_SELECTED) {
+				// 		const DATA_COURSE = {
+				// 			flag: FIND_SELECTED.flag,
+				// 			start_time: FIND_SELECTED.start_time,
+				// 			end_time: FIND_SELECTED.end_time,
+				// 			break_time: FIND_SELECTED.break_time,
+				// 		};
+
+				// 		this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
+				// 	} else {
+				// 		if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+				// 			this.listNodeEditSelected[idxListSelected].course = {
+				// 				flag: 'yes',
+				// 				start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+				// 				end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+				// 				break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+				// 			};
+				// 		} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+				// 			this.listNodeEditSelected[idxListSelected].course = {
+				// 				flag: 'yes',
+				// 				start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+				// 				end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+				// 				break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+				// 			};
+				// 		} else {
+				// 			this.listNodeEditSelected[idxListSelected].course = {
+				// 				flag: null,
+				// 				start_time: null,
+				// 				end_time: null,
+				// 				break_time: null,
+				// 			};
+				// 		}
+				// 	}
+
+				// 	idxListSelected++;
+				// }
+
+				// const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
+				// this.courseDisabled = COURSE_DISABLED;
+
+				// const lenCourse = this.listCourse.length;
+				// let idxCourse = 0;
+
+				// while (idxCourse < lenCourse) {
+				// 	if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
+				// 		this.listCourse[idx].disabled = true;
+				// 	} else {
+				// 		this.listCourse[idx].disabled = false;
+				// 	}
+
+				// 	idxCourse++;
+				// }
 
 				// console.log(this.listCourse);
 
-				if (this.listNodeEditSelected.length > 0) {
+				// if (this.listNodeEditSelected.length > 0) {
+				// 	this.modalDetail = true;
+				// } else {
+				// 	this.modalEdit = true;
+				// }
+				if (this.nodeEmit.length !== 0) {
 					this.modalDetail = true;
 				} else {
 					this.modalEdit = true;
@@ -674,7 +660,7 @@ export default {
 			};
 			try {
 				const { code, data } = await getList(CONSTANT.URL_API.GET_LIST_COURSE);
-
+				console.log('dataaaacccc', data);
 				if (code === 200) {
 					this.listCourse = [];
 
@@ -711,20 +697,30 @@ export default {
 				let START_DATE = '';
 				let END_DATE = '';
 
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-					START_DATE = this.pickerWeek.listDate[0].text;
-					END_DATE =
-                            this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
-				}
+				// if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+				// 	START_DATE = this.pickerWeek.listDate[0].text;
+				// 	END_DATE =
+				//             this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
+				// }
 
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-					START_DATE = `${this.pickerYearMonth.year}-${format2Digit(
-						this.pickerYearMonth.month
-					)}-01`;
-					END_DATE = `${this.pickerYearMonth.year}-${format2Digit(
-						this.pickerYearMonth.month
-					)}-${this.pickerYearMonth.numberDate}`;
-				}
+				START_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
+				END_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-${this.pickerYearMonth.numberDate}`;
+				// if ([CONSTANT.LIST_SHIFT.SHIFT_TABLE, CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE].includes(this.selectTable)) {
+				// 	if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+				// 		START_DATE = this.pickerWeek.listDate[0].text;
+				// 		END_DATE = this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
+				// 	}
+
+				// 	if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+				// 		START_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
+				// 		END_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-${this.pickerYearMonth.numberDate}`;
+				// 	}
+				// }
+
+				// if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
+				// 	START_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-01`;
+				// 	END_DATE = `${this.pickerYearMonth.year}-${format2Digit(this.pickerYearMonth.month)}-${this.pickerYearMonth.numberDate}`;
+				// }
 
 				const CALENDAR = await getCalendar(CONSTANT.URL_API.GET_CALENDAR, {
 					start_date: START_DATE,
@@ -746,53 +742,89 @@ export default {
 			}
 		},
 
+		// async handleGetListShift() {
+		// 	try {
+		// 		setLoading(true);
+		// 		const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
+
+		// 		const PARAMS = {
+		// 			type: TYPE,
+		// 		};
+
+		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
+		// 			const START = this.pickerWeek.start;
+		// 			const END = this.pickerWeek.end;
+
+		// 			PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
+		// 			PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
+
+		// 			const YEAR = this.pickerYearMonth.year;
+		// 			const MONTH = this.pickerYearMonth.month;
+
+		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+		// 			PARAMS.date = YEAR_MONTH;
+		// 		}
+
+		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
+		// 			const YEAR = this.pickerYearMonth.year;
+		// 			const MONTH = this.pickerYearMonth.month;
+
+		// 			const START = `${YEAR}-${format2Digit(MONTH)}-01`;
+		// 			const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
+
+		// 			PARAMS.start_date = START;
+		// 			PARAMS.end_date = END;
+
+		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+		// 			PARAMS.date = YEAR_MONTH;
+		// 		}
+
+		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
+
+		// 		if (code === 200) {
+		// 			this.listShift = convertValueWhenNull(data);
+		// 		} else {
+		// 			this.listShift.length = 0;
+		// 		}
+
+		// 		setLoading(false);
+		// 	} catch (error) {
+		// 		setLoading(false);
+		// 		console.log(error);
+		// 	}
+		// },
 		async handleGetListShift() {
 			try {
 				setLoading(true);
-				const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
+				this.listShift.length = 0;
 
-				const PARAMS = {
-					type: TYPE,
-				};
+				let PARAMS = {};
 
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-					const START = this.pickerWeek.start;
-					const END = this.pickerWeek.end;
+				// if (this.sortTable.shiftTable.sortBy) {
+				// 	PARAMS.field = this.sortTable.shiftTable.sortBy;
+				// 	PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
+				// }
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
 
-					PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
-					PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS.closing_date = this.closingDate;
 
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				PARAMS = cleanObject(PARAMS);
 
-					PARAMS.date = YEAR_MONTH;
-				}
-
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-					const YEAR = this.pickerYearMonth.year;
-					const MONTH = this.pickerYearMonth.month;
-
-					const START = `${YEAR}-${format2Digit(MONTH)}-01`;
-					const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-
-					PARAMS.start_date = START;
-					PARAMS.end_date = END;
-
-					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-					PARAMS.date = YEAR_MONTH;
-				}
-
+				// if (PARAMS.field) {
+				// 	PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
+				// }
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					this.listShift = convertValueWhenNull(data);
-				} else {
-					this.listShift.length = 0;
+					// this.listShift = convertValueWhenNull(data);
+					this.listShift = data;
 				}
-
 				setLoading(false);
 			} catch (error) {
 				setLoading(false);
@@ -1443,10 +1475,11 @@ export default {
 		}
 
 		&__table {
-			height: calc(100vh - 235px);
-			overflow-y: auto;
+			.zone-table {
+				height: calc(100vh - 240px);
+				overflow: auto;
 
-			table {
+				table {
 					thead {
 						tr {
 							th {
@@ -1463,8 +1496,8 @@ export default {
 								color: $white;
 								text-align: center;
                                 vertical-align: middle;
-
-								padding: 5px 0;
+								min-width: 100px;
+								padding: 25px 0;
 
                                 top: 0;
 							}
@@ -1480,31 +1513,39 @@ export default {
 								padding: 5px 0;
 							}
 
+							th.total-shift {
+								min-width: 150px;
+							}
+
 							th.th-employee-number {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
                                 left: 0;
 
-                                width: 150px;
+								min-width: 150px;
 							}
 
-                            th.th-flag {
+							th.th-type-employee {
                                 position: sticky;
+                                top: 37px;
                                 z-index: 10;
-                                top: 0;
-                                left: 200px;
+                                left: 150px;
 
-								width: 180px;
+                                min-width: 180px;
+
+                                cursor: pointer;
                             }
 
 							th.th-full-name {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 400px;
+                                left: 330px;
 
-								width: 240px;
+                                min-width: 240px;
+
+                                cursor: pointer;
 							}
 						}
 
@@ -1522,11 +1563,10 @@ export default {
 								padding: 0;
 
 								min-width: 150px;
-                                min-height: 80px;
 							}
 
 							td.td-employee-number,
-                            td.td-flag,
+							td.td-type-employee,
 							td.td-full-name {
 								background-color: $sub-main;
 
@@ -1534,35 +1574,37 @@ export default {
 
 								vertical-align: middle;
 
-                                padding: 5px;
+                                padding: 10px;
+							}
 
-                                min-width: 200px;
+							td.td-type-employee {
+                                position: sticky;
+                                top: 0;
+                                z-index: 8;
+                                left: 150px;
+                            }
+
+							td.td-total-shift {
+								min-width: 150px;
 							}
 
                             td.td-employee-number {
                                 position: sticky;
                                 z-index: 9;
+								left: 150px;
                                 top: 0;
                                 left: 0;
-                            }
-
-                            td.td-flag {
-                                position: sticky;
-                                z-index: 9;
-                                top: 0;
-                                left: 200px;
-
-                                width: 200px;
                             }
 
                             td.td-full-name {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-                                left: 400px;
+								left: 330px;
                             }
 						}
 					}
+				}
 			}
 		}
 	}

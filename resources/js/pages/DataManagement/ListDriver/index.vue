@@ -221,7 +221,7 @@ export default {
 
 		getTextEnrollmentStatus(end_date) {
 			const today = new Date();
-			const endDate = new Date(end_date);
+			const endDate = end_date !== null ? new Date(end_date) : null;
 			if (end_date === null) {
 				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
 			} else if (today >= endDate) {
@@ -240,8 +240,9 @@ export default {
 		},
 
 		rowClass(item) {
+			console.log('addd', item);
 			const today = new Date();
-			const endDate = new Date(item.end_date);
+			const endDate = item.end_date !== null ? new Date(item.end_date) : null;
 			if (item.end_date === null) {
 				return '';
 			} else if (today >= endDate) {
