@@ -92,15 +92,14 @@ class DriverCourseRequest extends FormRequest
         if(Route::getCurrentRoute()->getActionMethod() == 'update_course'){
             return [
                 "delete_shifts"=> [
-                    'required',
                     'array',
                 ],
                 "delete_shifts.*.shift_id"=> [
-                    'required',
-                    Rule::exists('driver_course', 'id'),
+                    'required_with:delete_shifts.*.driver_id',
+                    Rule::exists('driver_courses', 'id'),
                 ],
                 "delete_shifts.*.driver_id"=> [
-                    'required',
+                    'required_with:delete_shifts.*.shift_id',
                     Rule::exists('drivers', 'id'),
                 ],
                 "items"=> [
