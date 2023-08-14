@@ -167,6 +167,15 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             // false => update course
             if ($checkCourseId) {
                 if (!$checkFinal) {
+                    $checkCashInStatisticalCheckUpdateIfShipFreeChange = false;
+                    // Kiểm tra nốt trường hợp ship_fee đổi tiền
+                    if (!empty($input['ship_fee'])) {
+                        $course = Course::find($id);
+                        if ($input['ship_fee'] != $course->ship_fee){
+                            $checkCashInStatisticalCheckUpdateIfShipFreeChange = true;
+                        }
+                    }
+
                     $result = CourseRepository::update($input, $id);
                     $input['course_id'] = $id;
                     unset($input['_method']);
@@ -174,7 +183,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                         $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
                     }
 
-                    if (!empty($input['ship_fee'])) {
+                    if ($checkCashInStatisticalCheckUpdateIfShipFreeChange) {
+                        // Cập nhật nếu thỏa mãn điều kiện trên
+                        // Cập nhật lại CashInStatic theo khách và ngày
+                        // Lưu ý đã được check trường hợp bỏ qua id đặc biệt
                         $this->cashInStatisticalCheckUpdateIfShipFreeChange($input,$id);
                     }
                 } else {
@@ -200,15 +212,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $course = Course::find($id);
         // Kiểm tra Course đã được gán trong SHIFT nào chưa nếu có thì mới cần cập nhật
         $driver_courseCheck = DriverCourse::where("course_id",$id)->first();
+
         // Nếu thấy có thì mới update
         if ($driver_courseCheck){
-            // Kiểm tra nốt trường hợp ship_fee đổi tiền
-            if ($input['ship_fee'] != $course->ship_fee){
-                // Cập nhật nếu thỏa mãn điều kiện trên
-                // Cập nhật lại CashInStatic theo khách và ngày
-                // Lưu ý đã được check trường hợp bỏ qua id đặc biệt
-                $this->cashInStaticalRepository->saveCashInStatic($course->customer_id,$input['ship_date']);
-            }
+            $this->cashInStaticalRepository->saveCashInStatic($course->customer_id,$course->ship_date);
         }
 
     }
