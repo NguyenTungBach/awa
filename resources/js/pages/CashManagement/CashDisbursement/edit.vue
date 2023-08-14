@@ -119,6 +119,7 @@
                                                     <b-form-input
                                                         id="input-deposit-day"
                                                         v-model="isForm.cash_out"
+                                                        type="number"
                                                     />
                                                 </b-col>
                                                 <b-col
@@ -277,6 +278,7 @@ export default {
 				}
 				setLoading(false);
 			} catch (error) {
+				setLoading(false);
 				console.log(error);
 			}
 		},

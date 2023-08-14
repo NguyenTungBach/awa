@@ -130,7 +130,20 @@
                             </div>
                         </div>
 
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE || selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)" class="zone-right">
+                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)" class="zone-right">
+                            <div
+                                class="item-function btn-excel"
+                                @click="onExportExcel()"
+                            >
+                                <div class="show-icon">
+                                    <i class="fas fa-file-excel" />
+                                </div>
+                                <div class="show-text">
+                                    <span>{{ $t("LIST_SHIFT.BUTTON_DOWNLOAD_EXCEL") }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -213,7 +226,7 @@
                             </b-button>
                             <b-button
                                 v-else
-                                v-show="!isLoading.show"
+                                v-show="isLoading.show"
                                 pill
                                 class="btn-edit btn-color-active"
                                 @click="goToPageListCourseBaseEdit"
@@ -366,12 +379,26 @@
                                             </td>
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                    <template v-if="emp.dataShift">
+                                                        <NodeListShift
+                                                            :key="`date-${date}-${idxDate}`"
+                                                            :idx-component="idxDate + 1"
+                                                            :date="date"
+                                                            :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                            :data-node="emp.dataShift.data_by_date[idxDate]"
+                                                            :emp-data="emp"
+                                                            :driver-code="emp.driver_code"
+                                                            :driver-name="emp.driver_name"
+                                                        />
+                                                    </template>
+
                                                     <NodeListShift
-														v-if="emp.dataShift"
-                                                        :key="`date-${date}-${idxDate}`"
+                                                        v-else
+                                                        :key="`dateNull-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                         :date="date"
-                                                        :data-node="emp.dataShift.data_by_date[idxDate]"
+                                                        :data-node="emp.dataShift"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
@@ -392,16 +419,16 @@
                                                     :end-date="emp.end_date"
                                                 />
                                             </template> -->
-                                            <template v-if="listTotalExtraCost.length !== 0">
+                                            <!-- <template v-if="listTotalExtraCost.length !== 0">
                                                 <template v-for="(total, index) in listTotalExtraCost">
                                                     <b-td v-if="index === idx" :key="`total-${index}`" class="td-total-shift">
-                                                        {{ total.total_money }}
+                                                        {{ emp.total_money }}
                                                     </b-td>
                                                 </template>
-                                            </template>
-                                            <template v-else>
-                                                <b-td class="td-total-shift" />
-                                            </template>
+                                            </template> -->
+                                            <b-td class="td-total-shift">
+                                                {{ emp.total_money }}
+                                            </b-td>
                                         </tr>
                                     </template>
                                 </b-tbody>
@@ -529,8 +556,8 @@
                         <!-- table Hight way -->
                         <template v-if="selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE">
                             <b-table-simple
-
                                 :key="`shift-table-${reRender}`"
+                                class="table-hight-way"
                                 bordered
                                 no-border-collapse
                             >
@@ -540,7 +567,7 @@
                                             :colspan="3"
                                             class="fix-header"
                                         />
-                                        <template
+                                        <!-- <template
                                             v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                         >
                                             <template v-for="(date, idx) in pickerWeek.listDate">
@@ -553,7 +580,7 @@
                                                     </div>
                                                 </b-th>
                                             </template>
-                                        </template>
+                                        </template> -->
                                         <template
                                             v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                         >
@@ -612,7 +639,7 @@
                                         <b-th class="th-full-name">
                                             {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME") }}
                                         </b-th>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
+                                        <!-- <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
                                             <template v-for="(date, idx) in pickerWeek.listDate">
                                                 <b-th :key="`date-${idx}`">
                                                     <div v-if="listCalendar.length">
@@ -620,7 +647,7 @@
                                                     </div>
                                                 </b-th>
                                             </template>
-                                        </template>
+                                        </template> -->
                                         <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                             <template v-for="date in pickerYearMonth.numberDate">
                                                 <b-th :key="`date-${date}`">
@@ -634,19 +661,19 @@
                                 </b-thead>
                                 <b-tbody v-if="listShift.length > 0">
                                     <template
-                                        v-for="(emp, idx) in listShift"
+                                        v-for="(emp, idx) in listHighWay"
                                     >
                                         <tr :key="`emp-no-${idx + 1}`">
                                             <td class="td-employee-number">
-                                                {{ emp.driver_code }}
+                                                {{ emp.customer_code }}
                                             </td>
                                             <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsTypeDriver, emp.flag)) }}
+                                                {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
                                             </b-td>
                                             <td class="td-full-name text-center">
-                                                {{ emp.driver_name }}
+                                                {{ emp.customer_name }}
                                             </td>
-                                            <template
+                                            <!-- <template
                                                 v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                             >
                                                 <template v-for="(date, idxDate) in pickerWeek.listDate">
@@ -662,24 +689,36 @@
                                                         :end-date="emp.end_date"
                                                     />
                                                 </template>
-                                            </template>
+                                            </template> -->
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                    <template v-if="emp.dataShiftExpress">
+                                                        <NodeListShift
+                                                            :key="`date-${date}-${idxDate}`"
+                                                            :idx-component="idxDate + 1"
+                                                            :date="date"
+                                                            :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
+                                                            :data-node="emp.dataShiftExpress.data_ship_date[idxDate]"
+                                                            :emp-data="emp"
+                                                            :driver-code="emp.customer_code"
+                                                            :driver-name="emp.customer_name"
+                                                        />
+                                                    </template>
+
                                                     <NodeListShift
-                                                        :key="`date-${date}`"
-                                                        :idx-component="idx + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
+                                                        v-else
+                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :idx-component="idxDate + 1"
+                                                        :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
                                                         :date="date"
                                                         :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
+                                                        :driver-code="emp.customer_code"
+                                                        :driver-name="emp.customer_name"
                                                     />
                                                 </template>
                                             </template>
                                             <b-td class="td-total-shift">
-                                                {{ totalShift }}
+                                                {{ emp.total_courses_expressway_fee }}
                                             </b-td>
                                         </tr>
                                     </template>
@@ -914,6 +953,7 @@ import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
 import { convertStatusToText } from '@/utils/handleListShift';
+import axios from 'axios';
 // import CalendarMultipleWeek from '@/components/CalendarMultipleWeek';
 // import CalendarMonth from '@/components/CalendarMonth';
 // import Notification from '@/toast/notification';
@@ -980,6 +1020,8 @@ export default {
 
 			listCalendar: [],
 			listShift: [],
+			listHighWay: [],
+			ListPayment: [],
 			listTotalExtraCost: [],
 			listTableCourse: [],
 			listSalary: [],
@@ -1007,6 +1049,7 @@ export default {
 			reRender: 0,
 
 			optionsTypeDriver: CONSTANT.LIST_DRIVER.LIST_FLAG,
+			optionsDate: CONSTANT.LIST_DRIVER.LIST_DATE,
 
 			typeCreateShift: null,
 
@@ -1117,6 +1160,12 @@ export default {
 						setLoading(false);
 
 						break;
+					case CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE:
+						setLoading(true);
+						await this.handleGetHightWay();
+						setLoading(false);
+
+						break;
 				}
 			},
 
@@ -1172,6 +1221,10 @@ export default {
 			this.showModalClosingDate = true;
 		},
 
+		handleChangeToMonth(index) {
+			return index < 10 ? `0${index}` : `${index}`;
+		},
+
 		onSelectTypeCreateShift(type) {
 			if (type === 'MONTH') {
 				this.showModalAI = false;
@@ -1195,7 +1248,7 @@ export default {
 
 			await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
-			// await this.onClickSelectTable();
+			await this.onClickSelectTable();
 		},
 
 		async handleGetListCalendar() {
@@ -1205,7 +1258,7 @@ export default {
 				let START_DATE = '';
 				let END_DATE = '';
 
-				if ([CONSTANT.LIST_SHIFT.SHIFT_TABLE, CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE].includes(this.selectTable)) {
+				if ([CONSTANT.LIST_SHIFT.SHIFT_TABLE, CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE, CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE].includes(this.selectTable)) {
 					if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
 						START_DATE = this.pickerWeek.listDate[0].text;
 						END_DATE = this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
@@ -1243,7 +1296,8 @@ export default {
 		},
 
 		handleChoseClosingDate() {
-			this.handleGetTotalExtraCost();
+			// this.handleGetTotalExtraCost();
+			this.handleGetListShift();
 			this.showModalClosingDate = false;
 		},
 
@@ -1310,6 +1364,7 @@ export default {
 		// },
 		async handleGetListShift() {
 			try {
+				setLoading(true);
 				this.listShift.length = 0;
 
 				let PARAMS = {};
@@ -1341,6 +1396,41 @@ export default {
 					console.log('data', this.listShift);
 					this.reloadTable();
 				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async handleGetHightWay() {
+			try {
+				setLoading(true);
+				this.listHighWay.length = 0;
+
+				let PARAMS = {};
+
+				if (this.sortTable.shiftTable.sortBy) {
+					PARAMS.field = this.sortTable.shiftTable.sortBy;
+					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+
+				PARAMS = cleanObject(PARAMS);
+
+				console.log('param', PARAMS);
+
+				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_HIGHT_WAY, PARAMS);
+
+				if (code === 200) {
+					this.listHighWay = data;
+					this.reloadTable();
+				}
+				setLoading(false);
 			} catch (error) {
 				console.log(error);
 			}
@@ -1665,14 +1755,14 @@ export default {
 					if (table === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE) {
 						setLoading(true);
 						await this.handleGetListCalendar();
-						await this.handleGetListShift();
+						await this.handleGetHightWay();
 						setLoading(false);
 					}
 
 					if (table === CONSTANT.LIST_SHIFT.PAYMENT_TABLE) {
 						setLoading(true);
 						await this.handleGetListCalendar();
-						await this.handleGetListShift();
+						// await this.handleGetListShift();
 						setLoading(false);
 					}
 				} else {
@@ -1812,152 +1902,85 @@ export default {
 		// 	}
 		// },
 
-		onExportExcel() {
+		async onExportExcel() {
 			if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
-				const sort = {
-					field: this.sortTable.shiftTable.sortBy,
-					sortby: this.sortTable.shiftTable.sortType,
-				};
+				try {
+					let params = {};
 
-				let SORT = '';
-
-				if (sort.field === 'driver_code') {
-					if (sort.sortby) {
-						SORT = '&sortby_code=asc';
-					} else {
-						SORT = '&sortby_code=desc';
+					if (this.sortTable.shiftTable.sortBy) {
+						params.field = this.sortTable.shiftTable.sortBy;
+						params.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
 					}
-				}
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
 
-				if (sort.field === 'flag') {
-					if (sort.sortby) {
-						SORT = '&sortby_driver_type=asc';
-					} else {
-						SORT = '&sortby_driver_type=desc';
-					}
-				}
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-				const PICKER_YEAR_MONTH = this.$store.getters.pickerYearMonth;
-				let START_DATE = '';
-				let END_DATE = '';
+					params.month_year = YEAR_MONTH;
+					params.closing_date = this.closingDate;
 
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-					START_DATE = this.pickerWeek.listDate[0].text;
-					END_DATE = this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
-				}
-
-				if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-					START_DATE = `${PICKER_YEAR_MONTH.year}-${format2Digit(PICKER_YEAR_MONTH.month)}-01`;
-					END_DATE = `${PICKER_YEAR_MONTH.year}-${format2Digit(PICKER_YEAR_MONTH.month)}-${format2Digit(PICKER_YEAR_MONTH.numberDate)}`;
-				}
-
-				const DATE = `start_date=${START_DATE}&end_date=${END_DATE}`;
-
-				const NAME_START_DATE = START_DATE.replace(/-+/g, '');
-				const NAME_END_DATE = END_DATE.replace(/-+/g, '');
-
-				const NAME_DATE = `${NAME_START_DATE}-${NAME_END_DATE}`;
-
-				const YEAR = this.pickerYearMonth.year || null;
-				const MONTH = this.pickerYearMonth.month || null;
-
-				const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
-
-				const KEY_DATE = `&date=${YEAR_MONTH}`;
-
-				const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK}?${DATE}${SORT}${KEY_DATE}`;
-
-				let FILE_DOWNLOAD;
-
-				fetch(URL, {
-					headers: {
-						'Accept-Language': this.$store.getters.language,
-						'Authorization': getToken(),
-						'accept': 'application/json',
-					},
-				}).then(async(res) => {
-					let filename = decodeURI(res.headers.get('content-disposition').split(`filename*=utf-8''`)[1]) || `シフト表_{${NAME_DATE}}`;
-
-					filename = filename.replaceAll('"', '');
-					await res.blob().then((res) => {
-						FILE_DOWNLOAD = res;
+					params = cleanObject(params);
+					const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK}`;
+					await axios.get(URL, {
+						params: params,
+						responseType: 'blob',
+						headers: {
+							'Accept-Language': this.$store.getters.language,
+							'Authorization': getToken(),
+							'accept': 'application/json',
+						},
+					}).then((response) => {
+						const url = window.URL.createObjectURL(new Blob([response.data]));
+						const link = document.createElement('a');
+						link.href = url;
+						link.setAttribute('download', 'シフト表_20230801-20230831.xlsx');
+						document.body.appendChild(link);
+						link.click();
+					}).catch((error) => {
+						console.log(error);
 					});
-					const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
-					const fileLink = document.createElement('a');
-
-					fileLink.href = fileURL;
-					fileLink.setAttribute('download', filename);
-					document.body.appendChild(fileLink);
-
-					fileLink.click();
-				})
-					.catch((err) => {
-						console.log(err);
-					});
+				} catch (error) {
+					console.log(error);
+				}
 			}
-			if (this.selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY) {
-				const sort = {
-					field: this.sortTable.pracitcalAchievementsTable.sortBy,
-					sortby: this.sortTable.pracitcalAchievementsTable.sortType,
-				};
 
-				let SORT = '';
+			if (this.selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE) {
+				try {
+					let params = {};
 
-				if (sort.field === 'driver_code') {
-					if (sort.sortby) {
-						SORT = '&sortby_code=asc';
-					} else {
-						SORT = '&sortby_code=desc';
+					if (this.sortTable.shiftTable.sortBy) {
+						params.field = this.sortTable.shiftTable.sortBy;
+						params.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
 					}
-				}
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
 
-				if (sort.field === 'flag') {
-					if (sort.sortby) {
-						SORT = '&sortby_driver_type=asc';
-					} else {
-						SORT = '&sortby_driver_type=desc';
-					}
-				}
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-				const STATUS_VIEW = '&status_view=month';
-
-				const YEAR = this.pickerYearMonth.year || null;
-				const MONTH = this.pickerYearMonth.month || null;
-
-				const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
-
-				let VIEW_DATE = '';
-
-				VIEW_DATE = `view_date=${YEAR_MONTH}` || null;
-
-				const URL = `/api${CONSTANT.URL_API.GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL}?${VIEW_DATE}${STATUS_VIEW}${SORT}`;
-
-				let FILE_DOWNLOAD;
-
-				fetch(URL, {
-					headers: {
-						'Accept-Language': this.$store.getters.language,
-						'Authorization': getToken(),
-						'accept': 'application/json',
-					},
-				}).then(async(res) => {
-					let filename = decodeURI(res.headers.get('content-disposition').split(`filename*=utf-8''`)[1]) || `実務実績月別_{${YEAR_MONTH}}`;
-					filename = filename.replaceAll('"', '');
-					await res.blob().then((res) => {
-						FILE_DOWNLOAD = res;
+					params.month_year = YEAR_MONTH;
+					params = cleanObject(params);
+					const URL = `/api${CONSTANT.URL_API.GET_EXPORT_HIGHT_WAY}`;
+					await axios.get(URL, {
+						params: params,
+						responseType: 'blob',
+						headers: {
+							'Accept-Language': this.$store.getters.language,
+							'Authorization': getToken(),
+							'accept': 'application/json',
+						},
+					}).then((response) => {
+						const url = window.URL.createObjectURL(new Blob([response.data]));
+						const link = document.createElement('a');
+						link.href = url;
+						link.setAttribute('download', 'HightWay.xlsx');
+						document.body.appendChild(link);
+						link.click();
+					}).catch((error) => {
+						console.log(error);
 					});
-					const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
-					const fileLink = document.createElement('a');
-
-					fileLink.href = fileURL;
-					fileLink.setAttribute('download', filename);
-					document.body.appendChild(fileLink);
-
-					fileLink.click();
-				})
-					.catch((err) => {
-						console.log(err);
-					});
+				} catch (error) {
+					console.log(error);
+				}
 			}
 
 			if (this.selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE) {
@@ -2592,7 +2615,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 37px;
+                            top: 41px;
                         }
 					}
 
@@ -2626,6 +2649,7 @@ export default {
 
 							td.td-total-shift {
 								min-width: 150px;
+								vertical-align: middle;
 							}
 
                             td.td-employee-number {
@@ -2790,91 +2814,129 @@ export default {
 					}
                 }
 
-				table.table-practical-achievements-monthly {
+				table.table-hight-way {
 					thead {
 						tr {
 							th {
-								min-width: 150px;
+                                position: sticky;
+                                z-index: 9;
 
-								vertical-align: middle;
+								div {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+								}
+
+								background-color: $main;
+								color: $white;
+								text-align: center;
+                                vertical-align: middle;
+								min-width: 100px;
+								padding: 20px 0;
+
+                                top: 0;
 							}
 
-                            th.driver-code {
+                            th.fix-header {
                                 position: sticky;
+                                z-index: 10;
                                 top: 0;
                                 left: 0;
-                                z-index: 10;
-
-                                cursor: pointer;
-
-                                min-width: 150px;
-                                max-width: 150px
                             }
 
-                            th.driver-flag {
-                                position: sticky;
-                                top: 0;
-                                left: 150px;
-                                z-index: 10;
+							th.th-show-date {
+								padding: 5px 0;
+							}
 
-                                cursor: pointer;
+							th.total-shift {
+								min-width: 150px;
+							}
+
+							th.th-employee-number {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 0;
+
+								min-width: 150px;
+							}
+
+							th.th-type-employee {
+                                position: sticky;
+                                top: 37px;
+                                z-index: 10;
+                                left: 150px;
 
                                 min-width: 180px;
-                                max-width: 180px
+
+                                cursor: pointer;
                             }
 
-                            th.driver-name{
+							th.th-full-name {
                                 position: sticky;
+                                z-index: 10;
                                 top: 0;
                                 left: 330px;
-                                z-index: 10;
-                            }
+
+                                min-width: 240px;
+
+                                cursor: pointer;
+							}
 						}
+
+                        tr:nth-child(2) {
+                            position: sticky;
+                            z-index: 10;
+                            top: 43px;
+                        }
 					}
 
 					tbody {
 						tr {
 							td {
-								&:nth-child(1),
-								&:nth-child(2),
-                                &:nth-child(3) {
-									background-color: $sub-main;
+								text-align: center;
+								padding: 0;
 
-									font-weight: bold;
-								}
-
-								padding: 5px;
+								min-width: 150px;
 							}
 
-                            td.driver-code {
+							td.td-employee-number,
+							td.td-type-employee,
+							td.td-full-name {
+								background-color: $sub-main;
+
+								font-weight: bold;
+
+								vertical-align: middle;
+
+                                padding: 5px;
+							}
+
+							td.td-type-employee {
                                 position: sticky;
+                                top: 0;
+                                z-index: 8;
+                                left: 150px;
+                            }
+
+							td.td-total-shift {
+								min-width: 150px;
+								vertical-align: middle;
+							}
+
+                            td.td-employee-number {
+                                position: sticky;
+                                z-index: 9;
+								left: 150px;
                                 top: 0;
                                 left: 0;
-                                z-index: 9;
                             }
 
-                            td.driver-flag {
+                            td.td-full-name {
                                 position: sticky;
-                                top: 0;
-                                left: 150px;
                                 z-index: 9;
-
-                                min-width: 180px;
-                                max-width: 180px;
-                            }
-
-                            td.driver-name {
-                                position: sticky;
                                 top: 0;
-                                left: 330px;
-                                z-index: 9;
-
-                                min-width: 150px;
-                                max-width: 150px
-                            }
-
-                            td.table-empty {
-                                background-color: $white;
+								left: 330px;
                             }
 						}
 					}

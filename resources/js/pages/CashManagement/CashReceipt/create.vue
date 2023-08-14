@@ -119,6 +119,7 @@
                                                     <b-form-input
                                                         id="input-deposit-day"
                                                         v-model="isForm.cash_in"
+                                                        type="number"
                                                     />
                                                 </b-col>
                                                 <b-col

@@ -31,7 +31,7 @@
                                         class="btn-edit btn-color-active"
                                         @click="onClickCreate()"
                                     >
-                                        {{ $t('APP.BUTTON_EDIT') }}
+                                        {{ $t('APP.BUTTON_CREATE') }}
                                     </b-button>
                                 </div>
                             </b-col>
