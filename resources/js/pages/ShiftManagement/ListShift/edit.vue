@@ -129,10 +129,9 @@
                                     <b-td class="td-full-name text-center">
                                         {{ emp.driver_name }}
                                     </b-td>
-                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                        <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                            <template v-if="emp.dataShift">
-                                                <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
+                                    <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                        <template v-if="emp.dataShift">
+                                            <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
                                                     <NodeListShift
                                                         v-if="(dataDate.date).slice(-2) === handleChangeToMonth(idxDate + 1)"
                                                         :key="`date-${date}-${idxDate}-${index}`"
@@ -156,32 +155,31 @@
                                                         :driver-name="emp.driver_name"
                                                     />
                                                 </template> -->
-                                                <NodeListShift
-                                                    :key="`date-${date}-${idxDate}`"
-                                                    :idx-component="idxDate + 1"
-                                                    :date="date"
-                                                    :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
-                                                    :data-node="emp.dataShift.data_by_date[idxDate]"
-                                                    :emp-data="emp"
-                                                    :is-edit="true"
-                                                    :driver-code="emp.driver_code"
-                                                    :driver-name="emp.driver_name"
-                                                />
-                                            </template>
-
                                             <NodeListShift
-                                                v-else
-                                                :key="`dateNull-${date}-${idxDate}`"
+                                                :key="`date-${date}-${idxDate}`"
                                                 :idx-component="idxDate + 1"
-                                                :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                 :date="date"
-                                                :is-edit="true"
-                                                :data-node="emp.dataShift"
+                                                :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                :data-node="emp.dataShift.data_by_date[idxDate]"
                                                 :emp-data="emp"
+                                                :is-edit="true"
                                                 :driver-code="emp.driver_code"
                                                 :driver-name="emp.driver_name"
                                             />
                                         </template>
+
+                                        <NodeListShift
+                                            v-else
+                                            :key="`dateNull-${date}-${idxDate}`"
+                                            :idx-component="idxDate + 1"
+                                            :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                            :date="date"
+                                            :is-edit="true"
+                                            :data-node="emp.dataShift"
+                                            :emp-data="emp"
+                                            :driver-code="emp.driver_code"
+                                            :driver-name="emp.driver_name"
+                                        />
                                     </template>
                                 </b-tr>
                             </template>
@@ -675,7 +673,7 @@ export default {
 					while (idx < len) {
 						if (data[idx].driver_id !== null) {
 							this.listCourse.push({
-								value: data[idx].customer_id,
+								value: data[idx].id,
 								text: data[idx].course_name,
 								// status: data[idx].status,
 								// flag: data[idx].flag,
@@ -686,7 +684,7 @@ export default {
 							});
 						} else {
 							this.listCourse.push({
-								value: data[idx].customer_id,
+								value: data[idx].id,
 								text: data[idx].course_name,
 								// status: data[idx].status,
 								// flag: data[idx].flag,
@@ -830,7 +828,6 @@ export default {
 				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
 				PARAMS.month_year = YEAR_MONTH;
-				PARAMS.closing_date = this.closingDate;
 
 				PARAMS = cleanObject(PARAMS);
 
