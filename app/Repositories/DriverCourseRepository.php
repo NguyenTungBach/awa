@@ -358,6 +358,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $groupedDatas = collect($datas)->groupBy('customer_id');
 
+        // Lấy toàn bộ cho tháng này
+        $startDateCalendar = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
+        $endDateCalendar = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+        $calendars = Calendar::whereBetween('date', [$startDateCalendar, $endDateCalendar])->get();
+
         $listDataConverts = [];
         foreach ($groupedDatas as $checkDatas){
             $dataConverts = [
@@ -367,13 +372,23 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'closing_date' => $checkDatas[0]->closing_date,
                 'data_ship_date' => [],
             ];
-            foreach ($checkDatas as $checkData){
-                $dataConverts['data_ship_date'][] = [
-                    "ship_date"=> $checkData['ship_date'],
-                    "courses_expressway_fee"=> $checkData['courses_expressway_fee'],
-                ];
-            }
 
+            // Kiểm tra mỗi calendar
+            foreach ($calendars as $calendar){
+                foreach ($checkDatas as $checkData){
+                    if ($calendar->date == $checkData['ship_date']){
+                        $dataConverts['data_ship_date'][] = [
+                            "ship_date"=> $checkData['ship_date'],
+                            "courses_expressway_fee"=> $checkData['courses_expressway_fee'],
+                        ];
+                    } else{
+                        $dataConverts['data_ship_date'][] = [
+                            "ship_date"=> $calendar->date,
+                            "courses_expressway_fee"=> "",
+                        ];
+                    }
+                }
+            }
             $listDataConverts[] = $dataConverts;
         }
 
