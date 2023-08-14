@@ -1616,6 +1616,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $fistDayMonth = Carbon::parse($request->month_year)->startOfMonth()->format("Y-m-d");
         $lastDayMonth = Carbon::parse($request->month_year)->endOfMonth()->format("Y-m-d");
 
+        // Lấy toàn bộ cho tháng này
+        $calendars = Calendar::whereBetween('date', [$fistDayMonth, $lastDayMonth])->get();
+
+
         // Truy vấn Tổng toàn bộ DriverCourse từng customer theo tháng và theo closing date
         $data = [];
         foreach ($customers as $customer){
@@ -1644,10 +1648,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->groupBy("courses.customer_id","driver_courses.date")
                 ->whereBetween('driver_courses.date', [$fistDayMonth, $lastDayMonth])
                 ->get();
-            if (count($driverCourseMonthQueries) != 0){
+
+            foreach ($calendars as $calendar){
+                $dataByCalendar = [
+                    "courses_customer_id"=> $customer->id,
+                    "courses_ship_fee" => "",
+                    "date" => $calendar->date
+                ];
+
                 foreach ($driverCourseMonthQueries as $driverCourseMonthQuery){
-                    $dataConvert['date_ship_fee'][] = $driverCourseMonthQuery;
+                    if ($calendar->date == $driverCourseMonthQuery->date){
+                        $dataByCalendar = $driverCourseMonthQuery;
+                        break;
+                    }
                 }
+                $dataConvert['date_ship_fee'][] = $dataByCalendar;
             }
 
             $startDateByClosingDate = $this->cashInStaticalRepository->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
