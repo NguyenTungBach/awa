@@ -925,7 +925,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
 //                ->where('driver_courses.driver_id', $checkDriver_id)
                     ->where('driver_courses.course_id', $checkCourse_id)
-                    ->whereNotIn('driver_courses.driver_id', [$checkDriver_id])
+//                    ->whereNotIn('driver_courses.driver_id', [$checkDriver_id])
 //                ->where('driver_courses.date', $checkDate)
                     ->whereNull('drivers.end_date') // driver không nghỉ hưu
                     ->first();
