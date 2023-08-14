@@ -3,18 +3,18 @@
         <div class="show-node" />
     </b-td>
     <b-td
-        v-else-if="dataNode"
+        v-else-if="dataNode && checkTable === 'SHIFT_TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
         :style="{ backgroundColor: dataNode.course_names_color }"
-        @click="onClickNode"
+        @click="onClickNode(dataNode.date, dataNode.driver_id)"
     >
         <div :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
                 {{ dataNode.course_names || '' }}
             </div>
             <div v-else>
-                <template v-if="handleChangeToMonth(idxComponent) === (dataNode.date).slice(-2)">
+                <template v-if="dataNode.course_names">
                     <div
                         class="show-course"
                     >
@@ -61,9 +61,61 @@
         </div>
     </b-td>
     <b-td
+        v-else-if="dataNode && checkTable === 'HIGHT AWAY TABLE'"
+        :id="`node-${idxComponent}-${date}-${driverCode}`"
+        :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
+    >
+        <div :class="['show-node']">
+            <div>
+                <template v-if="dataNode.courses_expressway_fee">
+                    <div
+                        class="show-course"
+                    >
+                        {{ dataNode.courses_expressway_fee }}
+                    </div>
+                </template>
+                <template v-if="listText.length > 2">
+                    <b-row>
+                        <b-col
+                            cols="11"
+                            style="padding: 0"
+                        >
+                            <div class="show-course-more">
+                                {{ listText[0].name }}
+                            </div>
+                            <div class="show-course-more">
+                                {{ listText[1].name }}
+                            </div>
+                        </b-col>
+                        <b-col
+                            cols="1"
+                            style="padding: 0"
+                        >
+                            <div class="icon-more">
+                                <i class="fad fa-plus-circle icon-show-more" />
+                            </div>
+                        </b-col>
+                    </b-row>
+
+                    <b-popover
+                        :target="`node-${idxComponent}-${date}-${driverCode}`"
+                        triggers="hover"
+                    >
+                        <div
+                            v-for="(item, idx) in listText"
+                            :key="idx"
+                        >
+                            {{ idx + 1 }}. {{ item.name }}
+                        </div>
+                    </b-popover>
+                </template>
+            </div>
+        </div>
+    </b-td>
+    <b-td
         v-else-if="
-            (dataNode.value !== null && !handleDisabledDate(startDate, endDate, dataNode.date)) ||
-                (dataNode.value === null && !handleDisabledDate(startDate, endDate, dataNode.date))
+            (dataNode !== null && !handleDisabledDate(startDate, endDate, dataNode.date)) ||
+                (dataNode === null && !handleDisabledDate(startDate, endDate, dataNode.date))
         "
         :class="['node-base', 'node-disabled']"
     >
@@ -96,9 +148,24 @@ export default {
 			required: true,
 		},
 
+		checkTable: {
+			type: String,
+			default: null,
+		},
+
 		date: {
 			type: Number,
 			required: true,
+		},
+
+		dateDriver: {
+			type: String,
+			default: null,
+		},
+
+		driverId: {
+			type: Number,
+			default: null,
 		},
 
 		dataNode: {
@@ -127,6 +194,13 @@ export default {
 			type: String,
 			default: null,
 		},
+
+		empData: {
+			type: [Object],
+			// required: true,
+			nullable: true,
+			default: null,
+		},
 	},
 
 	data() {
@@ -140,6 +214,7 @@ export default {
 			},
 
 			listText: [],
+			selectTable: this.$store.getters.tableListShift || CONSTANT.LIST_SHIFT.SHIFT_TABLE,
 		};
 	},
 
@@ -162,10 +237,12 @@ export default {
 			return index < 10 ? `0${index}` : `${index}`;
 		},
 
-		onClickNode() {
+		onClickNode(date_driver, driver_id) {
 			const DATA = {
+				id: driver_id,
 				index: this.idxComponent,
 				date: this.date,
+				dateDriver: date_driver,
 				driverCode: this.driverCode,
 				driverName: this.driverName,
 				dataNode: this.dataNode,

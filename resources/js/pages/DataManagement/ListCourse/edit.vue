@@ -235,7 +235,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-email">
+                                                    <label for="input-course-phone">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_PHONE') }}
                                                         <span class="text-danger">
                                                             *
@@ -243,7 +243,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-email"
+                                                            id="input-course-phone"
                                                             v-model="isForm.customer_phone"
                                                             type="number"
                                                         />
@@ -508,7 +508,7 @@ export default {
 						if (COURSE.code === 200) {
 							// this.goToList();
 							this.goToDetail();
-							TOAST_COURSE_MANAGEMENT.update();
+							TOAST_COURSE_MANAGEMENT.success();
 						}
 
 						setLoading(false);
