@@ -163,6 +163,7 @@
                                                     :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                     :data-node="emp.dataShift.data_by_date[idxDate]"
                                                     :emp-data="emp"
+                                                    :is-edit="true"
                                                     :driver-code="emp.driver_code"
                                                     :driver-name="emp.driver_name"
                                                 />
@@ -174,6 +175,7 @@
                                                 :idx-component="idxDate + 1"
                                                 :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                 :date="date"
+                                                :is-edit="true"
                                                 :data-node="emp.dataShift"
                                                 :emp-data="emp"
                                                 :driver-code="emp.driver_code"
@@ -468,7 +470,7 @@ export default {
 		async createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
-				await this.handleGetListCourse();
+				await this.handleGetListCourse(data.dateDriver);
 				console.log('dataaaaa', data);
 				await this.detailShift(data.id, data.dateDriver);
 
@@ -647,41 +649,57 @@ export default {
 			this.$bus.off('LIST_SHITF_CLICK_NODE');
 		},
 
-		async handleGetListCourse() {
-			const LABOUR = {
-				value: 'L-0',
-				text: this.$t('LIST_SHIFT.LABOUR'),
-				flag: 'yes',
-				status: 'on',
-				start_time: '',
-				end_time: '',
-				break_time: '',
-				disabled: false,
-			};
+		async handleGetListCourse(dateDriver) {
+			// const LABOUR = {
+			// 	value: 'L-0',
+			// 	text: this.$t('LIST_SHIFT.LABOUR'),
+			// 	flag: 'yes',
+			// 	status: 'on',
+			// 	start_time: '',
+			// 	end_time: '',
+			// 	break_time: '',
+			// 	disabled: false,
+			// };
 			try {
-				const { code, data } = await getList(CONSTANT.URL_API.GET_LIST_COURSE);
-				console.log('dataaaacccc', data);
+				const param = {
+					date: dateDriver,
+				};
+				const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
 				if (code === 200) {
 					this.listCourse = [];
 
-					this.listCourse.push(LABOUR);
+					// this.listCourse.push(LABOUR);
 					const len = data.length;
 					let idx = 0;
 
 					while (idx < len) {
-						this.listCourse.push({
-							value: data[idx].course_code,
-							text: data[idx].course_name,
-							status: data[idx].status,
-							flag: data[idx].flag,
-							start_time: data[idx].start_time,
-							end_time: data[idx].end_time,
-							break_time: data[idx].break_time,
-							disabled: false,
-						});
+						if (data[idx].driver_id !== null) {
+							this.listCourse.push({
+								value: data[idx].customer_id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								// flag: data[idx].flag,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: true,
+							});
+						} else {
+							this.listCourse.push({
+								value: data[idx].customer_id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								// flag: data[idx].flag,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: false,
+							});
+						}
 
 						idx++;
 					}
+					console.log('driver:', this.listCourse);
 				} else {
 					this.listCourse.length = 0;
 				}

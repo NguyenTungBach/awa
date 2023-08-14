@@ -378,6 +378,7 @@ export default {
 					if (Delete_cash_in.code === 200) {
 						TOAST_CASH_MANAGEMENT.deleteCashIn();
 						await this.handleGetListCashIn();
+						await this.handleGetDetailReciept();
 					}
 					setLoading(false);
 				}
