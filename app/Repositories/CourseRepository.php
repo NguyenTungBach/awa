@@ -80,9 +80,12 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $input['customer_id'] = Arr::get($input, 'customer_id', NULL);
         $input['order_by'] = Arr::get($input, 'order_by', 'id');
         $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
+        $input['month_line'] = Arr::get($input, 'month_line', Carbon::now()->format('Y-m'));
 
         $data = [];
-        $courses = Course::with('customer');
+        $startOfMonth = Carbon::create($input['month_line'])->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($input['month_line'])->endOfMonth()->format('Y-m-d');
+        $courses = Course::with('customer')->whereBetween('ship_date', [$startOfMonth, $endOfMonth]);
         if (!empty($input['start_date_ship']) && !empty($input['end_date_ship'])) {
             $courses = $courses->whereBetween('ship_date', [$input['start_date_ship'], $input['end_date_ship']]);
         }

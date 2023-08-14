@@ -124,6 +124,10 @@ class CourseRequest extends FormRequest
             'sort_by' =>  [
                 'sometimes',
                 Rule::in(SORT_BY)
+            ],
+            'month_line' => [
+                'sometimes',
+                'date_format:Y-m',
             ]
         ];
 
