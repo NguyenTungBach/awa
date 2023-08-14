@@ -16,6 +16,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Carbon\Carbon;
+use App\Models\Calendar;
+use Illuminate\Support\Arr;
 
 class CourseExport implements FromView, ShouldAutoSize, WithStyles
 {
@@ -30,8 +33,28 @@ class CourseExport implements FromView, ShouldAutoSize, WithStyles
 
     public function view(): View
     {
+        $this->input['start_date_ship'] = Arr::get($this->input, 'start_date_ship', NULL);
+        $this->input['end_date_ship'] = Arr::get($this->input, 'end_date_ship', NULL);
+        $this->input['customer_id'] = Arr::get($this->input, 'customer_id', NULL);
+        $this->input['order_by'] = Arr::get($this->input, 'order_by', 'id');
+        $this->input['sort_by'] = Arr::get($this->input, 'sort_by', 'desc');
+        $this->input['month_line'] = Arr::get($this->input, 'month_line', Carbon::now()->format('Y-m'));
+
+        $startOfMonth = Carbon::create($this->input['month_line'])->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($this->input['month_line'])->endOfMonth()->format('Y-m-d');
+
+        $startDateJapan = Calendar::where('date', $startOfMonth)->first()->week;
+        $endDateJapan = Calendar::where('date', $endOfMonth)->first()->week;
+        $calendar = Calendar::whereBetween('date', [$startOfMonth, $endOfMonth])->get()->toArray();
+
+        $startDate = Carbon::create($this->input['month_line'])->startOfMonth()->format('Y年m月d日');
+        $endDate = Carbon::create($this->input['month_line'])->endOfMonth()->format('Y年m月d日');
+
+        $title = $startDate.'('.$startDateJapan.')'.'〜'.$endDate.'('.$endDateJapan.')';
+
         return view('exports.course', [
-            'result' => CourseRepository::getAll($this->input)
+            'result' => CourseRepository::getAll($this->input),
+            'title' => $title
         ]);
     }
 
