@@ -198,35 +198,38 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function updateCashOutStatisticalByCourse($input)
     {
-        // course_id find course, ship_date
-        $course = Course::find($input['course_id']);
-        // course_id, ship_date => driver_course => get driver_id, date
-        $driverCourse = DriverCourse::where('course_id', $course->id)->where('date', $course->ship_date)->first();
+        // input['course_id'] => driver_course => get driver_id, date
+        $driverCourse = DriverCourse::where('course_id', $input['course_id'])->first();
         $month = date('Y-m', strtotime($driverCourse->date));
-        // driver_id, date => cash_out_statistical
-        $statistical = CashOutStatistical::where('driver_id', $driverCourse->driver_id)->where('month_line', $month)->first();
+        // get all driver course by driver_id in month line with relationship course => sum(associate_company_fee)
+        $startOfMonth = Carbon::create($driverCourse->date)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($driverCourse->date)->endOfMonth()->format('Y-m-d');
+
+        $totalAssociate = DriverCourse::join('courses', 'driver_courses.course_id', '=', 'courses.id')
+                        ->where('driver_id', $driverCourse->driver_id)
+                        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                        ->sum('courses.associate_company_fee');
 
         // spec: change associate_company_fee => change payable_this_month of cash_out_statistical
         // payable_this_month =  sum(associate_company_fee) all off this month
-        // case 1: update couse when month < month now => update cash_out_statistical to now
-        // get all driver_course by driver_id and where between month course change
-        $startOfMonth = Carbon::create($statistical->month_line)->startOfMonth()->format('Y-m-d');
-        $endOfMonth = Carbon::create($statistical->month_line)->endOfMonth()->format('Y-m-d');
-        $driverCourses = DriverCourse::where('driver_id', $statistical->driver_id)->whereBetween('date', [$startOfMonth, $endOfMonth])->get();
-        // get all course by driver_course
-        $arrCourse = $driverCourses->pluck('course_id')->toArray();
-        $arrAssociateFee = [];
-        foreach ($arrCourse as $key => $value) {
-            // dd('$value', $value);
-            $arrAssociateFee[$key] = Course::find($value)->associate_company_fee;
-        }
+        // driver_id, date, totalAssociate => cash_out_statistical
+        $statistical = CashOutStatistical::where('driver_id', $driverCourse->driver_id)->where('month_line', $month)->first();
+        // update statistical
+        $data['payable_this_month'] = $totalAssociate;
+        $update = CashOutStatisticalRepository::update($data, $statistical->id);
+        // update statistical to now
+        $this->updateStatisticalToNow($update);
 
-        dd('arrAssociateFee', array_sum($arrAssociateFee));
+        return true;
+    }
 
-        // 
-        // case 2: update couse when month = month now => update cash_out_statistical now
+    public function updateStatisticalToNow($cashOutStatistical)
+    {
+        $statistical = CashOutStatistical::where('driver_id', $cashOutStatistical->driver_id)->where('month_line','>', $cashOutStatistical->month_line)->first();
+        if(!$statistical) return;
+        $data['balance_previous_month'] = $cashOutStatistical->balance_previous_month + $cashOutStatistical->payable_this_month - $cashOutStatistical->total_cash_out_current;
+        $update = CashOutStatisticalRepository::update($data, $statistical->id);
 
-        dd('input update', $input);
-
+        $this->updateStatisticalToNow($update);
     }
 }

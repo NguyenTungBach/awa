@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:cronUpdateDriverDayOffCommand')->monthlyOn(1, '04:00')->withoutOverlapping();
         $schedule->command('command:cronChangeStatusCommand')->dailyAt('4:00')->withoutOverlapping();
         $schedule->command('command:cronAutoGetResponseResultAI')->everyMinute()->withoutOverlapping();
-        $schedule->command('create:cashOutStatistical')->dailyAt('00:00')->withoutOverlapping();
+        // $schedule->command('create:cashOutStatistical')->dailyAt('00:00')->withoutOverlapping();
     }
 
     /**
