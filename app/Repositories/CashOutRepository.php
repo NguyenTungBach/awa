@@ -125,6 +125,14 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
 
                 unset($input['payment_method'], $input['note']);
                 $input['driver_id'] = $driverId;
+                $input['payment_date'] = Arr::get($input, 'payment_date', $cashOut->payment_date);
+
+                if (date('Y-m', strtotime($input['payment_date'])) > date('Y-m', strtotime($cashOut->payment_date))) {
+                    $input['payment_date'] = $cashOut->payment_date;
+                };
+                if (date('Y-m', strtotime($input['payment_date'])) < date('Y-m', strtotime($cashOut->payment_date))) {
+                    $input['payment_date'] = $input['payment_date'];
+                };
                 $cashOutUpdate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
             }
             DB::commit();
@@ -133,7 +141,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception;
+            return $exception->getMessage();
         }
     }
 
