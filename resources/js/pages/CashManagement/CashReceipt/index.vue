@@ -31,6 +31,7 @@
                         <b-table-simple
                             bordered
                             no-border-collapse
+                            class="table-cash-in"
                         >
                             <b-thead>
                                 <b-tr>
