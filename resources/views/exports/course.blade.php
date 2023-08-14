@@ -7,7 +7,7 @@
         <thead>
             <tr>
                 <th colspan="2" style="width: 60px">運行情報一覧</th>
-                <th style="{{ $styleHeader }}">2023年6月1日(木)〜2023年6月30日(金)</th>
+                <th style="{{ $styleHeader }}">{{ $title }}</th>
             </tr>
             <tr>
                 <th></th>
