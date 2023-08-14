@@ -182,27 +182,40 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $groupedDatas = collect($datas)->groupBy('driver_id');
 
+        // Lấy toàn bộ cho tháng này
+        $startDateCalendar = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
+        $endDateCalendar = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+        $calendars = Calendar::whereBetween('date', [$startDateCalendar, $endDateCalendar])->get();
+
         $listDataConverts = [];
         foreach ($groupedDatas as $checkDatas){
             $dataConverts = [
-//                'driver_code' => $checkDatas[0]->driver_code,
                 'driver_id' => $checkDatas[0]->driver_id,
-//                'driver_name' => $checkDatas[0]->driver_name,
-//                'driver_courses_id' => $checkDatas[0]->driver_courses_id,
-//                'type' => $checkDatas[0]->type,
-//                'typeName' => $checkDatas[0]->typeName,
                 'data_by_date' => [],
             ];
-            foreach ($checkDatas as $checkData){
-                $dataConverts['data_by_date'][] = [
-                    'driver_id' => $checkDatas[0]->driver_id,
-                    "date"=> $checkData['date'],
-                    "course_ids"=> $checkData['course_ids'],
-                    "course_names"=> $checkData['course_names'],
-                    "course_names_color"=> $checkData['course_names_color']
-                ];
-            }
 
+            // Kiểm tra mỗi calendar
+            foreach ($calendars as $calendar){
+                foreach ($checkDatas as $checkData){
+                    if ($calendar->date == $checkData['date']){
+                        $dataConverts['data_by_date'][] = [
+                            'driver_id' => $checkDatas[0]->driver_id,
+                            "date"=> $checkData['date'],
+                            "course_ids"=> $checkData['course_ids'],
+                            "course_names"=> $checkData['course_names'],
+                            "course_names_color"=> $checkData['course_names_color']
+                        ];
+                    } else{
+                        $dataConverts['data_by_date'][] = [
+                            'driver_id' => $checkDatas[0]->driver_id,
+                            "date"=> $calendar->date,
+                            "course_ids"=> "",
+                            "course_names"=> "",
+                            "course_names_color"=> ""
+                        ];
+                    }
+                }
+            }
             $listDataConverts[] = $dataConverts;
         }
 
