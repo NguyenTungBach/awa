@@ -897,8 +897,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         try {
             DB::beginTransaction();
             // Xóa các driver_course theo id và cập nhật lại Cash In
-            if (count($item['delete_shifts']) != 0){
-                $this->deleteAll($item['delete_shifts']);
+            if (isset($attributes["delete_shifts"])){
+                if (count($attributes['delete_shifts']) != 0){
+                    $this->deleteAll($attributes['delete_shifts']);
+                }
             }
 
             // 6.Kiểm tra trong mảng corse này đã được driver nào khác chỉ định chưa start
