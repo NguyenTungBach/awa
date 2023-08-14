@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use App\Models\DriverCourse;
+use App\Models\FinalClosingHistories;
 
-class CheckPaymentDate implements Rule
+class CheckPaymentDateExistFinal implements Rule
 {
     protected string $attribute;
 
@@ -28,9 +28,10 @@ class CheckPaymentDate implements Rule
      */
     public function passes($attribute, $value)
     {
-        $driverId = request()->route('driver');
-        $driverCourses = DriverCourse::where('driver_id', $driverId)->where('date', '<=', $value)->get();
-        if ($driverCourses->isEmpty()) {
+        $arrFinalMonth = FinalClosingHistories::where('type', 2)->get()->pluck('month_year')->toArray();
+        $value = date('Y-m', strtotime($value));
+        $result = in_array($value, $arrFinalMonth);
+        if ($result) {
             return false;
         }
 
@@ -44,6 +45,6 @@ class CheckPaymentDate implements Rule
      */
     public function message()
     {
-        return 'Payment_date phai lon hon hoac bang date driver course';
+        return '入金日が最終締め切り時間と重なった';
     }
 }

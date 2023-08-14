@@ -19,6 +19,7 @@ use App\Models\FinalClosingHistories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CashOutRepository extends BaseRepository implements CashOutRepositoryInterface, CashOutStatisticalRepositoryInterface
 {
@@ -46,7 +47,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         try {
             DB::beginTransaction();
             $cashOut = [];
-            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id']);
+            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id'], $input['payment_date']);
             if ($checkDriverId) {
                 $input['note'] = Arr::get($input, 'note', NULL);
 
@@ -178,10 +179,13 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         return $create;
     }
 
-    public function checkExistsDriverCourse($data)
+    public function checkExistsDriverCourse($driverId, $date)
     {
-        $arrDriverCourseId = DriverCourse::get()->pluck('driver_id')->toArray();
-        $result = in_array($data, $arrDriverCourseId);
+        $result = false;
+        $driverCourses = DriverCourse::where('driver_id', $driverId)->where('date', '<=', $date)->get();
+        if (!($driverCourses->isEmpty())) {
+            $result = true;
+        }
 
         return $result;
     }
