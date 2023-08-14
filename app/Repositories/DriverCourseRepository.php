@@ -196,25 +196,26 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
             // Kiểm tra mỗi calendar
             foreach ($calendars as $calendar){
+                $dataByCalendar = [
+                    'driver_id' => $checkDatas[0]->driver_id,
+                    "date"=> $calendar->date,
+                    "course_ids"=> "",
+                    "course_names"=> "",
+                    "course_names_color"=> ""
+                ];
                 foreach ($checkDatas as $checkData){
                     if ($calendar->date == $checkData['date']){
-                        $dataConverts['data_by_date'][] = [
+                        $dataByCalendar = [
                             'driver_id' => $checkDatas[0]->driver_id,
                             "date"=> $checkData['date'],
                             "course_ids"=> $checkData['course_ids'],
                             "course_names"=> $checkData['course_names'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
-                    } else{
-                        $dataConverts['data_by_date'][] = [
-                            'driver_id' => $checkDatas[0]->driver_id,
-                            "date"=> $calendar->date,
-                            "course_ids"=> "",
-                            "course_names"=> "",
-                            "course_names_color"=> ""
-                        ];
+                        break;
                     }
                 }
+                $dataConverts['data_by_date'][] = $dataByCalendar;
             }
             $listDataConverts[] = $dataConverts;
         }
@@ -373,21 +374,25 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'data_ship_date' => [],
             ];
 
-            // Kiểm tra mỗi calendar
+            // Kiểm tra mỗi calendar cho mỗi customer
             foreach ($calendars as $calendar){
+                // Check lịch trình cho mỗi customer
+                $dataByCalendar = [
+                    "ship_date"=> $calendar->date,
+                    "courses_expressway_fee"=> "",
+                ];
+                // Tìm xem ngày đó có trùng không
                 foreach ($checkDatas as $checkData){
+                    // Nếu đúng ngày này có tồn tại
                     if ($calendar->date == $checkData['ship_date']){
-                        $dataConverts['data_ship_date'][] = [
+                        $dataByCalendar = [
                             "ship_date"=> $checkData['ship_date'],
                             "courses_expressway_fee"=> $checkData['courses_expressway_fee'],
                         ];
-                    } else{
-                        $dataConverts['data_ship_date'][] = [
-                            "ship_date"=> $calendar->date,
-                            "courses_expressway_fee"=> "",
-                        ];
+                        break;
                     }
                 }
+                $dataConverts['data_ship_date'][] = $dataByCalendar;
             }
             $listDataConverts[] = $dataConverts;
         }
