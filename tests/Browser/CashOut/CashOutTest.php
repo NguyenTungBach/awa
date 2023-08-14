@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser\CashIn;
+namespace Tests\Browser\CashOut;
 
 use App\Models\Course;
 use App\Models\Customer;
@@ -16,7 +16,7 @@ use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 use Faker\Factory as Faker;
 
-class CashInTest extends DuskTestCase
+class CashOutTest extends DuskTestCase
 {
     /**
      * A Dusk test example.
@@ -28,9 +28,9 @@ class CashInTest extends DuskTestCase
         Artisan::call('migrate:fresh --seed');
         // Tạo lại dữ liệu mẫu cho cash in
         DB::table('driver_courses')->truncate();
-        DB::table('cash_ins')->truncate();
-        DB::table('cash_in_histories')->truncate();
-        DB::table('cash_in_statisticals')->truncate();
+        DB::table('cash_outs')->truncate();
+        DB::table('cash_out_histories')->truncate();
+        DB::table('cash_out_statisticals')->truncate();
         // Tạo một customer mới
         $customer = Customer::create([
             "customer_code" => "0006",
@@ -60,9 +60,19 @@ class CashInTest extends DuskTestCase
             "meal_fee"=> 60,
         ]);
 
+        // Tạo một driver mới
+        $driver = Driver::create([
+            "type"=> 4,
+            "driver_code"=> "9999",
+            "driver_name"=> "Bach driver",
+            "car"=> "Lambo",
+            "start_date"=> "2022-08-20",
+            "note"=> "thoi roi ta da xa nhau"
+        ]);
+
         // Tạo driver course
         DriverCourse::create([
-            "driver_id" => 1,
+            "driver_id" => $driver->id,
             "course_id" => $course->id,
             "date" => $course->ship_date,
             "start_time" => $course->start_date,
@@ -74,43 +84,43 @@ class CashInTest extends DuskTestCase
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginAdminGeneral($browser);
-            $this->listCashIn($browser);
-            $this->createCashIn($browser);
-            $this->editCashIn($browser);
-            $this->deleteCashIn($browser);
+            $this->listCashOut($browser);
+//            $this->createCashOut($browser);
+//            $this->editCashIn($browser);
+//            $this->deleteCashIn($browser);
         });
     }
 
-    private function listCashIn(Browser $browser)
+    private function listCashOut(Browser $browser)
     {
         $browser->pause(2000)
             ->mouseover('div.show-menu > ul > li:nth-child(3) > span')
             ->pause(2000)
-            ->click('div.show-menu > ul > li:nth-child(3) > ul > li:nth-child(1) > a')
+            ->click('div.show-menu > ul > li:nth-child(3) > ul > li:nth-child(2) > a')
             ->waitFor('div.show-menu')
-            ->pause(2000);
+            ->pause(100000);
     }
 
-    private function createCashIn($browser){
+    private function createCashOut($browser){
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
-        $browser->click('tbody > tr:nth-child(6) > td.text-center.td-control > i')->pause(6000);
-        $browser->click('.btn-edit')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $getDate = Carbon::now()->format('Y-m-d');
-        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
-        $browser->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-deposit-day',"2000")->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->click('#input-payment-method')->pause(1000);
-        $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
-        $browser->type('#input-notes',"test cash in")->pause(2000);
-        $browser->type('#input-payment-day',"$getDate"."zxczxc")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-payment-day',"$getDate")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->pause(6000);
+        $browser->click('tbody > tr:nth-child(2) > td.text-center.td-control > i')->pause(6000);
+//        $browser->click('.btn-edit')->pause(2000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $getDate = Carbon::now()->format('Y-m-d');
+//        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
+//        $browser->pause(1000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $browser->type('#input-deposit-day',"2000")->pause(1000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $browser->click('#input-payment-method')->pause(1000);
+//        $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
+//        $browser->type('#input-notes',"test cash in")->pause(2000);
+//        $browser->type('#input-payment-day',"$getDate"."zxczxc")->pause(2000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $browser->type('#input-payment-day',"$getDate")->pause(2000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $browser->pause(6000);
 //        $browser->type('#input-fullname','Bach Driver')->pause(1000);
 //        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
 //        $browser->type('#input-character','29E2-12362')->pause(1000);
