@@ -338,11 +338,9 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         foreach ($driver_courses as $driver_course){
             // Nếu shift này đã được chỉ định bởi driver thì điền vào
             foreach ($resultCourseShifts as $resultCourseShift){
+                $resultCourseShift['driver_id'] = null;
                 if ($driver_course->course_id == $resultCourseShift['id']){
                     $resultCourseShift['driver_id'] = $driver_course->driver_id;
-                    break;
-                } else{
-                    $resultCourseShift['driver_id'] = null;
                 }
             }
         }
