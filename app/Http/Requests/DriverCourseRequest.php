@@ -91,46 +91,55 @@ class DriverCourseRequest extends FormRequest
          }
         if(Route::getCurrentRoute()->getActionMethod() == 'update_course'){
             return [
-                "delete_shifts"=> [
-                    'array',
-                ],
-                "delete_shifts.*.shift_id"=> [
-                    'required_with:delete_shifts.*.driver_id',
-                    Rule::exists('driver_courses', 'id'),
-                ],
-                "delete_shifts.*.driver_id"=> [
-                    'required_with:delete_shifts.*.shift_id',
-                    Rule::exists('drivers', 'id'),
+//                "delete_shifts"=> [
+//                    'array',
+//                ],
+//                "delete_shifts.*.shift_id"=> [
+//                    'required_with:delete_shifts.*.driver_id',
+//                    Rule::exists('driver_courses', 'id'),
+//                ],
+//                "delete_shifts.*.driver_id"=> [
+//                    'required_with:delete_shifts.*.shift_id',
+//                    Rule::exists('drivers', 'id'),
+//                ],
+                "month_year"=> [
+                    'required',
+                    "date_format:Y-m-d",
                 ],
                 "items"=> [
+                    'required',
                     'array',
                 ],
                 'items.*.driver_id' => [
                     'required_with:items',
                     Rule::exists('drivers', 'id'),
                 ],
-                'items.*.course_id' => [
-                    'required_with:items',
+                'items.*.listShift' => [
+//                    'required_with:items',
+                    'array',
+                ],
+                'items.*.listShift.*.course_id' => [
+//                    'required_with:items.*.listShift',
                     Rule::exists('courses', 'id'),
 //                    new DriverCourseUniqueRule("date","driver_id","course_id"),
                 ],
-                "items.*.date" => [
-                    'required_with:items',
+                "items.*.listShift.*.date" => [
+                    'required_with:items.*.listShift.*.course_id',
                     'date_format:Y-m-d',
 //                    ,new DriverCourseUniqueRule("date","driver_id","course_id"),
                 ],
-                "items.*.start_time" => [
-                    "required_with:items",
+                "items.*.listShift.*.start_time" => [
+                    "required_with:items.*.listShift.*.course_id",
                     'date_format:H:i',
                     new TimeRule("start_time")
                 ],
-                "items.*.break_time" => [
-                    "required_with:items",
+                "items.*.listShift.*.break_time" => [
+                    "required_with:items.*.listShift.*.course_id",
                     'date_format:H:i',
                     new TimeRule("break_time")
                 ],
-                "items.*.end_time" => [
-                    "required_with:items",
+                "items.*.listShift.*.end_time" => [
+                    "required_with:items.*.listShift.*.course_id",
                     'date_format:H:i',
                     'after_or_equal:items.*.start_time',
                     new TimeRule("end_time")

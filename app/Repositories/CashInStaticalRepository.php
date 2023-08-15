@@ -422,6 +422,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                                 break;
                         }
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
+                        $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
                         select(
                             "customers.id as customers_id",
@@ -433,9 +434,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                             ->whereBetween('driver_courses.date', [$updateStartDateByClosingDate, $updateEndDateByClosingDate])
                             ->groupBy("customers.id")
                             ->first();
+                        if ($updateByDriverCourseTotal != null){
+                            $update_receivable_this_month = $updateByDriverCourseTotal->total_course_ship_fee;
+                        }
 
                         // 1.3 truy vấn tổng số tiền phải nhận trong tháng cần update lại theo closing date
-                        $updateByTotalCashIn = 0;
+                        $update_by_total_cash_in = 0;
                         $totalCashInQuery = CashIn::
                         select("customer_id")
                             ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
@@ -444,16 +448,15 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                             ->groupBy("customer_id")
                             ->first();
                         if ($totalCashInQuery != null){
-                            $updateByTotalCashIn = $totalCashInQuery->total_cash_in;
+                            $update_by_total_cash_in = $totalCashInQuery->total_cash_in;
                         }
 
                         // 1.4 Update lại tiền
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
-                            "receivable_this_month" => $updateByDriverCourseTotal, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn,
+                            "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
+                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
                         ]);
-                        $update_balance_previous_month = $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn;
                     }
                 }
             }
@@ -591,7 +594,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     ->orderBy("month_line", "asc")
                     ->get();
                 // Nếu có thì cập nhật các bản ghi còn lại
-                $update_balance_previous_month = $balance_previous_month;
+                $update_balance_previous_month = $cashInThisDate->total_cash_in_current;
                 if (count($checkCashInStaticalUpdates) != 0){
                     foreach ($checkCashInStaticalUpdates as $cashInStaticalUpdate){
                         // 1. Truy vấn tổng số tiền trong theo từng tháng theo closing date
@@ -617,6 +620,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                                 break;
                         }
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
+                        $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
                         select(
                             "customers.id as customers_id",
@@ -628,9 +632,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                             ->whereBetween('driver_courses.date', [$updateStartDateByClosingDate, $updateEndDateByClosingDate])
                             ->groupBy("customers.id")
                             ->first();
+                        if ($updateByDriverCourseTotal != null){
+                            $update_receivable_this_month = $updateByDriverCourseTotal->total_course_ship_fee;
+                        }
 
                         // 1.3 truy vấn tổng số tiền phải nhận trong tháng cần update lại theo closing date
-                        $updateByTotalCashIn = 0;
+                        $update_by_total_cash_in = 0;
                         $totalCashInQuery = CashIn::
                         select("customer_id")
                             ->addSelect(\DB::raw('SUM(cash_in) as total_cash_in'))
@@ -639,16 +646,15 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                             ->groupBy("customer_id")
                             ->first();
                         if ($totalCashInQuery != null){
-                            $updateByTotalCashIn = $totalCashInQuery->total_cash_in;
+                            $update_by_total_cash_in = $totalCashInQuery->total_cash_in;
                         }
 
                         // 1.4 Update lại tiền
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
-                            "receivable_this_month" => $updateByDriverCourseTotal, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn,
+                            "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
+                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
                         ]);
-                        $update_balance_previous_month = $update_balance_previous_month + $updateByDriverCourseTotal - $updateByTotalCashIn;
                     }
                 }
             }
