@@ -232,6 +232,86 @@ class DriverCourseController extends Controller
         return $this->repository->getDetalDriverCourse($driver_id,$request);
     }
 
+//    /**
+//     * @OA\Post(
+//     *   path="/api/driver-course/update-course",
+//     *   tags={"DriverCourse"},
+//     *   summary="Update DriverCourse",
+//     *   operationId="driver_course_update",
+//     *   @OA\Response(
+//     *     response=200,
+//     *     description="Send request success",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *          example={
+//     *              "delete_shifts" : {
+//     *                  {
+//     *                      "shift_id": 1,
+//     *                      "driver_id":1,
+//     *                  }
+//     *              },
+//     *              "items" : {
+//     *                  {
+//     *                      "id": 1,
+//     *                      "driver_id": 1,
+//     *                      "course_id": 6,
+//     *                      "date": "2023-07-28",
+//     *                      "start_time": "08:00",
+//     *                      "end_time": "18:00",
+//     *                      "break_time": "12:00"
+//     *                  },
+//     *                  {
+//     *                      "driver_id": 2,
+//     *                      "course_id": 7,
+//     *                      "date": "2023-07-24",
+//     *                      "start_time": "08:00",
+//     *                      "end_time": "18:00",
+//     *                      "break_time": "12:00"
+//     *                  },
+//     *              }
+//     *          },
+//     *          @OA\Schema(
+//     *            required={"delete_shifts","items"},
+//     *            @OA\Property(
+//     *              property="delete_shifts",
+//     *              type="array",
+//     *              @OA\Items(
+//     *                  required={"shift_id","driver_id"},
+//     *                  @OA\Property(property="shift_id", type="interger" ),
+//     *                  @OA\Property(property="driver_id", type="interger" ),
+//     *               )
+//     *            ),
+//     *            @OA\Property(
+//     *              property="items",
+//     *              type="array",
+//     *              @OA\Items(
+//     *                  required={"course_id","driver_id","course_id","date","start_time","end_time","break_time"},
+//     *                  @OA\Property(property="id", type="interger" ),
+//     *                  @OA\Property(property="driver_id", type="interger" ),
+//     *                  @OA\Property(property="course_id", type="interger" ),
+//     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
+//     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
+//     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
+//     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
+//     *               )
+//     *            ),
+//     *         )
+//     *     )
+//     *   ),
+//     *   @OA\Response(
+//     *     response=401,
+//     *     description="Login false",
+//     *     @OA\MediaType(
+//     *      mediaType="application/json",
+//     *      example={"code":401,"message":"Username or password invalid"}
+//     *     )
+//     *   ),
+//     *   security={{"auth": {}}},
+//     * )
+//     * Display a listing of the resource.
+//     *
+//     * @return \Illuminate\Http\JsonResponse
+//     */
     /**
      * @OA\Post(
      *   path="/api/driver-course/update-course",
@@ -244,55 +324,49 @@ class DriverCourseController extends Controller
      *     @OA\MediaType(
      *      mediaType="application/json",
      *          example={
-     *              "delete_shifts" : {
-     *                  {
-     *                      "shift_id": 1,
-     *                      "driver_id":1,
-     *                  }
-     *              },
+     *              "month_year": "2023-08",
      *              "items" : {
      *                  {
-     *                      "id": 1,
      *                      "driver_id": 1,
-     *                      "course_id": 6,
-     *                      "date": "2023-07-28",
-     *                      "start_time": "08:00",
-     *                      "end_time": "18:00",
-     *                      "break_time": "12:00"
+     *                      "listShift": {
+     *                          {
+     *                              "course_id": 8,
+     *                              "date": "2023-08-11",
+     *                              "start_time": "08:00",
+     *                              "break_time": "12:00",
+     *                              "end_time": "18:00",
+     *                          }
+     *                      }
      *                  },
      *                  {
      *                      "driver_id": 2,
-     *                      "course_id": 7,
-     *                      "date": "2023-07-24",
-     *                      "start_time": "08:00",
-     *                      "end_time": "18:00",
-     *                      "break_time": "12:00"
+     *                      "listShift": {
+     *                      }
      *                  },
      *              }
      *          },
      *          @OA\Schema(
-     *            required={"delete_shifts","items"},
+     *            required={"month_year","items"},
      *            @OA\Property(
-     *              property="delete_shifts",
-     *              type="array",
-     *              @OA\Items(
-     *                  required={"shift_id","driver_id"},
-     *                  @OA\Property(property="shift_id", type="interger" ),
-     *                  @OA\Property(property="driver_id", type="interger" ),
-     *               )
+     *              property="month_year",
+     *              type="string",
      *            ),
      *            @OA\Property(
      *              property="items",
      *              type="array",
      *              @OA\Items(
-     *                  required={"course_id","driver_id","course_id","date","start_time","end_time","break_time"},
-     *                  @OA\Property(property="id", type="interger" ),
+     *                  required={"driver_id","listShift"},
      *                  @OA\Property(property="driver_id", type="interger" ),
-     *                  @OA\Property(property="course_id", type="interger" ),
-     *                  @OA\Property(property="date", type="string",example="Y-m-d" ),
-     *                  @OA\Property(property="start_time", type="string",description="H:i" ),
-     *                  @OA\Property(property="end_time", type="string",description="H:i" ),
-     *                  @OA\Property(property="break_time", type="string",description="H:i" ),
+     *                  @OA\Property(property="listShift", type="array",
+     *                  @OA\Items(
+     *                          required={"course_id","date","start_time","break_time","end_time"},
+     *                           @OA\Property(property="course_id", type="interger" ),
+     *                           @OA\Property(property="date", type="interger" ),
+     *                           @OA\Property(property="start_time", type="interger" ),
+     *                           @OA\Property(property="break_time", type="interger" ),
+     *                           @OA\Property(property="end_time", type="interger" ),
+     *                      )
+     *                   )
      *               )
      *            ),
      *         )

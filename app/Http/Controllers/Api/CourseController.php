@@ -344,6 +344,10 @@ class CourseController extends Controller
      *     example = "2023-08-01",
      *     in="path",
      *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",
