@@ -87,15 +87,17 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
             return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
         }
 
+        $now = Carbon::now()->format("Y-m-d");
+
         $listDriverNotRetirement = $this->model->query()
             ->whereNull('end_date')
-            ->whereNull('deleted_at')
+            ->whereDate("end_date",">",$now)
             ->SortByForDriver($request)
             ->get();
 
         $listDriverRetirement = $this->model->query()
             ->whereNotNull('end_date')
-            ->whereNull('deleted_at')
+            ->whereDate("end_date","<=",$now)
             ->get();
 
         $data = [];
