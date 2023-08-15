@@ -551,7 +551,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $checkDate = $item['date'];
             $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
 
-            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
+            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)->where('type', 1)
                 ->exists();
             // Nếu có tồn tại (không là duy nhất)
             if ($checkFinalClosingHistories){
@@ -699,8 +699,204 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
     {
         // Nếu tồn tại items thì mới check
         if (isset($attributes["items"])){
-            $this->checkValidateForUpdateDriverCourse($attributes["items"]);
+            $items = $attributes["items"];
+            $seenIds = [];
+            // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
+            foreach ($items as $item) {
+                if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
+                    //Lấy ra và tìm tất cả driver và date mà có course_id đặc biệt
+                    $checkDriver_idFind = $item['driver_id'];
+                    $driver = Driver::find($checkDriver_idFind);
+                    $checkCourse_id = $item['course_id'];
+                    $course = Course::find($checkCourse_id);
+                    $checkDateFind = $item['date'];
+
+                    $result = array_filter($items, function ($item) use ($checkDriver_idFind, $checkDateFind) {
+                        return $item['driver_id'] === $checkDriver_idFind && $item['date'] === $checkDateFind;
+                    });
+                    if (count($result) >1){
+                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                            trans('errors.all_id_special_must_one',[
+                                "driver_id"=> $item['driver_id'],
+                                "driver_name"=> $driver->driver_name,
+                                "course_id"=> $item['course_id'],
+                                "course_name"=> $course->course_name,
+                                "date"=> $checkDateFind,
+                            ]));
+                    }
+                }
+            }
+            // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó end
+
+            //1.1 Kiểm tra có trùng update id nào không start
+            foreach ($items as $item) {
+                if (isset($item['id']) && in_array($item['id'], $seenIds)) {
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans('errors.duplicate_id_shift',[
+                            "id"=> $item['id'],
+                        ]));
+                } else{
+                    if (isset($item['id'])){
+                        $seenIds[] = $item['id'];
+                    }
+                }
+            }
+            //1.1 Kiểm tra có trùng update id nào không end
+
+            // 1.2 Kiểm tra trong mảng có đang duplicate driver_id và course_id không start
+            $uniqueItems = array_map(function ($item) {
+                return $item['driver_id'] . '|' . $item['course_id'];
+            }, $items);
+            $countedItems = array_count_values($uniqueItems);
+
+            // Lấy ra
+            $duplicates = array_filter($countedItems, function ($count) {
+                return $count > 1;
+            });
+            if (!empty($duplicates)) {
+                $duplicates_key_first = explode('|',array_key_first($duplicates));
+//            $duplicates_value_first = $duplicates[$duplicates_key_first];
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                    trans('errors.duplicate_driver_id_and_course_id',[
+                        "driver_id"=> $duplicates_key_first[0],
+                        "course_id"=> $duplicates_key_first[1]
+                    ]));
+            }
+            // 1.2 Kiểm tra trong mảng có đang duplicate driver_id và course_id không end
+
+            // 1.3 Kiểm tra trong mảng có đang duplicate course_id và date không start
+            $uniqueItems = array_map(function ($item) {
+                return $item['course_id'] . '|' . $item['date'];
+            }, $items);
+            $countedItems = array_count_values($uniqueItems);
+
+            // Lấy ra
+            $duplicates = array_filter($countedItems, function ($count) {
+                return $count > 1;
+            });
+            if (!empty($duplicates)) {
+                $duplicates_key_first = explode('|',array_key_first($duplicates));
+//            $duplicates_value_first = $duplicates[$duplicates_key_first];
+                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                    trans('errors.duplicate_course_id_and_date',[
+                        "course_id"=> $duplicates_key_first[0],
+                        "date"=> $duplicates_key_first[1]
+                    ]));
+            }
+            // 1.3 Kiểm tra trong mảng có đang duplicate course_id và date không end
+
+            //1.4 Kiểm tra id driver_course có tồn tại không start
+            foreach ($items as $item) {
+                if (isset($item['id'])) {
+                    $driverCourse = DriverCourse::find($item['id']);
+                    if ($driverCourse == null){
+                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                            trans('errors.driver_course_id_not_found',[
+                                "id"=> $item['id'],
+                            ]));
+                    }
+                }
+            }
+            //1.4 Kiểm tra id driver_course có tồn tại không end
+
+            // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
+            foreach ($items as $item){
+                $checkDriver_id = $item['driver_id'];
+                $driver = Driver::find($checkDriver_id);
+                $checkCourse_id = $item['course_id'];
+                $course = Course::find($checkCourse_id);
+                $checkDate = $item['date'];
+                $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
+
+                $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)->where('type', 1)
+                    ->exists();
+                // Nếu có tồn tại (không là duy nhất)
+                if ($checkFinalClosingHistories){
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans("errors.final_closing_histories" ,[
+                            "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name, and date: $checkDate"
+                        ]));
+                }
+            }
+            // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories end
+
+            // 3.Kiểm tra xem lái xe đó đã nghỉ hưu chưa
+            foreach ($items as $item){
+                $checkDriver_id = $item['driver_id'];
+                $driver = Driver::find($checkDriver_id);
+                if ($driver->end_date != null){
+                    $dateRetirement = Carbon::parse($driver->end_date);
+                    $checkCourse_id = $item['course_id'];
+                    $checkDate = Carbon::parse($item['date']);
+
+                    $course = Course::find($checkCourse_id);
+                    if ($dateRetirement->gte($checkDate)){
+                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                            trans("errors.end_date_retirement" ,[
+                                "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name",
+                                "end_date"=> $dateRetirement->format('Y-m-d')
+                            ]));
+                    }
+                }
+            }
+            // 3.Kiểm tra xem lái xe đó đã nghỉ hưu chưa
+
+            // 4.Kiểm tra tất cả ngày hôm đấy lái xe có đang được chỉ định gì không nếu có thì yêu cầu xóa các chỉ định
+            foreach ($items as $item) {
+                if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
+                    $checkDriver_id = $item['driver_id'];
+                    $driver = Driver::find($checkDriver_id);
+                    $checkCourse_id = $item['course_id'];
+                    $course = Course::find($checkCourse_id);
+                    $checkDate = $item['date'];
+
+                    // Tìm và báo loại bỏ tất cả việc lái xe có ngày hôm đấy
+                    $checkAllDriverCourseIfSpecial = DriverCourse::
+                    join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+                        ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+                        ->where('driver_courses.driver_id', $checkDriver_id)
+                        ->where('driver_courses.date', $checkDate)
+                        ->whereNull('drivers.end_date') // driver không nghỉ hưu
+                        ->first();
+                    if ($checkAllDriverCourseIfSpecial){
+                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                            trans('errors.driver_must_one_course_in_day_with_id_special',[
+                                "driver_id"=> $checkAllDriverCourseIfSpecial->driver_id,
+                                "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
+                                "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
+                                "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
+                                "date"=> $checkDate,
+                            ]));
+                    }
+                }
+            }
+            // 4.Kiểm tra tất cả ngày hôm đấy lái xe có đang được chỉ định gì không nếu có thì yêu cầu xóa các chỉ định
+
+            // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không start
+            foreach ($items as $item){
+                $checkDriver_id = $item['driver_id'];
+                $driver = Driver::find($checkDriver_id);
+                $checkCourse_id = $item['course_id'];
+                $checkDate = $item['date'];
+
+                $course = Course::find($checkCourse_id);
+                // Nếu trường hợp course_id nằm trong id đặc biệt thì bỏ qua
+                if (in_array($checkCourse_id, DriverCourse::ALL_ID_SPECIAL)){
+                    continue;
+                }
+
+                if ($course->ship_date != $checkDate){
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans("errors.unlike_ship_date" ,[
+                            "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name, and date: $checkDate",
+                            "ship_date"=> $course->ship_date
+                        ]));
+                }
+            }
+            // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không end
+
         }
+
         try {
             DB::beginTransaction();
             // Xóa các driver_course theo id và cập nhật lại Cash In
@@ -800,204 +996,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
             return $exception;
         }
-    }
-
-    public function checkValidateForUpdateDriverCourse($items){
-        $seenIds = [];
-        // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
-        foreach ($items as $item) {
-            if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                //Lấy ra và tìm tất cả driver và date mà có course_id đặc biệt
-                $checkDriver_idFind = $item['driver_id'];
-                $driver = Driver::find($checkDriver_idFind);
-                $checkCourse_id = $item['course_id'];
-                $course = Course::find($checkCourse_id);
-                $checkDateFind = $item['date'];
-
-                $result = array_filter($items, function ($item) use ($checkDriver_idFind, $checkDateFind) {
-                    return $item['driver_id'] === $checkDriver_idFind && $item['date'] === $checkDateFind;
-                });
-                if (count($result) >1){
-                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans('errors.all_id_special_must_one',[
-                            "driver_id"=> $item['driver_id'],
-                            "driver_name"=> $driver->driver_name,
-                            "course_id"=> $item['course_id'],
-                            "course_name"=> $course->course_name,
-                            "date"=> $checkDateFind,
-                        ]));
-                }
-            }
-        }
-        // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó end
-
-        //1.1 Kiểm tra có trùng update id nào không start
-        foreach ($items as $item) {
-            if (isset($item['id']) && in_array($item['id'], $seenIds)) {
-                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('errors.duplicate_id_shift',[
-                        "id"=> $item['id'],
-                    ]));
-            } else{
-                if (isset($item['id'])){
-                    $seenIds[] = $item['id'];
-                }
-            }
-        }
-        //1.1 Kiểm tra có trùng update id nào không end
-
-        // 1.2 Kiểm tra trong mảng có đang duplicate driver_id và course_id không start
-        $uniqueItems = array_map(function ($item) {
-            return $item['driver_id'] . '|' . $item['course_id'];
-        }, $items);
-        $countedItems = array_count_values($uniqueItems);
-
-        // Lấy ra
-        $duplicates = array_filter($countedItems, function ($count) {
-            return $count > 1;
-        });
-        if (!empty($duplicates)) {
-            $duplicates_key_first = explode('|',array_key_first($duplicates));
-//            $duplicates_value_first = $duplicates[$duplicates_key_first];
-            return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                trans('errors.duplicate_driver_id_and_course_id',[
-                    "driver_id"=> $duplicates_key_first[0],
-                    "course_id"=> $duplicates_key_first[1]
-                ]));
-        }
-        // 1.2 Kiểm tra trong mảng có đang duplicate driver_id không end
-
-        // 1.3 Kiểm tra trong mảng có đang duplicate course_id và date không start
-        $uniqueItems = array_map(function ($item) {
-            return $item['course_id'] . '|' . $item['date'];
-        }, $items);
-        $countedItems = array_count_values($uniqueItems);
-
-        // Lấy ra
-        $duplicates = array_filter($countedItems, function ($count) {
-            return $count > 1;
-        });
-        if (!empty($duplicates)) {
-            $duplicates_key_first = explode('|',array_key_first($duplicates));
-//            $duplicates_value_first = $duplicates[$duplicates_key_first];
-            return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                trans('errors.duplicate_course_id_and_date',[
-                    "course_id"=> $duplicates_key_first[0],
-                    "date"=> $duplicates_key_first[1]
-                ]));
-        }
-        // 1.3 Kiểm tra trong mảng có đang duplicate course_id và date không end
-
-        //1.4 Kiểm tra id driver_course có tồn tại không start
-        foreach ($items as $item) {
-            if (isset($item['id'])) {
-                $driverCourse = DriverCourse::find($item['id']);
-                if ($driverCourse == null){
-                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans('errors.driver_course_id_not_found',[
-                            "id"=> $item['id'],
-                        ]));
-                }
-            }
-        }
-        //1.4 Kiểm tra id driver_course có tồn tại không end
-
-        // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
-        foreach ($items as $item){
-            $checkDriver_id = $item['driver_id'];
-            $driver = Driver::find($checkDriver_id);
-            $checkCourse_id = $item['course_id'];
-            $course = Course::find($checkCourse_id);
-            $checkDate = $item['date'];
-            $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
-
-            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
-                ->exists();
-            // Nếu có tồn tại (không là duy nhất)
-            if ($checkFinalClosingHistories){
-                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans("errors.final_closing_histories" ,[
-                        "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name, and date: $checkDate"
-                    ]));
-            }
-        }
-        // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories end
-
-        // 3.Kiểm tra xem lái xe đó đã nghỉ hưu chưa
-        foreach ($items as $item){
-            $checkDriver_id = $item['driver_id'];
-            $driver = Driver::find($checkDriver_id);
-            if ($driver->end_date != null){
-                $dateRetirement = Carbon::parse($driver->end_date);
-                $checkCourse_id = $item['course_id'];
-                $checkDate = Carbon::parse($item['date']);
-
-                $course = Course::find($checkCourse_id);
-                if ($dateRetirement->gte($checkDate)){
-                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans("errors.end_date_retirement" ,[
-                            "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name",
-                            "end_date"=> $dateRetirement->format('Y-m-d')
-                        ]));
-                }
-            }
-        }
-        // 3.Kiểm tra xem lái xe đó đã nghỉ hưu chưa
-
-        // 4.Kiểm tra tất cả ngày hôm đấy lái xe có đang được chỉ định gì không nếu có thì yêu cầu xóa các chỉ định
-        foreach ($items as $item) {
-            if (in_array($item['course_id'], DriverCourse::ALL_ID_SPECIAL)) {
-                $checkDriver_id = $item['driver_id'];
-                $driver = Driver::find($checkDriver_id);
-                $checkCourse_id = $item['course_id'];
-                $course = Course::find($checkCourse_id);
-                $checkDate = $item['date'];
-
-                // Tìm và báo loại bỏ tất cả việc lái xe có ngày hôm đấy
-                $checkAllDriverCourseIfSpecial = DriverCourse::
-                join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
-                    ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-                    ->where('driver_courses.driver_id', $checkDriver_id)
-                    ->where('driver_courses.date', $checkDate)
-                    ->whereNull('drivers.end_date') // driver không nghỉ hưu
-                    ->first();
-                if ($checkAllDriverCourseIfSpecial){
-                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans('errors.driver_must_one_course_in_day_with_id_special',[
-                            "driver_id"=> $checkAllDriverCourseIfSpecial->driver_id,
-                            "driver_name"=> $checkAllDriverCourseIfSpecial->driver_name,
-                            "course_id"=> $checkAllDriverCourseIfSpecial->course_id,
-                            "course_name"=> $checkAllDriverCourseIfSpecial->course_name,
-                            "date"=> $checkDate,
-                        ]));
-                }
-            }
-        }
-        // 4.Kiểm tra tất cả ngày hôm đấy lái xe có đang được chỉ định gì không nếu có thì yêu cầu xóa các chỉ định
-
-        // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không start
-        foreach ($items as $item){
-            $checkDriver_id = $item['driver_id'];
-            $driver = Driver::find($checkDriver_id);
-            $checkCourse_id = $item['course_id'];
-            $checkDate = $item['date'];
-
-            $course = Course::find($checkCourse_id);
-            // Nếu trường hợp course_id nằm trong id đặc biệt thì bỏ qua
-            if (in_array($checkCourse_id, DriverCourse::ALL_ID_SPECIAL)){
-                continue;
-            }
-
-            if ($course->ship_date != $checkDate){
-                return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans("errors.unlike_ship_date" ,[
-                        "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name, and date: $checkDate",
-                        "ship_date"=> $course->ship_date
-                    ]));
-            }
-        }
-        // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không end
-
     }
 
     public function cashOutStatistical($driverId, $date, $courseId)
@@ -1547,7 +1545,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $checkDate = $course->ship_date;
             $getMonthYear = Carbon::parse($checkDate)->format('Y-m');
 
-            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
+            $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)->where('type', 1)
                 ->exists();
             // Nếu có tồn tại (không là duy nhất)
             if ($checkFinalClosingHistories){
