@@ -104,7 +104,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
 
         $month_year = Carbon::parse($attributes['payment_date'])->format("Y-m");
         //Kiểm tra ngày payment_date có nằm trong ngày chốt lịch final_closing_histories
-        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)->where('type', 1)
+        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)
             ->exists();
         if ($checkFinalClosingHistories){
             return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
@@ -156,7 +156,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
 
         $month_year = Carbon::parse($attributes['payment_date'])->format("Y-m");
         //Kiểm tra ngày payment_date có nằm trong ngày chốt lịch final_closing_histories
-        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)->where('type', 1)
+        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)
             ->exists();
         if ($checkFinalClosingHistories){
             return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
@@ -235,7 +235,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
 
         $month_year = Carbon::parse($cashIn->payment_date)->format("Y-m");
         //Kiểm tra ngày payment_date có nằm trong ngày chốt lịch final_closing_histories
-        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)->where('type', 1)
+        $checkFinalClosingHistories = FinalClosingHistories::where('month_year', $month_year)
             ->exists();
         if ($checkFinalClosingHistories){
             return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, trans('errors.final_closing_histories',[
