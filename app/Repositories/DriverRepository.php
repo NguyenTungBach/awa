@@ -87,31 +87,40 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
             return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY, 'error', trans('errors.sort_by.index', $arraySortby));
         }
 
-        $listDriver = $this->model->query()
+        $listDriverNotRetirement = $this->model->query()
+            ->whereNull('end_date')
             ->whereNull('deleted_at')
-            ->SortByForDriver($request)->get()
-            ->filter(function ($driver) {
-                $driver->checkEnd_date = $driver->end_date !== null;
-                if ($driver->end_date !== null){
-                    $driver->end_date = explode(" ",$driver->end_date)[0];
-                }
-                switch ($driver->type){
-                    case 1:
-                        $driver->typeName = trans('drivers.type.1');
-                        break;
-                    case 2:
-                        $driver->typeName = trans('drivers.type.2');
-                        break;
-                    case 3:
-                        $driver->typeName = trans('drivers.type.3');
-                        break;
-                    case 4:
-                        $driver->typeName = trans('drivers.type.4');
-                        break;
-                }
-                return $driver;
-            });
-        return ResponseService::responseJson(200, new BaseResource($listDriver));
+            ->SortByForDriver($request)->get();
+
+        $listDriverRetirement = $this->model->query()
+            ->orderByDesc('driver_code')
+            ->whereNotNull('end_date')
+            ->whereNull('deleted_at')
+            ->get();
+
+        $data = $listDriverNotRetirement->concat($listDriverRetirement)->filter(function ($driver) {
+            $driver->checkEnd_date = $driver->end_date !== null;
+            if ($driver->end_date !== null){
+                $driver->end_date = explode(" ",$driver->end_date)[0];
+            }
+            switch ($driver->type){
+                case 1:
+                    $driver->typeName = trans('drivers.type.1');
+                    break;
+                case 2:
+                    $driver->typeName = trans('drivers.type.2');
+                    break;
+                case 3:
+                    $driver->typeName = trans('drivers.type.3');
+                    break;
+                case 4:
+                    $driver->typeName = trans('drivers.type.4');
+                    break;
+            }
+            return $driver;
+        });
+
+        return ResponseService::responseJson(200, new BaseResource($data));
     }
 
 
