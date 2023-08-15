@@ -74,7 +74,7 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         $field = isset($request['field']) ? $request['field'] : null;
         $sortby = isset($request['sortby']) ? $request['sortby'] : null;
 
-        $arrayList = ['driver_code', 'driver_name', 'status'];
+        $arrayList = ['driver_code', 'driver_name', 'type'];
         $arraySortby = ['asc', 'desc'];
 
         if ($field && !in_array($field, $arrayList)) {
@@ -90,35 +90,60 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         $listDriverNotRetirement = $this->model->query()
             ->whereNull('end_date')
             ->whereNull('deleted_at')
-            ->SortByForDriver($request)->get();
+            ->SortByForDriver($request)
+            ->get();
 
         $listDriverRetirement = $this->model->query()
-            ->orderByDesc('driver_code')
             ->whereNotNull('end_date')
             ->whereNull('deleted_at')
             ->get();
 
-        $data = $listDriverNotRetirement->concat($listDriverRetirement)->filter(function ($driver) {
-            $driver->checkEnd_date = $driver->end_date !== null;
-            if ($driver->end_date !== null){
-                $driver->end_date = explode(" ",$driver->end_date)[0];
-            }
-            switch ($driver->type){
-                case 1:
-                    $driver->typeName = trans('drivers.type.1');
-                    break;
-                case 2:
-                    $driver->typeName = trans('drivers.type.2');
-                    break;
-                case 3:
-                    $driver->typeName = trans('drivers.type.3');
-                    break;
-                case 4:
-                    $driver->typeName = trans('drivers.type.4');
-                    break;
-            }
-            return $driver;
-        });
+        $data = [];
+        if (count($listDriverRetirement) == 0){
+            $data = $listDriverNotRetirement->concat($listDriverRetirement)->filter(function ($driver) {
+                $driver->checkEnd_date = $driver->end_date !== null;
+                if ($driver->end_date !== null){
+                    $driver->end_date = explode(" ",$driver->end_date)[0];
+                }
+                switch ($driver->type){
+                    case 1:
+                        $driver->typeName = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $driver->typeName = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $driver->typeName = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $driver->typeName = trans('drivers.type.4');
+                        break;
+                }
+                return $driver;
+            });
+        } else{
+            $data = $listDriverNotRetirement->filter(function ($driver) {
+                $driver->checkEnd_date = $driver->end_date !== null;
+                if ($driver->end_date !== null){
+                    $driver->end_date = explode(" ",$driver->end_date)[0];
+                }
+                switch ($driver->type){
+                    case 1:
+                        $driver->typeName = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $driver->typeName = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $driver->typeName = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $driver->typeName = trans('drivers.type.4');
+                        break;
+                }
+                return $driver;
+            });
+        }
 
         return ResponseService::responseJson(200, new BaseResource($data));
     }
