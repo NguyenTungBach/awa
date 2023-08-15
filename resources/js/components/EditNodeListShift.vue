@@ -50,7 +50,7 @@
 
                 <div v-if="itemEdit.type">
                     <div v-if="!isSelectDayOff" class="select-time">
-                        <div v-if="itemEdit.course.flag === 'yes'">
+                        <div v-if="itemEdit.type !== null">
                             <div class="item-time">
                                 <b-row>
                                     <b-col sm="3">
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <!-- <div v-if="itemEdit.course.flag !== 'yes'"> -->
-                        <div v-if="itemEdit.course.flag === 'no'">
+                        <div v-if="itemEdit.type === null">
                             <div class="item-time text-center">
                                 <span>
                                     <b>始業時間: </b>{{ itemEdit.course.start_time }}

@@ -116,7 +116,7 @@
                                                     <b-col>
                                                         <DetailForm
                                                             :label="$t('CREATE_DRIVER.TYPE_EMPLOYEE')"
-                                                            :value="$t(isForm.typeDriver)"
+                                                            :value="isForm.typeDriver"
                                                         />
                                                     </b-col>
                                                 </b-row>

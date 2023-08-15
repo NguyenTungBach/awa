@@ -91,13 +91,13 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
 
         $listDriverNotRetirement = $this->model->query()
             ->whereNull('end_date')
-            ->whereDate("end_date",">",$now)
+            ->orWhere("end_date",">=",$now)
             ->SortByForDriver($request)
             ->get();
 
         $listDriverRetirement = $this->model->query()
             ->whereNotNull('end_date')
-            ->whereDate("end_date","<=",$now)
+            ->where("end_date","<",$now)
             ->get();
 
         $data = [];

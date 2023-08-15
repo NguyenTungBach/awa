@@ -32,6 +32,10 @@ function getListMessageResponseAI(url, params = null) {
 	return request.getRequest(url, params);
 }
 
+function editShift(url, params) {
+	return request.postRequest(url, params);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -40,5 +44,6 @@ export {
 	getCheckDataResult,
 	postAddListShift,
 	getMessageResponseAi,
-	getListMessageResponseAI
+	getListMessageResponseAI,
+	editShift
 };

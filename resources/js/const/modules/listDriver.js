@@ -7,19 +7,19 @@ const TEXT_ENROLLMENT_STATUS_ENROLLED = 'LIST_DRIVER.ENROLLMENT_STATUS_ENROLLED'
 const LIST_FLAG = [
 	{
 		value: 1,
-		text: 'CREATE_DRIVER.LEADER',
+		text: '管理職',
 	},
 	{
 		value: 2,
-		text: 'CREATE_DRIVER.FULL_TIME',
+		text: '正社員',
 	},
 	{
 		value: 3,
-		text: 'CREATE_DRIVER.PART_TIME',
+		text: '契約社員',
 	},
 	{
 		value: 4,
-		text: 'CREATE_DRIVER.ASSOCIATE_COMPANY',
+		text: '協力会社',
 	},
 ];
 
