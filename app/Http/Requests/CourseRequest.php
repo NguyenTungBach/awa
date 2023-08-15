@@ -16,6 +16,7 @@ use App\Models\Course;
 use App\Models\Customer;
 use Illuminate\Validation\Rule;
 use App\Rules\CompareHours;
+use App\Rules\CheckDriverCourseExists;
 
 class CourseRequest extends FormRequest
 {
@@ -155,6 +156,7 @@ class CourseRequest extends FormRequest
                 'sometimes',
                 'required',
                 'date_format:Y-m-d',
+                new CheckDriverCourseExists(__('courses.ship_date'))
             ],
             'start_date' => [
                 'sometimes',
