@@ -999,27 +999,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             return true;
         }
         $date = date('Y-m', strtotime($date));
-        $cashOutStatisticals = CashOutStatistical::get();
-        $arrDriverIdCashOut = $cashOutStatisticals->pluck('driver_id')->toArray();
-        $checkDriver = in_array($driverId, $arrDriverIdCashOut);
 
-        $arrMonthCashOut = $cashOutStatisticals->pluck('month_line')->toArray();
-        $checkMonth = in_array($date, $arrMonthCashOut);
-        // case create:
-        // 1: drive = true, month = false
-        // 2: drive = false, month = true
-        // 3: drive = false, month = false
-
-        // case update:
-        // 1: drive = true, month = true
-
-        if ($checkDriver && $checkMonth) {
-            // update
-            $result = $this->cashOutStatisticalRepository->updateCashOutStatisticalByDriverCourse($driverId, $date, $courseId);
-        }
-        else {
-            // create
+        $cashOutStatisticals = CashOutStatistical::where('driver_id', $driverId)->where('month_line', $date)->first();
+        if (empty($cashOutStatisticals)) {
             $result = $this->cashOutStatisticalRepository->createCashOutStatisticalByDriverCourse($driverId, $date);
+        } else {
+            $result = $this->cashOutStatisticalRepository->updateCashOutStatisticalByDriverCourse($driverId, $date, $courseId);
         }
 
         return $result;

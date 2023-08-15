@@ -45,13 +45,21 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
         $startDateClosing = Carbon::create($monthLine)->startOfMonth()->format('Y-m-d');
         $endDateClosing = Carbon::create($monthLine)->endOfMonth()->format('Y-m-d');
 
+        // find cash_out_statistical by driver_id gan month_line nhat
+        $cashOutStatistical = CashOutStatistical::where('driver_id', $driverId)->orderBy('month_line', 'desc')->first();
+        // balance previous month by start and end month line (balance last month + payable last month - cash out last month)
+        if (!empty($cashOutStatistical)) {
+            $balancePreviousMonth = $cashOutStatistical->balance_previous_month + $cashOutStatistical->payable_this_month - $cashOutStatistical->total_cash_out_current;
+        } else {
+            // total associate_company_fee before month_line
+            $associateBefore = $courses->where('date', '<', $startDateClosing)->sum('course.associate_company_fee');
+            // total cash_out before month_line
+            $cashOutBefore = $cashOuts->where('payment_date', '<', $startDateClosing)->sum('cash_out');
+            $balancePreviousMonth = $associateBefore - $cashOutBefore;
+        }
+
         // payable this month by start date and end date month line
         $payableThisMonth = $courses->whereBetween('date', [$startDateClosing, $endDateClosing])->sum('course.associate_company_fee');
-
-        // balance previous month by start and end month line (payable last month - cash out last month)
-        $payableLastMonth = $courses->where('date', '<', $startDateClosing)->sum('course.associate_company_fee');
-        $totalCashOutLastMonth = $cashOuts->where('payment_date', '<', $startDateClosing)->sum('cash_out');
-        $balancePreviousMonth = $payableLastMonth - $totalCashOutLastMonth;
 
         // total cash out current by start date and end date month line
         $totalCashOutCurrent = $cashOuts->whereBetween('payment_date', [$startDateClosing, $endDateClosing])->sum('cash_out');
@@ -69,52 +77,41 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function updateCashOutStatisticalByDriverCourse($driverId, $monthLine, $courseId)
     {
+        $data = [];
         // get cash out statistical by driver id and month line
         $cashOutStatisticals = CashOutStatistical::where('driver_id', $driverId)->where('month_line', $monthLine)->first();
-        $payableCurrentMonth = $cashOutStatisticals->payable_this_month;
-        $id = $cashOutStatisticals->id;
-        // get course id
-        $course = Course::find($courseId);
-        $moneyAssociateAdd = $course->associate_company_fee;
 
-        $input = [];
-        $input['driver_id'] = $driverId;
-        $input['month_line'] = $monthLine;
-        $input['balance_previous_month'] = $cashOutStatisticals->balance_previous_month;
-        // current payable + additional associate by driver course
-        $input['payable_this_month'] = $payableCurrentMonth + $moneyAssociateAdd;
-        $input['total_cash_out_current'] = $cashOutStatisticals->total_cash_out_current;
+        // total associate this month by month_line truyen vao
+        $totalAssociate = $this->getPayableThisMonth($monthLine, $driverId);
+        $data['payable_this_month'] = $totalAssociate;
 
-        $result = CashOutStatisticalRepository::update($input, $id);
+        $update = CashOutStatisticalRepository::update($data, $cashOutStatisticals->id);
+        // update statistical to now
+        $this->updateStatisticalToNow($update);
 
-        return $result;
+        return $update;
     }
 
     public function updateCashOutStatisticalByCashOut($input)
     {
+        $data = [];
         $monthLine = date('Y-m', strtotime(Carbon::createFromDate($input['payment_date'])));
-        // by month line (start date month line and end date month line)
-        $startDateClosing = Carbon::createFromDate($input['payment_date'])->startOfMonth()->format('Y-m-d');
-        $endDateClosing = Carbon::createFromDate($input['payment_date'])->endOfMonth()->format('Y-m-d');
-
         // get cash out statistical by driver id and month line
         $cashOutStatisticals = CashOutStatistical::where('driver_id', $input['driver_id'])->where('month_line', $monthLine)->first();
-        $id = $cashOutStatisticals->id;
 
-        // get cashout by driver id and where payment date = by month line (start date month line and end date month line)
-        $cashOuts = CashOut::where('driver_id', $input['driver_id'])->whereBetween('payment_date', [$startDateClosing, $endDateClosing])->get();
-        $totalCashOutCurrent = $cashOuts->sum('cash_out');
+        // by month line (start date month line and end date month line)
+        $startOfMonth = Carbon::createFromDate($input['payment_date'])->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::createFromDate($input['payment_date'])->endOfMonth()->format('Y-m-d');
 
-        $data = [];
-        $data['driver_id'] = $input['driver_id'];
-        $data['month_line'] = $monthLine;
-        $data['balance_previous_month'] = $cashOutStatisticals->balance_previous_month;
-        $data['payable_this_month'] = $cashOutStatisticals->payable_this_month;
-        $data['total_cash_out_current'] = $totalCashOutCurrent;
+        // total cash out by driver_id, month_line
+        $totalCashOut = CashOut::where('driver_id', $input['driver_id'])->whereBetween('payment_date', [$startOfMonth, $endOfMonth])->sum('cash_out');
+        $data['total_cash_out_current'] = $totalCashOut;
 
-        $result = CashOutStatisticalRepository::update($data, $id);
+        $update = CashOutStatisticalRepository::update($data, $cashOutStatisticals->id);
 
-        return $result;
+        $this->updateStatisticalToNow($update);
+
+        return $update;
     }
 
     public function getAllCashOutStatisticalByDriver($input)
@@ -198,17 +195,13 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function updateCashOutStatisticalByCourse($input)
     {
+        $data = [];
         // input['course_id'] => driver_course => get driver_id, date
         $driverCourse = DriverCourse::where('course_id', $input['course_id'])->first();
         $month = date('Y-m', strtotime($driverCourse->date));
-        // get all driver course by driver_id in month line with relationship course => sum(associate_company_fee)
-        $startOfMonth = Carbon::create($driverCourse->date)->startOfMonth()->format('Y-m-d');
-        $endOfMonth = Carbon::create($driverCourse->date)->endOfMonth()->format('Y-m-d');
 
-        $totalAssociate = DriverCourse::join('courses', 'driver_courses.course_id', '=', 'courses.id')
-                        ->where('driver_id', $driverCourse->driver_id)
-                        ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                        ->sum('courses.associate_company_fee');
+        // total associate by driver_id and month_line truyen vao
+        $totalAssociate = $this->getPayableThisMonth($month, $driverCourse->driver_id);
 
         // spec: change associate_company_fee => change payable_this_month of cash_out_statistical
         // payable_this_month =  sum(associate_company_fee) all off this month
@@ -227,9 +220,34 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
     {
         $statistical = CashOutStatistical::where('driver_id', $cashOutStatistical->driver_id)->where('month_line','>', $cashOutStatistical->month_line)->first();
         if(!$statistical) return;
+        $startOfMonth = Carbon::create($statistical->month_line)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($statistical->month_line)->endOfMonth()->format('Y-m-d');
+
+        // total payable sum(associate_company_fee)
+        $totalAssociate = $this->getPayableThisMonth($statistical->month_line, $statistical->driver_id);
+
+        // total cash out sum(cash_out)
+        $totalCashOut = CashOut::where('driver_id', $statistical->driver_id)->whereBetween('payment_date', [$startOfMonth, $endOfMonth])->sum('cash_out');
+
         $data['balance_previous_month'] = $cashOutStatistical->balance_previous_month + $cashOutStatistical->payable_this_month - $cashOutStatistical->total_cash_out_current;
+        $data['payable_this_month'] = $totalAssociate;
+        $data['total_cash_out_current'] = $totalCashOut;
         $update = CashOutStatisticalRepository::update($data, $statistical->id);
 
         $this->updateStatisticalToNow($update);
+    }
+
+    public function getPayableThisMonth($monthLine, $driverId)
+    {
+        $startOfMonth = Carbon::create($monthLine)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::create($monthLine)->endOfMonth()->format('Y-m-d');
+
+        $totalAssociate = DriverCourse::join('courses', 'driver_courses.course_id', '=', 'courses.id')
+                        ->select('driver_courses.id AS driver_courses_id', 'driver_courses.driver_id', 'driver_courses.course_id', 'driver_courses.date', 'courses.id AS id', 'courses.ship_date', 'courses.associate_company_fee')
+                        ->where('driver_id', $driverId)
+                        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                        ->sum('courses.associate_company_fee');
+
+        return $totalAssociate;
     }
 }

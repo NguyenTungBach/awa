@@ -19,6 +19,7 @@ use App\Models\FinalClosingHistories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CashOutRepository extends BaseRepository implements CashOutRepositoryInterface, CashOutStatisticalRepositoryInterface
 {
@@ -46,7 +47,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         try {
             DB::beginTransaction();
             $cashOut = [];
-            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id']);
+            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id'], $input['payment_date']);
             if ($checkDriverId) {
                 $input['note'] = Arr::get($input, 'note', NULL);
 
@@ -124,6 +125,14 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
 
                 unset($input['payment_method'], $input['note']);
                 $input['driver_id'] = $driverId;
+                $input['payment_date'] = Arr::get($input, 'payment_date', $cashOut->payment_date);
+
+                if (date('Y-m', strtotime($input['payment_date'])) > date('Y-m', strtotime($cashOut->payment_date))) {
+                    $input['payment_date'] = $cashOut->payment_date;
+                };
+                if (date('Y-m', strtotime($input['payment_date'])) < date('Y-m', strtotime($cashOut->payment_date))) {
+                    $input['payment_date'] = $input['payment_date'];
+                };
                 $cashOutUpdate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
             }
             DB::commit();
@@ -132,7 +141,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception;
+            return $exception->getMessage();
         }
     }
 
@@ -178,10 +187,13 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         return $create;
     }
 
-    public function checkExistsDriverCourse($data)
+    public function checkExistsDriverCourse($driverId, $date)
     {
-        $arrDriverCourseId = DriverCourse::get()->pluck('driver_id')->toArray();
-        $result = in_array($data, $arrDriverCourseId);
+        $result = false;
+        $driverCourses = DriverCourse::where('driver_id', $driverId)->where('date', '<=', $date)->get();
+        if (!($driverCourses->isEmpty())) {
+            $result = true;
+        }
 
         return $result;
     }

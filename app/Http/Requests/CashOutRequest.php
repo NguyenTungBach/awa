@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Driver;
+use App\Rules\CheckPaymentDateExistFinal;
 use App\Rules\CheckPaymentDate;
 
 class CashOutRequest extends FormRequest
@@ -55,7 +56,7 @@ class CashOutRequest extends FormRequest
             'payment_date' => [
                 'required',
                 'date_format:Y-m-d',
-                new CheckPaymentDate(__('cash_outs.payment_date')),
+                new CheckPaymentDateExistFinal(__('cash_outs.payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
         ];
@@ -91,6 +92,7 @@ class CashOutRequest extends FormRequest
                 'sometimes',
                 'required',
                 'date_format:Y-m-d',
+                new CheckPaymentDateExistFinal(__('cash_outs.payment_date')),
                 new CheckPaymentDate(__('cash_outs.payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
