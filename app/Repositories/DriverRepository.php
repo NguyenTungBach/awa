@@ -99,7 +99,7 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
             ->get();
 
         $data = [];
-        if (count($listDriverRetirement) == 0){
+        if (count($listDriverRetirement) != 0){
             $data = $listDriverNotRetirement->concat($listDriverRetirement)->filter(function ($driver) {
                 $driver->checkEnd_date = $driver->end_date !== null;
                 if ($driver->end_date !== null){
