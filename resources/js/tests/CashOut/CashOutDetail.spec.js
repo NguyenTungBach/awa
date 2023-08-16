@@ -1,18 +1,18 @@
 import store from '@/store';
 import router from '@/router';
-import CashInDetail from '@/pages/CashManagement/CashReceipt/detail';
+import CashOutDetail from '@/pages/CashManagement/CashDisbursement/detail';
 import { mount, createLocalVue } from '@vue/test-utils';
 
-describe('TEST COMPONENT CASH-IN DETAIL', () => {
+describe('TEST COMPONENT CASH-OUT DETAIL', () => {
 	test('Check render page', () => {
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
 		});
 
-		const PAGE = wrapper.find('.page-cash-detail__body');
+		const PAGE = wrapper.find('.page-cashDisbursement-detail__body');
 		expect(PAGE.exists()).toBe(true);
 
 		wrapper.destroy();
@@ -20,28 +20,28 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 
 	test('Check render title page', () => {
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
 		});
 
 		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toEqual('LIST_CASH.TITLE_CASH_DETAIL');
+		expect(TITLE.text()).toEqual('LIST_CASH.TITLE_CASH_DISBURSEMENT_DETAIL');
 
 		wrapper.destroy();
 	});
 
 	test('Check render click button create', async() => {
-		const onClickExport = jest.fn();
+		const onClickCreate = jest.fn();
 
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
 			methods: {
-				onClickExport,
+				onClickCreate,
 			},
 		});
 
@@ -50,7 +50,7 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 
 		await BUTTON_ADD.trigger('click');
 
-		expect(onClickExport).toHaveBeenCalled();
+		expect(onClickCreate).toHaveBeenCalled();
 
 		wrapper.destroy();
 	});
@@ -59,7 +59,7 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 		const onClickReturn = jest.fn();
 
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
@@ -81,57 +81,17 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 	test('Check render form', () => {
 		const DATA = [
 			{
-				'id': 3,
-				'customer_id': 1,
-				'cash_in': '2500.00',
-				'payment_method': 1,
-				'payment_date': '2023-08-11',
-				'note': null,
-				'status': 1,
-				'created_at': '2023-08-03T02:05:44.000000Z',
-				'updated_at': '2023-08-03T02:05:44.000000Z',
-				'deleted_at': null,
-				'customer': {
-					'id': 1,
-					'customer_code': '0001',
-					'customer_name': 'Customer 01',
-					'closing_date': 1,
-					'person_charge': 'Person charge 01',
-					'post_code': '123-4567',
-					'address': 'Address 01',
-					'phone': '01212341234',
-					'status': null,
-					'closing_dateName': '15日',
-				},
-			},
-			{
-				'id': 4,
-				'customer_id': 1,
-				'cash_in': '100.00',
-				'payment_method': 1,
-				'payment_date': '2023-08-14',
-				'note': null,
-				'status': 1,
-				'created_at': '2023-08-04T03:11:16.000000Z',
-				'updated_at': '2023-08-04T03:11:16.000000Z',
-				'deleted_at': null,
-				'customer': {
-					'id': 1,
-					'customer_code': '0001',
-					'customer_name': 'Customer 01',
-					'closing_date': 1,
-					'person_charge': 'Person charge 01',
-					'post_code': '123-4567',
-					'address': 'Address 01',
-					'phone': '01212341234',
-					'status': null,
-					'closing_dateName': '15日',
-				},
+				'id': 1,
+				'driver_id': 4,
+				'payment_date': '2023/08/16',
+				'cash_out': '1000.00',
+				'payment_method': '銀行振込',
+				'note': '',
 			},
 		];
 
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
@@ -149,12 +109,12 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 		expect(LIST_ITEM_FORM.length).toEqual(6);
 
 		const CONST_FORM = [
-			'LIST_CASH.TABLE_CASH_ID',
-			'LIST_CASH.TABLE_CASH_NAME',
-			'LIST_CASH.TABLE_CURRENT_MONTH_BALANCE',
-			'LIST_CASH.TABLE_CASH_BALANCE_AT_END_OF_PREVIOUS_MONTH',
-			'LIST_CASH.TABLE_CASH_ACCOUNTS_RECEIVABLE',
-			'LIST_CASH.TABLE_TOTAL_ACCOUNTS_RECEIVABLE',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_ID',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_NAME',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_CURRENT_MONTH_BALANCE',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_BALANCE_AT_END_OF_PREVIOUS_MONTH',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_ACCOUNTS_RECEIVABLE',
+			'LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL_ACCOUNTS_RECEIVABLE',
 		];
 
 		let idx = 0;
@@ -186,11 +146,11 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 		const LIST_TH = THEAD.findAll('th');
 		expect(LIST_TH.length).toEqual(7);
 
-		expect(LIST_TH.at(0).text()).toEqual('LIST_CASH.TABLE_NO');
-		expect(LIST_TH.at(1).text()).toEqual('LIST_CASH.TABLE_DATE');
-		expect(LIST_TH.at(2).text()).toEqual('LIST_CASH.TABLE_DEPOSIT_AMOUNT');
-		expect(LIST_TH.at(3).text()).toEqual('LIST_CASH.TABLE_PAYMENT_METHOD');
-		expect(LIST_TH.at(4).text()).toEqual('LIST_CASH.TABLE_REMARKS');
+		expect(LIST_TH.at(0).text()).toEqual('LIST_CASH.TABLE_CASH_DISBURSEMENT_NO');
+		expect(LIST_TH.at(1).text()).toEqual('LIST_CASH.TABLE_CASH_DISBURSEMENT_DATE');
+		expect(LIST_TH.at(2).text()).toEqual('LIST_CASH.TABLE_CASH_DISBURSEMENT_DEPOSIT_AMOUNT');
+		expect(LIST_TH.at(3).text()).toEqual('LIST_CASH.TABLE_CASH_DISBURSEMENT_PAYMENT_METHOD');
+		expect(LIST_TH.at(4).text()).toEqual('LIST_CASH.TABLE_CASH_DISBURSEMENT_REMARKS');
 		expect(LIST_TH.at(5).text()).toEqual('LIST_CASH.TABLE_EDIT');
 		expect(LIST_TH.at(6).text()).toEqual('LIST_CASH.TABLE_DELETE');
 
@@ -214,9 +174,9 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 			const COLUMN_DATE = COLUMNS.at(1);
 			expect(COLUMN_DATE.text()).toEqual(DATA[idx2].payment_date);
 			const COLUMN_Cash_in = COLUMNS.at(2);
-			expect(COLUMN_Cash_in.text()).toEqual(Number(DATA[idx2].cash_in).toString());
+			expect(COLUMN_Cash_in.text()).toEqual(Number(DATA[idx2].cash_out).toString());
 			const COLUMN_Payment_method = COLUMNS.at(3);
-			expect(COLUMN_Payment_method.text()).toEqual(DATA[idx2].payment_method === 1 ? '銀行振込' : '振込');
+			expect(COLUMN_Payment_method.text()).toEqual(DATA[idx2].payment_method);
 			const COLUMN_Remark = COLUMNS.at(4);
 			expect(COLUMN_Remark.text()).toEqual(DATA[idx2].note ?? '');
 			idx2++;
@@ -228,33 +188,19 @@ describe('TEST COMPONENT CASH-IN DETAIL', () => {
 	test('Check click button edit delete', async() => {
 		const DATA = [
 			{
-				'customer_id': 1,
-				'customer_code': '0001',
-				'customer_name': 'Customer 01',
-				'month_line': '2023-08',
-				'balance_previous_month': '0.00',
-				'receivable_this_month': '5000.00',
-				'total_account_receivable': '5000.00',
-				'total_cash_in_of_current_month': '3000.00',
-				'total_cash_in_current': '2000.00',
-			},
-			{
-				'customer_id': 2,
-				'customer_code': '0002',
-				'customer_name': 'Customer 02',
-				'month_line': '2023-08',
-				'balance_previous_month': '0.00',
-				'receivable_this_month': '66000.00',
-				'total_account_receivable': '66000.00',
-				'total_cash_in_of_current_month': '0.00',
-				'total_cash_in_current': '66000.00',
+				'id': 1,
+				'driver_id': 4,
+				'payment_date': '2023/08/16',
+				'cash_out': '1000.00',
+				'payment_method': '銀行振込',
+				'note': '',
 			},
 		];
 		const onClickEdit = jest.fn();
 		const onClickShowModalDelete = jest.fn();
 
 		const localVue = createLocalVue();
-		const wrapper = mount(CashInDetail, {
+		const wrapper = mount(CashOutDetail, {
 			localVue,
 			store,
 			router,
