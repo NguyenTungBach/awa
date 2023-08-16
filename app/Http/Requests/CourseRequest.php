@@ -212,7 +212,7 @@ class CourseRequest extends FormRequest
             'course_name.required' => __('validation.required', ['attribute' => __('courses.course_name')]),
             'course_name.string' => __('validation.string', ['attribute' => __('courses.course_name')]),
             'course_name.max' => __('validation.max.string', ['attribute' => __('courses.course_name'), 'max' => 20]),
-            'course_name.unique' => __('validation.unique', ['attribute' => __('courses.course_name')]),
+            'course_name.unique' => 'このコース名は既に登録されています。',
             // ship_date
             'ship_date.required' => __('validation.required', ['attribute' => __('courses.ship_date')]),
             'ship_date.date_format' => __('validation.date_format', ['attribute' => __('courses.ship_date'), 'format' => 'Y-m-d']),
