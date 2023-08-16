@@ -2159,43 +2159,6 @@ export default {
 		},
 
 		async handleExportPDF(idCustomer) {
-			// try {
-			// 	let params = {};
-
-			// 	if (this.sortTable.salaryTable.sortBy) {
-			// 		params.field = this.sortTable.salaryTable.sortBy;
-			// 		params.sortby = this.sortTable.salaryTable.sortType ? 'desc' : 'asc';
-			// 	}
-			// 	const YEAR = this.pickerYearMonth.year;
-			// 	const MONTH = this.pickerYearMonth.month;
-
-			// 	const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-			// 	params.month_year = YEAR_MONTH;
-			// 	params = cleanObject(params);
-			// 	const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST_PDF}/${idCustomer}`;
-			// 	await axios.get(URL, {
-			// 		params: params,
-			// 		responseType: 'arraybuffer',
-			// 		headers: {
-			// 			'Accept-Language': this.$store.getters.language,
-			// 			'Authorization': getToken(),
-			// 			'accept': 'application/json',
-			// 		},
-			// 	}).then((response) => {
-			// 		const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-			// 		const link = document.createElement('a');
-			// 		link.href = url;
-			// 		link.setAttribute('download', `Customer-${idCustomer}.xlsx`);
-			// 		document.body.appendChild(link);
-			// 		link.click();
-			// 	}).catch((error) => {
-			// 		console.log(error);
-			// 	});
-			// } catch (error) {
-			// 	console.log(error);
-			// }
-
 			const YEAR = this.pickerYearMonth.year;
 			const MONTH = this.pickerYearMonth.month;
 
@@ -2731,6 +2694,134 @@ export default {
                             position: sticky;
                             z-index: 10;
                             top: 41px;
+                        }
+					}
+
+					tbody {
+						tr {
+							td {
+								text-align: center;
+								padding: 0;
+
+								min-width: 150px;
+							}
+
+							td.td-employee-number,
+							td.td-type-employee,
+							td.td-full-name {
+								background-color: $sub-main;
+
+								font-weight: bold;
+
+								vertical-align: middle;
+
+                                padding: 5px;
+							}
+
+							td.td-type-employee {
+                                position: sticky;
+                                top: 0;
+                                z-index: 8;
+                                left: 150px;
+                            }
+
+							td.td-total-shift {
+								min-width: 150px;
+								vertical-align: middle;
+							}
+
+                            td.td-employee-number {
+                                position: sticky;
+                                z-index: 9;
+								left: 150px;
+                                top: 0;
+                                left: 0;
+                            }
+
+                            td.td-full-name {
+                                position: sticky;
+                                z-index: 9;
+                                top: 0;
+								left: 330px;
+                            }
+						}
+					}
+				}
+
+				table.shift-table {
+					thead {
+						tr {
+							th {
+                                position: sticky;
+                                z-index: 9;
+
+								div {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+								}
+
+								background-color: $main;
+								color: $white;
+								text-align: center;
+                                vertical-align: middle;
+								min-width: 100px;
+								padding: 20px 0;
+
+                                top: 0;
+							}
+
+                            th.fix-header {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 0;
+                            }
+
+							th.th-show-date {
+								padding: 5px 0;
+							}
+
+							th.total-shift {
+								min-width: 150px;
+							}
+
+							th.th-employee-number {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 0;
+								cursor: pointer;
+								min-width: 150px;
+							}
+
+							th.th-type-employee {
+                                position: sticky;
+                                top: 37px;
+                                z-index: 10;
+                                left: 150px;
+
+                                min-width: 180px;
+
+                                cursor: pointer;
+                            }
+
+							th.th-full-name {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 330px;
+
+                                min-width: 240px;
+
+                                cursor: pointer;
+							}
+						}
+
+                        tr:nth-child(2) {
+                            position: sticky;
+                            z-index: 10;
+                            top: 43px;
                         }
 					}
 
