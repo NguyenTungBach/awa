@@ -46,7 +46,12 @@ class Driver extends Model
         if (request()->filled('field') && request()->filled('sortby')) {
             $field = request()->get('field');
             $sortby = request()->get('sortby');
-            $query->orderBy($field, $sortby);
+            if ($field == "typeName"){
+                $query->orderBy("type", $sortby);
+            } else{
+                $query->orderBy($field, $sortby);
+            }
+
         }
         return $query;
     }

@@ -7,7 +7,7 @@ return [
     'permission' => 'この機能を利用する権限がありません',
     'data_not_found' => 'データが存在しません。',
     'calender.get_data_index_60' => 'Data can only be obtained for no more than 60 days .',
-    'field.index' => 'Field must be in driver_code,driver_name,status .',
+    'field.index' => 'Field must be in driver_code,driver_name,typeName .',
     'sort_by.index' => 'Sort by needs to pass the field in and sort by must be asc,desc .',
     'data.create' => 'Data cannot be saved .',
     'data.update' => 'Data cannot be update .',
