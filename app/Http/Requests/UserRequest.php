@@ -128,10 +128,10 @@ class UserRequest extends FormRequest
         return [
             // user_code
             'user_code.required' => __('validation.required', ['attribute' => __('users.user_code')]),
-            'user_code.min' => __('validation.between.numeric', ['attribute' => __('users.user_code'), 'min' => 4, 'max' => 15]),
-            'user_code.max' => __('validation.between.numeric', ['attribute' => __('users.user_code'), 'min' => 4, 'max' => 15]),
+            'user_code.min' => 'ユーザーIDは半角数字15桁以内で入力してください。',
+            'user_code.max' => 'ユーザーIDは半角数字15桁以内で入力してください。',
             'user_code.regex' => __('validation.regex', ['attribute' => __('users.user_code')]),
-            'user_code.unique' => __('validation.unique', ['attribute' => __('users.user_code')]),
+            'user_code.unique' => 'ユーザーIDは既に登録されています。',
             // user_name
             'user_name.required' => __('validation.required', ['attribute' => __('users.user_name')]),
             'user_name.string' => __('validation.string', ['attribute' => __('users.user_name')]),
