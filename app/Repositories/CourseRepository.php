@@ -295,7 +295,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         $course = Course::find($id);
         $month = date('Y-m', strtotime($course->ship_date));
-        $finalClosing = FinalClosingHistories::where('type', 2)->get()->pluck('month_year')->toArray();
+        $finalClosing = FinalClosingHistories::get()->pluck('month_year')->toArray();
         $result = in_array($month, $finalClosing);
 
         return $result;
