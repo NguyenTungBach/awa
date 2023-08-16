@@ -147,11 +147,11 @@ return [
         ],
         'check_date' => ':attribute時間は作成日以降である必要があります',
         'check_minute' => ':attributeが無効です',
-        'compare_date' => '始業時間は終業時間より小さくなければなりません',
+        'compare_date' => '始業時間は終業時間より早い時間に設定してください',
         'csv' => [
             'required' => ':row行目の項目『:attribute』を必ず指定してください。',
-            'required_if' => ':row行目の種別は:valueの場合、『:attribute』を必ず指定してください。',
-            'required_unless' => ':row行目の種別は:valueの場合、『:attribute』を必ず指定してください。',
+            'required_if' => ':row行目の種別が:valueの場合、『:attribute』を必ず指定してください。',
+            'required_unless' => ':row行目の種別が:valueの場合、『:attribute』を必ず指定してください。',
             'in' => ':row行目の項目『:attribute』は正しくありません。',
             'max' => ':row行目の項目『:attribute』は、:max文字以下で指定してください。',
             'date_format' => ':row行目の項目『:attribute』は:format形式で指定してください。',
@@ -162,9 +162,9 @@ return [
             'exists' =>  ':row行目の項目『:attribute』は登録されていません。',
             'unique' => ':row行目の項目『:attribute』は既に存在しています。',
             'check_date' => ':row行目の『:attribute』時間は作成日以降である必要があります',
-            'compare_date' => ':row行目の始業時間は終業時間より小さくなければなりません',
+            'compare_date' => ':row行目の始業時間は終業時間より早い時間に設定してください',
             'headings' => [
-                'required' => ':attributeが見つかりません。',
+                'required' => '『:attribute』を必ず指定してください。',
                 'matched' => '1行目の項目『:names』が不正です。'
             ],
         ]
