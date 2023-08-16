@@ -74,7 +74,7 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         $field = isset($request['field']) ? $request['field'] : null;
         $sortby = isset($request['sortby']) ? $request['sortby'] : null;
 
-        $arrayList = ['driver_code', 'driver_name', 'type'];
+        $arrayList = ['driver_code', 'driver_name', 'typeName'];
         $arraySortby = ['asc', 'desc'];
 
         if ($field && !in_array($field, $arrayList)) {
