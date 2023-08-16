@@ -20,7 +20,6 @@ class FinalClosingHistories extends Model
     protected $fillable = [
         "date",
         "month_year",
-        "type",
         "status",
     ];
 

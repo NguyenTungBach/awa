@@ -28,7 +28,7 @@ class CheckPaymentDateExistFinal implements Rule
      */
     public function passes($attribute, $value)
     {
-        $arrFinalMonth = FinalClosingHistories::where('type', 2)->get()->pluck('month_year')->toArray();
+        $arrFinalMonth = FinalClosingHistories::get()->pluck('month_year')->toArray();
         $value = date('Y-m', strtotime($value));
         $result = in_array($value, $arrFinalMonth);
         if ($result) {

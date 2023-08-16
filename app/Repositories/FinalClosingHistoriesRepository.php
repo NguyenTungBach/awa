@@ -36,7 +36,6 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
         $result = FinalClosingHistories::create([
             'date' => $input['date'],
             'month_year' => $input['month_year'],
-            'type' => $input['type'],
         ]);
 
         return $result;
@@ -49,11 +48,6 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
         if(!empty($input['month_year'])) {
             $finals = $finals->where('month_year', $input['month_year']);
         }
-
-        if(!empty($input['type'])) {
-            $finals = $finals->where('type', $input['type']);
-        }
-
         $result = $finals->get();
 
         return $result;

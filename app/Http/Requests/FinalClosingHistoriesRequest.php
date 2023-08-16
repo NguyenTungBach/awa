@@ -45,10 +45,6 @@ class FinalClosingHistoriesRequest extends FormRequest
                 'required',
                 'date_format:Y-m'
             ],
-            'type' => [
-                'required',
-                Rule::in(config('final_closing.type'))
-            ],
         ];
 
         return $rules;
@@ -56,10 +52,6 @@ class FinalClosingHistoriesRequest extends FormRequest
 
     public function getCustomRuleIndex(){
         $rules = [
-            'type' => [
-                'sometimes',
-                Rule::in(config('final_closing.type'))
-            ],
             'month_year' => [
                 'sometimes',
                 'date_format:Y-m'
