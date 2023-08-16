@@ -140,16 +140,16 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
             </tr>
             <tr>
                 <td style="text-align: right">
-                    {{$data['total_ship_fee_by_closing_date'] == "" ?? 0}}
+                    {{$data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']}}
                 </td>
                 <td style="text-align: right">
                     0
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date'] == ""  ?? 0 ) * 0.1}}
+                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) * 0.1}}
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date']  == "" ?? 0) + (($data['total_ship_fee_by_closing_date'] == ""  ?? 0 ) * 0.1)}}
+                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + (($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) * 0.1)}}
                 </td>
             </tr>
         </table>
