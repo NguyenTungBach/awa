@@ -538,7 +538,13 @@
                                             <b-td class="td-total-closing-date">
                                                 {{ emp.total_ship_fee_by_closing_date }}
                                             </b-td>
-                                            <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
+                                            <b-td class="img-pdf">
+                                                <img
+                                                    :src="require('@/assets/images/payment.png')"
+                                                    alt="Logo"
+                                                    @click="handleExportPDF(emp.customer_id)"
+                                                >
+                                            </b-td>
                                         </tr>
                                     </template>
                                 </b-tbody>
@@ -575,11 +581,18 @@
                                             </span>
                                         </b-td>
 
-                                        <b-td v-for="total in listTotalSalaryDay" :key="`total-${total.id}`" class="text-center">
-                                            {{ total.value }}
+                                        <b-td v-for="(total, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center">
+                                            {{ total.total_all_ship_fee_by_date }}
                                         </b-td>
-                                        <b-td>0</b-td>
-                                        <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
+                                        <b-td class="td-total-month">
+                                            {{ total_all_data_sale_by_month }}
+                                        </b-td>
+                                        <b-td class="td-total-closing-date">
+                                            {{ total_all_sale_by_closing_date }}
+                                        </b-td>
+                                        <b-td class="img-pdf">
+                                            <img :src="require('@/assets/images/payment.png')" alt="Logo">
+                                        </b-td>
                                     </b-tr>
                                 </b-tbody>
                             </b-table-simple>
@@ -1095,6 +1108,10 @@ export default {
 				end: null,
 			},
 
+			listToatalSaleByDate: [],
+			total_all_sale_by_closing_date: '',
+			total_all_data_sale_by_month: '',
+
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
 		};
@@ -1432,7 +1449,10 @@ export default {
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_SALE_LIST, PARAMS);
 
 				if (code === 200) {
-					this.listSaleAmount = data;
+					this.listSaleAmount = data.data;
+					this.listToatalSaleByDate = data.total_all_sales_by_date;
+					this.total_all_sale_by_closing_date = data.total_all_data_sales_by_closing_date;
+					this.total_all_data_sale_by_month = data.total_all_data_sales_by_month;
 					this.reloadTable();
 				}
 				setLoading(false);
@@ -2138,6 +2158,79 @@ export default {
 			}
 		},
 
+		async handleExportPDF(idCustomer) {
+			// try {
+			// 	let params = {};
+
+			// 	if (this.sortTable.salaryTable.sortBy) {
+			// 		params.field = this.sortTable.salaryTable.sortBy;
+			// 		params.sortby = this.sortTable.salaryTable.sortType ? 'desc' : 'asc';
+			// 	}
+			// 	const YEAR = this.pickerYearMonth.year;
+			// 	const MONTH = this.pickerYearMonth.month;
+
+			// 	const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+			// 	params.month_year = YEAR_MONTH;
+			// 	params = cleanObject(params);
+			// 	const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST_PDF}/${idCustomer}`;
+			// 	await axios.get(URL, {
+			// 		params: params,
+			// 		responseType: 'arraybuffer',
+			// 		headers: {
+			// 			'Accept-Language': this.$store.getters.language,
+			// 			'Authorization': getToken(),
+			// 			'accept': 'application/json',
+			// 		},
+			// 	}).then((response) => {
+			// 		const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+			// 		const link = document.createElement('a');
+			// 		link.href = url;
+			// 		link.setAttribute('download', `Customer-${idCustomer}.xlsx`);
+			// 		document.body.appendChild(link);
+			// 		link.click();
+			// 	}).catch((error) => {
+			// 		console.log(error);
+			// 	});
+			// } catch (error) {
+			// 	console.log(error);
+			// }
+
+			const YEAR = this.pickerYearMonth.year;
+			const MONTH = this.pickerYearMonth.month;
+
+			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+			const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST_PDF}/${idCustomer}?month_year=${YEAR_MONTH}`;
+			console.log('url', URL);
+			let FILE_DOWNLOAD;
+
+			fetch(URL, {
+				headers: {
+					'Accept-Language': this.$store.getters.language,
+					'Authorization': getToken(),
+					'accept': 'application/json',
+				},
+			}).then(async(res) => {
+				let filename = `saleList_{${YEAR_MONTH}}`;
+				filename = filename.replaceAll('"', '');
+				await res.blob().then((res) => {
+					FILE_DOWNLOAD = res;
+				});
+				const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
+				const fileLink = document.createElement('a');
+
+				fileLink.href = fileURL;
+				fileLink.setAttribute('download', filename);
+				document.body.appendChild(fileLink);
+
+				fileLink.click();
+			})
+				.catch((err) => {
+					console.log(err);
+				});
+		},
+
 		onExportPDF() {
 			if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
 				const sort = {
@@ -2821,12 +2914,16 @@ export default {
 								left: 330px;
                             }
 
+							td.img-pdf {
+								cursor: pointer;
+							}
+
                             td.td-total {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
 								left: 0;
-
+								padding: 25px 50px;
                                 span {
                                     float: right;
                                     margin-right: 50px;
