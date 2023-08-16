@@ -243,13 +243,14 @@ export default {
 			console.log('addd', item);
 			const today = new Date();
 			const endDate = item.end_date === null ? null : new Date(item.end_date);
-			if (item.end_date === null || item.end_date > today) {
+			console.log('end date:', endDate);
+			if (item.end_date === null) {
 				return '';
 			} else if (today >= endDate) {
 				return 'employee-retired';
+			} else {
+				return '';
 			}
-
-			return '';
 		},
 
 		goToCreateDriver() {
