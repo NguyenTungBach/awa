@@ -966,6 +966,35 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // 1.2 Kiểm tra các driver_id có bị trùng lịch không
 
+        // 1.3 Kiểm tra các ngày course truyền vào có nằm trong tháng không không
+        foreach ($items as $item) {
+            foreach ($item['listShift'] as $shift) {
+                $courseId = $shift['course_id'];
+                $checkDate = Carbon::parse($shift['date'])->format("Y-m");
+
+                // Bỏ qua trường hợp nếu course này nằm trong danh sách ngày đặc biệt
+                // Trường hợp course id trùng cho phép duplicate
+                if (in_array($courseId, DriverCourse::ALL_ID_SPECIAL)){
+                    continue;
+                }
+
+                // Nếu nếu course này không nằm trong tháng thì báo lỗi
+                if ($checkDate != $attributes['month_year']) {
+                    $driver = Driver::find($item['driver_id']);
+                    $course = Driver::find($courseId);
+                    return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+                        trans('errors.date_not_in_month',[
+                            "driver_id"=> $item['driver_id'],
+                            "driver_name"=> $driver->driver_name,
+                            "course_id"=> $courseId,
+                            "course_name"=> $course->course_name,
+                            "month_year"=> $attributes['month_year']
+                        ]));
+                }
+            }
+        }
+        // 1.3 Kiểm tra các driver_id có bị trùng lịch không
+
         // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
         foreach ($items as $item){
             $checkDriver_id = $item['driver_id'];
@@ -1771,7 +1800,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
 
         // Truy vấn Tổng toàn bộ DriverCourse từng customer theo tháng và theo closing date
-        $data = [];
+        $dataListSales = [];
+        $totalAllDataListSalesByClosingDate = "";
+        $demTotalAllDataListSalesByClosingDate = 0;
         foreach ($customers as $customer){
             $dataConvert = [
                 "customer_id" =>$customer->id,
@@ -1832,6 +1863,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->first();
             if ($driverCourseClosingDateQuery){
                 $dataConvert['total_ship_fee_by_closing_date'] = $driverCourseClosingDateQuery->total_ship_fee_by_closing_date;
+                $demTotalAllDataListSalesByClosingDate = $demTotalAllDataListSalesByClosingDate + $driverCourseClosingDateQuery->total_ship_fee_by_closing_date;
             }
 
             // Truy vấn Tổng toàn bộ CashIn từng customer theo tháng
@@ -1852,8 +1884,66 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $dataConvert['total_ship_fee_by_month'] = $cashInTotalMonthQuery->total_ship_fee_by_month;
             }
 
-            $data[] = $dataConvert;
+            $dataListSales[] = $dataConvert;
         }
+
+        if ($demTotalAllDataListSalesByClosingDate != 0){
+            $totalAllDataListSalesByClosingDate = $demTotalAllDataListSalesByClosingDate;
+        }
+
+        // Tổng số tiền tất cả customer theo ngày
+        $totalAllDataListSalesByDate = [];
+        foreach ($calendars as $calendar){
+            // Truy vấn tổng số tiền ship_fee theo ngày
+            $dataByCalendar = [
+                "courses_customer_id"=> $customer->id,
+                "total_all_ship_fee_by_date" => "",
+                "date" => $calendar->date
+            ];
+
+            // Truy vấn toàn bộ driver_course trong ngày
+            $totalSaleByDate = DriverCourse::
+            select(
+                "courses.customer_id as courses_customer_id",
+                "driver_courses.date",
+            )
+            ->addSelect(DB::raw('SUM(courses.ship_fee) as total_all_ship_fee_by_date'))
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->where('date',$calendar->date)
+            ->groupBy("driver_courses.date")
+            ->first();
+
+            if ($totalSaleByDate){
+                $dataByCalendar['total_all_ship_fee_by_date'] = $totalSaleByDate->total_all_ship_fee_by_date;
+            }
+
+            $totalAllDataListSalesByDate[] = $dataByCalendar;
+        }
+
+        // Tổng số tiền customer theo tháng
+        $totalAllDataListSalesByMonth = "";
+        $getMonth_year = explode("-",$request->month_year);
+        $totalAllSalesByMonth = DriverCourse::
+        select(
+            "driver_courses.date",
+        )
+            ->addSelect(DB::raw('SUM(courses.ship_fee) as total_all_ship_fee_by_month'))
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->whereYear('date',$getMonth_year[0])
+            ->whereMonth('date',$getMonth_year[1])
+            ->first();
+        if ($totalAllSalesByMonth){
+            $totalAllDataListSalesByMonth = $totalAllSalesByMonth->total_all_ship_fee_by_month;
+        }
+
+        $data = [
+            'data'=> $dataListSales,
+            'total_all_sales_by_date'=> $totalAllDataListSalesByDate,
+            'total_all_data_sales_by_closing_date'=> $totalAllDataListSalesByClosingDate,
+            'total_all_data_sales_by_month'=> $totalAllDataListSalesByMonth,
+        ];
+
+
         return $data;
     }
 
@@ -1957,7 +2047,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
-
         $styleArrayShiftList = [
             'alignment' => [
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -1967,7 +2056,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForListSales as $key => $value){
+        foreach ($dataForListSales['data'] as $key => $value){
             $sheet->setCellValue('A'.$index, $value['customer_code']);
             $sheet->setCellValue('B'.$index, $value['closing_dateName']);
             $sheet->setCellValue('C'.$index, $value['customer_name']);
@@ -2001,16 +2090,40 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             // Sau khi kiểm tra xong thì mới được đến driver tiếp
             $index ++;
         }
+        $sheet->setCellValue('A'.$index, "日別合計");
+        $sheet->mergeCells([1,$index,3,$index]);
+        $sheet->getStyle('A'.$index)->applyFromArray($styleArrayDriver)->getAlignment()->setWrapText(true);
+        // Truyền dữ liệu tổng cho từng ngày và tháng
+        $colCalendarTotal = 4;
+        // Kiểm tra từng cột Calendar
+        foreach ($dataCalendars as $dataCalendar){
+            foreach ($dataForListSales['total_all_sales_by_date'] as $key => $value){
+                // Nếu trùng ngày thì truyền vào
+                if ($dataCalendar['date'] == $value['date']){
+                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_all_ship_fee_by_date'],DataType::TYPE_STRING);
+                    break;
+                }
+            }
+            $colCalendarTotal ++;
+        }
+        // Cập nhật nốt tổng closing date
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'],DataType::TYPE_STRING);
+        // Cập nhật nốt tổng month
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_month'],DataType::TYPE_STRING);
+        //Đặt style
+        $sheet->getStyle([4,$index,$colCalendarTotal+1,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForListSales as $key => $value){
+        foreach ($dataForListSales['data'] as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $sheet->getStyle('C'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $indexCheckStyle ++;
         }
+
+
 
         header("Pragma: public");
         header("Expires: 0");
