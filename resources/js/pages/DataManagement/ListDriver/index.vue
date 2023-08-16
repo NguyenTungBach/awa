@@ -242,8 +242,11 @@ export default {
 		rowClass(item) {
 			console.log('addd', item);
 			const today = new Date();
-			const endDate = item.end_date === null ? null : new Date(item.end_date);
-			if (item.end_date === null || item.end_date > today) {
+			let endDate = null;
+			if (item !== null){
+				endDate = item.end_date === null ? null : new Date(item.end_date);
+			}
+			if (endDate === null || endDate > today) {
 				return '';
 			} else if (today >= endDate) {
 				return 'employee-retired';
