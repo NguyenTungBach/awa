@@ -603,15 +603,15 @@
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
-                                            @click="onSortTable('driver_code', 'shiftTable')"
+                                            @click="onSortTable('customers.customer_code', 'Hight way fee table')"
                                         >
                                             {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID") }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -621,15 +621,15 @@
                                         </b-th>
                                         <b-th
                                             class="th-type-employee"
-                                            @click="onSortTable('flag', 'shiftTable')"
+                                            @click="onSortTable('customers.closing_date', 'Hight way fee table')"
                                         >
                                             {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE') }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -1626,7 +1626,40 @@ export default {
 					setLoading(false);
 
 					break;
+				case 'customers.customer_name':
+					if (this.sortTable[table].sortBy === 'customers.customer_name') {
+						if (this.sortTable[table].sortType) {
+							this.sortTable[table].sortType = !this.sortTable[table].sortType;
+						} else {
+							this.sortTable[table].sortType = true;
+						}
+					} else {
+						this.sortTable[table].sortBy = 'customers.customer_name';
+						this.sortTable[table].sortType = true;
+					}
 
+					setLoading(true);
+					await this.handleGetHightWay();
+					setLoading(false);
+
+					break;
+				case 'customers.closing_date':
+					if (this.sortTable[table].sortBy === 'customers.closing_date') {
+						if (this.sortTable[table].sortType) {
+							this.sortTable[table].sortType = !this.sortTable[table].sortType;
+						} else {
+							this.sortTable[table].sortType = true;
+						}
+					} else {
+						this.sortTable[table].sortBy = 'customers.closing_date';
+						this.sortTable[table].sortType = true;
+					}
+
+					setLoading(true);
+					await this.handleGetHightWay();
+					setLoading(false);
+
+					break;
 				default:
 					console.log('Handle sort table faild');
 

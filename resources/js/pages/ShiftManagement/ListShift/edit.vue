@@ -274,7 +274,6 @@
                     @edit="onEditNode"
                     @remove="onRemoveNode"
                     @dayoff="onSelectedDayOff"
-                    @change="onChangeNode"
                 />
                 <div class="edit-control">
                     <b-button
@@ -312,7 +311,7 @@ import { cleanObject } from '@/utils/handleObject';
 import { convertBreakTimeNumberToTime, convertTextToSelectTime, getYearMonthFromDate, convertTimeCourse, formatArray2Time } from '@/utils/convertTime';
 import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
-import { validateEditShift } from './helper/validateEditShift';
+// import { validateEditShift } from './helper/validateEditShift';
 
 export default {
 	name: 'ListShift',
@@ -452,9 +451,6 @@ export default {
 			try {
 				const PARAMS = {};
 				this.nodeEmit = [];
-				// const YEAR = this.pickerYearMonth.year;
-				// const MONTH = this.pickerYearMonth.month;
-				// const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 				PARAMS.date = date;
 				const { code, data } = await getListShift(`${CONSTANT.URL_API.GET_DETAIL_SHIFT}/${idDriverCourse}`, PARAMS);
 				if (code === 200) {
@@ -469,7 +465,6 @@ export default {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
 				await this.handleGetListCourse(data.dateDriver);
-				console.log('dataaaaa', data);
 				await this.detailShift(data.id, data.dateDriver);
 
 				// const DATE_CHECK = data.dateDriver;
@@ -539,78 +534,79 @@ export default {
 				// 	}
 				// }
 
-				// // check course choosed
+				// check course choosed
 
-				// this.listNodeEditSelected.length = 0;
+				this.listNodeEditSelected.length = 0;
 
-				// const OLD_SELECTED = this.nodeEmit || [];
+				const OLD_SELECTED = this.nodeEmit || [];
 
-				// const lenOldSelected = OLD_SELECTED.length;
-				// let idxOldSelected = 0;
+				const lenOldSelected = OLD_SELECTED.length;
+				let idxOldSelected = 0;
 
-				// while (idxOldSelected < lenOldSelected) {
-				// 	const OLD_DATA = {
-				// 		type: null,
-				// 		start_time: [null, null],
-				// 		end_time: [null, null],
-				// 		break_time: [null, null],
-				// 	};
+				while (idxOldSelected < lenOldSelected) {
+					const OLD_DATA = {
+						type: null,
+						start_time: [null, null],
+						end_time: [null, null],
+						break_time: [null, null],
+					};
 
-				// 	OLD_DATA.type = OLD_SELECTED[idxOldSelected].type;
-				// 	OLD_DATA.start_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].start_time);
-				// 	OLD_DATA.end_time = convertTextToSelectTime(OLD_SELECTED[idxOldSelected].end_time);
-				// 	OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
+					OLD_DATA.type = OLD_SELECTED[idxOldSelected].course_id;
+					OLD_DATA.start_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].start_time));
+					OLD_DATA.end_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].end_time));
+					OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
 
-				// 	this.listNodeEditSelected.push(OLD_DATA);
+					this.listNodeEditSelected.push(OLD_DATA);
 
-				// 	idxOldSelected++;
-				// }
+					idxOldSelected++;
+				}
+				console.log('datalisNote:', this.listNodeEditSelected);
 
-				// const lenListSelected = this.listNodeEditSelected.length;
-				// let idxListSelected = 0;
+				const lenListSelected = this.listNodeEditSelected.length;
+				let idxListSelected = 0;
 
-				// while (idxListSelected < lenListSelected) {
-				// 	const SELECTED = this.listNodeEditSelected[idxListSelected];
+				while (idxListSelected < lenListSelected) {
+					const SELECTED = this.listNodeEditSelected[idxListSelected];
 
-				// 	const SELECTED_TYPE = SELECTED.type;
-				// 	const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
+					const SELECTED_TYPE = SELECTED.type;
+					const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
 
-				// 	if (FIND_SELECTED) {
-				// 		const DATA_COURSE = {
-				// 			flag: FIND_SELECTED.flag,
-				// 			start_time: FIND_SELECTED.start_time,
-				// 			end_time: FIND_SELECTED.end_time,
-				// 			break_time: FIND_SELECTED.break_time,
-				// 		};
+					if (FIND_SELECTED) {
+						const DATA_COURSE = {
+							flag: FIND_SELECTED.flag,
+							start_time: FIND_SELECTED.start_time,
+							end_time: FIND_SELECTED.end_time,
+							break_time: FIND_SELECTED.break_time,
+						};
 
-				// 		this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
-				// 	} else {
-				// 		if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
-				// 			this.listNodeEditSelected[idxListSelected].course = {
-				// 				flag: 'yes',
-				// 				start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
-				// 				end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
-				// 				break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
-				// 			};
-				// 		} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-				// 			this.listNodeEditSelected[idxListSelected].course = {
-				// 				flag: 'yes',
-				// 				start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
-				// 				end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
-				// 				break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
-				// 			};
-				// 		} else {
-				// 			this.listNodeEditSelected[idxListSelected].course = {
-				// 				flag: null,
-				// 				start_time: null,
-				// 				end_time: null,
-				// 				break_time: null,
-				// 			};
-				// 		}
-				// 	}
+						this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
+					} else {
+						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: 'yes',
+								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+							};
+						} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: 'yes',
+								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
+								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
+								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
+							};
+						} else {
+							this.listNodeEditSelected[idxListSelected].course = {
+								flag: null,
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+						}
+					}
 
-				// 	idxListSelected++;
-				// }
+					idxListSelected++;
+				}
 
 				// const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
 				// this.courseDisabled = COURSE_DISABLED;
@@ -697,7 +693,6 @@ export default {
 
 						idx++;
 					}
-					console.log('driver:', this.listCourse);
 				} else {
 					this.listCourse.length = 0;
 				}
@@ -902,7 +897,7 @@ export default {
 				end_time: [null, null],
 				break_time: [null, null],
 				course: {
-					flag: null,
+					// flag: null,
 					start_time: null,
 					end_time: null,
 					break_time: null,
@@ -925,37 +920,91 @@ export default {
 		onClickSaveNode() {
 			const FILTER_LIST_SELECTED = this.handleFilterListSelected(this.listNodeEditSelected, [null]);
 
-			const VALIDATE = validateEditShift(FILTER_LIST_SELECTED);
-			console.log('validate: ', VALIDATE);
+			// const VALIDATE = validateEditShift(FILTER_LIST_SELECTED);
 
-			if (VALIDATE.status) {
-				this.modalEdit = false;
+			// if (VALIDATE.status) {
+			// 	this.modalEdit = false;
 
-				const DRIVER_CODE = this.nodeEmit.driverCode;
-				const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
+			// 	const DRIVER_CODE = this.nodeEmit.driverCode;
+			// 	const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
 
-				const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
+			// 	const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
 
-				let INDEX_CELL_OF_DRIVER = -1;
+			// 	let INDEX_CELL_OF_DRIVER = -1;
 
-				if (TYPE_TABLE === 'MONTH') {
-					INDEX_CELL_OF_DRIVER = this.nodeEmit.date - 1;
-				} else {
-					INDEX_CELL_OF_DRIVER = this.nodeEmit.index - 1;
-				}
+			// 	if (TYPE_TABLE === 'MONTH') {
+			// 		INDEX_CELL_OF_DRIVER = this.nodeEmit.date - 1;
+			// 	} else {
+			// 		INDEX_CELL_OF_DRIVER = this.nodeEmit.index - 1;
+			// 	}
 
-				const DATA_UPDATE = FILTER_LIST_SELECTED;
+			// 	const DATA_UPDATE = FILTER_LIST_SELECTED;
 
-				this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
+			// 	this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
+			// 	console.log('listShift:', this.listShift);
 
-				const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
-				this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
+			// 	const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			// 	this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 
-				this.listNodeEditSelected.length = 0;
+			// 	this.listNodeEditSelected.length = 0;
+			// } else {
+			// 	Notification.warning(this.$t(VALIDATE.message));
+			// }
+			// this.modalEdit = false;
+			console.log('list node:', this.listNodeEditSelected);
+
+			const DRIVER_CODE = this.nodeEmit.driverCode;
+			const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
+
+			const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
+
+			let INDEX_CELL_OF_DRIVER = -1;
+
+			if (TYPE_TABLE === 'MONTH') {
+				INDEX_CELL_OF_DRIVER = this.nodeEmit.date - 1;
 			} else {
-				Notification.warning(this.$t(VALIDATE.message));
+				INDEX_CELL_OF_DRIVER = this.nodeEmit.index - 1;
 			}
+
+			const DATA_UPDATE = FILTER_LIST_SELECTED;
+
+			this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
+			console.log('listShift:', this.listShift);
+
+			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
+
+			this.listNodeEditSelected.length = 0;
+			this.modalEdit = false;
 		},
+
+		// async onClickSaveNode() {
+		// 	// try {
+		// 	// 	setLoading(true);
+		// 	// 	const params = {
+		// 	// 		item: [
+		// 	// 			{
+		// 	// 				driver_id: 1,
+		// 	// 				course_id: 14,
+		// 	// 				date: '',
+		// 	// 				start_time: '',
+		// 	// 				break_time: '',
+		// 	// 				end_time: '',
+		// 	// 			},
+		// 	// 		],
+		// 	// 	};
+		// 	// 	const URL = CONSTANT.URL_API.UPDATE_SHIFT;
+		// 	// 	const Data = await editShift(URL, params);
+		// 	// 	if (Data.code === 200) {
+		// 	// 		this.handleGetListShift();
+		// 	// 	}
+		// 	// 	setLoading(false);
+		// 	// } catch (error) {
+		// 	// 	setLoading(false);
+		// 	// 	console.log(error);
+		// 	// }
+		// 	console.log('this not', this.nodeEmit);
+		// },
 
 		handleUpdateTable(listShift, idxOfDriver, idxCellOfDriver, dataUpdate) {
 			if (dataUpdate.length > 0) {
@@ -1271,82 +1320,83 @@ export default {
 			this.listNodeEditSelected.length = 0;
 		},
 
-		onChangeNode(data) {
-			const value = data.value;
+		// onChangeNode(data) {
+		// 	const value = data.value;
+		// 	console.log('change:', data);
 
-			if (value) {
-				const idxChange = data.index;
-				const COURSE = this.listCourse.find((course) => course.value === value);
+		// 	if (value) {
+		// 		const idxChange = data.index;
+		// 		const COURSE = this.listCourse.find((course) => course.value === value);
 
-				if (COURSE) {
-					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
-						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
-						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
-						this.listNodeEditSelected[idxChange].course = {
-							flag: null,
-							start_time: null,
-							end_time: null,
-							break_time: null,
-						};
-						this.listNodeEditSelected[idxChange].course_status = null;
-					} else {
-						this.listNodeEditSelected[idxChange].name = COURSE.course_name;
-						this.listNodeEditSelected[idxChange].start_time = convertTextToSelectTime(COURSE.start_time);
-						this.listNodeEditSelected[idxChange].end_time = convertTextToSelectTime(COURSE.end_time);
-						this.listNodeEditSelected[idxChange].break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(COURSE.break_time));
-						this.listNodeEditSelected[idxChange].course = {
-							flag: COURSE.flag,
-							start_time: COURSE.start_time,
-							end_time: COURSE.end_time,
-							break_time: COURSE.break_time,
-						};
-						this.listNodeEditSelected[idxChange].course_status = COURSE.status;
-					}
-				} else {
-					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
-						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
-						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
-						this.listNodeEditSelected[idxChange].course = {
-							flag: null,
-							start_time: null,
-							end_time: null,
-							break_time: null,
-						};
-						this.listNodeEditSelected[idxChange].course_status = null;
-					} else {
-						if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
-							this.listNodeEditSelected[idxChange].start_time = [null, null];
-							this.listNodeEditSelected[idxChange].end_time = [null, null];
-							this.listNodeEditSelected[idxChange].break_time = [null, null];
-							this.listNodeEditSelected[idxChange].course = {
-								flag: 'yes',
-								start_time: null,
-								end_time: null,
-								break_time: null,
-							};
-							this.listNodeEditSelected[idxChange].course_status = null;
-						} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
-							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
-							this.listNodeEditSelected[idxChange].start_time = [null, null];
-							this.listNodeEditSelected[idxChange].end_time = [null, null];
-							this.listNodeEditSelected[idxChange].break_time = [null, null];
-							this.listNodeEditSelected[idxChange].course = {
-								flag: 'yes',
-								start_time: null,
-								end_time: null,
-								break_time: null,
-							};
-							this.listNodeEditSelected[idxChange].course_status = null;
-						}
-					}
-				}
-			}
-		},
+		// 		if (COURSE) {
+		// 			if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+		// 				this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+		// 				this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+		// 				this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+		// 				this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
+		// 				this.listNodeEditSelected[idxChange].course = {
+		// 					flag: null,
+		// 					start_time: null,
+		// 					end_time: null,
+		// 					break_time: null,
+		// 				};
+		// 				this.listNodeEditSelected[idxChange].course_status = null;
+		// 			} else {
+		// 				this.listNodeEditSelected[idxChange].name = COURSE.course_name;
+		// 				this.listNodeEditSelected[idxChange].start_time = convertTextToSelectTime(COURSE.start_time);
+		// 				this.listNodeEditSelected[idxChange].end_time = convertTextToSelectTime(COURSE.end_time);
+		// 				this.listNodeEditSelected[idxChange].break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(COURSE.break_time));
+		// 				this.listNodeEditSelected[idxChange].course = {
+		// 					flag: COURSE.flag,
+		// 					start_time: COURSE.start_time,
+		// 					end_time: COURSE.end_time,
+		// 					break_time: COURSE.break_time,
+		// 				};
+		// 				this.listNodeEditSelected[idxChange].course_status = COURSE.status;
+		// 			}
+		// 		} else {
+		// 			if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+		// 				this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+		// 				this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+		// 				this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+		// 				this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
+		// 				this.listNodeEditSelected[idxChange].course = {
+		// 					flag: null,
+		// 					start_time: null,
+		// 					end_time: null,
+		// 					break_time: null,
+		// 				};
+		// 				this.listNodeEditSelected[idxChange].course_status = null;
+		// 			} else {
+		// 				if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+		// 					this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
+		// 					this.listNodeEditSelected[idxChange].start_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].end_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].break_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].course = {
+		// 						flag: 'yes',
+		// 						start_time: null,
+		// 						end_time: null,
+		// 						break_time: null,
+		// 					};
+		// 					this.listNodeEditSelected[idxChange].course_status = null;
+		// 				} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+		// 					this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
+		// 					this.listNodeEditSelected[idxChange].start_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].end_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].break_time = [null, null];
+		// 					this.listNodeEditSelected[idxChange].course = {
+		// 						flag: 'yes',
+		// 						start_time: null,
+		// 						end_time: null,
+		// 						break_time: null,
+		// 					};
+		// 					this.listNodeEditSelected[idxChange].course_status = null;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// },
 	},
 };
 </script>

@@ -68,6 +68,7 @@ const POST_UPDATE_COURSE_BASE = '/shift/edits';
 const POST_CHECK_DATA_RESULT = '/shift/check-data-result';
 const POST_ADD_LIST_SHIFT = '/shift';
 const GET_DETAIL_SHIFT = '/driver-course';
+const UPDATE_SHIFT = '/driver-course/update-course';
 const GET_MESSAGE_RESPONSE_AI = '/shift/get-message-response-ai';
 
 // Cash Disbusement
@@ -145,6 +146,7 @@ export default {
 
 	// Shift API
 	GET_LIST_PRACTICAL,
+	UPDATE_SHIFT,
 	GET_LIST_SHIFT_TABLE,
 	GET_LIST_HIGHT_WAY,
 	GET_TOTAL_EXTRA_COST,

@@ -242,7 +242,7 @@ export default {
 		rowClass(item) {
 			console.log('addd', item);
 			const today = new Date();
-			const endDate = item.end_date !== null ? new Date(item.end_date) : null;
+			const endDate = item.end_date === null ? null : new Date(item.end_date);
 			if (item.end_date === null || item.end_date > today) {
 				return '';
 			} else if (today >= endDate) {
