@@ -406,27 +406,6 @@
                                                     />
                                                 </template>
                                             </template>
-                                            <!-- aaa
-                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                {{ date }}
-                                                <NodeListShift
-                                                    :key="`date-${date}-${idxDate}`"
-                                                    :idx-component="idx + 1"
-                                                    :date="date"
-                                                    :emp-data="emp"
-                                                    :driver-code="emp.driver_code"
-                                                    :driver-name="emp.driver_name"
-                                                    :start-date="emp.start_date"
-                                                    :end-date="emp.end_date"
-                                                />
-                                            </template> -->
-                                            <!-- <template v-if="listTotalExtraCost.length !== 0">
-                                                <template v-for="(total, index) in listTotalExtraCost">
-                                                    <b-td v-if="index === idx" :key="`total-${index}`" class="td-total-shift">
-                                                        {{ emp.total_money }}
-                                                    </b-td>
-                                                </template>
-                                            </template> -->
                                             <b-td class="td-total-shift">
                                                 {{ emp.total_money }}
                                             </b-td>
@@ -466,14 +445,14 @@
                                     </b-tr>
 
                                     <b-tr>
-                                        <b-th class="th-employee-number" @click="onSortTable('driver_code', 'salaryTable')">
+                                        <b-th class="th-employee-number" @click="onSortTable('customers.customer_code', 'salaryTable')">
                                             {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
                                             <i
-                                                v-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === true"
+                                                v-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.salaryTable.sortBy === 'driver_code' && sortTable.salaryTable.sortType === false"
+                                                v-else-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -482,14 +461,14 @@
                                             />
                                         </b-th>
 
-                                        <b-th class="th-type-employee" @click="onSortTable('flag', 'salaryTable')">
+                                        <b-th class="th-type-employee" @click="onSortTable('customers.closing_date', 'salaryTable')">
                                             {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
                                             <i
-                                                v-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === true"
+                                                v-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.salaryTable.sortBy === 'flag' && sortTable.salaryTable.sortType === false"
+                                                v-else-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -511,7 +490,59 @@
                                     </b-tr>
                                 </b-thead>
 
-                                <b-tbody>
+                                <b-tbody v-if="listSaleAmount.length > 0">
+                                    <template
+                                        v-for="(emp, idx) in listSaleAmount"
+                                    >
+                                        <tr :key="`emp-no-${idx + 1}`">
+                                            <td class="td-employee-number">
+                                                {{ emp.customer_code }}
+                                            </td>
+                                            <b-td class="td-type-employee">
+                                                {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
+                                            </b-td>
+                                            <td class="td-full-name text-center">
+                                                {{ emp.customer_name }}
+                                            </td>
+                                            <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                                <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                    <template v-if="emp.date_ship_fee">
+                                                        <NodeListShift
+                                                            :key="`date-${date}-${idxDate}`"
+                                                            :idx-component="idxDate + 1"
+                                                            :date="date"
+                                                            :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
+                                                            :data-node="emp.date_ship_fee[idxDate]"
+                                                            :emp-data="emp"
+                                                            :driver-code="emp.customer_code"
+                                                            :driver-name="emp.customer_name"
+                                                        />
+                                                    </template>
+
+                                                    <NodeListShift
+                                                        v-else
+                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :idx-component="idxDate + 1"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
+                                                        :date="date"
+                                                        :data-node="emp.date_ship_fee"
+                                                        :emp-data="emp"
+                                                        :driver-code="emp.customer_code"
+                                                        :driver-name="emp.customer_name"
+                                                    />
+                                                </template>
+                                            </template>
+                                            <b-td class="td-total-month">
+                                                {{ emp.total_ship_fee_by_month }}
+                                            </b-td>
+                                            <b-td class="td-total-closing-date">
+                                                {{ emp.total_ship_fee_by_closing_date }}
+                                            </b-td>
+                                            <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
+                                        </tr>
+                                    </template>
+                                </b-tbody>
+                                <!-- <b-tbody>
                                     <b-tr v-for="(driverSalary, index) in listSalary" :key="driverSalary.id">
                                         <b-td class="td-employee-number">
                                             {{ driverSalary.driver_code }}
@@ -519,7 +550,6 @@
 
                                         <b-td class="td-type-employee">
                                             25 日
-                                            <!-- {{ $t(convertValueToText(optionsTypeDriver, driverSalary.flag)) }} -->
                                         </b-td>
 
                                         <b-td class="td-full-name text-center">
@@ -536,7 +566,7 @@
                                         <b-td>0</b-td>
                                         <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
                                     </b-tr>
-                                </b-tbody>
+                                </b-tbody> -->
                                 <b-tbody>
                                     <b-tr>
                                         <b-td class="td-total" colspan="3">
@@ -603,7 +633,7 @@
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
-                                            @click="onSortTable('customers.customer_code', 'Hight way fee table')"
+                                            @click="onSortTable('customers.customer_code', 'HightWay')"
                                         >
                                             {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID") }}
                                             <i
@@ -621,7 +651,7 @@
                                         </b-th>
                                         <b-th
                                             class="th-type-employee"
-                                            @click="onSortTable('customers.closing_date', 'Hight way fee table')"
+                                            @click="onSortTable('customers.closing_date', 'HightWay')"
                                         >
                                             {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE') }}
                                             <i
@@ -1022,6 +1052,7 @@ export default {
 			listCalendar: [],
 			listShift: [],
 			listHighWay: [],
+			listSaleAmount: [],
 			ListPayment: [],
 			listTotalExtraCost: [],
 			listTableCourse: [],
@@ -1036,6 +1067,11 @@ export default {
 				},
 
 				salaryTable: {
+					sortBy: '',
+					sortType: null,
+				},
+
+				HightWay: {
 					sortBy: '',
 					sortType: null,
 				},
@@ -1157,7 +1193,7 @@ export default {
 
 					case CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE:
 						setLoading(true);
-						await this.handleGetTableSalary();
+						await this.handleGetSaleList();
 						setLoading(false);
 
 						break;
@@ -1302,67 +1338,6 @@ export default {
 			this.showModalClosingDate = false;
 		},
 
-		// async handleGetListShift() {
-		// 	try {
-		// 		this.listShift.length = 0;
-
-		// 		const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
-
-		// 		let PARAMS = {
-		// 			type: TYPE,
-		// 		};
-
-		// 		if (this.sortTable.shiftTable.sortBy) {
-		// 			PARAMS[this.sortTable.shiftTable.sortBy] = this.sortTable.shiftTable.sortType ? 'asc' : 'desc';
-		// 		}
-
-		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-		// 			const START = this.pickerWeek.start;
-		// 			const END = this.pickerWeek.end;
-
-		// 			PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
-		// 			PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
-
-		// 			const YEAR = this.pickerYearMonth.year;
-		// 			const MONTH = this.pickerYearMonth.month;
-
-		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-		// 			PARAMS.date = YEAR_MONTH;
-		// 		}
-
-		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-		// 			const YEAR = this.pickerYearMonth.year;
-		// 			const MONTH = this.pickerYearMonth.month;
-
-		// 			const START = `${YEAR}-${format2Digit(MONTH)}-01`;
-		// 			const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-
-		// 			PARAMS.start_date = START;
-		// 			PARAMS.end_date = END;
-
-		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-		// 			PARAMS.date = YEAR_MONTH;
-		// 		}
-
-		// 		PARAMS = cleanObject(PARAMS);
-
-		// 		if (PARAMS.field) {
-		// 			PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
-		// 		}
-
-		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-
-		// 		if (code === 200) {
-		// 			this.listShift = convertValueWhenNull(data);
-
-		// 			this.reloadTable();
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// },
 		async handleGetListShift() {
 			try {
 				setLoading(true);
@@ -1384,15 +1359,11 @@ export default {
 
 				PARAMS = cleanObject(PARAMS);
 
-				// if (PARAMS.field) {
-				// 	PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
-				// }
 				console.log('param', PARAMS);
 
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					// this.listShift = convertValueWhenNull(data);
 					this.listShift = data;
 					console.log('data', this.listShift);
 					this.reloadTable();
@@ -1410,9 +1381,9 @@ export default {
 
 				let PARAMS = {};
 
-				if (this.sortTable.shiftTable.sortBy) {
-					PARAMS.field = this.sortTable.shiftTable.sortBy;
-					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
+				if (this.sortTable.HightWay.sortBy) {
+					PARAMS.field = this.sortTable.HightWay.sortBy;
+					PARAMS.sortby = this.sortTable.HightWay.sortType ? 'desc' : 'asc';
 				}
 				const YEAR = this.pickerYearMonth.year;
 				const MONTH = this.pickerYearMonth.month;
@@ -1433,6 +1404,40 @@ export default {
 				}
 				setLoading(false);
 			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
+		async handleGetSaleList() {
+			try {
+				setLoading(true);
+				this.listSaleAmount.length = 0;
+
+				let PARAMS = {};
+
+				if (this.sortTable.salaryTable.sortBy) {
+					PARAMS.field = this.sortTable.salaryTable.sortBy;
+					PARAMS.sortby = this.sortTable.salaryTable.sortType ? 'desc' : 'asc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+
+				PARAMS = cleanObject(PARAMS);
+
+				const { code, data } = await getListShift(CONSTANT.URL_API.GET_SALE_LIST, PARAMS);
+
+				if (code === 200) {
+					this.listSaleAmount = data;
+					this.reloadTable();
+				}
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
 				console.log(error);
 			}
 		},
@@ -1467,45 +1472,45 @@ export default {
 			}
 		},
 
-		async handleGetTableSalary() {
-			try {
-				this.listSalary.length = 0;
+		// async handleGetTableSalary() {
+		// 	try {
+		// 		this.listSalary.length = 0;
 
-				const YEAR = this.$store.getters.pickerYearMonth.year;
-				const MONTH = this.$store.getters.pickerYearMonth.month;
-				const NUMBER_DATE = this.$store.getters.pickerYearMonth.numberDate;
+		// 		const YEAR = this.$store.getters.pickerYearMonth.year;
+		// 		const MONTH = this.$store.getters.pickerYearMonth.month;
+		// 		const NUMBER_DATE = this.$store.getters.pickerYearMonth.numberDate;
 
-				const START_SALARY = `${YEAR}-${format2Digit(MONTH)}-01`;
-				const END_SALARY = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(NUMBER_DATE)}`;
-				const MONTH_SALARY = `${YEAR}-${format2Digit(MONTH)}`;
+		// 		const START_SALARY = `${YEAR}-${format2Digit(MONTH)}-01`;
+		// 		const END_SALARY = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(NUMBER_DATE)}`;
+		// 		const MONTH_SALARY = `${YEAR}-${format2Digit(MONTH)}`;
 
-				const PARAMS = {
-					start_date: START_SALARY,
-					end_date: END_SALARY,
-					date: MONTH_SALARY,
-					tab3: true,
-					type: 'month',
-				};
+		// 		const PARAMS = {
+		// 			start_date: START_SALARY,
+		// 			end_date: END_SALARY,
+		// 			date: MONTH_SALARY,
+		// 			tab3: true,
+		// 			type: 'month',
+		// 		};
 
-				if (this.sortTable.salaryTable.sortBy) {
-					PARAMS.field = this.sortTable.salaryTable.sortBy;
-					PARAMS.sortby = this.sortTable.salaryTable.sortType ? 'asc' : 'desc';
-				}
+		// 		if (this.sortTable.salaryTable.sortBy) {
+		// 			PARAMS.field = this.sortTable.salaryTable.sortBy;
+		// 			PARAMS.sortby = this.sortTable.salaryTable.sortType ? 'asc' : 'desc';
+		// 		}
 
-				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-				console.log('get listSalary', data);
-				if (code === 200) {
-					console.log('get listSalary', data);
-					this.listSalary = data;
-					this.convertTotalSalary();
-				} else {
-					this.listSalary = [];
-				}
-			} catch (error) {
-				this.listSalary = [];
-				console.log(error);
-			}
-		},
+		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
+		// 		console.log('get listSalary', data);
+		// 		if (code === 200) {
+		// 			console.log('get listSalary', data);
+		// 			this.listSalary = data;
+		// 			this.convertTotalSalary();
+		// 		} else {
+		// 			this.listSalary = [];
+		// 		}
+		// 	} catch (error) {
+		// 		this.listSalary = [];
+		// 		console.log(error);
+		// 	}
+		// },
 
 		convertTotalSalary() {
 			console.log('list SALARY: ', this.listSalary);
@@ -1626,20 +1631,26 @@ export default {
 					setLoading(false);
 
 					break;
-				case 'customers.customer_name':
-					if (this.sortTable[table].sortBy === 'customers.customer_name') {
+				case 'customers.customer_code':
+					if (this.sortTable[table].sortBy === 'customers.customer_code') {
 						if (this.sortTable[table].sortType) {
 							this.sortTable[table].sortType = !this.sortTable[table].sortType;
 						} else {
 							this.sortTable[table].sortType = true;
 						}
 					} else {
-						this.sortTable[table].sortBy = 'customers.customer_name';
+						this.sortTable[table].sortBy = 'customers.customer_code';
 						this.sortTable[table].sortType = true;
 					}
 
 					setLoading(true);
-					await this.handleGetHightWay();
+					if (this.selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE) {
+						await this.handleGetHightWay();
+					}
+
+					if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
+						await this.handleGetSaleList();
+					}
 					setLoading(false);
 
 					break;
@@ -1656,7 +1667,13 @@ export default {
 					}
 
 					setLoading(true);
-					await this.handleGetHightWay();
+					if (this.selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE) {
+						await this.handleGetHightWay();
+					}
+
+					if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
+						await this.handleGetSaleList();
+					}
 					setLoading(false);
 
 					break;
@@ -1775,7 +1792,7 @@ export default {
 					if (table === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 						setLoading(true);
 						await this.handleGetListCalendar();
-						await this.handleGetTableSalary();
+						await this.handleGetSaleList();
 						setLoading(false);
 					}
 
@@ -2082,71 +2099,42 @@ export default {
 					});
 			}
 			if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
-				const sort = {
-					field: this.sortTable.salaryTable.sortBy,
-					sortby: this.sortTable.salaryTable.sortType,
-				};
-				// console.log('sort table: ', this.sortTable);
+				try {
+					let params = {};
 
-				let SORT = '';
-
-				if (sort.field === 'driver_code') {
-					if (sort.sortby) {
-						SORT = '&sortby_code=asc';
-					} else {
-						SORT = '&sortby_code=desc';
+					if (this.sortTable.salaryTable.sortBy) {
+						params.field = this.sortTable.salaryTable.sortBy;
+						params.sortby = this.sortTable.salaryTable.sortType ? 'desc' : 'asc';
 					}
-				}
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
 
-				if (sort.field === 'flag') {
-					if (sort.sortby) {
-						SORT = '&sortby_driver_type=asc';
-					} else {
-						SORT = '&sortby_driver_type=desc';
-					}
-				}
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-				// const STATUS_VIEW = '&status_view=fix';
-
-				const YEAR = this.pickerYearMonth.year || null;
-				const MONTH = this.pickerYearMonth.month || null;
-
-				const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
-
-				let VIEW_DATE = '';
-				const TYPE = '&type=grade-tab';
-
-				VIEW_DATE = `date=${YEAR_MONTH}` || null;
-
-				const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SHIFT_FILE}?${VIEW_DATE}${TYPE}${SORT}`;
-
-				// console.log('URL DOWNLOAD ==>', URL)
-				let FILE_DOWNLOAD;
-
-				fetch(URL, {
-					headers: {
-						'Accept-Language': this.$store.getters.language,
-						'Authorization': getToken(),
-						'accept': 'application/json',
-					},
-				}).then(async(res) => {
-					// console.log(res);
-					let filename = decodeURI(res.headers.get('content-disposition').split(`filename*=utf-8''`)[1]) || `実務実績月別_{${YEAR_MONTH}}`;
-					filename = filename.replaceAll('"', '');
-					await res.blob().then((res) => {
-						FILE_DOWNLOAD = res;
+					params.month_year = YEAR_MONTH;
+					params = cleanObject(params);
+					const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST}`;
+					await axios.get(URL, {
+						params: params,
+						responseType: 'blob',
+						headers: {
+							'Accept-Language': this.$store.getters.language,
+							'Authorization': getToken(),
+							'accept': 'application/json',
+						},
+					}).then((response) => {
+						const url = window.URL.createObjectURL(new Blob([response.data]));
+						const link = document.createElement('a');
+						link.href = url;
+						link.setAttribute('download', 'SaleList.xlsx');
+						document.body.appendChild(link);
+						link.click();
+					}).catch((error) => {
+						console.log(error);
 					});
-					const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
-					const fileLink = document.createElement('a');
-					fileLink.href = fileURL;
-					fileLink.setAttribute('download', filename);
-					document.body.appendChild(fileLink);
-
-					fileLink.click();
-				})
-					.catch((err) => {
-						console.log(err);
-					});
+				} catch (error) {
+					console.log(error);
+				}
 			}
 		},
 
@@ -2619,7 +2607,7 @@ export default {
                                 z-index: 10;
                                 top: 0;
                                 left: 0;
-
+								cursor: pointer;
 								min-width: 150px;
 							}
 
@@ -2722,7 +2710,7 @@ export default {
 								text-align: center;
                                 vertical-align: middle;
 
-								padding: 5px 0;
+								padding: 20px 0;
 
                                 top: 0;
 							}
@@ -2762,7 +2750,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 300px;
+                                left: 330px;
 
                                 width: 240px;
 
@@ -2784,7 +2772,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 37px;
+                            top: 43px;
                         }
 					}
 
@@ -2891,7 +2879,7 @@ export default {
                                 z-index: 10;
                                 top: 0;
                                 left: 0;
-
+								cursor: pointer;
 								min-width: 150px;
 							}
 

@@ -209,16 +209,6 @@ export default {
 			}
 		},
 
-		// handleStyle(end_date) {
-		// 	const today = new Date();
-		// 	const endDate = new Date(end_date);
-		// 	if (today === endDate) {
-		// 		return 'background: #dbdbdb';
-		// 	} else if (end_date === null) {
-		// 		return '';
-		// 	}
-		// },
-
 		getTextEnrollmentStatus(end_date) {
 			const today = new Date();
 			const endDate = end_date !== null ? new Date(end_date) : null;
@@ -229,30 +219,21 @@ export default {
 			} else {
 				return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
 			}
-			// switch (end_date) {
-			// 	case end_date !== null:
-			// 		return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_RETIRED);
-			// 	case end_date:
-			// 		return this.$t(CONSTANT.LIST_DRIVER.TEXT_ENROLLMENT_STATUS_ENROLLED);
-			// 	default:
-			// 		return '';
-			// }
 		},
 
 		rowClass(item) {
-			console.log('addd', item);
 			const today = new Date();
 			let endDate = null;
 			if (item !== null){
 				endDate = item.end_date === null ? null : new Date(item.end_date);
 			}
-			if (endDate === null || endDate > today) {
+			if (endDate === null) {
 				return '';
 			} else if (today >= endDate) {
 				return 'employee-retired';
+			} else {
+				return '';
 			}
-
-			return '';
 		},
 
 		goToCreateDriver() {
