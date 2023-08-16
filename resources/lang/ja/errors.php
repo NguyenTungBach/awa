@@ -43,6 +43,7 @@ return [
     'duplicate_driver_id_and_course_id' => 'duplicate driver :driver_id and course_id :course_id ',
     'duplicate_id_shift' => 'duplicate shift update id :id',
     'duplicate_driver_id' => 'duplicate driver_id :driver_id, driver_name :driver_name',
+    'date_not_in_month' => 'not in month :month_year with date :date of driver_id :driver_id, driver_name :driver_name, course_id :course_id, course_name :course_name',
     'all_id_special_must_one' => 'all items have id special must only have one in date, driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name, date :date',
     'driver_must_one_course_in_day_with_id_special' => 'driver must one course in day with id special, remain driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name, date :date',
     'cash_in_statistical_not_found' => 'cash in statistical for payment month :month_year not found',
