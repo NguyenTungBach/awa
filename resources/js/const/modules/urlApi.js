@@ -56,8 +56,10 @@ const POST_DAY_OFF = '/day-off';
 // /api/shift?date=2022-05&start_date=2022-04-30&end_date=2022-05-06&type=week
 const GET_LIST_PRACTICAL = '/parctical-performance';
 const GET_LIST_SHIFT_TABLE = '/driver-course';
+const GET_SALE_LIST = '/driver-course/sales-list';
 const GET_LIST_HIGHT_WAY = '/driver-course/get-all-express-charge';
 const GET_TOTAL_EXTRA_COST = '/driver-course/total-extra-cost';
+const GET_EXPORT_SALE_LIST = '/driver-course/export-sales-list';
 const GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK = '/driver-course/export-shift';
 const GET_EXPORT_SHIFT_PDF_ONLY_WEEK = '/shift/export-to-pdf';
 const GET_EXPORT_HIGHT_WAY = '/driver-course/export-shift-express-charge';
@@ -149,6 +151,8 @@ export default {
 	UPDATE_SHIFT,
 	GET_LIST_SHIFT_TABLE,
 	GET_LIST_HIGHT_WAY,
+	GET_SALE_LIST,
+	GET_EXPORT_SALE_LIST,
 	GET_TOTAL_EXTRA_COST,
 	GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK,
 	GET_EXPORT_SHIFT_PDF_ONLY_WEEK,
