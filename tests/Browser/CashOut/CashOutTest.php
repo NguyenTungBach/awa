@@ -9,6 +9,7 @@ use App\Models\DriverCourse;
 use App\Models\User;
 use Carbon\Carbon;
 use Facebook\WebDriver\WebDriverBy;
+use GuzzleHttp\Client;
 use Helper\Common;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -80,6 +81,10 @@ class CashOutTest extends DuskTestCase
             "end_time" => $course->end_date,
             "status" => 1,
         ]);
+
+//        $client = new Client();
+//        $response = $client->post("/api/calendar/setup-data?targetyyyy=$getYearNow"); // Gọi API bằng phương thức GET
+//        $apiResponse = $response->getBody()->getContents();
 
         $this->browse(function ($browser) {
             $browser->maximize();
