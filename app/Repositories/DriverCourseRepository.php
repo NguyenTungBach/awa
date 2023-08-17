@@ -902,20 +902,26 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
         foreach ($items as $item) {
             foreach ($item['listShift'] as $shift){
-                // Trong trường hợp thấy id đặc biệt thì danh sách chỉ được mỗi id đó thôi
+                // Trong trường hợp thấy id đặc biệt thì danh sách chỉ được mỗi id ngày đó thôi
                 if (in_array($shift['course_id'], DriverCourse::ALL_ID_SPECIAL)){
+                    $idCourseSPECIAL = $shift['course_id'];
+                    $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d'); // Ngày cần check
+                    //Quay về Kiểm tra lại xem trong lịch trình ngày đó chỉ được một nếu còn tồn tại ngày khác thì báo lỗi
+                    $filterDate = array_filter($item['listShift'], function ($item) use ($checkDateFind) {
+                        return $item['date'] === $checkDateFind;
+                    });
+
                     // Nếu lịch trình lớn hơn 1 thì báo lỗi
-                    if (count($item['listShift']) >1){
+                    if (count($filterDate) >1){
                         $driver = Driver::find($item['driver_id']);
-                        $checkCourse_id = $shift['course_id'];
-                        $course = Course::find($checkCourse_id);
-                        $checkDateFind = Carbon::parse($item['date'])->format('Y-m-d');
+                        $course = Course::find($idCourseSPECIAL);
+                        $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d');
 
                         return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                             trans('errors.all_id_special_must_one',[
                                 "driver_id"=> $item['driver_id'],
                                 "driver_name"=> $driver->driver_name,
-                                "course_id"=> $item['course_id'],
+                                "course_id"=> $idCourseSPECIAL,
                                 "course_name"=> $course->course_name,
                                 "date"=> $checkDateFind,
                             ]));
@@ -1506,7 +1512,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             //Truyền dữ liệu tổng vào
             if ($value['total_money'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_money'],DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -1661,7 +1667,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['dataShiftExpress']['data_ship_date'] as $dataForListShift){
                         // Nếu course này cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataForListShift['ship_date']){
-                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'],DataType::TYPE_STRING);
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'] == '' ? '' : number_format($dataForListShift['courses_expressway_fee']),DataType::TYPE_STRING);
                         }
                     }
                 }
@@ -1669,7 +1675,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             //Truyền dữ liệu tổng vào
             if ($value['total_courses_expressway_fee'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_courses_expressway_fee'],DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_courses_expressway_fee']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -2071,7 +2077,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['date_ship_fee'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataByDate['date']){
-                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['courses_ship_fee'],DataType::TYPE_STRING);
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['courses_ship_fee'] == '' ? '' : number_format($dataByDate['courses_ship_fee']),DataType::TYPE_STRING);
                         }
                     }
                 }
@@ -2079,10 +2085,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             //Truyền dữ liệu tổng vào
             if ($value['total_ship_fee_by_closing_date'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_ship_fee_by_closing_date'],DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_ship_fee_by_closing_date'] == '' ? '' : number_format($value['total_ship_fee_by_closing_date']),DataType::TYPE_STRING);
             }
             if ($value['total_ship_fee_by_month'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,$value['total_ship_fee_by_month'],DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,$value['total_ship_fee_by_month'] == '' ? '' : number_format($value['total_ship_fee_by_month']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -2100,16 +2106,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($dataForListSales['total_all_sales_by_date'] as $key => $value){
                 // Nếu trùng ngày thì truyền vào
                 if ($dataCalendar['date'] == $value['date']){
-                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_all_ship_fee_by_date'],DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_all_ship_fee_by_date'] == '' ? '' : number_format($value['total_all_ship_fee_by_date']),DataType::TYPE_STRING);
                     break;
                 }
             }
             $colCalendarTotal ++;
         }
         // Cập nhật nốt tổng closing date
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'],DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_closing_date']),DataType::TYPE_STRING);
         // Cập nhật nốt tổng month
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_month'],DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_month'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_month']),DataType::TYPE_STRING);
         //Đặt style
         $sheet->getStyle([4,$index,$colCalendarTotal+1,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
 

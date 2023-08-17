@@ -104,7 +104,7 @@ class DriverCourseRequest extends FormRequest
 //                ],
                 "month_year"=> [
                     'required',
-                    "date_format:Y-m-d",
+                    "date_format:Y-m",
                 ],
                 "items"=> [
                     'required',

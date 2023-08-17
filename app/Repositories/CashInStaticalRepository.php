@@ -212,11 +212,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         foreach ($dataForListCashInStatical as $key => $value){
             $sheet->setCellValue('A'.$index, $value['customer_code']);
             $sheet->setCellValue('B'.$index, $value['customer_name']);
-            $sheet->setCellValue('C'.$index, $value['balance_previous_month']);
-            $sheet->setCellValue('D'.$index, $value['receivable_this_month']);
-            $sheet->setCellValue('E'.$index, $value['total_account_receivable']);
-            $sheet->setCellValue('F'.$index, $value['total_cash_in_of_current_month']);
-            $sheet->setCellValue('G'.$index, $value['total_cash_in_current']);
+            $sheet->setCellValue('C'.$index, number_format($value['balance_previous_month']));
+            $sheet->setCellValue('D'.$index, number_format($value['receivable_this_month']));
+            $sheet->setCellValue('E'.$index, number_format($value['total_account_receivable']));
+            $sheet->setCellValue('F'.$index, number_format($value['total_cash_in_of_current_month']));
+            $sheet->setCellValue('G'.$index, number_format($value['total_cash_in_current']));
 
             $index ++;
         }
