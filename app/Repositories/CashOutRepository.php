@@ -47,21 +47,18 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         try {
             DB::beginTransaction();
             $cashOut = [];
-            $checkDriverId = $this->checkExistsDriverCourse($input['driver_id'], $input['payment_date']);
-            if ($checkDriverId) {
-                $input['note'] = Arr::get($input, 'note', NULL);
+            $input['note'] = Arr::get($input, 'note', NULL);
 
-                $cashOut = CashOut::create([
-                    'driver_id' => $input['driver_id'],
-                    'cash_out' => $input['cash_out'],
-                    'payment_method' => $input['payment_method'],
-                    'payment_date' => $input['payment_date'],
-                    'note' => $input['note'],
-                ]);
-    
-                unset($input['payment_method'], $input['note']);
-                $cashOutCreate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
-            }
+            $cashOut = CashOut::create([
+                'driver_id' => $input['driver_id'],
+                'cash_out' => $input['cash_out'],
+                'payment_method' => $input['payment_method'],
+                'payment_date' => $input['payment_date'],
+                'note' => $input['note'],
+            ]);
+
+            unset($input['payment_method'], $input['note']);
+            $cashOutCreate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
             DB::commit();
 
             return $cashOut;
@@ -128,6 +125,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
                 $input['payment_date'] = Arr::get($input, 'payment_date', $cashOut->payment_date);
 
                 if (date('Y-m', strtotime($input['payment_date'])) > date('Y-m', strtotime($cashOut->payment_date))) {
+                    $input['payment_date_update'] = $input['payment_date'];
                     $input['payment_date'] = $cashOut->payment_date;
                 };
                 if (date('Y-m', strtotime($input['payment_date'])) < date('Y-m', strtotime($cashOut->payment_date))) {
