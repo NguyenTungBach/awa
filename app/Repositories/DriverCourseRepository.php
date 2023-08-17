@@ -700,6 +700,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $data = [
             "driver_id"=>$driver_id,
+            "date"=>$request->date,
             "listShift"=>$driver_courses
         ];
 
