@@ -93,7 +93,6 @@ class CashOutRequest extends FormRequest
                 'required',
                 'date_format:Y-m-d',
                 new CheckPaymentDateExistFinal(__('cash_outs.payment_date')),
-                new CheckPaymentDate(__('cash_outs.payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
         ];
