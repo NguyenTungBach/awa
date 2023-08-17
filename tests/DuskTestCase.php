@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -68,6 +69,8 @@ abstract class DuskTestCase extends BaseTestCase
 
     public function login($browser)
     {
+//        $getYearNow = Carbon::now()->format("Y");
+//        $this->get("/api/calendar/setup-data?targetyyyy=$getYearNow"); // Gọi API bằng phương thức GET
         $browser->visit('/')->waitFor('.login-btn')
             ->type('#user_id', '1122')->pause(1000)
             ->type('#password', 'abc12345678')->pause(1000)
