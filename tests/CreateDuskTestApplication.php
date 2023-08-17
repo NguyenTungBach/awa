@@ -23,8 +23,9 @@ trait CreateDuskTestApplication
         Artisan::call('migrate:fresh --seed');
         $getYearNow = Carbon::now()->format("Y");
         $client = new Client();
-        $response = $client->get("/api/calendar/setup-data?targetyyyy=$getYearNow"); // Gọi API bằng phương thức GET
-        $apiResponse = $response->getBody()->getContents();
+        $apiUrl = url("/api/calendar/setup-data?targetyyyy=$getYearNow");
+        $response = $client->get($apiUrl); // Gọi API bằng phương thức GET
+//        $apiResponse = $response->getBody()->getContents();
         return $app;
     }
 }

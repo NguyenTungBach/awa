@@ -692,11 +692,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 //        return ResponseService::responseJson(200, new BaseResource($attributes));
 //    }
 
-    public function getDetalDriverCourse($id,$request){
+    public function getDetalDriverCourse($driver_id,$request){
         // Tìm đến tất cả course của driver theo ngày trong request
-        $data = $this->model->with("course")
-            ->where("driver_id",$id)
+        $driver_courses = $this->model->with("course")
+            ->where("driver_id",$driver_id)
             ->where("date",$request->date)->get();
+
+        $data = [
+            "driver_id"=>$driver_id,
+            "listShift"=>$driver_courses
+        ];
 
         return ResponseService::responseJson(Response::HTTP_OK, new BaseResource($data));
     }
