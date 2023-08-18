@@ -142,7 +142,7 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function getAllCashOutStatisticalByDriver($input)
     {
-        $input['order_by'] = Arr::get($input, 'order_by', 'drivers.id');
+        $input['order_by'] = Arr::get($input, 'order_by', 'id');
         $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
         $input['month_line'] = Arr::get($input, 'month_line', Carbon::now()->format('Y-m'));
 
@@ -198,7 +198,13 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
             }
         }
 
-        $result = $data;
+        $collection = collect($data);
+        $collection = $collection->sortBy([
+            [$input['order_by'], $input['sort_by']],
+            ['id', 'desc'],
+        ]);
+
+        $result = $collection;
 
         return $result;
     }
