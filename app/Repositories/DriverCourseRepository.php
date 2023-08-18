@@ -203,6 +203,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "course_names"=> "",
                     "course_names_color"=> ""
                 ];
+                // Chỉ lấy ra driver có lịch trình
                 foreach ($checkDatas as $checkData){
                     if ($calendar->date == $checkData['date']){
                         $dataByCalendar = [
@@ -258,6 +259,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'total_money' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
+                // Nếu driver đó có lịch trình thì gán vào còn không thì để ngày lịch rỗng
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
                 } else{
@@ -265,6 +267,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         'driver_id' => $driver->id,
                         'data_by_date' => [],
                     ];
+                    foreach ($calendars as $calendar){
+                        $driverConvert['dataShift']['data_by_date'][] = [
+                            "driver_id" => $driver->id,
+                            "date"=> $calendar->date,
+                            "course_ids"=> "",
+                            "course_names"=> "",
+                            "course_names_color"=> ""
+                        ];
+                    }
+
                 }
             }
             if (count($dataTotalByDriverIds) != 0){
