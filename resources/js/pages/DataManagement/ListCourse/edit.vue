@@ -476,7 +476,7 @@ export default {
 					this.isForm.customer_manager = DATA.person_charge;
 					this.isForm.customer_postCode = DATA.post_code;
 					this.isForm.customer_address = DATA.address;
-					this.isForm.customer_phone = formartPhoneNumber(DATA.phone);
+					this.isForm.customer_phone = DATA.phone;
 					this.isForm.note = DATA.note;
 					console.log('form:', this.isForm);
 					setLoading(false);

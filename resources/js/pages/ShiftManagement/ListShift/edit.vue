@@ -873,7 +873,7 @@ export default {
 			// this.modalEdit = false;
 			console.log('list node:', FILTER_LIST_SELECTED);
 
-			const DRIVER_CODE = this.nodeEmit.driver_id;
+			const DRIVER_CODE = Number(this.nodeEmit.driver_id);
 			const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
 
 			// const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
@@ -889,6 +889,7 @@ export default {
 			let INDEX_CELL_OF_DRIVER = -1;
 			INDEX_CELL_OF_DRIVER = Number(this.handleChangeFromMonthtoIndex((this.nodeEmit.date).slice(-2))) - 1;
 			console.log('listShift:', INDEX_CELL_OF_DRIVER);
+			console.log('index:', DRIVER_CODE);
 
 			const DATA_UPDATE = FILTER_LIST_SELECTED;
 

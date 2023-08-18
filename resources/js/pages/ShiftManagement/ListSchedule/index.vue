@@ -517,6 +517,7 @@ import { postImportFile, getListSchedule, deleteCourse, getAllDelete } from '@/a
 import TOAST_SCHEDULE_SHIFT from '@/toast/modules/scheduleShift';
 import { getList } from '@/api/modules/courseManagement';
 import { getToken } from '@/utils/handleToken';
+import { format2Digit } from '@/utils/generateTime';
 // import HeaderFilterVue from '../../../components/HeaderFilter.vue';
 import TOAST_SCHEDULE from '@/toast/modules/scheduleManagement';
 
@@ -601,6 +602,10 @@ export default {
 		language() {
 			return this.$store.getters.language;
 		},
+
+		pickerYearMonth() {
+			return this.$store.getters.pickerYearMonth;
+		},
 	},
 
 	watch: {
@@ -610,6 +615,10 @@ export default {
 			},
 
 			deep: true,
+		},
+
+		pickerYearMonth() {
+			this.initData();
 		},
 	},
 
@@ -668,6 +677,16 @@ export default {
 					sort_by: this.sortTable.sortType,
 					// Authorization: getToken(),
 				};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				if (this.start_date && this.end_date) {
+					params.month_line = '';
+				} else {
+					params.month_line = YEAR_MONTH;
+				}
 
 				params = cleanObject(params);
 				if (params.order_by) {
@@ -742,7 +761,6 @@ export default {
 						this.resetImportFile();
 						await this.initData();
 					} else {
-					    console.log('data', message);
 						TOAST_SCHEDULE_SHIFT.server(message);
 					}
 				}
@@ -761,7 +779,6 @@ export default {
 				// 	this.listCourseImportFaild = DATA_ERROR;
 				// 	this.showModalImportFaild = true;
 				// }
-				TOAST_SCHEDULE_SHIFT.server(error);
 				setLoading(false);
 			}
 		},
