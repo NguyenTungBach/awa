@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TEST COMPONENT LIST SHIFT Check click button Excel 1`] = `
+<div class="col">
+  <div class="list-shift">
+    <div class="list-shift__header">
+      <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 col-12">
+          <div class="zone-left">
+            <div class="zone-title"><span class="title-page">
+                                LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE
+                            </span></div>
+            <div class="zone-select-week-month"></div>
+            <div class="zone-calendar-week"></div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-12">
+          <!---->
+          <!---->
+          <!---->
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="component-line-gray"></div>
+    <div class="list-shift__control">
+      <div class="row">
+        <div class="col">
+          <div class="text-left">
+            <div role="group" class="button-text-left btn-group"><button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_SHIFT_TABLE</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_HIGHT_WAY_FEE</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_TABLE_SALES</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_PAYMENT</span></button></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="text-right"><button type="button" class="btn btn-edit btn-color-active btn-secondary rounded-pill" style="display: none;">
+              LIST_SHIFT.BUTTON_EDIT
+            </button></div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="list-shift__table">
+      <div class="b-overlay-wrap position-relative">
+        <div class="zone-table">
+          <!---->
+          <!---->
+          <!---->
+          <!---->
+        </div>
+        <transition-stub name="" appear="true" css="true" enterclass="" leaveclass="show" entertoclass="show" leavetoclass="" enteractiveclass="fade" leaveactiveclass="fade" appearclass="" appearactiveclass="fade" appeartoclass="show">
+          <!---->
+        </transition-stub>
+      </div>
+    </div>
+  </div>
+  <div id="modal-closing-date___BV_modal_outer_" style="position: absolute; z-index: 1040;">
+    <transition-stub enterclass="" leaveclass="" entertoclass="" leavetoclass="" enteractiveclass="" leaveactiveclass="">
+      <div id="modal-closing-date" role="dialog" aria-hidden="true" aria-describedby="modal-closing-date___BV_modal_body_" class="modal fade" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <!---->
+          <div id="modal-closing-date___BV_modal_content_" tabindex="-1" class="modal-content">
+            <!---->
+            <div id="modal-closing-date___BV_modal_body_" class="modal-body modal-closing-date">
+              <div class="text-center">
+                <h5 class="font-weight-bolde">
+                  締日を選択してください
+                </h5>
+              </div>
+              <div class="body-item">
+                <div class="row">
+                  <div class="col-8" style="margin: auto;">
+                    <div role="group" class="input-group">
+                      <!----><select id="input-closing-date" class="custom-select">
+                        <option value="24">24日</option>
+                        <option value="25">25日</option>
+                      </select>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center"><button type="button" class="btn btn-secondary rounded-pill">
+                  キャンセル
+                </button> <button type="button" class="btn mr-2 btn-color-active-import btn-secondary rounded-pill">
+                  OK
+                </button></div>
+            </div>
+            <!---->
+          </div>
+          <!---->
+        </div>
+      </div>
+    </transition-stub>
+    <transition-stub name="" css="true" enterclass="" leaveclass="show" entertoclass="show" leavetoclass="" enteractiveclass="fade" leaveactiveclass="fade">
+      <!---->
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`TEST COMPONENT LIST SHIFT Check click button Excel 2`] = `
+<div class="col">
+  <div class="list-shift">
+    <div class="list-shift__header">
+      <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 col-12">
+          <div class="zone-left">
+            <div class="zone-title"><span class="title-page">
+                                LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE
+                            </span></div>
+            <div class="zone-select-week-month"></div>
+            <div class="zone-calendar-week"></div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-12">
+          <!---->
+          <!---->
+          <!---->
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="component-line-gray"></div>
+    <div class="list-shift__control">
+      <div class="row">
+        <div class="col">
+          <div class="text-left">
+            <div role="group" class="button-text-left btn-group"><button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_SHIFT_TABLE</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_HIGHT_WAY_FEE</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_TABLE_SALES</span></button> <button type="button" class="btn btn-secondary control-button-group"><span>LIST_SHIFT.BUTTON_PAYMENT</span></button></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="text-right"><button type="button" class="btn btn-edit btn-color-active btn-secondary rounded-pill" style="display: none;">
+              LIST_SHIFT.BUTTON_EDIT
+            </button></div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="list-shift__table">
+      <div class="b-overlay-wrap position-relative">
+        <div class="zone-table">
+          <!---->
+          <!---->
+          <!---->
+          <!---->
+        </div>
+        <transition-stub name="" appear="true" css="true" enterclass="" leaveclass="show" entertoclass="show" leavetoclass="" enteractiveclass="fade" leaveactiveclass="fade" appearclass="" appearactiveclass="fade" appeartoclass="show">
+          <!---->
+        </transition-stub>
+      </div>
+    </div>
+  </div>
+  <div id="modal-closing-date___BV_modal_outer_" style="position: absolute; z-index: 1040;">
+    <transition-stub enterclass="" leaveclass="" entertoclass="" leavetoclass="" enteractiveclass="" leaveactiveclass="">
+      <div id="modal-closing-date" role="dialog" aria-hidden="true" aria-describedby="modal-closing-date___BV_modal_body_" class="modal fade" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <!---->
+          <div id="modal-closing-date___BV_modal_content_" tabindex="-1" class="modal-content">
+            <!---->
+            <div id="modal-closing-date___BV_modal_body_" class="modal-body modal-closing-date">
+              <div class="text-center">
+                <h5 class="font-weight-bolde">
+                  締日を選択してください
+                </h5>
+              </div>
+              <div class="body-item">
+                <div class="row">
+                  <div class="col-8" style="margin: auto;">
+                    <div role="group" class="input-group">
+                      <!----><select id="input-closing-date" class="custom-select">
+                        <option value="24">24日</option>
+                        <option value="25">25日</option>
+                      </select>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center"><button type="button" class="btn btn-secondary rounded-pill">
+                  キャンセル
+                </button> <button type="button" class="btn mr-2 btn-color-active-import btn-secondary rounded-pill">
+                  OK
+                </button></div>
+            </div>
+            <!---->
+          </div>
+          <!---->
+        </div>
+      </div>
+    </transition-stub>
+    <transition-stub name="" css="true" enterclass="" leaveclass="show" entertoclass="show" leavetoclass="" enteractiveclass="fade" leaveactiveclass="fade">
+      <!---->
+    </transition-stub>
+  </div>
+</div>
+`;
