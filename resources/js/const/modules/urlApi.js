@@ -70,6 +70,7 @@ const POST_UPDATE_CELL_SHIFT = '/shift/detail-cell';
 const POST_UPDATE_COURSE_BASE = '/shift/edits';
 const POST_CHECK_DATA_RESULT = '/shift/check-data-result';
 const POST_ADD_LIST_SHIFT = '/shift';
+const POST_CLOSING_DATE = '/final-closing';
 const GET_DETAIL_SHIFT = '/driver-course';
 const UPDATE_SHIFT = '/driver-course/update-course';
 const GET_MESSAGE_RESPONSE_AI = '/shift/get-message-response-ai';
@@ -167,6 +168,7 @@ export default {
 	POST_ADD_LIST_SHIFT,
 	GET_DETAIL_SHIFT,
 	GET_MESSAGE_RESPONSE_AI,
+	POST_CLOSING_DATE,
 
 	// Cash Disbusement
 	GET_LIST_CASH_DISBUSEMENT,

@@ -197,6 +197,8 @@ export default {
 		BUTTON_SAVE: 'Save',
 		BUTTON_CHANGE: 'Change',
 		BUTTON_OK: 'OK',
+		BUTTON_TEMPORARY: 'Temporary',
+		BUTTON_FINAL_CLOSING_DATE: 'Final',
 
 		TABLE_DATE_EMPLOYEE_NUMBER: 'Employee number',
 		TABLE_FULL_NAME: 'Full name',

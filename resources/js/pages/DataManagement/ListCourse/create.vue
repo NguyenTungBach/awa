@@ -210,7 +210,11 @@
                                                         max="3"
                                                     />
                                                     <span class="postCode">-</span>
-                                                    <b-form-input id="postCode-second" v-model="postalCode_last" type="number" maxlength="4" />
+                                                    <b-form-input
+                                                        id="postCode-second" v-model="postalCode_last"
+                                                        type="number"
+                                                        maxlength="4"
+                                                    />
                                                 </div>
                                             </b-col>
                                         </b-row>

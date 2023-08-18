@@ -36,6 +36,10 @@ function editShift(url, params) {
 	return request.postRequest(url, params);
 }
 
+function postClosingDate(url, data) {
+	return request.postRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -43,6 +47,7 @@ export {
 	postUpdateCourseBase,
 	getCheckDataResult,
 	postAddListShift,
+	postClosingDate,
 	getMessageResponseAi,
 	getListMessageResponseAI,
 	editShift

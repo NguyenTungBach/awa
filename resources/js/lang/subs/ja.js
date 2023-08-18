@@ -158,6 +158,8 @@ export default {
 		BUTTON_SAVE: '保存',
 		BUTTON_CHANGE: '変更',
 		BUTTON_OK: 'OK',
+		BUTTON_TEMPORARY: 'Temporary',
+		BUTTON_FINAL_CLOSING_DATE: 'Final',
 		TABLE_DATE_EMPLOYEE_NUMBER: '社員番号',
 		TABLE_FULL_NAME: '氏名',
 		STAND_BY: '待機',
