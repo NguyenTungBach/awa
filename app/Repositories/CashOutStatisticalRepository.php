@@ -210,11 +210,25 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
                     ->where('month_line', $input['month_line'])
                     ->with('driver')->first();
 
-        $result['driver_code'] = $result->driver->driver_code;
-        $result['driver_name'] = $result->driver->driver_name;
-        $result['total_payable'] = $result->balance_previous_month + $result->payable_this_month;
-        $result['balance_current'] = $result->balance_previous_month + $result->payable_this_month - $result->total_cash_out_current;
-        unset($result['driver']);
+        if (!empty($result)) {
+            $result['driver_code'] = $result->driver->driver_code;
+            $result['driver_name'] = $result->driver->driver_name;
+            $result['total_payable'] = $result->balance_previous_month + $result->payable_this_month;
+            $result['balance_current'] = $result->balance_previous_month + $result->payable_this_month - $result->total_cash_out_current;
+            unset($result['driver']);
+        } else {
+            $driver = Driver::find($input['driver_id']);
+
+            $result['id'] = 0;
+            $result['driver_id'] = $driver->id;
+            $result['month_line'] = $input['month_line'];
+            $result['balance_previous_month'] = 0;
+            $result['payable_this_month'] = 0;
+            $result['driver_code'] = $driver->driver_code;
+            $result['driver_name'] = $driver->driver_name;
+            $result['total_payable'] = 0;
+            $result['balance_current'] = 0;
+        }
 
         return $result;
     }
