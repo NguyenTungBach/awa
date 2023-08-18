@@ -237,6 +237,7 @@
                         <div v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE" class="text-right">
                             <b-button
                                 class="btn-temporary"
+                                :style="`background-color: ${handleChangeBackgroundFinal()}`"
                                 :disabled="disableTem"
                                 @click="turnOnButtonFinal()"
                             >
@@ -1015,7 +1016,7 @@ import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
 import { convertStatusToText } from '@/utils/handleListShift';
 import axios from 'axios';
-import TOAST_SUCCESS_FINAL from '@/toast/modules/scheduleShift';
+// import TOAST_SUCCESS_FINAL from '@/toast/modules/scheduleShift';
 // import CalendarMultipleWeek from '@/components/CalendarMultipleWeek';
 // import CalendarMonth from '@/components/CalendarMonth';
 // import Notification from '@/toast/notification';
@@ -1298,7 +1299,7 @@ export default {
 		handleChangeBackgroundFinal() {
 			if (!this.disableFinal) {
 				return '#DFC900';
-			} else {
+			} else if (this.disableTem || this.disableFinal){
 				return '#B9B9B9';
 			}
 		},
@@ -1330,9 +1331,9 @@ export default {
 		},
 
 		async initData() {
-			// const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
+			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
 
-			// await this.onClickSelectWeekMonth(TYPE);
+			await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
 		},
@@ -1509,10 +1510,11 @@ export default {
 				const URL = CONSTANT.URL_API.POST_CLOSING_DATE;
 				const data = await postClosingDate(URL, PARAMS);
 				if (data.code === 200) {
-					TOAST_SUCCESS_FINAL.closingDate(data.message);
+					// TOAST_SUCCESS_FINAL.closingDate(data.message);
 					this.disableTem = true;
 					this.disableFinal = true;
 				}
+				setLoading(false);
 			} catch (error) {
 				setLoading(false);
 				console.log(error);
@@ -1795,38 +1797,38 @@ export default {
 				: 'control-button-group';
 		},
 
-		// async onClickSelectWeekMonth(type) {
-		// 	this.listCalendar.length = 0;
-		// 	this.listShift.length = 0;
+		async onClickSelectWeekMonth(type) {
+			this.listCalendar.length = 0;
+			this.listShift.length = 0;
 
-		// 	if (
-		// 		[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
-		// 	) {
-		// 		this.selectWeekMonth = type;
-		// 	} else {
-		// 		this.selectWeekMonth = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
-		// 	}
+			if (
+				[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
+			) {
+				this.selectWeekMonth = type;
+			} else {
+				this.selectWeekMonth = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
+			}
 
-		// 	this.$store.dispatch('listShift/setIsWeekOrMonth', this.selectWeekMonth)
-		// 		.then(async() => {
-		// 			setLoading(true);
-		// 			if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
-		// 				await this.handleGetListCalendar();
-		// 				await this.handleGetListShift();
-		// 			}
+			this.$store.dispatch('listShift/setIsWeekOrMonth', this.selectWeekMonth)
+				.then(async() => {
+					setLoading(true);
+					if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
+						await this.handleGetListCalendar();
+						await this.handleGetListShift();
+					}
 
-		// 			if (this.selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE) {
-		// 				await this.handleGetListCalendar();
-		// 				await this.handleGetTableCourse();
-		// 			}
+					if (this.selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE) {
+						await this.handleGetListCalendar();
+						await this.handleGetTableCourse();
+					}
 
-		// 			if (hasRole(this.role)) {
-		// 				await this.handleGetListPractical(false);
-		// 			}
+					if (hasRole(this.role)) {
+						await this.handleGetListPractical(false);
+					}
 
-		// 			setLoading(false);
-		// 		});
-		// },
+					setLoading(false);
+				});
+		},
 
 		async onClickSelectTable(table) {
 			if (!table) {
