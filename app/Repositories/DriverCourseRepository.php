@@ -260,6 +260,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($listDataConverts as $dataConvert){
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
+                } else{
+                    $driverConvert['dataShift'] = [
+                        'driver_id' => $driver->id,
+                        'data_by_date' => [],
+                    ];
                 }
             }
             if (count($dataTotalByDriverIds) != 0){
