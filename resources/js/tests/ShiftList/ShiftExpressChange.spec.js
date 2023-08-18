@@ -40,10 +40,16 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 				handleGetListCalendar,
 				handleGetListShift,
 			},
+			data() {
+				return {
+					selectTable: 'CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE',
+					// handleGetListCalendar: jest.fn(),
+				};
+			},
 		});
 
 		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT');
+		expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE');
 
 		wrapper.destroy();
 	});
@@ -148,10 +154,10 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 
 	test('Check click button Excel', async() => {
 		const onExportExcel = jest.fn();
+		const onClickSelectTable = jest.fn();
+		const initData = jest.fn();
 		const handleGetListCalendar = jest.fn();
 		const handleGetListShift = jest.fn();
-		// const onClickSelectWeekMonth = jest.fn();
-		// const initData = jest.fn();
 		const localVue = createLocalVue();
 		const wrapper = mount(ListShift, {
 			localVue,
@@ -159,16 +165,50 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 			router,
 			methods: {
 				onExportExcel,
+				initData,
+				onClickSelectTable,
 				handleGetListCalendar,
 				handleGetListShift,
+				// handleGetListCalendar,
+				// handleGetListShift,
 				// onClickSelectWeekMonth,
-				// initData,
+			},
+			data() {
+				return {
+					selectTable: 'CONSTANT.LIST_SHIFT.SHIFT_TABLE',
+					// handleGetListCalendar: jest.fn(),
+				};
+			},
+			computed: {
+				role() {
+					return 'admin';
+				},
 			},
 		});
+
+		const BUTTON_LIST = wrapper.find('.list-shift__control');
+		expect(BUTTON_LIST.exists()).toEqual(true);
+		expect(wrapper).toMatchSnapshot();
+		const BUTTON_EXPRESS_CHANGE = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(2)');
+		expect(BUTTON_EXPRESS_CHANGE.exists()).toEqual(true);
+		await BUTTON_EXPRESS_CHANGE.trigger('click');
+		// expect(wrapper.vm.onClickSelectTable).toHaveBeenCalled();
+
+		// const TITLE = wrapper.find('.title-page');
+		// expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE');
+
+		// console.log('akjgkaj: ', wrapper.vm.selectTable);
+		// await wrapper.setData( {selectTable: 'CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE'} );
+		// expect(wrapper.vm.selectTable).toBe('CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE');
+
+		expect(wrapper).toMatchSnapshot();
 
 		const BUTTON_WEEK = wrapper.find('.btn-excel');
 		await BUTTON_WEEK.trigger('click');
 		expect(onExportExcel).toHaveBeenCalled();
+
+		// await BUTTON.trigger('click');
+		// expect(onExportExcel).toHaveBeenCalled();
 
 		wrapper.destroy();
 	});

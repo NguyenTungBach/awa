@@ -2,7 +2,6 @@ import store from '@/store';
 import router from '@/router';
 import DriverList from '@/pages/DataManagement/ListDriver/index';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { addRoutes } from '@/utils/handleRoutes';
 
 describe('TEST COMPONENT DRIVER LIST', () => {
 	test('Check render page', () => {
@@ -159,6 +158,7 @@ describe('TEST COMPONENT DRIVER LIST', () => {
 				};
 			},
 		});
+		jest.spyOn(wrapper.vm, 'initData');
 
 		const ZONE_TABLE = wrapper.find('.zone-table');
 		const TABLE = ZONE_TABLE.find('table');

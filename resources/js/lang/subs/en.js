@@ -172,7 +172,7 @@ export default {
 	LIST_SHIFT: {
 		TITLE_EDIT_COURSE_BASE: 'Change driver run',
 		TITLE_LIST_SHIFT: 'List Shift',
-		TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE: 'Practical record table',
+		TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE: 'List Express Change',
 		TABLE_SALARY: 'Sales amount table',
 		BUTTON_WEEK: 'Week',
 		BUTTON_MONTH: 'Month',

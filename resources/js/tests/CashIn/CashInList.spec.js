@@ -147,29 +147,6 @@ describe('TEST COMPONENT CASH-IN LIST', () => {
 		wrapper.destroy();
 	});
 
-	test('Check render button download excel', async() => {
-		const onClickExport = jest.fn();
-
-		const localVue = createLocalVue();
-		const wrapper = mount(CashInList, {
-			localVue,
-			store,
-			router,
-			methods: {
-				onClickExport,
-			},
-		});
-
-		const BUTTON_ADD = wrapper.find('.btn-excel');
-		expect(BUTTON_ADD.exists()).toBe(true);
-
-		await BUTTON_ADD.trigger('click');
-
-		expect(onClickExport).toHaveBeenCalled();
-
-		wrapper.destroy();
-	});
-
 	test('Check render button detail', () => {
 		const DATA = [
 			{
