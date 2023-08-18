@@ -125,28 +125,33 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             $totalPayable += $payableThisMonth;
         }
 
-        // dd('data', $data);
         $listDataResult = [];
         foreach ($data as $kItem => $item) {
             $listDataResult[$kItem]['id'] = $item['id'];
             $listDataResult[$kItem]['driver_code'] = $item['driver_code'];
             $listDataResult[$kItem]['driver_name'] = $item['driver_name'];
             $listDataResult[$kItem]['closing_date'] = $item['closing_date'];
-            foreach ($calendars as $calendar) {
+            foreach ($calendars as $kCalendar => $calendar) {
                 if (!empty($item['total_payable_day']) && array_key_exists($calendar, $item['total_payable_day'])) {
-                    $listDataResult[$kItem]['total_payable_day'][$calendar] = $item['total_payable_day'][$calendar];
+                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['date'] = $calendar;
+                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['payment'] = $item['total_payable_day'][$calendar];
                 } else {
-                    $listDataResult[$kItem]['total_payable_day'][$calendar] = 0;
+                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['date'] = $calendar;
+                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['payment'] = 0;
                 }
             }
+            $listDataResult[$kItem]['payable_this_month'] = $item['payable_this_month'];
         }
 
         $totalPayableDayResult = [];
-        foreach ($calendars as $calendar) {
+        foreach ($calendars as $kCalendar => $calendar) {
             if (array_key_exists($calendar, $totalPayableDay)) {
-                $totalPayableDayResult[$calendar] = $totalPayableDay[$calendar];
+                $totalPayableDayResult[$kCalendar]['date'] = $calendar;
+                $totalPayableDayResult[$kCalendar]['pay'] = $totalPayableDay[$calendar];
             } else {
-                $totalPayableDayResult[$calendar] = 0;
+                // $totalPayableDayResult[$calendar] = 0;
+                $totalPayableDayResult[$kCalendar]['date'] = $calendar;
+                $totalPayableDayResult[$kCalendar]['pay'] = 0;
             }
         }
 
