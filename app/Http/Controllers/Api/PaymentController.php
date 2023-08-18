@@ -31,7 +31,7 @@ class PaymentController extends Controller
     public function index(PaymentRequest $request)
     {
         try {
-            $result = $this->repository->getAll($request->all());
+            $result = $this->repository->getListAll($request->all());
 
             return $this->responseJson(Response::HTTP_OK, new PaymentResource($result), LIST_SUCCESS);
         } catch (\Exception $exception) {
