@@ -131,30 +131,6 @@
                                     </b-td>
                                     <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
                                         <template v-if="emp.dataShift">
-                                            <!-- <template v-for="(dataDate, index) in emp.dataShift.data_by_date">
-                                                    <NodeListShift
-                                                        v-if="(dataDate.date).slice(-2) === handleChangeToMonth(idxDate + 1)"
-                                                        :key="`date-${date}-${idxDate}-${index}`"
-                                                        :idx-component="idxDate + 1"
-                                                        :date="date"
-                                                        :data-node="dataDate"
-                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
-                                                        :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                    />
-                                                    <NodeListShift
-                                                        v-else
-                                                        :key="`date-${date}-${idxDate}-${index}`"
-                                                        :idx-component="idxDate + 1"
-                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
-                                                        :date="date"
-                                                        :data-node="emp.dataShift"
-                                                        :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                    />
-                                                </template> -->
                                             <NodeListShift
                                                 :key="`date-${date}-${idxDate}`"
                                                 :idx-component="idxDate + 1"
@@ -199,7 +175,7 @@
             <template #default>
                 <div class="detail-node">
                     <div
-                        v-for="(item, idx) in nodeEmit"
+                        v-for="(item, idx) in nodeEmit.listShift"
                         :key="`item-detail-node-${idx}`"
                         class="item-node"
                     >
@@ -338,7 +314,7 @@ export default {
 
 			listShift: [],
 
-			nodeEmit: [],
+			nodeEmit: {},
 
 			listCourse: [],
 
@@ -415,6 +391,10 @@ export default {
 			return index < 10 ? `0${index}` : `${index}`;
 		},
 
+		handleChangeFromMonthtoIndex(index) {
+			return index < 10 ? index.slice(-1) : index;
+		},
+
 		handleGetAllCourseWork(idx = null) {
 			const result = [];
 
@@ -450,12 +430,14 @@ export default {
 		async detailShift(idDriverCourse, date) {
 			try {
 				const PARAMS = {};
-				this.nodeEmit = [];
+				this.nodeEmit = {};
 				PARAMS.date = date;
 				const { code, data } = await getListShift(`${CONSTANT.URL_API.GET_DETAIL_SHIFT}/${idDriverCourse}`, PARAMS);
 				if (code === 200) {
 					this.nodeEmit = data;
+					console.log('node Emit', this.nodeEmit);
 				}
+				console.log('node Emit aaa', this.nodeEmit);
 			} catch (error) {
 				console.log(error);
 			}
@@ -538,7 +520,7 @@ export default {
 
 				this.listNodeEditSelected.length = 0;
 
-				const OLD_SELECTED = this.nodeEmit || [];
+				const OLD_SELECTED = this.nodeEmit.listShift || [];
 
 				const lenOldSelected = OLD_SELECTED.length;
 				let idxOldSelected = 0;
@@ -631,7 +613,7 @@ export default {
 				// } else {
 				// 	this.modalEdit = true;
 				// }
-				if (this.nodeEmit.length !== 0) {
+				if (this.nodeEmit.listShift.length !== 0) {
 					this.modalDetail = true;
 				} else {
 					this.modalEdit = true;
@@ -753,70 +735,12 @@ export default {
 			}
 		},
 
-		// async handleGetListShift() {
-		// 	try {
-		// 		setLoading(true);
-		// 		const TYPE = this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK ? 'week' : 'month';
-
-		// 		const PARAMS = {
-		// 			type: TYPE,
-		// 		};
-
-		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
-		// 			const START = this.pickerWeek.start;
-		// 			const END = this.pickerWeek.end;
-
-		// 			PARAMS.start_date = `${START.year}-${format2Digit(START.month)}-${format2Digit(START.date)}`;
-		// 			PARAMS.end_date = `${END.year}-${format2Digit(END.month)}-${format2Digit(END.date)}`;
-
-		// 			const YEAR = this.pickerYearMonth.year;
-		// 			const MONTH = this.pickerYearMonth.month;
-
-		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-		// 			PARAMS.date = YEAR_MONTH;
-		// 		}
-
-		// 		if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH) {
-		// 			const YEAR = this.pickerYearMonth.year;
-		// 			const MONTH = this.pickerYearMonth.month;
-
-		// 			const START = `${YEAR}-${format2Digit(MONTH)}-01`;
-		// 			const END = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(this.pickerYearMonth.numberDate)}`;
-
-		// 			PARAMS.start_date = START;
-		// 			PARAMS.end_date = END;
-
-		// 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-		// 			PARAMS.date = YEAR_MONTH;
-		// 		}
-
-		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-
-		// 		if (code === 200) {
-		// 			this.listShift = convertValueWhenNull(data);
-		// 		} else {
-		// 			this.listShift.length = 0;
-		// 		}
-
-		// 		setLoading(false);
-		// 	} catch (error) {
-		// 		setLoading(false);
-		// 		console.log(error);
-		// 	}
-		// },
 		async handleGetListShift() {
 			try {
 				setLoading(true);
 				this.listShift.length = 0;
 
 				let PARAMS = {};
-
-				// if (this.sortTable.shiftTable.sortBy) {
-				// 	PARAMS.field = this.sortTable.shiftTable.sortBy;
-				// 	PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
-				// }
 				const YEAR = this.pickerYearMonth.year;
 				const MONTH = this.pickerYearMonth.month;
 
@@ -826,13 +750,9 @@ export default {
 
 				PARAMS = cleanObject(PARAMS);
 
-				// if (PARAMS.field) {
-				// 	PARAMS.sortby = PARAMS.sortby ? 'asc' : 'desc';
-				// }
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					// this.listShift = convertValueWhenNull(data);
 					this.listShift = data;
 				}
 				setLoading(false);
@@ -951,65 +871,39 @@ export default {
 			// 	Notification.warning(this.$t(VALIDATE.message));
 			// }
 			// this.modalEdit = false;
-			console.log('list node:', this.listNodeEditSelected);
+			console.log('list node:', FILTER_LIST_SELECTED);
 
-			const DRIVER_CODE = this.nodeEmit.driverCode;
+			const DRIVER_CODE = this.nodeEmit.driver_id;
 			const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
 
-			const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
+			// const TYPE_TABLE = this.$store.getters.weekOrMonthListShift;
+			// console.log('month:', TYPE_TABLE);
 
+			// let INDEX_CELL_OF_DRIVER = -1;
+
+			// if (TYPE_TABLE === 'MONTH') {
+			// 	INDEX_CELL_OF_DRIVER = Number(this.handleChangeFromMonthtoIndex((this.nodeEmit.date).slice(-2))) - 1;
+			// } else {
+			// 	INDEX_CELL_OF_DRIVER = -1;
+			// }
 			let INDEX_CELL_OF_DRIVER = -1;
-
-			if (TYPE_TABLE === 'MONTH') {
-				INDEX_CELL_OF_DRIVER = this.nodeEmit.date - 1;
-			} else {
-				INDEX_CELL_OF_DRIVER = this.nodeEmit.index - 1;
-			}
+			INDEX_CELL_OF_DRIVER = Number(this.handleChangeFromMonthtoIndex((this.nodeEmit.date).slice(-2))) - 1;
+			console.log('listShift:', INDEX_CELL_OF_DRIVER);
 
 			const DATA_UPDATE = FILTER_LIST_SELECTED;
 
 			this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
-			console.log('listShift:', this.listShift);
 
-			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
-			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
+			// const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			// this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 
 			this.listNodeEditSelected.length = 0;
 			this.modalEdit = false;
 		},
 
-		// async onClickSaveNode() {
-		// 	// try {
-		// 	// 	setLoading(true);
-		// 	// 	const params = {
-		// 	// 		item: [
-		// 	// 			{
-		// 	// 				driver_id: 1,
-		// 	// 				course_id: 14,
-		// 	// 				date: '',
-		// 	// 				start_time: '',
-		// 	// 				break_time: '',
-		// 	// 				end_time: '',
-		// 	// 			},
-		// 	// 		],
-		// 	// 	};
-		// 	// 	const URL = CONSTANT.URL_API.UPDATE_SHIFT;
-		// 	// 	const Data = await editShift(URL, params);
-		// 	// 	if (Data.code === 200) {
-		// 	// 		this.handleGetListShift();
-		// 	// 	}
-		// 	// 	setLoading(false);
-		// 	// } catch (error) {
-		// 	// 	setLoading(false);
-		// 	// 	console.log(error);
-		// 	// }
-		// 	console.log('this not', this.nodeEmit);
-		// },
-
 		handleUpdateTable(listShift, idxOfDriver, idxCellOfDriver, dataUpdate) {
 			if (dataUpdate.length > 0) {
 				const LIST_TYPE_SELECTED = dataUpdate.map((item) => item.type);
-				console.log('LIST_TYPE_SELECTED: ', LIST_TYPE_SELECTED);
 
 				const LIST_DAY_OFF = LIST_TYPE_SELECTED.filter((item) => (CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item));
 
@@ -1019,8 +913,16 @@ export default {
 					listShift[idxOfDriver].shift_list[idxCellOfDriver].color = this.role === CONSTANT.ROLE.ADMIN ? CONSTANT.LIST_SHIFT.MAP_TYPE_COLOR_DAY_OFF[LIST_DAY_OFF[0]] : CONSTANT.LIST_SHIFT.COLOR_HOLIDAY;
 					listShift[idxOfDriver].shift_list[idxCellOfDriver].value = this.generateListValueDayOff(dataUpdate);
 				} else {
-					listShift[idxOfDriver].shift_list[idxCellOfDriver].color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
-					listShift[idxOfDriver].shift_list[idxCellOfDriver].value = this.generateListValueWork(dataUpdate);
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
+					const listdataUpdate = this.generateListValueWork(dataUpdate);
+					console.log('LIST_TYPE_SELECTED: ', listdataUpdate);
+					var updateCourseName = '';
+					listdataUpdate.forEach(item => {
+						if (item.name) {
+							updateCourseName += `${item.name}, `;
+						}
+					});
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = updateCourseName;
 				}
 			}
 
@@ -1056,6 +958,7 @@ export default {
 		generateListValueWork(dataUpdate) {
 			const result = [];
 
+			console.log('dataLen', dataUpdate);
 			const len = dataUpdate.length;
 			let idx = 0;
 
@@ -1085,12 +988,13 @@ export default {
 					});
 				} else {
 					const COURSE = this.listCourse.findIndex((item) => item.value === dataUpdate[idx].type);
+					console.log('check', COURSE);
 
 					if (COURSE !== -1) {
 						result.push({
 							type: dataUpdate[idx].type,
 							name: this.listCourse[COURSE].text,
-							course_status: this.listCourse[COURSE].status,
+							// course_status: this.listCourse[COURSE].status,
 							start_time: formatArray2Time(dataUpdate[idx].start_time),
 							end_time: formatArray2Time(dataUpdate[idx].end_time),
 							break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
@@ -1117,12 +1021,12 @@ export default {
 			this.reRenderTable += 1;
 		},
 
-		findIndexOfDriverCode(list = [], driverCode = '') {
+		findIndexOfDriverCode(list = [], driverID = '') {
 			const len = list.length;
 			let idx = 0;
 
 			while (idx < len) {
-				if (list[idx].driver_code === driverCode) {
+				if (list[idx].driver_id === driverID) {
 					return idx;
 				}
 

@@ -234,6 +234,23 @@
                                 {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
                             </b-button>
                         </div>
+                        <div v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE" class="text-right">
+                            <b-button
+                                class="btn-temporary"
+                                :disabled="disableTem"
+                                @click="turnOnButtonFinal()"
+                            >
+                                {{ $t("LIST_SHIFT.BUTTON_TEMPORARY") }}
+                            </b-button>
+                            <b-button
+                                class="btn-final"
+                                :style="`background-color: ${handleChangeBackgroundFinal()}`"
+                                :disabled="disableFinal"
+                                @click="handleClosingDate()"
+                            >
+                                {{ $t("LIST_SHIFT.BUTTON_FINAL_CLOSING_DATE") }}
+                            </b-button>
+                        </div>
                     </b-col>
                 </b-row>
             </div>
@@ -992,12 +1009,13 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
 import { convertStatusToText } from '@/utils/handleListShift';
 import axios from 'axios';
+import TOAST_SUCCESS_FINAL from '@/toast/modules/scheduleShift';
 // import CalendarMultipleWeek from '@/components/CalendarMultipleWeek';
 // import CalendarMonth from '@/components/CalendarMonth';
 // import Notification from '@/toast/notification';
@@ -1072,6 +1090,8 @@ export default {
 			listSalary: [],
 
 			listPractical: [],
+			disableTem: false,
+			disableFinal: true,
 
 			sortTable: {
 				shiftTable: {
@@ -1191,7 +1211,7 @@ export default {
 					break;
 
 				case CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE:
-					this.showControlTime = false;
+					this.showControlTime = true;
 					break;
 			}
 		},
@@ -1275,6 +1295,18 @@ export default {
 			this.showModalClosingDate = true;
 		},
 
+		handleChangeBackgroundFinal() {
+			if (!this.disableFinal) {
+				return '#DFC900';
+			} else {
+				return '#B9B9B9';
+			}
+		},
+
+		turnOnButtonFinal() {
+			this.disableFinal = false;
+		},
+
 		handleChangeToMonth(index) {
 			return index < 10 ? `0${index}` : `${index}`;
 		},
@@ -1298,9 +1330,9 @@ export default {
 		},
 
 		async initData() {
-			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
+			// const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
 
-			await this.onClickSelectWeekMonth(TYPE);
+			// await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
 		},
@@ -1456,6 +1488,31 @@ export default {
 					this.reloadTable();
 				}
 				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
+		// API CLOSING DATE
+
+		async handleClosingDate() {
+			try {
+				setLoading(true);
+				const PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+				const URL = CONSTANT.URL_API.POST_CLOSING_DATE;
+				const data = await postClosingDate(URL, PARAMS);
+				if (data.code === 200) {
+					TOAST_SUCCESS_FINAL.closingDate(data.message);
+					this.disableTem = true;
+					this.disableFinal = true;
+				}
 			} catch (error) {
 				setLoading(false);
 				console.log(error);
@@ -1738,38 +1795,38 @@ export default {
 				: 'control-button-group';
 		},
 
-		async onClickSelectWeekMonth(type) {
-			this.listCalendar.length = 0;
-			this.listShift.length = 0;
+		// async onClickSelectWeekMonth(type) {
+		// 	this.listCalendar.length = 0;
+		// 	this.listShift.length = 0;
 
-			if (
-				[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
-			) {
-				this.selectWeekMonth = type;
-			} else {
-				this.selectWeekMonth = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
-			}
+		// 	if (
+		// 		[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
+		// 	) {
+		// 		this.selectWeekMonth = type;
+		// 	} else {
+		// 		this.selectWeekMonth = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
+		// 	}
 
-			this.$store.dispatch('listShift/setIsWeekOrMonth', this.selectWeekMonth)
-				.then(async() => {
-					setLoading(true);
-					if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
-						await this.handleGetListCalendar();
-						await this.handleGetListShift();
-					}
+		// 	this.$store.dispatch('listShift/setIsWeekOrMonth', this.selectWeekMonth)
+		// 		.then(async() => {
+		// 			setLoading(true);
+		// 			if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
+		// 				await this.handleGetListCalendar();
+		// 				await this.handleGetListShift();
+		// 			}
 
-					if (this.selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE) {
-						await this.handleGetListCalendar();
-						await this.handleGetTableCourse();
-					}
+		// 			if (this.selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE) {
+		// 				await this.handleGetListCalendar();
+		// 				await this.handleGetTableCourse();
+		// 			}
 
-					if (hasRole(this.role)) {
-						await this.handleGetListPractical(false);
-					}
+		// 			if (hasRole(this.role)) {
+		// 				await this.handleGetListPractical(false);
+		// 			}
 
-					setLoading(false);
-				});
-		},
+		// 			setLoading(false);
+		// 		});
+		// },
 
 		async onClickSelectTable(table) {
 			if (!table) {
@@ -2612,6 +2669,17 @@ export default {
 			.button-text-left {
 				width: 220px;
 				height: 52px;
+			}
+			.btn-temporary {
+				padding: 10px;
+				background: #DFC900;
+				border: none;
+			}
+			.btn-final {
+				padding: 10px;
+				background: #B9B9B9;
+				border: none;
+				margin: 0 5px;
 			}
 		}
 
