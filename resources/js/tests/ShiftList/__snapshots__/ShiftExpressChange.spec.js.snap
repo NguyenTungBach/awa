@@ -17,7 +17,12 @@ exports[`TEST COMPONENT LIST SHIFT Check click button Excel 1`] = `
         <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-12">
           <!---->
           <!---->
-          <!---->
+          <div class="zone-right" style="display: none;">
+            <div class="item-function btn-excel">
+              <div class="show-icon"><i class="fas fa-file-excel"></i></div>
+              <div class="show-text"><span>LIST_SHIFT.BUTTON_DOWNLOAD_EXCEL</span></div>
+            </div>
+          </div>
           <!---->
         </div>
       </div>
@@ -114,7 +119,12 @@ exports[`TEST COMPONENT LIST SHIFT Check click button Excel 2`] = `
         <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-12">
           <!---->
           <!---->
-          <!---->
+          <div class="zone-right" style="display: none;">
+            <div class="item-function btn-excel">
+              <div class="show-icon"><i class="fas fa-file-excel"></i></div>
+              <div class="show-text"><span>LIST_SHIFT.BUTTON_DOWNLOAD_EXCEL</span></div>
+            </div>
+          </div>
           <!---->
         </div>
       </div>

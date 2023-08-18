@@ -130,7 +130,7 @@
                             </div>
                         </div>
 
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)" class="zone-right">
+                        <div v-show="(selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY || selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -143,7 +143,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)" class="zone-right">
+                        <div v-show="(selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -156,7 +156,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="(selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE)" class="zone-right">
+                        <div v-show="(selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE)" class="zone-right">
                             <div
                                 class="item-function btn-excel"
                                 @click="onExportExcel()"
@@ -234,10 +234,10 @@
                                 {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
                             </b-button>
                         </div>
-                        <div v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE" class="text-right">
+                        <div v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE || selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE" class="text-right">
                             <b-button
                                 class="btn-temporary"
-                                :style="`background-color: ${handleChangeBackgroundFinal()}`"
+                                :style="`background-color: ${handleChangeBackgroundTEM()}`"
                                 :disabled="disableTem"
                                 @click="turnOnButtonFinal()"
                             >
@@ -790,8 +790,8 @@
                         <!-- Table payment -->
                         <template v-if="selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE">
                             <b-table-simple
-
                                 :key="`shift-table-${reRender}`"
+                                class="table-payment"
                                 bordered
                                 no-border-collapse
                             >
@@ -801,20 +801,6 @@
                                             :colspan="3"
                                             class="fix-header"
                                         />
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                        >
-                                            <template v-for="(date, idx) in pickerWeek.listDate">
-                                                <b-th
-                                                    :key="`date-${idx}`"
-                                                    class="th-show-date"
-                                                >
-                                                    <div>
-                                                        {{ date.date }} ({{ getTextDay(date.text) }})
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
                                         <template
                                             v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                         >
@@ -836,15 +822,15 @@
                                     <b-tr>
                                         <b-th
                                             class="th-employee-number"
-                                            @click="onSortTable('driver_code', 'shiftTable')"
+                                            @click="onSortTable('drivers.driver_code', 'payMent')"
                                         >
                                             {{ $t("LIST_SHIFT.TABLE_PAYMENT_COMPANY_ID") }}
                                             <i
-                                                v-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === true"
+                                                v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
                                                 class="fad fa-sort-up icon-sort"
                                             />
                                             <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'driver_code' && sortTable.shiftTable.sortType === false"
+                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
                                                 class="fad fa-sort-down icon-sort"
                                             />
                                             <i
@@ -854,7 +840,7 @@
                                         </b-th>
                                         <b-th
                                             class="th-type-employee"
-                                            @click="onSortTable('flag', 'shiftTable')"
+                                            @click="onSortTable('flag', 'payMent')"
                                         >
                                             {{ $t('LIST_SHIFT.TABLE_PAYMENT_DUE_DATE') }}
                                             <i
@@ -873,15 +859,6 @@
                                         <b-th class="th-full-name">
                                             {{ $t("LIST_SHIFT.TABLE_COMPANY_NAME") }}
                                         </b-th>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
-                                            <template v-for="(date, idx) in pickerWeek.listDate">
-                                                <b-th :key="`date-${idx}`">
-                                                    <div v-if="listCalendar.length">
-                                                        {{ listCalendar[idx] || '' }}
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
                                         <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                             <template v-for="date in pickerYearMonth.numberDate">
                                                 <b-th :key="`date-${date}`">
@@ -895,55 +872,66 @@
                                 </b-thead>
                                 <b-tbody v-if="listShift.length > 0">
                                     <template
-                                        v-for="(emp, idx) in listShift"
+                                        v-for="(emp, idx) in ListPayment"
                                     >
                                         <tr :key="`emp-no-${idx + 1}`">
                                             <td class="td-employee-number">
                                                 {{ emp.driver_code }}
                                             </td>
                                             <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsTypeDriver, emp.flag)) }}
+                                                {{ emp.closing_date }}
                                             </b-td>
                                             <td class="td-full-name text-center">
                                                 {{ emp.driver_name }}
                                             </td>
-                                            <template
-                                                v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                            >
-                                                <template v-for="(date, idxDate) in pickerWeek.listDate">
-                                                    <NodeListShift
-                                                        :key="`date-${idxDate}`"
-                                                        :idx-component="idxDate + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
-                                                        :date="date.date"
-                                                        :emp-data="emp"
-                                                        :driver-code="emp.driver_code"
-                                                        :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
-                                                    />
-                                                </template>
-                                            </template>
                                             <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                                 <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                    <template v-if="emp.total_payable_day">
+                                                        <NodeListShift
+                                                            :key="`date-${date}-${idxDate}`"
+                                                            :idx-component="idxDate + 1"
+                                                            :date="date"
+                                                            :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
+                                                            :data-node="emp.total_payable_day[idxDate]"
+                                                            :emp-data="emp"
+                                                            :driver-code="emp.driver_code"
+                                                            :driver-name="emp.driver_name"
+                                                        />
+                                                    </template>
+
                                                     <NodeListShift
-                                                        :key="`date-${date}`"
-                                                        :idx-component="idx + 1"
-                                                        :data-node="emp.shift_list[idxDate]"
+                                                        v-else
+                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :idx-component="idxDate + 1"
+                                                        :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
                                                         :date="date"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
-                                                        :start-date="emp.start_date"
-                                                        :end-date="emp.end_date"
                                                     />
                                                 </template>
                                             </template>
                                             <b-td class="td-total-shift">
-                                                {{ totalShift }}
+                                                {{ emp.payable_this_month }}
                                             </b-td>
                                         </tr>
                                     </template>
+                                </b-tbody>
+                                <b-tbody>
+                                    <b-tr>
+                                        <b-td class="td-total" colspan="3">
+                                            <span>
+                                                {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                            </span>
+                                        </b-td>
+
+                                        <b-td v-for="(total, idx) in total_payment" :key="`total-${idx}`" class="text-center">
+                                            {{ total.pay }}
+                                        </b-td>
+                                        <b-td class="td-total-month">
+                                            {{ total_payment_of_month }}
+                                        </b-td>
+                                    </b-tr>
                                 </b-tbody>
                             </b-table-simple>
                         </template>
@@ -1110,6 +1098,11 @@ export default {
 					sortType: null,
 				},
 
+				payMent: {
+					sortBy: '',
+					sortType: null,
+				},
+
 			},
 
 			sortTableCourse: {
@@ -1132,6 +1125,8 @@ export default {
 			listToatalSaleByDate: [],
 			total_all_sale_by_closing_date: '',
 			total_all_data_sale_by_month: '',
+			total_payment: '',
+			total_payment_of_month: '',
 
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
@@ -1239,7 +1234,11 @@ export default {
 						setLoading(true);
 						await this.handleGetHightWay();
 						setLoading(false);
-
+						break;
+					case CONSTANT.LIST_SHIFT.PAYMENT_TABLE:
+						setLoading(true);
+						await this.handleGetPayment();
+						setLoading(false);
 						break;
 				}
 			},
@@ -1299,8 +1298,16 @@ export default {
 		handleChangeBackgroundFinal() {
 			if (!this.disableFinal) {
 				return '#DFC900';
-			} else if (this.disableTem || this.disableFinal){
+			} else {
 				return '#B9B9B9';
+			}
+		},
+
+		handleChangeBackgroundTEM() {
+			if (this.disableTem) {
+				return '#B9B9B9';
+			} else {
+				return '';
 			}
 		},
 
@@ -1345,7 +1352,7 @@ export default {
 				let START_DATE = '';
 				let END_DATE = '';
 
-				if ([CONSTANT.LIST_SHIFT.SHIFT_TABLE, CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE, CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE].includes(this.selectTable)) {
+				if ([CONSTANT.LIST_SHIFT.SHIFT_TABLE, CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE, CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE, CONSTANT.LIST_SHIFT.PAYMENT_TABLE].includes(this.selectTable)) {
 					if (this.selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK) {
 						START_DATE = this.pickerWeek.listDate[0].text;
 						END_DATE = this.pickerWeek.listDate[this.pickerWeek.listDate.length - 1].text;
@@ -1486,6 +1493,41 @@ export default {
 					this.listToatalSaleByDate = data.total_all_sales_by_date;
 					this.total_all_sale_by_closing_date = data.total_all_data_sales_by_closing_date;
 					this.total_all_data_sale_by_month = data.total_all_data_sales_by_month;
+					this.reloadTable();
+				}
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
+		async handleGetPayment() {
+			try {
+				setLoading(true);
+				this.ListPayment.length = 0;
+
+				let PARAMS = {};
+
+				if (this.sortTable.payMent.sortBy) {
+					PARAMS.order_by = this.sortTable.payMent.sortBy;
+					PARAMS.sort_by = this.sortTable.payMent.sortType ? 'desc' : 'asc';
+				}
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+
+				PARAMS = cleanObject(PARAMS);
+
+				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_PAYMENT, PARAMS);
+
+				if (code === 200) {
+					this.ListPayment = data.list_data;
+					this.total_payment = data.sum_total_day;
+					this.total_payment_of_month = data.sum_total_month;
 					this.reloadTable();
 				}
 				setLoading(false);
@@ -1682,6 +1724,10 @@ export default {
 
 					if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 						await this.handleGetTableSalary();
+					}
+
+					if (this.selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE) {
+						await this.handleGetPayment();
 					}
 					setLoading(false);
 
@@ -1892,7 +1938,7 @@ export default {
 					if (table === CONSTANT.LIST_SHIFT.PAYMENT_TABLE) {
 						setLoading(true);
 						await this.handleGetListCalendar();
-						// await this.handleGetListShift();
+						await this.handleGetPayment();
 						setLoading(false);
 					}
 				} else {
@@ -2113,70 +2159,70 @@ export default {
 				}
 			}
 
-			if (this.selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE) {
-				const sort = {
-					field: this.sortTable.pracitcalPerformanceTable.sortBy,
-					sortby: this.sortTable.pracitcalPerformanceTable.sortType,
-				};
+			// if (this.selectTable === CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE) {
+			// 	const sort = {
+			// 		field: this.sortTable.pracitcalPerformanceTable.sortBy,
+			// 		sortby: this.sortTable.pracitcalPerformanceTable.sortType,
+			// 	};
 
-				let SORT = '';
+			// 	let SORT = '';
 
-				if (sort.field === 'driver_code') {
-					if (sort.sortby) {
-						SORT = '&sortby_code=asc';
-					} else {
-						SORT = '&sortby_code=desc';
-					}
-				}
+			// 	if (sort.field === 'driver_code') {
+			// 		if (sort.sortby) {
+			// 			SORT = '&sortby_code=asc';
+			// 		} else {
+			// 			SORT = '&sortby_code=desc';
+			// 		}
+			// 	}
 
-				if (sort.field === 'flag') {
-					if (sort.sortby) {
-						SORT = '&sortby_driver_type=asc';
-					} else {
-						SORT = '&sortby_driver_type=desc';
-					}
-				}
+			// 	if (sort.field === 'flag') {
+			// 		if (sort.sortby) {
+			// 			SORT = '&sortby_driver_type=asc';
+			// 		} else {
+			// 			SORT = '&sortby_driver_type=desc';
+			// 		}
+			// 	}
 
-				const STATUS_VIEW = '&status_view=fix';
+			// 	const STATUS_VIEW = '&status_view=fix';
 
-				const YEAR = this.pickerYearMonth.year || null;
-				const MONTH = this.pickerYearMonth.month || null;
+			// 	const YEAR = this.pickerYearMonth.year || null;
+			// 	const MONTH = this.pickerYearMonth.month || null;
 
-				const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
+			// 	const YEAR_MONTH = `${YEAR}-${MONTH < 10 ? `0${MONTH}` : `${MONTH}`}`;
 
-				let VIEW_DATE = '';
+			// 	let VIEW_DATE = '';
 
-				VIEW_DATE = `view_date=${YEAR_MONTH}` || null;
+			// 	VIEW_DATE = `view_date=${YEAR_MONTH}` || null;
 
-				const URL = `/api${CONSTANT.URL_API.GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL}?${VIEW_DATE}${STATUS_VIEW}${SORT}`;
+			// 	const URL = `/api${CONSTANT.URL_API.GET_EXPORT_PRACTICAL_PERFORMANCE_EXCEL}?${VIEW_DATE}${STATUS_VIEW}${SORT}`;
 
-				let FILE_DOWNLOAD;
+			// 	let FILE_DOWNLOAD;
 
-				fetch(URL, {
-					headers: {
-						'Accept-Language': this.$store.getters.language,
-						'Authorization': getToken(),
-						'accept': 'application/json',
-					},
-				}).then(async(res) => {
-					let filename = decodeURI(res.headers.get('content-disposition').split(`filename*=utf-8''`)[1]) || `実務実績月別_{${YEAR_MONTH}}`;
-					filename = filename.replaceAll('"', '');
-					await res.blob().then((res) => {
-						FILE_DOWNLOAD = res;
-					});
-					const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
-					const fileLink = document.createElement('a');
+			// 	fetch(URL, {
+			// 		headers: {
+			// 			'Accept-Language': this.$store.getters.language,
+			// 			'Authorization': getToken(),
+			// 			'accept': 'application/json',
+			// 		},
+			// 	}).then(async(res) => {
+			// 		let filename = decodeURI(res.headers.get('content-disposition').split(`filename*=utf-8''`)[1]) || `実務実績月別_{${YEAR_MONTH}}`;
+			// 		filename = filename.replaceAll('"', '');
+			// 		await res.blob().then((res) => {
+			// 			FILE_DOWNLOAD = res;
+			// 		});
+			// 		const fileURL = window.URL.createObjectURL(FILE_DOWNLOAD);
+			// 		const fileLink = document.createElement('a');
 
-					fileLink.href = fileURL;
-					fileLink.setAttribute('download', filename);
-					document.body.appendChild(fileLink);
+			// 		fileLink.href = fileURL;
+			// 		fileLink.setAttribute('download', filename);
+			// 		document.body.appendChild(fileLink);
 
-					fileLink.click();
-				})
-					.catch((err) => {
-						console.log(err);
-					});
-			}
+			// 		fileLink.click();
+			// 	})
+			// 		.catch((err) => {
+			// 			console.log(err);
+			// 		});
+			// }
 			if (this.selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE) {
 				try {
 					let params = {};
@@ -2206,6 +2252,45 @@ export default {
 						const link = document.createElement('a');
 						link.href = url;
 						link.setAttribute('download', 'SaleList.xlsx');
+						document.body.appendChild(link);
+						link.click();
+					}).catch((error) => {
+						console.log(error);
+					});
+				} catch (error) {
+					console.log(error);
+				}
+			}
+
+			if (this.selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE) {
+				try {
+					let params = {};
+
+					if (this.sortTable.salaryTable.sortBy) {
+						params.order_by = this.sortTable.salaryTable.sortBy;
+						params.sort_by = this.sortTable.salaryTable.sortType ? 'desc' : 'asc';
+					}
+					const YEAR = this.pickerYearMonth.year;
+					const MONTH = this.pickerYearMonth.month;
+
+					const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+					params.month_year = YEAR_MONTH;
+					params = cleanObject(params);
+					const URL = `/api${CONSTANT.URL_API.GET_EXPORT_PAYMENT}`;
+					await axios.get(URL, {
+						params: params,
+						responseType: 'blob',
+						headers: {
+							'Accept-Language': this.$store.getters.language,
+							'Authorization': getToken(),
+							'accept': 'application/json',
+						},
+					}).then((response) => {
+						const url = window.URL.createObjectURL(new Blob([response.data]));
+						const link = document.createElement('a');
+						link.href = url;
+						link.setAttribute('download', 'Payment.xlsx');
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
@@ -3222,94 +3307,153 @@ export default {
 					}
 				}
 
-				table.table-practical-performance-by-closing-date {
+				table.table-payment {
 					thead {
 						tr {
 							th {
-								min-width: 150px;
+                                position: sticky;
+                                z-index: 9;
 
-								vertical-align: middle;
+								div {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+								}
+
+								background-color: $main;
+								color: $white;
+								text-align: center;
+                                vertical-align: middle;
+
+								padding: 20px 0;
+
+                                top: 0;
 							}
 
-                            th.driver-code {
+                            th.fix-header {
                                 position: sticky;
+                                z-index: 10;
                                 top: 0;
                                 left: 0;
-                                z-index: 10;
-
-                                cursor: pointer;
-
-                                min-width: 150px;
-                                max-width: 150px
                             }
-                            th.driver-flag {
+
+							th.th-show-date {
+								padding: 5px 0;
+							}
+
+							th.th-employee-number {
                                 position: sticky;
+                                z-index: 10;
                                 top: 0;
-                                left: 150px;
+                                left: 0;
+
+								width: 150px;
+							}
+
+							th.th-type-employee {
+                                position: sticky;
+                                top: 37px;
                                 z-index: 10;
+                                left: 150px;
+
+                                width: 180px;
 
                                 cursor: pointer;
-
-                                min-width: 180px;
-                                max-width: 180px
                             }
 
-                            th.driver-name{
+							th.th-full-name {
                                 position: sticky;
+                                z-index: 10;
                                 top: 0;
                                 left: 330px;
-                                z-index: 10;
 
-                                min-width: 150px;
-                                max-width: 150px
-                            }
+                                width: 240px;
+
+                                cursor: pointer;
+							}
+
+							th.th-total {
+                                position: sticky;
+                                z-index: 10;
+                                top: 0;
+                                left: 330px;
+
+                                width: 240px;
+
+                                cursor: pointer;
+							}
 						}
+
+                        tr:nth-child(2) {
+                            position: sticky;
+                            z-index: 10;
+                            top: 43px;
+                        }
 					}
 
 					tbody {
 						tr {
 							td {
-								&:nth-child(1),
-								&:nth-child(2),
-                                &:nth-child(3) {
-									background-color: $sub-main;
+								text-align: center;
+								padding: 0;
 
-									font-weight: bold;
-								}
-
-								padding: 5px;
+								min-width: 150px;
+								vertical-align: middle;
 							}
 
-                            td.driver-code {
+							td.td-employee-number,
+							td.td-type-employee,
+							td.td-full-name,
+                            td.td-total {
+								background-color: $sub-main;
+
+								font-weight: bold;
+
+								vertical-align: middle;
+
+                                padding: 5px;
+							}
+
+							td.td-type-employee {
                                 position: sticky;
+                                top: 0;
+                                z-index: 8;
+                                left: 150px;
+                            }
+
+                            td.td-employee-number {
+                                position: sticky;
+                                z-index: 9;
+								left: 150px;
                                 top: 0;
                                 left: 0;
-                                z-index: 9;
                             }
 
-                            td.driver-flag {
+                            td.td-full-name {
                                 position: sticky;
-                                top: 0;
-                                left: 150px;
                                 z-index: 9;
-
-                                min-width: 180px;
-                                max-width: 180px;
+                                top: 0;
+								left: 330px;
                             }
 
-                            td.driver-name {
+							td.img-pdf {
+								cursor: pointer;
+							}
+
+                            td.td-total {
                                 position: sticky;
-                                top: 0;
-                                left: 330px;
                                 z-index: 9;
-                            }
-
-                            td.table-empty {
-                                background-color: $white;
+                                top: 0;
+								left: 0;
+								padding: 25px 50px;
+                                span {
+                                    float: right;
+                                    margin-right: 50px;
+                                }
                             }
 						}
 					}
-				}
+                }
 			}
 		}
 	}

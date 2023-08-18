@@ -58,12 +58,14 @@ const GET_LIST_PRACTICAL = '/parctical-performance';
 const GET_LIST_SHIFT_TABLE = '/driver-course';
 const GET_SALE_LIST = '/driver-course/sales-list';
 const GET_LIST_HIGHT_WAY = '/driver-course/get-all-express-charge';
+const GET_LIST_PAYMENT = '/payment';
 const GET_TOTAL_EXTRA_COST = '/driver-course/total-extra-cost';
 const GET_EXPORT_SALE_LIST = '/driver-course/export-sales-list';
 const GET_EXPORT_SHIFT_EXCEL_ONLY_WEEK = '/driver-course/export-shift';
 const GET_EXPORT_SHIFT_PDF_ONLY_WEEK = '/shift/export-to-pdf';
 const GET_EXPORT_HIGHT_WAY = '/driver-course/export-shift-express-charge';
 const GET_EXPORT_SHIFT_FILE = '/shift/grade-tab-to-excel';
+const GET_EXPORT_PAYMENT = '/payment/export';
 const GET_EXPORT_SALE_LIST_PDF = '/driver-course/export-sale-detail-pdf';
 const GET_EXPORT_PRACTICAL_PERFORMANCE_PDF = '/parctical-performance/export-to-pdf';
 const POST_UPDATE_CELL_SHIFT = '/shift/detail-cell';
@@ -153,6 +155,7 @@ export default {
 	UPDATE_SHIFT,
 	GET_LIST_SHIFT_TABLE,
 	GET_LIST_HIGHT_WAY,
+	GET_LIST_PAYMENT,
 	GET_SALE_LIST,
 	GET_EXPORT_SALE_LIST,
 	GET_TOTAL_EXTRA_COST,
@@ -162,6 +165,7 @@ export default {
 	GET_EXPORT_SHIFT_FILE,
 	GET_EXPORT_PRACTICAL_PERFORMANCE_PDF,
 	GET_EXPORT_SALE_LIST_PDF,
+	GET_EXPORT_PAYMENT,
 	POST_UPDATE_CELL_SHIFT,
 	POST_UPDATE_COURSE_BASE,
 	POST_CHECK_DATA_RESULT,
