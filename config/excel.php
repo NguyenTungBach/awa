@@ -70,6 +70,8 @@ return [
             'manager'        => '',
             'company'        => '',
         ],
+
+        'shouldAutoSize' => true,
     ],
 
     'imports'            => [
