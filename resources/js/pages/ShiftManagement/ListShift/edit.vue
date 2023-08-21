@@ -895,7 +895,8 @@ export default {
 
 			this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
 
-			// const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED, DATA_UPDATE);
+			console.log('init data', INIT_DATA);
 			// this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 
 			this.listNodeEditSelected.length = 0;
@@ -1076,16 +1077,31 @@ export default {
 			}
 		},
 
-		handleinitObjectUpdate(otherInfo, listSelected) {
+		handleinitObjectUpdate(otherInfo, listSelected, dataUpdate) {
+			// const INIT_UPDATE = {
+			// 	date_edit: otherInfo.dataNode.date,
+			// 	driver_code: otherInfo.driverCode,
+			// 	shift_list_update: [],
+			// };
+
+			// listSelected.forEach((item) => {
+			// 	INIT_UPDATE.shift_list_update.push({
+			// 		type: item.type,
+			// 		start_time: formatArray2Time(item.start_time),
+			// 		end_time: formatArray2Time(item.end_time),
+			// 		break_time: convertTimeCourse(formatArray2Time(item.break_time)),
+			// 	});
+			// });
+
 			const INIT_UPDATE = {
-				date_edit: otherInfo.dataNode.date,
-				driver_code: otherInfo.driverCode,
-				shift_list_update: [],
+				item: [],
 			};
 
 			listSelected.forEach((item) => {
-				INIT_UPDATE.shift_list_update.push({
-					type: item.type,
+				INIT_UPDATE.item.push({
+					driver_id: otherInfo.driver_id,
+					course_id: dataUpdate.type,
+					date: otherInfo.date,
 					start_time: formatArray2Time(item.start_time),
 					end_time: formatArray2Time(item.end_time),
 					break_time: convertTimeCourse(formatArray2Time(item.break_time)),

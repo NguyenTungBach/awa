@@ -281,7 +281,7 @@
                         <b-table-simple
                             v-show="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                             :key="`shift-table-${reRender}`"
-                            class="shift-table"
+                            class="shift"
                             bordered
                             no-border-collapse
                         >
@@ -465,7 +465,7 @@
 
                                 <b-tr>
                                     <b-th class="th-employee-number" @click="onSortTable('customers.customer_code', 'salaryTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
+                                        {{ $t("LIST_SHIFT.TABLE_CUSTOMER_ID") }}
                                         <i
                                             v-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === true"
                                             class="fad fa-sort-up icon-sort"
@@ -481,7 +481,7 @@
                                     </b-th>
 
                                     <b-th class="th-type-employee" @click="onSortTable('customers.closing_date', 'salaryTable')">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
+                                        {{ $t("LIST_SHIFT.TABLE_DUA_DATE_CUSTOMER") }}
                                         <i
                                             v-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === true"
                                             class="fad fa-sort-up icon-sort"
@@ -497,7 +497,7 @@
                                     </b-th>
 
                                     <b-th class="th-full-name">
-                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
+                                        {{ $t("LIST_SHIFT.TABLE_CUSTOMER_NAME") }}
                                     </b-th>
 
                                     <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`">
@@ -620,7 +620,7 @@
 
                         <b-table-simple
                             v-show="selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
-                            :key="`shift-table-${reRender}`"
+                            :key="`hightWay-${reRender}`"
                             class="table-hight-way"
                             bordered
                             no-border-collapse
@@ -793,7 +793,7 @@
 
                         <b-table-simple
                             v-show="selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
-                            :key="`shift-table-${reRender}`"
+                            :key="`PayMent-${reRender}`"
                             class="table-payment"
                             bordered
                             no-border-collapse
@@ -1568,70 +1568,30 @@ export default {
 
 		// API TOTAL SHIFT
 
-		async handleGetTotalExtraCost() {
-			try {
-				let PARAMS = {
-					closing_date: this.closingDate,
-				};
-				if (this.sortTable.shiftTable.sortBy) {
-					PARAMS.field = this.sortTable.shiftTable.sortBy;
-					PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
-				}
-				const YEAR = this.pickerYearMonth.year;
-				const MONTH = this.pickerYearMonth.month;
-
-				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-				PARAMS.month_year = YEAR_MONTH;
-
-				PARAMS = cleanObject(PARAMS);
-
-				const { code, data } = await getListShift(CONSTANT.URL_API.GET_TOTAL_EXTRA_COST, PARAMS);
-				if (code === 200) {
-					this.listTotalExtraCost = data;
-					this.reloadTable();
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
-
-		// async handleGetTableSalary() {
+		// async handleGetTotalExtraCost() {
 		// 	try {
-		// 		this.listSalary.length = 0;
-
-		// 		const YEAR = this.$store.getters.pickerYearMonth.year;
-		// 		const MONTH = this.$store.getters.pickerYearMonth.month;
-		// 		const NUMBER_DATE = this.$store.getters.pickerYearMonth.numberDate;
-
-		// 		const START_SALARY = `${YEAR}-${format2Digit(MONTH)}-01`;
-		// 		const END_SALARY = `${YEAR}-${format2Digit(MONTH)}-${format2Digit(NUMBER_DATE)}`;
-		// 		const MONTH_SALARY = `${YEAR}-${format2Digit(MONTH)}`;
-
-		// 		const PARAMS = {
-		// 			start_date: START_SALARY,
-		// 			end_date: END_SALARY,
-		// 			date: MONTH_SALARY,
-		// 			tab3: true,
-		// 			type: 'month',
+		// 		let PARAMS = {
+		// 			closing_date: this.closingDate,
 		// 		};
-
-		// 		if (this.sortTable.salaryTable.sortBy) {
-		// 			PARAMS.field = this.sortTable.salaryTable.sortBy;
-		// 			PARAMS.sortby = this.sortTable.salaryTable.sortType ? 'asc' : 'desc';
+		// 		if (this.sortTable.shiftTable.sortBy) {
+		// 			PARAMS.field = this.sortTable.shiftTable.sortBy;
+		// 			PARAMS.sortby = this.sortTable.shiftTable.sortType ? 'desc' : 'asc';
 		// 		}
+		// 		const YEAR = this.pickerYearMonth.year;
+		// 		const MONTH = this.pickerYearMonth.month;
 
-		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
-		// 		console.log('get listSalary', data);
+		// 		const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+		// 		PARAMS.month_year = YEAR_MONTH;
+
+		// 		PARAMS = cleanObject(PARAMS);
+
+		// 		const { code, data } = await getListShift(CONSTANT.URL_API.GET_TOTAL_EXTRA_COST, PARAMS);
 		// 		if (code === 200) {
-		// 			console.log('get listSalary', data);
-		// 			this.listSalary = data;
-		// 			this.convertTotalSalary();
-		// 		} else {
-		// 			this.listSalary = [];
+		// 			this.listTotalExtraCost = data;
+		// 			this.reloadTable();
 		// 		}
 		// 	} catch (error) {
-		// 		this.listSalary = [];
 		// 		console.log(error);
 		// 	}
 		// },
@@ -2906,7 +2866,7 @@ export default {
 					}
 				}
 
-				table.shift-table {
+				table.shift {
 					thead {
 						tr {
 							th {
