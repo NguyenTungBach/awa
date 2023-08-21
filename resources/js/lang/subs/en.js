@@ -238,8 +238,11 @@ export default {
 		LABEL_BREAK_TIME: 'Break time: ',
 
 		TABLE_DRIVER_CODE: 'Customer ID',
+		TABLE_CUSTOMER_ID: 'Customer ID',
 		TABLE_DRIVER_TYPE: 'Due date',
+		TABLE_DUA_DATE_CUSTOMER: 'Due date',
 		TABLE_DRIVER_NAME: 'Customer name',
+		TABLE_CUSTOMER_NAME: 'Customer name',
 		TABLE_NUMBER_OF_PAID_HOLIDAYS: 'Number of paid holidays',
 		TABLE_TOTAL_TIME: 'Days can work',
 		TABLE_DRIVING_TIME: 'Working days',

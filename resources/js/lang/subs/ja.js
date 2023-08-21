@@ -188,8 +188,11 @@ export default {
 		LABOUR: '手間',
 
 		TABLE_DRIVER_CODE: '荷主番号',
+		TABLE_CUSTOMER_ID: '荷主番号',
 		TABLE_DRIVER_TYPE: '締日',
+		TABLE_DUA_DATE_CUSTOMER: '締日',
 		TABLE_DRIVER_NAME: '荷主名',
+		TABLE_CUSTOMER_NAME: '荷主名',
 		TABLE_NUMBER_OF_PAID_HOLIDAYS: '有給休暇数',
 		TABLE_TOTAL_TIME: '勤務可能日数',
 		TABLE_DRIVING_TIME: '勤務日数',
