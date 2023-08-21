@@ -148,6 +148,7 @@ return [
         'check_date' => ':attribute時間は作成日以降である必要があります',
         'check_minute' => ':attributeが無効です',
         'compare_date' => '始業時間は終業時間より早い時間に設定してください',
+        'required_custom' => '入力または選択されていない項目があります。',
         'csv' => [
             'required' => ':row行目の項目『:attribute』を必ず指定してください。',
             'required_if' => ':row行目の種別が:valueの場合、『:attribute』を必ず指定してください。',
