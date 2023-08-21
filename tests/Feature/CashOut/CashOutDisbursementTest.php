@@ -14,6 +14,7 @@ use Faker\Factory as Faker;
 use App\Models\CashOut;
 use App\Models\User;
 use App\Models\Driver;
+use Illuminate\Support\Facades\DB;
 
 class CashOutDisbursementTest extends TestCase
 {
@@ -141,40 +142,42 @@ class CashOutDisbursementTest extends TestCase
         // create cash out
         DB::table('cash_outs')->truncate();
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
-        CashOut::factory()->create([
-            'driver_id' => $driver->id,
-            'payment_date' => '2023-08-01',
-            'cash_out' => '450',
-            'payment_method' => '2',
-            'note' => NULL,
-        ]);
-        CashOut::factory()->create([
-            'driver_id' => $driver->id,
-            'payment_date' => '2023-07-01',
-            'cash_out' => '500',
-            'payment_method' => '1',
-            'note' => NULL,
-        ]);
-        CashOut::factory()->create([
-            'driver_id' => $driver->id,
-            'payment_date' => '2023-08-20',
-            'cash_out' => '800',
-            'payment_method' => '2',
-            'note' => NULL,
-        ]);
-        CashOut::factory()->create([
-            'driver_id' => $driver->id,
-            'payment_date' => '2023-08-25',
-            'cash_out' => '650',
-            'payment_method' => '1',
-            'note' => NULL,
-        ]);
-        CashOut::factory()->create([
-            'driver_id' => $driver->id,
-            'payment_date' => '2023-08-25',
-            'cash_out' => '300',
-            'payment_method' => '1',
-            'note' => NULL,
+        DB::table('cash_outs')->insert([
+            [
+                'driver_id' => $driver->id,
+                'payment_date' => '2023-08-01',
+                'cash_out' => '450',
+                'payment_method' => '2',
+                'note' => NULL,
+            ],
+            [
+                'driver_id' => $driver->id,
+                'payment_date' => '2023-07-01',
+                'cash_out' => '500',
+                'payment_method' => '1',
+                'note' => NULL,
+            ],
+            [
+                'driver_id' => $driver->id,
+                'payment_date' => '2023-08-20',
+                'cash_out' => '800',
+                'payment_method' => '2',
+                'note' => NULL,
+            ],
+            [
+                'driver_id' => $driver->id,
+                'payment_date' => '2023-08-25',
+                'cash_out' => '650',
+                'payment_method' => '1',
+                'note' => NULL,
+            ],
+            [
+                'driver_id' => $driver->id,
+                'payment_date' => '2023-08-25',
+                'cash_out' => '300',
+                'payment_method' => '1',
+                'note' => NULL,
+            ],
         ]);
     }
 
@@ -197,10 +200,10 @@ class CashOutDisbursementTest extends TestCase
         $this->actingAs($user);
         $token = \JWTAuth::fromUser($user);
         $orderBy = 'driver_code';
-        $orderBy = 'desc';
+        $sortBy = 'desc';
         $monthLine = '2023-08';
 
-        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?order_by='.$orderBy.'&sort_by='.$sortBy.'&month_line='.$monthLine.'?token=' . $token)
+        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?order_by='.$orderBy.'&sort_by='.$sortBy.'&month_line='.$monthLine.'&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
@@ -214,7 +217,7 @@ class CashOutDisbursementTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $monthLine = '2023-08-01';
 
-        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?month_line='.$monthLine.'?token=' . $token)
+        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?month_line='.$monthLine.'&token=' . $token)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -235,7 +238,7 @@ class CashOutDisbursementTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $monthLine = '';
 
-        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?month_line='.$monthLine.'?token=' . $token)
+        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?month_line='.$monthLine.'&token=' . $token)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -256,7 +259,7 @@ class CashOutDisbursementTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $orderBy = 'driver_id';
 
-        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?order_by='.$orderBy.'?token=' . $token)
+        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?order_by='.$orderBy.'&token=' . $token)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
@@ -277,7 +280,7 @@ class CashOutDisbursementTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $sortBy = 'abc';
 
-        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?sort_by='.$sortBy.'?token=' . $token)
+        $response = $this->actingAs($user)->get('api/driver-cash-out-statistical?sort_by='.$sortBy.'&token=' . $token)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",

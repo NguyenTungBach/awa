@@ -236,8 +236,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'payment_date' => '2023-08-01',
         ])->assertStatus(Response::HTTP_OK);
@@ -248,8 +249,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'payment_date' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -270,8 +272,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'payment_date' => '2023-08',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -292,8 +295,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'cash_out' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -314,8 +318,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'cash_out' => 'abc',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -336,8 +341,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'payment_method' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -358,8 +364,9 @@ class CashOutTest extends TestCase
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
+        $cashOut = CashOut::where('driver_id', $driver->id)->orderBy('id', 'asc')->first();
 
-        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out', [
+        $response = $this->actingAs($user)->json('put', 'api/driver/'.$driver->id.'/cash-out'.'/'.$cashOut->id, [
             'token' => $token,
             'payment_method' => '3',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -425,14 +432,15 @@ class CashOutTest extends TestCase
         $token = \JWTAuth::fromUser($user);
         $driver = Driver::where('type', 4)->orderBy('id', 'asc')->first();
 
-        $newCashOut = $this->actingAs($user)->json('post', 'api/customer', [
+        $newCashOut = $this->actingAs($user)->json('post', 'api/driver/'.$driver->id.'/cash-out', [
             'token' => $token,
             'payment_date' => '2023-08-30',
             'cash_out' => '500',
             'payment_method' => '1',
             'note' => NULL,
         ]);
-        $response = $this->actingAs($user)->json('delete', 'api/driver/'.$driver->id.'/cash-out'.'/'.$newCashOut->id, ['token' => $token])
+
+        $response = $this->actingAs($user)->json('delete', 'api/driver/'.$driver->id.'/cash-out'.'/'.$newCashOut['data']['id'], ['token' => $token])
             ->assertStatus(Response::HTTP_OK);
     }
 
