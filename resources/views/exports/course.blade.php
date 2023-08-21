@@ -2,8 +2,17 @@
     $styleDefault = "border: 1px solid #cdcdcd; font-size: 10pt";
     $styleHeader = "border-bottom: 1px solid #000; font-size: 11pt";
 @endphp
+
+<style>
+    .auto-size {
+        table-layout: auto;
+        width: 100%;
+        word-wrap: break-word;
+    }
+</style>
+
 <div>
-    <table>
+    <table class="auto-size">
         <thead>
             <tr>
                 <th colspan="2" style="width: 60px">運行情報一覧</th>
@@ -16,7 +25,7 @@
         <tbody>
             <tr>
                 @foreach (config('courses.header_export') as $key => $item)
-                    <th>{{ $item }}</th>
+                    <th style="width: auto;">{{ $item }}</th>
                 @endforeach
             </tr>
             @foreach ($result as $key => $item)
