@@ -723,7 +723,7 @@
                                     </template>
                                 </b-tr>
                             </b-thead>
-                            <b-tbody v-if="listShift.length > 0">
+                            <b-tbody v-if="listHighWay.length > 0">
                                 <template
                                     v-for="(emp, idx) in listHighWay"
                                 >
@@ -873,7 +873,7 @@
                                     </template>
                                 </b-tr>
                             </b-thead>
-                            <b-tbody v-if="listShift.length > 0">
+                            <b-tbody v-if="ListPayment.length > 0">
                                 <template
                                     v-for="(emp, idx) in ListPayment"
                                 >
