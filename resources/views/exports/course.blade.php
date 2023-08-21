@@ -25,7 +25,7 @@
         <tbody>
             <tr>
                 @foreach (config('courses.header_export') as $key => $item)
-                    <th style="width: auto;">{{ $item }}</th>
+                    <th>{{ $item }}</th>
                 @endforeach
             </tr>
             @foreach ($result as $key => $item)
