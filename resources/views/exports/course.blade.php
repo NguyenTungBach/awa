@@ -30,7 +30,7 @@
                 <th style="width: 180px;">高速道路・フェリー料金</th>
                 <th style="width: 120px;">歩合</th>
                 <th style="width: 120px;">食事補助金額</th>
-                <th style="width: 120px;">メモ</th>
+                <th>メモ</th>
             </tr>
             @foreach ($result as $key => $item)
                 <tr>
