@@ -277,296 +277,297 @@
                     </template>
 
                     <div class="zone-table">
-                        <template v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE">
-                            <b-table-simple
-                                :key="`shift-table-${reRender}`"
-                                class="shift-table"
-                                bordered
-                                no-border-collapse
-                            >
-                                <b-thead>
-                                    <b-tr>
-                                        <b-th
-                                            :colspan="3"
-                                            class="fix-header"
-                                        />
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                        >
-                                            <template v-for="(date, idx) in pickerWeek.listDate">
-                                                <b-th
-                                                    :key="`date-${idx}`"
-                                                    class="th-show-date"
-                                                >
-                                                    <div>
-                                                        {{ date.date }} ({{ getTextDay(date.text) }})
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                        >
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th
-                                                    :key="`date-${date}`"
-                                                    class="th-show-date"
-                                                >
-                                                    <div>
-                                                        {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                        <b-th class="total-shift" :rowspan="2">
-                                            {{ $t('LIST_SHIFT.TABLE_TOTAL') }}
-                                        </b-th>
-                                    </b-tr>
-                                    <b-tr>
-                                        <b-th
-                                            class="th-employee-number"
-                                            @click="onSortTable('drivers.driver_code', 'shiftTable')"
-                                        >
-                                            {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th
-                                            class="th-type-employee"
-                                            @click="onSortTable('drivers.type', 'shiftTable')"
-                                        >
-                                            {{ $t('LIST_SHIFT.TABLE_FLAG') }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
-                                        </b-th>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
-                                            <template v-for="(date, idx) in pickerWeek.listDate">
-                                                <b-th :key="`date-${idx}`">
-                                                    <div v-if="listCalendar.length">
-                                                        {{ listCalendar[idx] || '' }}
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th :key="`date-${date}`">
-                                                    <span>
-                                                        {{ listCalendar[date - 1] || '' }}
-                                                    </span>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                    </b-tr>
-                                </b-thead>
-                                <b-tbody v-if="listShift.length > 0">
-                                    <template
-                                        v-for="(emp, idx) in listShift"
-                                    >
-                                        <tr :key="`emp-no-${idx + 1}`">
-                                            <td class="td-employee-number">
-                                                {{ emp.driver_code }}
-                                            </td>
-                                            <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsTypeDriver, emp.type)) }}
-                                            </b-td>
-                                            <td class="td-full-name text-center">
-                                                {{ emp.driver_name }}
-                                            </td>
-                                            <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                                <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                    <template v-if="emp.dataShift">
-                                                        <NodeListShift
-                                                            :key="`date-${date}-${idxDate}`"
-                                                            :idx-component="idxDate + 1"
-                                                            :date="date"
-                                                            :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
-                                                            :data-node="emp.dataShift.data_by_date[idxDate]"
-                                                            :emp-data="emp"
-                                                            :driver-code="emp.driver_code"
-                                                            :driver-name="emp.driver_name"
-                                                        />
-                                                    </template>
 
+                        <b-table-simple
+                            v-show="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                            :key="`shift-table-${reRender}`"
+                            class="shift-table"
+                            bordered
+                            no-border-collapse
+                        >
+                            <b-thead>
+                                <b-tr>
+                                    <b-th
+                                        :colspan="3"
+                                        class="fix-header"
+                                    />
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
+                                    >
+                                        <template v-for="(date, idx) in pickerWeek.listDate">
+                                            <b-th
+                                                :key="`date-${idx}`"
+                                                class="th-show-date"
+                                            >
+                                                <div>
+                                                    {{ date.date }} ({{ getTextDay(date.text) }})
+                                                </div>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
+                                    >
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th
+                                                :key="`date-${date}`"
+                                                class="th-show-date"
+                                            >
+                                                <div>
+                                                    {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                                </div>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                    <b-th class="total-shift" :rowspan="2">
+                                        {{ $t('LIST_SHIFT.TABLE_TOTAL') }}
+                                    </b-th>
+                                </b-tr>
+                                <b-tr>
+                                    <b-th
+                                        class="th-employee-number"
+                                        @click="onSortTable('drivers.driver_code', 'shiftTable')"
+                                    >
+                                        {{ $t("LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER") }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th
+                                        class="th-type-employee"
+                                        @click="onSortTable('drivers.type', 'shiftTable')"
+                                    >
+                                        {{ $t('LIST_SHIFT.TABLE_FLAG') }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'drivers.type' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th class="th-full-name">
+                                        {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
+                                    </b-th>
+                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
+                                        <template v-for="(date, idx) in pickerWeek.listDate">
+                                            <b-th :key="`date-${idx}`">
+                                                <div v-if="listCalendar.length">
+                                                    {{ listCalendar[idx] || '' }}
+                                                </div>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th :key="`date-${date}`">
+                                                <span>
+                                                    {{ listCalendar[date - 1] || '' }}
+                                                </span>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                </b-tr>
+                            </b-thead>
+                            <b-tbody v-if="listShift.length > 0">
+                                <template
+                                    v-for="(emp, idx) in listShift"
+                                >
+                                    <tr :key="`emp-no-${idx + 1}`">
+                                        <td class="td-employee-number">
+                                            {{ emp.driver_code }}
+                                        </td>
+                                        <b-td class="td-type-employee">
+                                            {{ $t(convertValueToText(optionsTypeDriver, emp.type)) }}
+                                        </b-td>
+                                        <td class="td-full-name text-center">
+                                            {{ emp.driver_name }}
+                                        </td>
+                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                <template v-if="emp.dataShift">
                                                     <NodeListShift
-                                                        v-else
-                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
-                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
                                                         :date="date"
-                                                        :data-node="emp.dataShift"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                        :data-node="emp.dataShift.data_by_date[idxDate]"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
                                                     />
                                                 </template>
+
+                                                <NodeListShift
+                                                    v-else
+                                                    :key="`dateNull-${date}-${idxDate}`"
+                                                    :idx-component="idxDate + 1"
+                                                    :check-table="CONSTANT.LIST_SHIFT.SHIFT_TABLE"
+                                                    :date="date"
+                                                    :data-node="emp.dataShift"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.driver_code"
+                                                    :driver-name="emp.driver_name"
+                                                />
                                             </template>
-                                            <b-td class="td-total-shift">
-                                                {{ emp.total_money }}
-                                            </b-td>
-                                        </tr>
-                                    </template>
-                                </b-tbody>
-                            </b-table-simple>
+                                        </template>
+                                        <b-td class="td-total-shift">
+                                            {{ emp.total_money }}
+                                        </b-td>
+                                    </tr>
+                                </template>
+                            </b-tbody>
+                        </b-table-simple>
 
-                        </template>
                         <!-- Table Salary -->
-                        <template v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE">
-                            <b-table-simple
-                                bordered
-                                class="table-salary"
-                                no-border-collapse
-                            >
-                                <b-thead>
-                                    <b-tr>
-                                        <b-th class="fix-header" colspan="3" />
 
-                                        <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`" class="th-show-date">
-                                            <div>
-                                                {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                            </div>
-                                        </b-th>
+                        <b-table-simple
+                            v-show="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
+                            bordered
+                            class="table-salary"
+                            no-border-collapse
+                        >
+                            <b-thead>
+                                <b-tr>
+                                    <b-th class="fix-header" colspan="3" />
 
-                                        <b-th rowspan="2" class="th-total">
-                                            {{ $t("LIST_SHIFT.SALES_MONTH") }}
-                                        </b-th>
-                                        <b-th rowspan="2" class="th-total">
-                                            {{ $t("LIST_SHIFT.SALES_CLOSING_DATE") }}
-                                        </b-th>
-                                        <b-th rowspan="2" class="th-total">
-                                            {{ $t("LIST_SHIFT.SALES_INVOICE") }}
-                                        </b-th>
+                                    <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`" class="th-show-date">
+                                        <div>
+                                            {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                        </div>
+                                    </b-th>
 
-                                    </b-tr>
+                                    <b-th rowspan="2" class="th-total">
+                                        {{ $t("LIST_SHIFT.SALES_MONTH") }}
+                                    </b-th>
+                                    <b-th rowspan="2" class="th-total">
+                                        {{ $t("LIST_SHIFT.SALES_CLOSING_DATE") }}
+                                    </b-th>
+                                    <b-th rowspan="2" class="th-total">
+                                        {{ $t("LIST_SHIFT.SALES_INVOICE") }}
+                                    </b-th>
 
-                                    <b-tr>
-                                        <b-th class="th-employee-number" @click="onSortTable('customers.customer_code', 'salaryTable')">
-                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
-                                            <i
-                                                v-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
+                                </b-tr>
 
-                                        <b-th class="th-type-employee" @click="onSortTable('customers.closing_date', 'salaryTable')">
-                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
-                                            <i
-                                                v-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
+                                <b-tr>
+                                    <b-th class="th-employee-number" @click="onSortTable('customers.customer_code', 'salaryTable')">
+                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_CODE") }}
+                                        <i
+                                            v-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.salaryTable.sortBy === 'customers.customer_code' && sortTable.salaryTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
 
-                                        <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
-                                        </b-th>
+                                    <b-th class="th-type-employee" @click="onSortTable('customers.closing_date', 'salaryTable')">
+                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_TYPE") }}
+                                        <i
+                                            v-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.salaryTable.sortBy === 'customers.closing_date' && sortTable.salaryTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
 
-                                        <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`">
-                                            <span>
-                                                {{ listCalendar[date - 1] || '' }}
-                                            </span>
-                                        </b-th>
+                                    <b-th class="th-full-name">
+                                        {{ $t("LIST_SHIFT.TABLE_DRIVER_NAME") }}
+                                    </b-th>
 
-                                    </b-tr>
-                                </b-thead>
+                                    <b-th v-for="date in pickerYearMonth.numberDate" :key="`date-${date}`">
+                                        <span>
+                                            {{ listCalendar[date - 1] || '' }}
+                                        </span>
+                                    </b-th>
 
-                                <b-tbody v-if="listSaleAmount.length > 0">
-                                    <template
-                                        v-for="(emp, idx) in listSaleAmount"
-                                    >
-                                        <tr :key="`emp-no-${idx + 1}`">
-                                            <td class="td-employee-number">
-                                                {{ emp.customer_code }}
-                                            </td>
-                                            <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
-                                            </b-td>
-                                            <td class="td-full-name text-center">
-                                                {{ emp.customer_name }}
-                                            </td>
-                                            <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                                <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                    <template v-if="emp.date_ship_fee">
-                                                        <NodeListShift
-                                                            :key="`date-${date}-${idxDate}`"
-                                                            :idx-component="idxDate + 1"
-                                                            :date="date"
-                                                            :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
-                                                            :data-node="emp.date_ship_fee[idxDate]"
-                                                            :emp-data="emp"
-                                                            :driver-code="emp.customer_code"
-                                                            :driver-name="emp.customer_name"
-                                                        />
-                                                    </template>
+                                </b-tr>
+                            </b-thead>
 
+                            <b-tbody v-if="listSaleAmount.length > 0">
+                                <template
+                                    v-for="(emp, idx) in listSaleAmount"
+                                >
+                                    <tr :key="`emp-no-${idx + 1}`">
+                                        <td class="td-employee-number">
+                                            {{ emp.customer_code }}
+                                        </td>
+                                        <b-td class="td-type-employee">
+                                            {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
+                                        </b-td>
+                                        <td class="td-full-name text-center">
+                                            {{ emp.customer_name }}
+                                        </td>
+                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                <template v-if="emp.date_ship_fee">
                                                     <NodeListShift
-                                                        v-else
-                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
-                                                        :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
                                                         :date="date"
-                                                        :data-node="emp.date_ship_fee"
+                                                        :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
+                                                        :data-node="emp.date_ship_fee[idxDate]"
                                                         :emp-data="emp"
                                                         :driver-code="emp.customer_code"
                                                         :driver-name="emp.customer_name"
                                                     />
                                                 </template>
+
+                                                <NodeListShift
+                                                    v-else
+                                                    :key="`dateNull-${date}-${idxDate}`"
+                                                    :idx-component="idxDate + 1"
+                                                    :check-table="CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE"
+                                                    :date="date"
+                                                    :data-node="emp.date_ship_fee"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.customer_code"
+                                                    :driver-name="emp.customer_name"
+                                                />
                                             </template>
-                                            <b-td class="td-total-month">
-                                                {{ emp.total_ship_fee_by_month }}
-                                            </b-td>
-                                            <b-td class="td-total-closing-date">
-                                                {{ emp.total_ship_fee_by_closing_date }}
-                                            </b-td>
-                                            <b-td class="img-pdf">
-                                                <img
-                                                    :src="require('@/assets/images/payment.png')"
-                                                    alt="Logo"
-                                                    @click="handleExportPDF(emp.customer_id)"
-                                                >
-                                            </b-td>
-                                        </tr>
-                                    </template>
-                                </b-tbody>
-                                <!-- <b-tbody>
+                                        </template>
+                                        <b-td class="td-total-month">
+                                            {{ emp.total_ship_fee_by_month }}
+                                        </b-td>
+                                        <b-td class="td-total-closing-date">
+                                            {{ emp.total_ship_fee_by_closing_date }}
+                                        </b-td>
+                                        <b-td class="img-pdf">
+                                            <img
+                                                :src="require('@/assets/images/payment.png')"
+                                                alt="Logo"
+                                                @click="handleExportPDF(emp.customer_id)"
+                                            >
+                                        </b-td>
+                                    </tr>
+                                </template>
+                            </b-tbody>
+                            <!-- <b-tbody>
                                     <b-tr v-for="(driverSalary, index) in listSalary" :key="driverSalary.id">
                                         <b-td class="td-employee-number">
                                             {{ driverSalary.driver_code }}
@@ -591,45 +592,46 @@
                                         <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
                                     </b-tr>
                                 </b-tbody> -->
-                                <b-tbody>
-                                    <b-tr>
-                                        <b-td class="td-total" colspan="3">
-                                            <span>
-                                                {{ $t("LIST_SHIFT.SALES_TOTAL") }}
-                                            </span>
-                                        </b-td>
+                            <b-tbody>
+                                <b-tr>
+                                    <b-td class="td-total" colspan="3">
+                                        <span>
+                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                        </span>
+                                    </b-td>
 
-                                        <b-td v-for="(total, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center">
-                                            {{ total.total_all_ship_fee_by_date }}
-                                        </b-td>
-                                        <b-td class="td-total-month">
-                                            {{ total_all_data_sale_by_month }}
-                                        </b-td>
-                                        <b-td class="td-total-closing-date">
-                                            {{ total_all_sale_by_closing_date }}
-                                        </b-td>
-                                        <b-td class="img-pdf">
-                                            <img :src="require('@/assets/images/payment.png')" alt="Logo">
-                                        </b-td>
-                                    </b-tr>
-                                </b-tbody>
-                            </b-table-simple>
-                        </template>
+                                    <b-td v-for="(total, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center">
+                                        {{ total.total_all_ship_fee_by_date }}
+                                    </b-td>
+                                    <b-td class="td-total-month">
+                                        {{ total_all_data_sale_by_month }}
+                                    </b-td>
+                                    <b-td class="td-total-closing-date">
+                                        {{ total_all_sale_by_closing_date }}
+                                    </b-td>
+                                    <b-td class="img-pdf">
+                                        <img :src="require('@/assets/images/payment.png')" alt="Logo">
+                                    </b-td>
+                                </b-tr>
+                            </b-tbody>
+                        </b-table-simple>
+
                         <!-- table Hight way -->
-                        <template v-if="selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE">
-                            <b-table-simple
-                                :key="`shift-table-${reRender}`"
-                                class="table-hight-way"
-                                bordered
-                                no-border-collapse
-                            >
-                                <b-thead>
-                                    <b-tr>
-                                        <b-th
-                                            :colspan="3"
-                                            class="fix-header"
-                                        />
-                                        <!-- <template
+
+                        <b-table-simple
+                            v-show="selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
+                            :key="`shift-table-${reRender}`"
+                            class="table-hight-way"
+                            bordered
+                            no-border-collapse
+                        >
+                            <b-thead>
+                                <b-tr>
+                                    <b-th
+                                        :colspan="3"
+                                        class="fix-header"
+                                    />
+                                    <!-- <template
                                             v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                         >
                                             <template v-for="(date, idx) in pickerWeek.listDate">
@@ -643,65 +645,65 @@
                                                 </b-th>
                                             </template>
                                         </template> -->
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                        >
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th
-                                                    :key="`date-${date}`"
-                                                    class="th-show-date"
-                                                >
-                                                    <div>
-                                                        {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                                    </div>
-                                                </b-th>
-                                            </template>
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
+                                    >
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th
+                                                :key="`date-${date}`"
+                                                class="th-show-date"
+                                            >
+                                                <div>
+                                                    {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                                </div>
+                                            </b-th>
                                         </template>
-                                        <b-th class="total-shift" :rowspan="2">
-                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
-                                        </b-th>
-                                    </b-tr>
-                                    <b-tr>
-                                        <b-th
-                                            class="th-employee-number"
-                                            @click="onSortTable('customers.customer_code', 'HightWay')"
-                                        >
-                                            {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID") }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th
-                                            class="th-type-employee"
-                                            @click="onSortTable('customers.closing_date', 'HightWay')"
-                                        >
-                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE') }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME") }}
-                                        </b-th>
-                                        <!-- <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
+                                    </template>
+                                    <b-th class="total-shift" :rowspan="2">
+                                        {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
+                                    </b-th>
+                                </b-tr>
+                                <b-tr>
+                                    <b-th
+                                        class="th-employee-number"
+                                        @click="onSortTable('customers.customer_code', 'HightWay')"
+                                    >
+                                        {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID") }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'customers.customer_code' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th
+                                        class="th-type-employee"
+                                        @click="onSortTable('customers.closing_date', 'HightWay')"
+                                    >
+                                        {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE') }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'customers.closing_date' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th class="th-full-name">
+                                        {{ $t("LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME") }}
+                                    </b-th>
+                                    <!-- <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
                                             <template v-for="(date, idx) in pickerWeek.listDate">
                                                 <b-th :key="`date-${idx}`">
                                                     <div v-if="listCalendar.length">
@@ -710,32 +712,32 @@
                                                 </b-th>
                                             </template>
                                         </template> -->
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th :key="`date-${date}`">
-                                                    <span>
-                                                        {{ listCalendar[date - 1] || '' }}
-                                                    </span>
-                                                </b-th>
-                                            </template>
+                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th :key="`date-${date}`">
+                                                <span>
+                                                    {{ listCalendar[date - 1] || '' }}
+                                                </span>
+                                            </b-th>
                                         </template>
-                                    </b-tr>
-                                </b-thead>
-                                <b-tbody v-if="listShift.length > 0">
-                                    <template
-                                        v-for="(emp, idx) in listHighWay"
-                                    >
-                                        <tr :key="`emp-no-${idx + 1}`">
-                                            <td class="td-employee-number">
-                                                {{ emp.customer_code }}
-                                            </td>
-                                            <b-td class="td-type-employee">
-                                                {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
-                                            </b-td>
-                                            <td class="td-full-name text-center">
-                                                {{ emp.customer_name }}
-                                            </td>
-                                            <!-- <template
+                                    </template>
+                                </b-tr>
+                            </b-thead>
+                            <b-tbody v-if="listShift.length > 0">
+                                <template
+                                    v-for="(emp, idx) in listHighWay"
+                                >
+                                    <tr :key="`emp-no-${idx + 1}`">
+                                        <td class="td-employee-number">
+                                            {{ emp.customer_code }}
+                                        </td>
+                                        <b-td class="td-type-employee">
+                                            {{ $t(convertValueToText(optionsDate, emp.closing_date)) }}
+                                        </b-td>
+                                        <td class="td-full-name text-center">
+                                            {{ emp.customer_name }}
+                                        </td>
+                                        <!-- <template
                                                 v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
                                             >
                                                 <template v-for="(date, idxDate) in pickerWeek.listDate">
@@ -752,189 +754,190 @@
                                                     />
                                                 </template>
                                             </template> -->
-                                            <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                                <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                    <template v-if="emp.dataShiftExpress">
-                                                        <NodeListShift
-                                                            :key="`date-${date}-${idxDate}`"
-                                                            :idx-component="idxDate + 1"
-                                                            :date="date"
-                                                            :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
-                                                            :data-node="emp.dataShiftExpress.data_ship_date[idxDate]"
-                                                            :emp-data="emp"
-                                                            :driver-code="emp.customer_code"
-                                                            :driver-name="emp.customer_name"
-                                                        />
-                                                    </template>
-
+                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                <template v-if="emp.dataShiftExpress">
                                                     <NodeListShift
-                                                        v-else
-                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
-                                                        :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
                                                         :date="date"
+                                                        :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
+                                                        :data-node="emp.dataShiftExpress.data_ship_date[idxDate]"
                                                         :emp-data="emp"
                                                         :driver-code="emp.customer_code"
                                                         :driver-name="emp.customer_name"
                                                     />
                                                 </template>
-                                            </template>
-                                            <b-td class="td-total-shift">
-                                                {{ emp.total_courses_expressway_fee }}
-                                            </b-td>
-                                        </tr>
-                                    </template>
-                                </b-tbody>
-                            </b-table-simple>
-                        </template>
-                        <!-- Table payment -->
-                        <template v-if="selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE">
-                            <b-table-simple
-                                :key="`shift-table-${reRender}`"
-                                class="table-payment"
-                                bordered
-                                no-border-collapse
-                            >
-                                <b-thead>
-                                    <b-tr>
-                                        <b-th
-                                            :colspan="3"
-                                            class="fix-header"
-                                        />
-                                        <template
-                                            v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
-                                        >
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th
-                                                    :key="`date-${date}`"
-                                                    class="th-show-date"
-                                                >
-                                                    <div>
-                                                        {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
-                                                    </div>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                        <b-th class="total-shift" :rowspan="2">
-                                            {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
-                                        </b-th>
-                                    </b-tr>
-                                    <b-tr>
-                                        <b-th
-                                            class="th-employee-number"
-                                            @click="onSortTable('drivers.driver_code', 'payMent')"
-                                        >
-                                            {{ $t("LIST_SHIFT.TABLE_PAYMENT_COMPANY_ID") }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th
-                                            class="th-type-employee"
-                                            @click="onSortTable('flag', 'payMent')"
-                                        >
-                                            {{ $t('LIST_SHIFT.TABLE_PAYMENT_DUE_DATE') }}
-                                            <i
-                                                v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
-                                                class="fad fa-sort-up icon-sort"
-                                            />
-                                            <i
-                                                v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
-                                                class="fad fa-sort-down icon-sort"
-                                            />
-                                            <i
-                                                v-else
-                                                class="fa-solid fa-sort icon-sort-default"
-                                            />
-                                        </b-th>
-                                        <b-th class="th-full-name">
-                                            {{ $t("LIST_SHIFT.TABLE_COMPANY_NAME") }}
-                                        </b-th>
-                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                            <template v-for="date in pickerYearMonth.numberDate">
-                                                <b-th :key="`date-${date}`">
-                                                    <span>
-                                                        {{ listCalendar[date - 1] || '' }}
-                                                    </span>
-                                                </b-th>
-                                            </template>
-                                        </template>
-                                    </b-tr>
-                                </b-thead>
-                                <b-tbody v-if="listShift.length > 0">
-                                    <template
-                                        v-for="(emp, idx) in ListPayment"
-                                    >
-                                        <tr :key="`emp-no-${idx + 1}`">
-                                            <td class="td-employee-number">
-                                                {{ emp.driver_code }}
-                                            </td>
-                                            <b-td class="td-type-employee">
-                                                {{ emp.closing_date }}
-                                            </b-td>
-                                            <td class="td-full-name text-center">
-                                                {{ emp.driver_name }}
-                                            </td>
-                                            <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
-                                                <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
-                                                    <template v-if="emp.total_payable_day">
-                                                        <NodeListShift
-                                                            :key="`date-${date}-${idxDate}`"
-                                                            :idx-component="idxDate + 1"
-                                                            :date="date"
-                                                            :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
-                                                            :data-node="emp.total_payable_day[idxDate]"
-                                                            :emp-data="emp"
-                                                            :driver-code="emp.driver_code"
-                                                            :driver-name="emp.driver_name"
-                                                        />
-                                                    </template>
 
+                                                <NodeListShift
+                                                    v-else
+                                                    :key="`dateNull-${date}-${idxDate}`"
+                                                    :idx-component="idxDate + 1"
+                                                    :check-table="CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE"
+                                                    :date="date"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.customer_code"
+                                                    :driver-name="emp.customer_name"
+                                                />
+                                            </template>
+                                        </template>
+                                        <b-td class="td-total-shift">
+                                            {{ emp.total_courses_expressway_fee }}
+                                        </b-td>
+                                    </tr>
+                                </template>
+                            </b-tbody>
+                        </b-table-simple>
+
+                        <!-- Table payment -->
+
+                        <b-table-simple
+                            v-show="selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
+                            :key="`shift-table-${reRender}`"
+                            class="table-payment"
+                            bordered
+                            no-border-collapse
+                        >
+                            <b-thead>
+                                <b-tr>
+                                    <b-th
+                                        :colspan="3"
+                                        class="fix-header"
+                                    />
+                                    <template
+                                        v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
+                                    >
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th
+                                                :key="`date-${date}`"
+                                                class="th-show-date"
+                                            >
+                                                <div>
+                                                    {{ date }} ({{ getTextDay(`${pickerYearMonth.year}-${pickerYearMonth.month}-${date}`) }})
+                                                </div>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                    <b-th class="total-shift" :rowspan="2">
+                                        {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
+                                    </b-th>
+                                </b-tr>
+                                <b-tr>
+                                    <b-th
+                                        class="th-employee-number"
+                                        @click="onSortTable('drivers.driver_code', 'payMent')"
+                                    >
+                                        {{ $t("LIST_SHIFT.TABLE_PAYMENT_COMPANY_ID") }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'drivers.driver_code' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th
+                                        class="th-type-employee"
+                                        @click="onSortTable('flag', 'payMent')"
+                                    >
+                                        {{ $t('LIST_SHIFT.TABLE_PAYMENT_DUE_DATE') }}
+                                        <i
+                                            v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
+                                            class="fad fa-sort-up icon-sort"
+                                        />
+                                        <i
+                                            v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
+                                            class="fad fa-sort-down icon-sort"
+                                        />
+                                        <i
+                                            v-else
+                                            class="fa-solid fa-sort icon-sort-default"
+                                        />
+                                    </b-th>
+                                    <b-th class="th-full-name">
+                                        {{ $t("LIST_SHIFT.TABLE_COMPANY_NAME") }}
+                                    </b-th>
+                                    <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                        <template v-for="date in pickerYearMonth.numberDate">
+                                            <b-th :key="`date-${date}`">
+                                                <span>
+                                                    {{ listCalendar[date - 1] || '' }}
+                                                </span>
+                                            </b-th>
+                                        </template>
+                                    </template>
+                                </b-tr>
+                            </b-thead>
+                            <b-tbody v-if="listShift.length > 0">
+                                <template
+                                    v-for="(emp, idx) in ListPayment"
+                                >
+                                    <tr :key="`emp-no-${idx + 1}`">
+                                        <td class="td-employee-number">
+                                            {{ emp.driver_code }}
+                                        </td>
+                                        <b-td class="td-type-employee">
+                                            {{ emp.closing_date }}
+                                        </b-td>
+                                        <td class="td-full-name text-center">
+                                            {{ emp.driver_name }}
+                                        </td>
+                                        <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
+                                            <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
+                                                <template v-if="emp.total_payable_day">
                                                     <NodeListShift
-                                                        v-else
-                                                        :key="`dateNull-${date}-${idxDate}`"
+                                                        :key="`date-${date}-${idxDate}`"
                                                         :idx-component="idxDate + 1"
-                                                        :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
                                                         :date="date"
+                                                        :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
+                                                        :data-node="emp.total_payable_day[idxDate]"
                                                         :emp-data="emp"
                                                         :driver-code="emp.driver_code"
                                                         :driver-name="emp.driver_name"
                                                     />
                                                 </template>
-                                            </template>
-                                            <b-td class="td-total-shift">
-                                                {{ emp.payable_this_month }}
-                                            </b-td>
-                                        </tr>
-                                    </template>
-                                </b-tbody>
-                                <b-tbody>
-                                    <b-tr>
-                                        <b-td class="td-total" colspan="3">
-                                            <span>
-                                                {{ $t("LIST_SHIFT.SALES_TOTAL") }}
-                                            </span>
-                                        </b-td>
 
-                                        <b-td v-for="(total, idx) in total_payment" :key="`total-${idx}`" class="text-center">
-                                            {{ total.pay }}
+                                                <NodeListShift
+                                                    v-else
+                                                    :key="`dateNull-${date}-${idxDate}`"
+                                                    :idx-component="idxDate + 1"
+                                                    :check-table="CONSTANT.LIST_SHIFT.PAYMENT_TABLE"
+                                                    :date="date"
+                                                    :emp-data="emp"
+                                                    :driver-code="emp.driver_code"
+                                                    :driver-name="emp.driver_name"
+                                                />
+                                            </template>
+                                        </template>
+                                        <b-td class="td-total-shift">
+                                            {{ emp.payable_this_month }}
                                         </b-td>
-                                        <b-td class="td-total-month">
-                                            {{ total_payment_of_month }}
-                                        </b-td>
-                                    </b-tr>
-                                </b-tbody>
-                            </b-table-simple>
-                        </template>
+                                    </tr>
+                                </template>
+                            </b-tbody>
+                            <b-tbody>
+                                <b-tr>
+                                    <b-td class="td-total" colspan="3">
+                                        <span>
+                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                        </span>
+                                    </b-td>
+
+                                    <b-td v-for="(total, idx) in total_payment" :key="`total-${idx}`" class="text-center">
+                                        {{ total.pay }}
+                                    </b-td>
+                                    <b-td class="td-total-month">
+                                        {{ total_payment_of_month }}
+                                    </b-td>
+                                </b-tr>
+                            </b-tbody>
+                        </b-table-simple>
+
                     </div>
                 </b-overlay>
             </div>

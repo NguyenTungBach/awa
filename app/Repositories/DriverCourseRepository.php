@@ -203,6 +203,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "course_names"=> "",
                     "course_names_color"=> ""
                 ];
+                // Chỉ lấy ra driver có lịch trình
                 foreach ($checkDatas as $checkData){
                     if ($calendar->date == $checkData['date']){
                         $dataByCalendar = [
@@ -212,21 +213,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names"=> $checkData['course_names'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
-                    } else {
-                        $dataByCalendar = [
-                            'driver_id' => $checkDatas[0]->driver_id,
-                            "date"=> $calendar->date,
-                            "course_ids"=> "",
-                            "course_names"=> "",
-                            "course_names_color"=> ""
-                        ];
+                        break;
                     }
                 }
                 $dataConverts['data_by_date'][] = $dataByCalendar;
             }
             $listDataConverts[] = $dataConverts;
         }
-        
+
         // Tìm tất cả driver còn làm việc hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
@@ -265,9 +259,24 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'total_money' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
+                // Nếu driver đó có lịch trình thì gán vào còn không thì để ngày lịch rỗng
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
-                    break;
+                } else{
+                    $driverConvert['dataShift'] = [
+                        'driver_id' => $driver->id,
+                        'data_by_date' => [],
+                    ];
+                    foreach ($calendars as $calendar){
+                        $driverConvert['dataShift']['data_by_date'][] = [
+                            "driver_id" => $driver->id,
+                            "date"=> $calendar->date,
+                            "course_ids"=> "",
+                            "course_names"=> "",
+                            "course_names_color"=> ""
+                        ];
+                    }
+
                 }
             }
             if (count($dataTotalByDriverIds) != 0){
