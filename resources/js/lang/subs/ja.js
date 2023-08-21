@@ -144,6 +144,8 @@ export default {
 		BUTTON_DOWNLOAD_EXCEL: 'Excel出力',
 		BUTTON_DOWNLOAD_PDF: 'PDF出力',
 		BUTTON_SHIFT_TABLE: ' シフト表',
+		HIGHT_WAY_FEE: '高速代金表',
+		PAYMENT_TABLE: '支払代金表',
 		// BUTTON_SHIFT_TABLE: 'シフト表<br />Crewベース',
 		// BUTTON_COURSE_BASE: 'シフト表コースベース',
 		BUTTON_COURSE_BASE: 'シフト表<br />コースベース',

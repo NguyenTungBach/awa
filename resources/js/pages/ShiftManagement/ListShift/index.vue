@@ -19,22 +19,22 @@
                                     {{ $t("LIST_SHIFT.TITLE_LIST_SHIFT") }}
                                 </span>
                                 <span
-                                    v-else-if="(selectTable === CONSTANT.LIST_SHIFT.SALARY_TABLE)"
+                                    v-else-if="(selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE)"
                                     class="title-page"
                                 >
                                     {{ $t("LIST_SHIFT.TABLE_SALARY") }}
                                 </span>
                                 <span
-                                    v-else-if="(selectTable === CONSTANT.LIST_SHIFT.COURSE_BASE_TABLE)"
+                                    v-else-if="(selectTable === CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE)"
                                     class="title-page"
                                 >
-                                    {{ $t("LIST_SHIFT.TITLE_COURSE_BASE") }}
+                                    {{ $t("LIST_SHIFT.HIGHT_WAY_FEE") }}
                                 </span>
                                 <span
                                     v-else
                                     class="title-page"
                                 >
-                                    {{ $t("LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE") }}
+                                    {{ $t("LIST_SHIFT.PAYMENT_TABLE") }}
                                 </span>
                             </div>
                             <div

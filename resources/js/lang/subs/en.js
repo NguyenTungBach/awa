@@ -182,6 +182,8 @@ export default {
 		BUTTON_ATMTC: 'ATMTC',
 		BUTTON_DOWNLOAD_EXCEL: 'Download Excel',
 		BUTTON_DOWNLOAD_PDF: 'Download PDF',
+		HIGHT_WAY_FEE: 'List Hight Way Fee',
+		PAYMENT_TABLE: 'List Payment',
 
 		BUTTON_SHIFT_TABLE: 'Shift table',
 		BUTTON_HIGHT_WAY_FEE: 'Hight way fee table',
