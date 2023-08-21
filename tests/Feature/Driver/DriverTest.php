@@ -1,17 +1,14 @@
 <?php
 
-namespace Tests\Feature;
+namespace Driver;
 
 use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Tests\TestCase;
 use Illuminate\Support\Str;
+use Tests\TestCase;
 
 class DriverTest extends TestCase
 {

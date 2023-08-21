@@ -234,7 +234,7 @@
                                 {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
                             </b-button>
                         </div>
-                        <div v-if="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE || selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE" class="text-right">
+                        <div v-show="selectTable === CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE || selectTable === CONSTANT.LIST_SHIFT.PAYMENT_TABLE" class="text-right">
                             <b-button
                                 class="btn-temporary"
                                 :style="`background-color: ${handleChangeBackgroundTEM()}`"

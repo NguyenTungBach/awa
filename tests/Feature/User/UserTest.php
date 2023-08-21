@@ -1,18 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\User;
 
-use App\Models\Driver;
 use App\Models\User;
-use Faker\Factory as Faker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Kreait\Firebase\Auth;
 use Tests\TestCase;
-use Faker\Generator;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserTest extends TestCase
 {

@@ -121,6 +121,77 @@ describe('TEST COMPONENT LIST SHIFT Sales', () => {
 		wrapper.destroy();
 	});
 
+	test('Check click button closing final', async() => {
+		const onExportExcel = jest.fn();
+		const onClickSelectTable = jest.fn();
+		const initData = jest.fn();
+		const handleGetListCalendar = jest.fn();
+		const handleGetListShift = jest.fn();
+		const turnOnButtonFinal = jest.fn();
+		const handleClosingDate = jest.fn();
+		const handleChangeBackgroundTEM = jest.fn();
+		const handleChangeBackgroundFinal = jest.fn();
+		const localVue = createLocalVue();
+		const wrapper = mount(ListShift, {
+			localVue,
+			store,
+			router,
+			methods: {
+				onExportExcel,
+				initData,
+				onClickSelectTable,
+				handleGetListCalendar,
+				handleGetListShift,
+				turnOnButtonFinal,
+				handleClosingDate,
+				handleChangeBackgroundTEM,
+				handleChangeBackgroundFinal,
+				// handleGetListCalendar,
+				// handleGetListShift,
+				// onClickSelectWeekMonth,
+			},
+			data() {
+				return {
+					selectTable: 'CONSTANT.LIST_SHIFT.SHIFT_TABLE',
+					disableFinal: false,
+					// handleGetListCalendar: jest.fn(),
+				};
+			},
+			computed: {
+				role() {
+					return 'admin';
+				},
+			},
+		});
+
+		const BUTTON_LIST = wrapper.find('.list-shift__control');
+		expect(BUTTON_LIST.exists()).toEqual(true);
+		const BUTTON_SALES = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(3)');
+		expect(BUTTON_SALES.exists()).toEqual(true);
+		await BUTTON_SALES.trigger('click');
+		// expect(wrapper.vm.onClickSelectTable).toHaveBeenCalled();
+
+		// const TITLE = wrapper.find('.title-page');
+		// expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE');
+
+		// console.log('akjgkaj: ', wrapper.vm.selectTable);
+		// await wrapper.setData( {selectTable: 'CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE'} );
+		// expect(wrapper.vm.selectTable).toBe('CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE');
+
+		const BUTTON_temporary = wrapper.find('.btn-temporary');
+		await BUTTON_temporary.trigger('click');
+		expect(turnOnButtonFinal).toHaveBeenCalled();
+
+		const BUTTON_final = wrapper.find('.btn-final');
+		await BUTTON_final.trigger('click');
+		expect(handleClosingDate).toHaveBeenCalled();
+
+		// await BUTTON.trigger('click');
+		// expect(onExportExcel).toHaveBeenCalled();
+
+		wrapper.destroy();
+	});
+
 	test('Check render body', async() => {
 		const DATA = [
 			{
@@ -539,11 +610,18 @@ describe('TEST COMPONENT LIST SHIFT Sales', () => {
 				'total_ship_fee_by_month': '5000.00',
 			},
 		];
+		const handleExportPDF = jest.fn();
 		const localVue = createLocalVue();
 		const wrapper = mount(ListShift, {
 			localVue,
 			store,
 			router,
+			methods: {
+				handleExportPDF,
+				// handleGetListCalendar,
+				// handleGetListShift,
+				// onClickSelectWeekMonth,
+			},
 			data() {
 				return {
 					listSaleAmount: DATA,
@@ -603,6 +681,14 @@ describe('TEST COMPONENT LIST SHIFT Sales', () => {
 			expect(COLUMN_CUSTOMER_NAME.text()).toEqual(DATA[idx2].closing_dateName);
 			const COLUMN_Driver_name = COLUMNS.at(2);
 			expect(COLUMN_Driver_name.text()).toEqual(DATA[idx2].customer_name);
+
+			// Kiểm tra button pdf có tồn tại và click được không
+			const BUTTON_PDF = ROW.find('.img-pdf img');
+			expect(BUTTON_PDF.exists()).toEqual(true);
+			// expect(wrapper).toMatchSnapshot();
+			await BUTTON_PDF.trigger('click');
+			expect(handleExportPDF).toHaveBeenCalled();
+
 			idx2++;
 		}
 
