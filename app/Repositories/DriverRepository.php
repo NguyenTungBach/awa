@@ -89,15 +89,17 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
 
         $now = Carbon::now()->format("Y-m-d");
 
-        $listDriverNotRetirement = $this->model->query()
-            ->whereNull('end_date')
-            ->orWhere("end_date",">=",$now)
+        // Lấy ra tất cả các driver không nghỉ và những driver được báo nghỉ nhưng chưa đến
+        $listDriverNotRetirement = Driver::query()
+            ->whereNull('end_date') // chưa nghỉ
+            ->orWhere("end_date",">",$now) // nằm trong hoặc lớn hơn ngày nghỉ tức là vẫn trong tương lai và chưa đến
             ->SortByForDriver($request)
             ->get();
 
-        $listDriverRetirement = $this->model->query()
+        // Lấy ra tất cả các driver đã nghỉ hoặc qua rồi
+        $listDriverRetirement = Driver::query()
             ->whereNotNull('end_date')
-            ->where("end_date","<",$now)
+            ->where("end_date","<=",$now) // nằm trong hoặc nhỏ hơn ngày nghỉ tức là đến ngày hoặc đã qua ngày nghỉ
             ->get();
 
         $data = [];

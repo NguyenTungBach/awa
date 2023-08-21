@@ -46,7 +46,7 @@ class DriverController extends Controller
      *   ),
      *  @OA\Parameter(
      *     name="field",
-     *     description = "driver_code,driver_name,status",
+     *     description = "driver_code,driver_name,typeName",
      *     in="query",
      *     required=false,
      *     @OA\Schema(
