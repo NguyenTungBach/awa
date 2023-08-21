@@ -206,35 +206,35 @@ class CourseRequest extends FormRequest
     {
         return [
             // customer_id
-            'customer_id.required' => __('validation.required', ['attribute' => __('courses.customer_id')]),
+            'customer_id.required' => __('validation.custom.required_custom'),
             'customer_id.in' => __('validation.in', ['attribute' => __('courses.customer_id')]),
             // course_name
-            'course_name.required' => __('validation.required', ['attribute' => __('courses.course_name')]),
+            'course_name.required' => __('validation.custom.required_custom'),
             'course_name.string' => __('validation.string', ['attribute' => __('courses.course_name')]),
             'course_name.max' => __('validation.max.string', ['attribute' => __('courses.course_name'), 'max' => 20]),
             'course_name.unique' => 'このコース名は既に登録されています。',
             // ship_date
-            'ship_date.required' => __('validation.required', ['attribute' => __('courses.ship_date')]),
+            'ship_date.required' => __('validation.custom.required_custom'),
             'ship_date.date_format' => __('validation.date_format', ['attribute' => __('courses.ship_date'), 'format' => 'Y-m-d']),
             // start_date
-            'start_date.required' => __('validation.required', ['attribute' => __('courses.start_date')]),
+            'start_date.required' => __('validation.custom.required_custom'),
             'start_date.date_format' => __('validation.date_format', ['attribute' => __('courses.start_date'), 'format' => 'H:i']),
             // end_date
-            'end_date.required' => __('validation.required', ['attribute' => __('courses.end_date')]),
+            'end_date.required' => __('validation.custom.required_custom'),
             'end_date.date_format' => __('validation.date_format', ['attribute' => __('courses.end_date'), 'format' => 'H:i']),
             // break_time
-            'break_time.required' => __('validation.required', ['attribute' => __('courses.break_time')]),
+            'break_time.required' => __('validation.custom.required_custom'),
             'break_time.date_format' => __('validation.date_format', ['attribute' => __('courses.break_time'), 'format' => 'H:i']),
             // departure_place
-            'departure_place.required' => __('validation.required', ['attribute' => __('courses.departure_place')]),
+            'departure_place.required' => __('validation.custom.required_custom'),
             'departure_place.string' => __('validation.string', ['attribute' => __('courses.departure_place')]),
             'departure_place.max' => __('validation.max.string', ['attribute' => __('courses.departure_place'), 'max' => 20]),
             // arrival_place
-            'arrival_place.required' => __('validation.required', ['attribute' => __('courses.arrival_place')]),
+            'arrival_place.required' => __('validation.custom.required_custom'),
             'arrival_place.string' => __('validation.string', ['attribute' => __('courses.arrival_place')]),
             'arrival_place.max' => __('validation.max.string', ['attribute' => __('courses.arrival_place'), 'max' => 20]),
             // ship_fee
-            'ship_fee.required' => __('validation.required', ['attribute' => __('courses.ship_fee')]),
+            'ship_fee.required' => __('validation.custom.required_custom'),
             'ship_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.ship_fee')]),
             'ship_fee.max' => __('validation.max.string', ['attribute' => __('courses.ship_fee'), 'max' => 15]),
             // associate_company_fee
@@ -253,7 +253,7 @@ class CourseRequest extends FormRequest
             'note.string' => __('validation.string', ['attribute' => __('courses.note')]),
             'note.max' => __('validation.max.string', ['attribute' => __('courses.note'), 'max' => 1000]),
             // file
-            'file.required' => __('validation.required', ['attribute' => __('courses.file')]),
+            'file.required' => __('validation.custom.required_custom'),
             'file.max' => __('validation.max.file', ['attribute' => __('courses.file'), 'max' => 3000]),
             'file.mimes' => __('validation.mimes', ['attribute' => __('courses.file'), 'values' => '.xlsx']),
         ];
