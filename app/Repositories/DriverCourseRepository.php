@@ -212,14 +212,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names"=> $checkData['course_names'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
-                        break;
+                    } else {
+                        $dataByCalendar = [
+                            'driver_id' => $checkDatas[0]->driver_id,
+                            "date"=> $calendar->date,
+                            "course_ids"=> "",
+                            "course_names"=> "",
+                            "course_names_color"=> ""
+                        ];
                     }
                 }
                 $dataConverts['data_by_date'][] = $dataByCalendar;
             }
             $listDataConverts[] = $dataConverts;
         }
-
+        
         // Tìm tất cả driver còn làm việc hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
@@ -260,11 +267,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($listDataConverts as $dataConvert){
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
-                } else{
-                    $driverConvert['dataShift'] = [
-                        'driver_id' => $driver->id,
-                        'data_by_date' => [],
-                    ];
+                    break;
                 }
             }
             if (count($dataTotalByDriverIds) != 0){
