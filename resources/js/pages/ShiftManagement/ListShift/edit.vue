@@ -1522,7 +1522,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 37px;
+                            top: 50px;
                         }
 					}
 
