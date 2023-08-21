@@ -99,4 +99,24 @@ class CourseExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
     }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $event->sheet->getDelegate()->getColumnDimension('D')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setAutoSize(true);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setAutoSize(true);
+            }
+        ];
+    }
 }
