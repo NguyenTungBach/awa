@@ -5,7 +5,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import CONSTANT from '@/const';
 import { convertValueToText } from '@/utils/handleSelect';
 
-describe('TEST COMPONENT LIST SHIFT', () => {
+describe('TEST COMPONENT LIST SHIFT Express Change', () => {
 	test('Check render page', () => {
 		const localVue = createLocalVue();
 		const handleGetListCalendar = jest.fn();
@@ -28,17 +28,18 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 		wrapper.destroy();
 	});
 
-	test('Check render title page', () => {
+	test('Check render title page', async() => {
 		const localVue = createLocalVue();
-		const handleGetListCalendar = jest.fn();
-		const handleGetListShift = jest.fn();
 		const wrapper = mount(ListShift, {
 			localVue,
 			store,
 			router,
 			methods: {
-				handleGetListCalendar,
-				handleGetListShift,
+				initData: jest.fn(),
+				// activeSelectTable: jest.fn(),
+				// onClickSelectTable: jest.fn(),
+				handleGetListCalendar: jest.fn(),
+				handleGetListShift: jest.fn(),
 			},
 			data() {
 				return {
@@ -46,11 +47,22 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 					// handleGetListCalendar: jest.fn(),
 				};
 			},
+			computed: {
+				role() {
+					return 'admin';
+				},
+			},
 		});
 
-		const TITLE = wrapper.find('.title-page');
-		expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE');
+		const BUTTON_LIST = wrapper.find('.list-shift__control');
+		expect(BUTTON_LIST.exists()).toEqual(true);
+		const BUTTON_EXPRESS_CHANGE = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(2)');
+		expect(BUTTON_EXPRESS_CHANGE.exists()).toEqual(true);
+		await BUTTON_EXPRESS_CHANGE.trigger('click');
 
+		// expect(wrapper).toMatchSnapshot();
+		const TITLE = wrapper.find('.title-page');
+		expect(TITLE.text()).toEqual('LIST_SHIFT.HIGHT_WAY_FEE');
 		wrapper.destroy();
 	});
 
@@ -188,7 +200,6 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 
 		const BUTTON_LIST = wrapper.find('.list-shift__control');
 		expect(BUTTON_LIST.exists()).toEqual(true);
-		expect(wrapper).toMatchSnapshot();
 		const BUTTON_EXPRESS_CHANGE = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(2)');
 		expect(BUTTON_EXPRESS_CHANGE.exists()).toEqual(true);
 		await BUTTON_EXPRESS_CHANGE.trigger('click');
@@ -201,7 +212,250 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 		// await wrapper.setData( {selectTable: 'CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE'} );
 		// expect(wrapper.vm.selectTable).toBe('CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE');
 
-		expect(wrapper).toMatchSnapshot();
+		const BUTTON_WEEK = wrapper.find('.btn-excel');
+		await BUTTON_WEEK.trigger('click');
+		expect(onExportExcel).toHaveBeenCalled();
+
+		// await BUTTON.trigger('click');
+		// expect(onExportExcel).toHaveBeenCalled();
+
+		wrapper.destroy();
+	});
+
+	test('Check render body', async() => {
+		const DATA = [
+			{
+				'customer_code': '0001',
+				'customer_id': 1,
+				'customer_name': 'Customer 01',
+				'closing_date': 1,
+				'closing_dateName': '15日',
+				'dataShiftExpress': {
+					'customer_id': 1,
+					'customer_code': '0001',
+					'customer_name': 'Customer 01',
+					'closing_date': 1,
+					'data_ship_date': [
+						{
+							'ship_date': '2023-08-01',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-02',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-03',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-04',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-05',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-06',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-07',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-08',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-09',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-10',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-11',
+							'courses_expressway_fee': '10.00',
+						},
+						{
+							'ship_date': '2023-08-12',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-13',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-14',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-15',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-16',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-17',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-18',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-19',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-20',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-21',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-22',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-23',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-24',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-25',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-26',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-27',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-28',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-29',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-30',
+							'courses_expressway_fee': '',
+						},
+						{
+							'ship_date': '2023-08-31',
+							'courses_expressway_fee': '',
+						},
+					],
+				},
+				'total_courses_expressway_fee': '10.00',
+			},
+		];
+		const onExportExcel = jest.fn();
+		const onClickSelectTable = jest.fn();
+		const initData = jest.fn();
+		const handleGetListCalendar = jest.fn();
+		const handleGetListShift = jest.fn();
+		const localVue = createLocalVue();
+		const wrapper = mount(ListShift, {
+			localVue,
+			store,
+			router,
+			methods: {
+				onExportExcel,
+				initData,
+				onClickSelectTable,
+				handleGetListCalendar,
+				handleGetListShift,
+				// handleGetListCalendar,
+				// handleGetListShift,
+				// onClickSelectWeekMonth,
+			},
+			data() {
+				return {
+					selectTable: 'CONSTANT.LIST_SHIFT.SHIFT_TABLE',
+					listHighWay: DATA,
+					listShift: DATA,
+					// handleGetListCalendar: jest.fn(),
+				};
+			},
+			computed: {
+				role() {
+					return 'admin';
+				},
+			},
+		});
+
+		const BUTTON_LIST = wrapper.find('.list-shift__control');
+		expect(BUTTON_LIST.exists()).toEqual(true);
+		const BUTTON_EXPRESS_CHANGE = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(2)');
+		expect(BUTTON_EXPRESS_CHANGE.exists()).toEqual(true);
+		await BUTTON_EXPRESS_CHANGE.trigger('click');
+
+		const ZONE_TABLE = wrapper.find('.zone-table');
+		const TABLE = ZONE_TABLE.find('.table-hight-way');
+
+		// Kiểm tra HEAD table
+		const THEAD = TABLE.find('thead');
+		expect(THEAD.exists()).toBe(true);
+
+		const TR = THEAD.findAll('tr');
+		expect(TR.length).toBe(2);
+
+		const TR_TH = TR.at(1).findAll('th');
+		expect(TR_TH.exists()).toBe(true);
+
+		// Kiểm tra tên 3 cột
+		expect(TR_TH.at(0).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID');
+		expect(TR_TH.at(1).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE');
+		expect(TR_TH.at(2).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME');
+
+		// Kiểm tra tên Data đổ ra
+		const ROWS = TABLE.findAll('tbody tr');
+		expect(ROWS.length).toBe(1);
+
+		const len2 = DATA.length;
+		let idx2 = 0;
+
+		// kiểm tra 3 cột render đầu tiên
+		while (idx2 < len2) {
+			const ROW = ROWS.at(idx2);
+
+			const COLUMNS = ROW.findAll('td');
+
+			const COLUMN_driver_code = COLUMNS.at(0);
+			expect(COLUMN_driver_code.text()).toEqual(DATA[idx2].customer_code);
+			const COLUMN_CUSTOMER_NAME = COLUMNS.at(1);
+			expect(COLUMN_CUSTOMER_NAME.text()).toEqual(DATA[idx2].closing_dateName);
+			const COLUMN_Driver_name = COLUMNS.at(2);
+			expect(COLUMN_Driver_name.text()).toEqual(DATA[idx2].customer_name);
+			idx2++;
+		}
+
+		// expect(wrapper.vm.onClickSelectTable).toHaveBeenCalled();
+
+		// const TITLE = wrapper.find('.title-page');
+		// expect(TITLE.text()).toEqual('LIST_SHIFT.TITLE_LIST_SHIFT_PRACTICAL_RECORD_TABLE');
+
+		// console.log('akjgkaj: ', wrapper.vm.selectTable);
+		// await wrapper.setData( {selectTable: 'CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE'} );
+		// expect(wrapper.vm.selectTable).toBe('CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE');
+
+		// expect(wrapper).toMatchSnapshot();
 
 		const BUTTON_WEEK = wrapper.find('.btn-excel');
 		await BUTTON_WEEK.trigger('click');
@@ -256,29 +510,6 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 	// 	wrapper.destroy();
 	// });
 
-	test('Check click button choose table', async() => {
-		const onExportExcel = jest.fn();
-		const handleGetListCalendar = jest.fn();
-		const handleGetListShift = jest.fn();
-		const localVue = createLocalVue();
-		const wrapper = mount(ListShift, {
-			localVue,
-			store,
-			router,
-			methods: {
-				onExportExcel,
-				handleGetListCalendar,
-				handleGetListShift,
-			},
-		});
-
-		const BUTTON_WEEK = wrapper.find('.btn-excel');
-		await BUTTON_WEEK.trigger('click');
-		expect(onExportExcel).toHaveBeenCalled();
-
-		wrapper.destroy();
-	});
-
 	// test('Check render table title date', () => {
 	// 	const localVue = createLocalVue();
 	// 	const wrapper = mount(ListShift, {
@@ -306,7 +537,7 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 	// 	wrapper.destroy();
 	// });
 
-	test('Check render body table', () => {
+	test('Check render body table', async() => {
 		const DATA = [
 			{
 				'driver_code': '0004',
@@ -547,6 +778,7 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 			data() {
 				return {
 					listShift: DATA,
+					listHighWay: DATA,
 					// handleGetListCalendar: jest.fn(),
 					initData: jest.fn(),
 				};
@@ -555,8 +787,14 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 
 		// jest.spyOn(wrapper.vm, 'handleGetListCalendar');
 
+		const BUTTON_LIST = wrapper.find('.list-shift__control');
+		expect(BUTTON_LIST.exists()).toEqual(true);
+		const BUTTON_EXPRESS_CHANGE = wrapper.find('div > div:nth-child(1) > div > div > button:nth-child(2)');
+		expect(BUTTON_EXPRESS_CHANGE.exists()).toEqual(true);
+		await BUTTON_EXPRESS_CHANGE.trigger('click');
+
 		const ZONE_TABLE = wrapper.find('.zone-table');
-		const TABLE = ZONE_TABLE.find('.shift-table');
+		const TABLE = ZONE_TABLE.find('.table-hight-way');
 
 		// Kiểm tra HEAD table
 		const THEAD = TABLE.find('thead');
@@ -569,9 +807,9 @@ describe('TEST COMPONENT LIST SHIFT', () => {
 		expect(TR_TH.exists()).toBe(true);
 
 		// Kiểm tra tên 3 cột
-		expect(TR_TH.at(0).text()).toEqual('LIST_SHIFT.TABLE_DATE_EMPLOYEE_NUMBER');
-		expect(TR_TH.at(1).text()).toEqual('LIST_SHIFT.TABLE_FLAG');
-		expect(TR_TH.at(2).text()).toEqual('LIST_SHIFT.TABLE_FULL_NAME');
+		expect(TR_TH.at(0).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_FREE_CUSTOMER_ID');
+		expect(TR_TH.at(1).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_DUE_DATE');
+		expect(TR_TH.at(2).text()).toEqual('LIST_SHIFT.TABLE_HIGHT_WAY_CUSTOMER_NAME');
 
 		// Kiểm tra tên Data đổ ra
 		const ROWS = TABLE.findAll('tbody tr');
