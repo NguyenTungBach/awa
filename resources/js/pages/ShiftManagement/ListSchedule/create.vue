@@ -615,7 +615,7 @@ export default {
 			try {
 				const new_course = await postCourse(CONSTANT.URL_API.POST_COURSE_SCHEDULE, course);
 				if (new_course.code === 200) {
-					TOAST_SCHEDULE_MANAGEMENT.success();
+					TOAST_SCHEDULE_MANAGEMENT.successSchedule();
 					this.$router.push({ name: 'ListSchedule' });
 					setLoading(false);
 				}
