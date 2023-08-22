@@ -138,7 +138,7 @@ export default {
 				{ key: 'driver_code', label: this.$t('LIST_DRIVER.TABLE_TITLE_EMPLOYEE_NUMBER'), sortable: true, thClass: 'base-th th-employee-number' },
 				{ key: 'typeName', label: this.$t('LIST_DRIVER.TABLE_TITLE_TYPE_NAME'), sortable: true, thClass: 'base-th th-type-name' },
 				{ key: 'driver_name', label: this.$t('LIST_DRIVER.TABLE_TITLE_FULL_NAME'), sortable: true, thClass: 'base-th th-driver-name' },
-				{ key: 'status', label: this.$t('LIST_DRIVER.TABLE_TITLE_ENROLLMENT_STATUS'), sortable: true, thClass: 'base-th text-center th-enrollment', tdClass: 'text-center' },
+				{ key: 'status', label: this.$t('LIST_DRIVER.TABLE_TITLE_ENROLLMENT_STATUS'), thClass: 'base-th text-center th-enrollment', tdClass: 'text-center' },
 				{ key: 'detail', label: this.$t('LIST_DRIVER.TABLE_TITLE_DETAIL'), sortable: false, thClass: 'text-center base-th base-th-control', tdClass: 'text-center base-td-control' },
 				{ key: 'delete', label: this.$t('LIST_DRIVER.TABLE_TITLE_DELETE'), sortable: false, thClass: 'text-center base-th base-th-control', tdClass: 'text-center base-td-control' },
 			];
