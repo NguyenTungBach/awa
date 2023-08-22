@@ -38,6 +38,8 @@ class DriverCourseRequest extends FormRequest
           switch (Route::getCurrentRoute()->getActionMethod()){
                 case 'update_course':
                     return $this->getCustomRule();
+              case 'detailEditShift':
+                  return $this->getCustomRule();
 //                case 'store':
 //                    return $this->getCustomRule();
               case 'index':
@@ -79,6 +81,14 @@ class DriverCourseRequest extends FormRequest
                  ],
                  "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
                  "sortby" => "in:asc,desc"
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'detailEditShift'){
+             return [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
              ];
          }
          if(Route::getCurrentRoute()->getActionMethod() == 'show'){
