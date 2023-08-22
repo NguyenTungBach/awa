@@ -98,7 +98,7 @@
                                     :xl="12"
                                     class="date"
                                 >
-                                    <label for="input-date-date-of-birth">
+                                    <label for="input-course-name">
                                         {{ $t('CREATE_SCHEDULE.COURSE_NAME') }}
                                         <span class="text-danger">
                                             *
@@ -106,7 +106,7 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            id="input-date-date-of-birth"
+                                            id="input-course-name"
                                             v-model="isForm.course_name"
                                             type="text"
                                         />
