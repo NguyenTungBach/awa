@@ -43,7 +43,8 @@ class FinalClosingHistoriesRequest extends FormRequest
         $rules = [
             'month_year' => [
                 'required',
-                'date_format:Y-m'
+                'date_format:Y-m',
+                'unique:final_closing_histories,month_year,NULL,id,deleted_at,NULL'
             ],
         ];
 
