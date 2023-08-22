@@ -118,7 +118,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->whereMonth("driver_courses.date",$getMonth_year[1])
             ->whereNull('driver_courses.deleted_at')->get();
         $groupedDatas = collect($datas)->groupBy('driver_id');
-        $dataCustom =[];
+        $dataCustom =[
+            'items'=>[]
+        ];
         foreach ($groupedDatas as $checkDatas){
             $dataConverts = [
                 'driver_id' => $checkDatas[0]->driver_id,
