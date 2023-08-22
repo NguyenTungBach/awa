@@ -1057,8 +1057,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     $course = Course::find($checkCourse_id);
                     $dateRetirement = Carbon::parse($driver->end_date);
                     $checkDate = Carbon::parse($shift['date']);
-
-                    if ($dateRetirement->gte($checkDate)){
+                    // Nếu ngày chọn đã đến hoặc qua ngày nghỉ hưu thì báo lỗi
+                    if ($checkDate->gte($dateRetirement)){
                         return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                             trans("errors.end_date_retirement" ,[
                                 "attribute"=> "driver_id: $checkDriver_id, driver_name: $driver->driver_name, course_id: $checkCourse_id, course_name: $course->course_name",

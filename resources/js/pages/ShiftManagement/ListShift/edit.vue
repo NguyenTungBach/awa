@@ -280,11 +280,11 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 import EditNodeListShift from '@/components/EditNodeListShift';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
-import { getListShift, postUpdateCellShift } from '@/api/modules/shiftManagement';
+import { getListShift, putShift } from '@/api/modules/shiftManagement';
 import { convertValueToText } from '@/utils/handleSelect';
 import { cleanObject } from '@/utils/handleObject';
 // import { convertValueWhenNull } from '@/utils/handleListShift';
-import { convertBreakTimeNumberToTime, convertTextToSelectTime, getYearMonthFromDate, convertTimeCourse, formatArray2Time } from '@/utils/convertTime';
+import { convertBreakTimeNumberToTime, convertTextToSelectTime, formatArray2Time } from '@/utils/convertTime';
 import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
 // import { validateEditShift } from './helper/validateEditShift';
@@ -895,10 +895,11 @@ export default {
 
 			this.listShift = this.handleUpdateTable(this.listShift, INDEX_OF_DRIVER, INDEX_CELL_OF_DRIVER, DATA_UPDATE);
 
-			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED, DATA_UPDATE);
-			console.log('init data', INIT_DATA);
-			// this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
-
+			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			// this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
+			// console.log('init data', INIT_DATA);
+			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
+			console.log('data update:', this.listUpdate);
 			this.listNodeEditSelected.length = 0;
 			this.modalEdit = false;
 		},
@@ -977,7 +978,7 @@ export default {
 						course_status: null,
 						start_time: formatArray2Time(dataUpdate[idx].start_time),
 						end_time: formatArray2Time(dataUpdate[idx].end_time),
-						break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+						break_time: formatArray2Time(dataUpdate[idx].break_time),
 					});
 				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
 					result.push({
@@ -986,7 +987,7 @@ export default {
 						course_status: null,
 						start_time: formatArray2Time(dataUpdate[idx].start_time),
 						end_time: formatArray2Time(dataUpdate[idx].end_time),
-						break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+						break_time: formatArray2Time(dataUpdate[idx].break_time),
 					});
 				} else {
 					const COURSE = this.listCourse.findIndex((item) => item.value === dataUpdate[idx].type);
@@ -999,7 +1000,7 @@ export default {
 							// course_status: this.listCourse[COURSE].status,
 							start_time: formatArray2Time(dataUpdate[idx].start_time),
 							end_time: formatArray2Time(dataUpdate[idx].end_time),
-							break_time: convertTimeCourse(formatArray2Time(dataUpdate[idx].break_time)),
+							break_time: formatArray2Time(dataUpdate[idx].break_time),
 						});
 					} else {
 						result.push({
@@ -1042,8 +1043,9 @@ export default {
 			try {
 				if (this.listUpdate.length > 0) {
 					const DATA = this.handleInitDataUpdate(this.listUpdate);
+					console.log('DỮ LIỆU UPDATE:', DATA);
 
-					const { code } = await postUpdateCellShift(CONSTANT.URL_API.POST_UPDATE_CELL_SHIFT, DATA);
+					const { code } = await putShift(CONSTANT.URL_API.POST_UPDATE_CELL_SHIFT, DATA);
 
 					if (code === 200) {
 						Notification.success(this.$t('MESSAGE_APP.LIST_SHIFT_UPDATE_SUCCESS'));
@@ -1064,28 +1066,32 @@ export default {
 		},
 
 		handleInitDataUpdate(listUpdate) {
+			const YEAR = this.pickerYearMonth.year;
+			const MONTH = this.pickerYearMonth.month;
+
+			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 			if (listUpdate.length > 0) {
 				return {
-					date: getYearMonthFromDate(listUpdate[0].date_edit),
-					shift_list: listUpdate,
+					month_year: YEAR_MONTH,
+					items: this.listUpdate,
 				};
 			} else {
 				return {
-					date: null,
-					shift_list: [],
+					month_year: null,
+					items: [],
 				};
 			}
 		},
 
-		handleinitObjectUpdate(otherInfo, listSelected, dataUpdate) {
-			// const INIT_UPDATE = {
-			// 	date_edit: otherInfo.dataNode.date,
-			// 	driver_code: otherInfo.driverCode,
-			// 	shift_list_update: [],
-			// };
+		handleinitObjectUpdate(otherInfo, listSelected) {
+			const INIT_UPDATE = {
+				driver_id: Number(otherInfo.driver_id),
+				// date: otherInfo.date,
+				listShift: [],
+			};
 
 			// listSelected.forEach((item) => {
-			// 	INIT_UPDATE.shift_list_update.push({
+			// 	INIT_UPDATE.listShift.push({
 			// 		type: item.type,
 			// 		start_time: formatArray2Time(item.start_time),
 			// 		end_time: formatArray2Time(item.end_time),
@@ -1093,18 +1099,16 @@ export default {
 			// 	});
 			// });
 
-			const INIT_UPDATE = {
-				item: [],
-			};
+			// const INIT_UPDATE = {
+			// };
 
 			listSelected.forEach((item) => {
-				INIT_UPDATE.item.push({
-					driver_id: otherInfo.driver_id,
-					course_id: dataUpdate.type,
+				INIT_UPDATE.listShift.push({
+					course_id: item.type,
 					date: otherInfo.date,
 					start_time: formatArray2Time(item.start_time),
+					break_time: formatArray2Time(item.break_time),
 					end_time: formatArray2Time(item.end_time),
-					break_time: convertTimeCourse(formatArray2Time(item.break_time)),
 				});
 			});
 
@@ -1114,15 +1118,16 @@ export default {
 		handleUpdateListUpdate(listUpdate, updateDayOff) {
 			if (listUpdate.length > 0) {
 				const IS_EXIT = this.handleCheckUpdateWithDataExit(listUpdate, updateDayOff);
-
 				if (IS_EXIT.status) {
-					listUpdate[IS_EXIT.index].shift_list_update = updateDayOff;
+					listUpdate[IS_EXIT.index] = updateDayOff;
 				} else {
 					listUpdate.push(updateDayOff);
 				}
 			} else {
 				listUpdate.push(updateDayOff);
 			}
+
+			// listUpdate.push(updateDayOff);
 
 			return listUpdate;
 		},
@@ -1133,14 +1138,14 @@ export default {
 				index: null,
 			};
 
-			const DATE_EDIT = updateDayOff.date_edit;
-			const DRIVER_CODE = updateDayOff.driver_code;
+			const DATE_EDIT = updateDayOff.listShift[0].date;
+			const DRIVER_CODE = updateDayOff.driver_id;
 
 			const len = listUpdate.length;
 			let idx = 0;
 
 			while (idx < len) {
-				if (listUpdate[idx].date_edit === DATE_EDIT && listUpdate[idx].driver_code === DRIVER_CODE) {
+				if (listUpdate[idx].date === DATE_EDIT && listUpdate[idx].driver_id === DRIVER_CODE) {
 					IS_EXIT.status = true;
 					IS_EXIT.index = idx;
 
