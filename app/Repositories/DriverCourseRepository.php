@@ -129,6 +129,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($checkDatas as $checkData){
                 $dataConverts['listShift'][] = [
                     'course_id' => $checkData->course_id,
+                    'date' => $checkData->date,
                     'start_time' => $checkData->start_time,
                     'break_time' => $checkData->break_time,
                     'end_time' => $checkData->end_time,
