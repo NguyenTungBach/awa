@@ -93,12 +93,59 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         return ResponseService::responseData(Response::HTTP_OK, 'success', 'success', $arrayDataDriverCourse);
     }
 
+    public function detailEditShift($request){
+        // Gọi đến tất cả
+        $getMonth_year = explode("-",$request->month_year);
+
+        // Tìm tất cả những course nằm trong driver
+        $datas = $this->model->query()
+            ->select(
+                "driver_courses.id as driver_courses_id",
+                "driver_courses.start_time as start_time",
+                "driver_courses.break_time as break_time",
+                "driver_courses.end_time as end_time",
+                "driver_courses.driver_id",
+                "driver_courses.course_id as course_id",
+                "driver_courses.date",
+                "drivers.driver_name",
+                "drivers.driver_code",
+                "drivers.type",
+            )
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->SortByForDriverCourse($request)
+            ->whereYear("driver_courses.date",$getMonth_year[0])
+            ->whereMonth("driver_courses.date",$getMonth_year[1])
+            ->whereNull('driver_courses.deleted_at')->get();
+        $groupedDatas = collect($datas)->groupBy('driver_id');
+        $dataCustom =[
+            'items'=>[]
+        ];
+        foreach ($groupedDatas as $checkDatas){
+            $dataConverts = [
+                'driver_id' => $checkDatas[0]->driver_id,
+                'listShift'=> []
+            ];
+            foreach ($checkDatas as $checkData){
+                $dataConverts['listShift'][] = [
+                    'course_id' => $checkData->course_id,
+                    'start_time' => $checkData->start_time,
+                    'break_time' => $checkData->break_time,
+                    'end_time' => $checkData->end_time,
+                ];
+            }
+            $dataCustom['items'][]=$dataConverts;
+        }
+
+        return $dataCustom;
+    }
+
     public function getAll($request)
     {
         $getMonth_year = explode("-",$request->month_year);
         $month_year = $request->month_year;
 
-        // Tìm tất cả những course nằm trong driver
+        // Nhóm tất cả những course nằm trong driver
         $datas = $this->model->query()
             ->select(
                 "driver_courses.id as driver_courses_id",

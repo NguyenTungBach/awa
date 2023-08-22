@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
@@ -47,6 +48,10 @@ abstract class DuskTestCase extends BaseTestCase
 //                '--headless',
 //            ]);
 //        })->all());
+
+        $options->setExperimentalOption('prefs', [
+            'download.default_directory' => Storage::disk('local')->path('test_download')
+        ]);
 
         return RemoteWebDriver::create(
             $_ENV['DUSK_DRIVER_URL'] ?? 'http://localhost:9515',

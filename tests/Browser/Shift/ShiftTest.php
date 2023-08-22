@@ -17,8 +17,16 @@ class ShiftTest extends DuskTestCase
             $browser->maximize();
             $browser->pause(7000);
             $this->loginAdminGeneral($browser);
+            $this->list($browser);
 //            $this->shiftList($browser);
         });
+    }
+
+    private function list($browser)
+    {
+        $browser->click('div:nth-child(1) > div > div > .btn-secondary')->pause(4000);
+        $browser->waitFor('div.show-menu > ul > li:nth-child(2) > span');
+        $browser->click('div:nth-child(2) > div > div.show-icon > i')->pause(6000);
     }
 
 //    private function loginDriver($browser)

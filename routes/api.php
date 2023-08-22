@@ -44,6 +44,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('driver-course/get-all-express-charge','DriverCourseController@get_all_express_charge');
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
             Route::post('driver-course/update-course','DriverCourseController@update_course');
+            Route::get('driver-course/detail-edit-shift','DriverCourseController@detailEditShift');
             Route::apiResource('driver-course', 'DriverCourseController');
             Route::get('driver-course', 'DriverCourseController@index')->withoutMiddleware('admin');
             Route::apiResource('/driver/{driver}/cash-out', 'CashOutController');
