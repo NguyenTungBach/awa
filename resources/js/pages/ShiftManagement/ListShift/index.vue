@@ -843,21 +843,8 @@
                                     </b-th>
                                     <b-th
                                         class="th-type-employee"
-                                        @click="onSortTable('flag', 'payMent')"
                                     >
                                         {{ $t('LIST_SHIFT.TABLE_PAYMENT_DUE_DATE') }}
-                                        <i
-                                            v-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === true"
-                                            class="fad fa-sort-up icon-sort"
-                                        />
-                                        <i
-                                            v-else-if="sortTable.shiftTable.sortBy === 'flag' && sortTable.shiftTable.sortType === false"
-                                            class="fad fa-sort-down icon-sort"
-                                        />
-                                        <i
-                                            v-else
-                                            class="fa-solid fa-sort icon-sort-default"
-                                        />
                                     </b-th>
                                     <b-th class="th-full-name">
                                         {{ $t("LIST_SHIFT.TABLE_COMPANY_NAME") }}
