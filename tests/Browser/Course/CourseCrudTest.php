@@ -23,7 +23,7 @@ class CourseCrudTest extends DuskTestCase
     public function testGeneral()
     {
         Artisan::call('migrate:fresh --seed');
-//        DB::table('drivers')->where('driver_code', "Bach001")->delete();
+        DB::table('courses')->truncate();
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginAdminGeneral($browser);
@@ -46,7 +46,36 @@ class CourseCrudTest extends DuskTestCase
     }
 
     private function create($browser){
-        $browser->click('.title-edit')->pause(10000);
+        $browser->click('.title-edit')->pause(4000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $getDate = Carbon::now()->format('Y-m-d');
+        $this->mapDate($browser, '.input-group-append', $getDate);
+        $browser->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-course-name',"Bach Test Course")->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('div.row > div:nth-child(1) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(9)')->pause(2000);
+        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('div:nth-child(1) > div.col-sm-12> div > div.row > div:nth-child(2) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(19)')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('div.row > div:nth-child(3) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(16)')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('#input-customer-name')->pause(2000);
+        $browser->click('#input-customer-name > option:nth-child(1)')->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-depature-place',"Dong Da")->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-arrival_place',"Kim Ma")->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-freight-cost',"10000")->pause(2000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->pause(5000);
 //        $browser->type('#input-course-id',"001122")->pause(1000);
 //        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
 //        $browser->type('#input-course-name','Bach Customer')->pause(1000);
@@ -84,5 +113,17 @@ class CourseCrudTest extends DuskTestCase
             ->waitFor('.toast-body')->pause(4000);
 //        $browser->click('.btn-save')->waitFor('.toast-body')
 //            ->assertSee('Update driver success')->pause(4000);
+    }
+
+    private function mapDate($modal, $selector, $date)
+    {
+        $modal->pause(500);
+        $modal->click($selector);
+        $modal->pause(500);
+        $modal->click('button[title="Current month"]');
+//        $modal->click('button[title="Next month"]');
+        $modal->pause(500);
+        $modal->click('div[data-date="' . $date . '"]');
+        $modal->pause(500);
     }
 }
