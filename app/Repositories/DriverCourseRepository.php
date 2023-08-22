@@ -164,7 +164,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1])
             ->whereNull('driver_courses.deleted_at');
-
+        
         $dataTotalByDriverIds = [];
         if ($request->has('closing_date')){
             $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
@@ -229,7 +229,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         });
 
         $groupedDatas = collect($datas)->groupBy('driver_id');
-
+        
         // Lấy toàn bộ cho tháng này
         $startDateCalendar = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
         $endDateCalendar = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
@@ -268,7 +268,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             $listDataConverts[] = $dataConverts;
         }
-
+        
         // Tìm tất cả driver còn làm việc hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
@@ -294,7 +294,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             return $data;
         });
-
+        
         $dataConvertForDriver = [];
         foreach ($listDrivers as $driver){
             $driverConvert = [
@@ -310,6 +310,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 // Nếu driver đó có lịch trình thì gán vào còn không thì để ngày lịch rỗng
                 if ($driver->id == $dataConvert['driver_id']){
                     $driverConvert['dataShift'] = $dataConvert;
+                    break;
                 } else{
                     $driverConvert['dataShift'] = [
                         'driver_id' => $driver->id,

@@ -44,6 +44,10 @@ function putShift(url, data) {
 	return request.postRequest(url, data);
 }
 
+function getDataUpdate(url, data) {
+	return request.getRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -55,5 +59,6 @@ export {
 	getMessageResponseAi,
 	getListMessageResponseAI,
 	editShift,
-	putShift
+	putShift,
+	getDataUpdate
 };
