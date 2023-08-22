@@ -28,9 +28,9 @@ describe('TEST COMPONENT MENU', () => {
 		});
 
 		const NAVBAR = wrapper.find('.zone-navbar');
-		const LOGO = NAVBAR.find('.show-logo');
+		const LOGO = NAVBAR.find('div.show-logo > img');
 
-		expect(LOGO.text()).toEqual('Toshin');
+		expect(LOGO.exists()).toEqual(true);
 
 		wrapper.destroy();
 	});
