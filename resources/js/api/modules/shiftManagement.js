@@ -40,6 +40,10 @@ function postClosingDate(url, data) {
 	return request.postRequest(url, data);
 }
 
+function putShift(url, data) {
+	return request.postRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -50,5 +54,6 @@ export {
 	postClosingDate,
 	getMessageResponseAi,
 	getListMessageResponseAI,
-	editShift
+	editShift,
+	putShift
 };
