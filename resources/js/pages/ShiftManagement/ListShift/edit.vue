@@ -280,7 +280,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 import EditNodeListShift from '@/components/EditNodeListShift';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
-import { getListShift, putShift } from '@/api/modules/shiftManagement';
+import { getListShift, putShift, getDataUpdate } from '@/api/modules/shiftManagement';
 import { convertValueToText } from '@/utils/handleSelect';
 import { cleanObject } from '@/utils/handleObject';
 // import { convertValueWhenNull } from '@/utils/handleListShift';
@@ -322,6 +322,7 @@ export default {
 
 			reRenderTable: 1,
 			courseDisabled: [],
+			listDataUpdate: [],
 		};
 	},
 
@@ -383,6 +384,7 @@ export default {
 
 			await this.handleGetListCalendar();
 			await this.handleGetListShift();
+			await this.handleGetDataUpdate();
 
 			setLoading(false);
 		},
@@ -897,7 +899,7 @@ export default {
 
 			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
 			// this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
-			// console.log('init data', INIT_DATA);
+			console.log('init data', INIT_DATA);
 			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 			console.log('data update:', this.listUpdate);
 			this.listNodeEditSelected.length = 0;
@@ -1039,11 +1041,33 @@ export default {
 			return -1;
 		},
 
+		async handleGetDataUpdate() {
+			try {
+				setLoading(true);
+				const params = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				params.month_year = YEAR_MONTH;
+				const URL = CONSTANT.URL_API.GET_DATA_UPDATE;
+				const DATA = await getDataUpdate(URL, params);
+				if (DATA.code === 200) {
+					DATA.data.items.forEach((value) => {
+						console.log('list data update 1111', value);
+						this.listUpdate.push(value);
+					});
+				}
+				console.log('list data update', this.listUpdate);
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
 		async onClickSave() {
 			try {
 				if (this.listUpdate.length > 0) {
 					const DATA = this.handleInitDataUpdate(this.listUpdate);
-					console.log('DỮ LIỆU UPDATE:', DATA);
 
 					const { code } = await putShift(CONSTANT.URL_API.POST_UPDATE_CELL_SHIFT, DATA);
 
@@ -1068,7 +1092,6 @@ export default {
 		handleInitDataUpdate(listUpdate) {
 			const YEAR = this.pickerYearMonth.year;
 			const MONTH = this.pickerYearMonth.month;
-
 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 			if (listUpdate.length > 0) {
 				return {
@@ -1141,19 +1164,33 @@ export default {
 			const DATE_EDIT = updateDayOff.listShift[0].date;
 			const DRIVER_CODE = updateDayOff.driver_id;
 
-			const len = listUpdate.length;
-			let idx = 0;
+			// const len = listUpdate.length;
+			// let idx = 0;
 
-			while (idx < len) {
-				if (listUpdate[idx].date === DATE_EDIT && listUpdate[idx].driver_id === DRIVER_CODE) {
-					IS_EXIT.status = true;
-					IS_EXIT.index = idx;
+			// while (idx < len) {
+			// 	listUpdate[idx].listShift.forEach((items) => {
+			// 		if (items.date === DATE_EDIT && listUpdate[idx].driver_id === DRIVER_CODE) {
+			// 			IS_EXIT.status = true;
+			// 			IS_EXIT.index = idx;
+			// 		}
+			// 	});
+			// 	// if (listUpdate[idx].date === DATE_EDIT && listUpdate[idx].driver_id === DRIVER_CODE) {
+			// 	// 	IS_EXIT.status = true;
+			// 	// 	IS_EXIT.index = idx;
 
-					break;
-				}
+			// 	// 	break;
+			// 	// }
 
-				idx++;
-			}
+			// 	idx++;
+			// }
+			listUpdate.forEach((value, idx) => {
+				value.listShift.forEach((items) => {
+					if (items.date === DATE_EDIT && value.driver_id === DRIVER_CODE) {
+						IS_EXIT.status = true;
+						IS_EXIT.index = idx;
+					}
+				});
+			});
 
 			return IS_EXIT;
 		},

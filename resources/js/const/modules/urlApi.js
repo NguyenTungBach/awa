@@ -69,6 +69,7 @@ const GET_EXPORT_PAYMENT = '/payment/export';
 const GET_EXPORT_SALE_LIST_PDF = '/driver-course/export-sale-detail-pdf';
 const GET_EXPORT_PRACTICAL_PERFORMANCE_PDF = '/parctical-performance/export-to-pdf';
 const POST_UPDATE_CELL_SHIFT = '/driver-course/update-course';
+const GET_DATA_UPDATE = '/driver-course/detail-edit-shift';
 const POST_UPDATE_COURSE_BASE = '/shift/edits';
 const POST_CHECK_DATA_RESULT = '/shift/check-data-result';
 const POST_ADD_LIST_SHIFT = '/shift';
@@ -167,6 +168,7 @@ export default {
 	GET_EXPORT_SALE_LIST_PDF,
 	GET_EXPORT_PAYMENT,
 	POST_UPDATE_CELL_SHIFT,
+	GET_DATA_UPDATE,
 	POST_UPDATE_COURSE_BASE,
 	POST_CHECK_DATA_RESULT,
 	POST_ADD_LIST_SHIFT,
