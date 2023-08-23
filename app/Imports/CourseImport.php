@@ -172,6 +172,7 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
         $arrCustomer = $this->getCustomerId();
         $dataImport = [];
         $errors = [];
+        $result = [];
 
         try {
             DB::beginTransaction();
