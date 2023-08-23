@@ -9,7 +9,7 @@
     <table>
         <thead>
             <tr>
-                <th colspan="2">支払代金表</th>
+                <th colspan="2" style="width: 90px">支払代金表</th>
                 <th style="{{ $styleHeader }}">{{ $title }}</th>
             </tr>
             <tr>
@@ -24,15 +24,15 @@
                     <th style="{{ $styleRow }}">{{ date('d', strtotime($item['date'])).'('.$item['week'].')' }}</th>
                 @endforeach
                 {{-- 月額合計 --}}
-                <th style="{{ $styleColumnLast }}" rowspan="2">月額合計</th>
+                <th style="{{ $styleColumnLast }} width: 120px" rowspan="2">月額合計</th>
             </tr>
             <tr>
                 <th style="{{ $styleRow }}">協力会社ID</th>
-                <th style="{{ $styleRow }}">締日</th>
+                <th style="{{ $styleRow }} width: 60px">締日</th>
                 <th style="{{ $styleRow }}">協力会社名</th>
                 {{-- foreach calendar --}}
                 @foreach ($calendar as $item)
-                    <th style="{{ $styleRow }}">{{ $item['rokuyou'] }}</th>
+                    <th style="{{ $styleRow }} width: 60px">{{ $item['rokuyou'] }}</th>
                 @endforeach
             </tr>
             @foreach ($result['list_data'] as $key => $value)

@@ -26,7 +26,7 @@ export default {
 		USER_MANAGEMENT_DELETE_SUCCESS: 'Delete user success',
 
 		USER_MANAGEMENT_VALIDATE_REQUIRED: 'Some items have not been entered or selected.',
-		USER_MANAGEMENT_VALIDATE_USER_CODE: 'User code must be 1 to 4 digits',
+		USER_MANAGEMENT_VALIDATE_USER_CODE: 'User code must be 15 digits',
 		USER_MANAGEMENT_VALIDATE_USER_NAME: 'User name must be 1 to 20 characters',
 		USER_MANAGEMENT_VALIDATE_USER_PASSWORD: 'Password must be 8 to 16 characters',
 		USER_MANAGEMENT_VALIDATE_USER_ROLE: 'Role must be selected',
