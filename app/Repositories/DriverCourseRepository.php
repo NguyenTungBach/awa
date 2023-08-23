@@ -1059,7 +1059,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 // Nếu nếu course này không nằm trong tháng thì báo lỗi
                 if ($checkDate != $attributes['month_year']) {
                     $driver = Driver::find($item['driver_id']);
-                    $course = Driver::find($courseId);
+                    $course = Course::find($courseId);
                     return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('errors.date_not_in_month',[
                             "driver_id"=> $item['driver_id'],
@@ -1073,7 +1073,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         // 1.3 Kiểm tra các driver_id có bị trùng lịch không
 
-        // 2.Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
+        // 2. Kiểm tra có được phép tạo không, xem trong bảng final_closing_histories start
         foreach ($items as $item){
             $checkDriver_id = $item['driver_id'];
             $driver = Driver::find($checkDriver_id);

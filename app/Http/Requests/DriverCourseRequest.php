@@ -125,11 +125,11 @@ class DriverCourseRequest extends FormRequest
                     Rule::exists('drivers', 'id'),
                 ],
                 'items.*.listShift' => [
-//                    'required_with:items',
+//                    'required_with:items.*.driver_id',
                     'array',
                 ],
                 'items.*.listShift.*.course_id' => [
-//                    'required_with:items.*.listShift',
+                    'required_with:items.*.listShift',
                     Rule::exists('courses', 'id'),
 //                    new DriverCourseUniqueRule("date","driver_id","course_id"),
                 ],
@@ -139,17 +139,17 @@ class DriverCourseRequest extends FormRequest
 //                    ,new DriverCourseUniqueRule("date","driver_id","course_id"),
                 ],
                 "items.*.listShift.*.start_time" => [
-                    "required_with:items.*.listShift.*.course_id",
+                    "required_with:items.*.listShift",
                     'date_format:H:i',
                     new TimeRule("start_time")
                 ],
                 "items.*.listShift.*.break_time" => [
-                    "required_with:items.*.listShift.*.course_id",
+                    "required_with:items.*.listShift",
                     'date_format:H:i',
                     new TimeRule("break_time")
                 ],
                 "items.*.listShift.*.end_time" => [
-                    "required_with:items.*.listShift.*.course_id",
+                    "required_with:items.*.listShift",
                     'date_format:H:i',
                     'after_or_equal:items.*.start_time',
                     new TimeRule("end_time")
