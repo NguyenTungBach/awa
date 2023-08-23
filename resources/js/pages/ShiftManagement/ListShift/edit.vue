@@ -909,14 +909,23 @@ export default {
 		handleUpdateTable(listShift, idxOfDriver, idxCellOfDriver, dataUpdate) {
 			if (dataUpdate.length > 0) {
 				const LIST_TYPE_SELECTED = dataUpdate.map((item) => item.type);
+				console.log('list type selected', LIST_TYPE_SELECTED);
 
 				const LIST_DAY_OFF = LIST_TYPE_SELECTED.filter((item) => (CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item));
+				console.log('day off', LIST_DAY_OFF);
 
 				if (LIST_DAY_OFF.length > 0) {
 					// console.log(listShift[idxOfDriver].shift_list);
 
-					listShift[idxOfDriver].shift_list[idxCellOfDriver].color = this.role === CONSTANT.ROLE.ADMIN ? CONSTANT.LIST_SHIFT.MAP_TYPE_COLOR_DAY_OFF[LIST_DAY_OFF[0]] : CONSTANT.LIST_SHIFT.COLOR_HOLIDAY;
-					listShift[idxOfDriver].shift_list[idxCellOfDriver].value = this.generateListValueDayOff(dataUpdate);
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = this.role === CONSTANT.ROLE.ADMIN ? CONSTANT.LIST_SHIFT.MAP_TYPE_COLOR_DAY_OFF[LIST_DAY_OFF[0]] : CONSTANT.LIST_SHIFT.COLOR_HOLIDAY;
+					const listdataUpdate = this.generateListValueDayOff(dataUpdate);
+					var updateCourseNameDayOff = '';
+					listdataUpdate.forEach(item => {
+						if (item.name) {
+							updateCourseNameDayOff += `${item.name}, `;
+						}
+					});
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = updateCourseNameDayOff;
 				} else {
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
 					const listdataUpdate = this.generateListValueWork(dataUpdate);
@@ -970,7 +979,7 @@ export default {
 			while (idx < len) {
 				if (dataUpdate[idx].type === 'H-0') {
 					result.push({
-						type: dataUpdate[idx].type,
+						type: 7,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF),
 					});
 				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
@@ -987,6 +996,15 @@ export default {
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_LEADER_CHIEF),
 						course_status: null,
+						start_time: formatArray2Time(dataUpdate[idx].start_time),
+						end_time: formatArray2Time(dataUpdate[idx].end_time),
+						break_time: formatArray2Time(dataUpdate[idx].break_time),
+					});
+				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(dataUpdate[idx].type)) {
+					result.push({
+						type: Number((dataUpdate[idx].type).slice(-1)),
+						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
+						// course_status: this.listCourse[COURSE].status,
 						start_time: formatArray2Time(dataUpdate[idx].start_time),
 						end_time: formatArray2Time(dataUpdate[idx].end_time),
 						break_time: formatArray2Time(dataUpdate[idx].break_time),
@@ -1126,13 +1144,33 @@ export default {
 			// };
 
 			listSelected.forEach((item) => {
-				INIT_UPDATE.listShift.push({
-					course_id: item.type,
-					date: otherInfo.date,
-					start_time: formatArray2Time(item.start_time),
-					break_time: formatArray2Time(item.break_time),
-					end_time: formatArray2Time(item.end_time),
-				});
+				if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(item.type)) {
+					INIT_UPDATE.listShift.push({
+						course_id: Number((item.type).slice(-1)),
+						date: otherInfo.date,
+						start_time: formatArray2Time(item.start_time),
+						break_time: formatArray2Time(item.break_time),
+						end_time: formatArray2Time(item.end_time),
+					});
+				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item.type)) {
+					INIT_UPDATE.listShift.push({
+						course_id: Number((item.type).slice(-1)),
+						date: otherInfo.date,
+					});
+				} else if (item.type === 'H-0') {
+					INIT_UPDATE.listShift.push({
+						course_id: 7,
+						date: otherInfo.date,
+					});
+				} else {
+					INIT_UPDATE.listShift.push({
+						course_id: item.type,
+						date: otherInfo.date,
+						start_time: formatArray2Time(item.start_time),
+						break_time: formatArray2Time(item.break_time),
+						end_time: formatArray2Time(item.end_time),
+					});
+				}
 			});
 
 			return INIT_UPDATE;
@@ -1149,8 +1187,6 @@ export default {
 			} else {
 				listUpdate.push(updateDayOff);
 			}
-
-			// listUpdate.push(updateDayOff);
 
 			return listUpdate;
 		},

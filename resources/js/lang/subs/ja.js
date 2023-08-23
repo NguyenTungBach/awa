@@ -47,6 +47,9 @@ export default {
 		COURSE_MANAGEMENT_VALIDATE_START_END_DATE: '開始日と終了日の形式が正しくありません。',
 		COURSE_MANAGEMENT_VALIDATE_NOTE: 'メモは1000文字以内で入力してください。',
 		COURSE_PATTERN_VALIDATE_LIST_UPDATE_EMPTY: '保存しました。',
+		SCHEDULE_MANAGEMENT_CREATE_SUCCESS: 'コースを成功に導く',
+		SCHEDULE_MANAGEMENT_UPDATE_SUCCESS: 'コースを更新しました',
+		SCHEDULE_MANAGEMENT_DELETE_SUCCESS: 'コース削除成功',
 		DAY_OFF_UPDATE_SUCCESS: 'シフト生成情報を更新しました。',
 		DAY_OFF_VALIDATE_SELECT_TYPE_DAY: '休日の種類が選択されていません',
 		COURSE_SCHEDULE_UPDATE_SUCCESS: '保存しました',
@@ -185,7 +188,7 @@ export default {
 		LABEL_BREAK_TIME: '休憩時間: ',
 
 		HALF_DAY_OF: '半休',
-		LABOUR: '手間',
+		FREE: '手間',
 
 		TABLE_DRIVER_CODE: '荷主番号',
 		TABLE_CUSTOMER_ID: '荷主番号',
