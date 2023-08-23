@@ -8,20 +8,22 @@ const SALES_AMOUNT_TABLE = 'SALES AMOUNT TABLE';
 const HIGHT_WAY_FEE = 'HIGHT AWAY TABLE';
 const PAYMENT_TABLE = 'PAYMENT TABLE';
 
-const DATE_HOLIDAY = 'D-1';
-const DATE_FIXED_DAY_OFF = 'D-2';
-const DATE_DAY_OFF_REQUEST = 'D-3';
-const DATE_PAID = 'D-4';
-const DATE_WORKING_DAY = 'D-5';
-const DATE_LEADER_CHIEF = 'R';
-const DATE_WAIT = 'S-1';
-const DATE_WAIT_BETWEEN_TASK = 'S-2';
+const DATE_HOLIDAY = 'D-4';
+const DATE_FIXED_DAY_OFF = 'D-3';
+const DATE_DAY_OFF_REQUEST = 'D-5';
+const DATE_PAID = 'D-6';
+const DATE_WORKING_DAY = 'D-8';
+const DATE_LEADER_CHIEF = 'D-2';
+const DATE_WAIT = 'D-1';
+const DATE_WAIT_BETWEEN_TASK = 'S-9';
+const DATE_HAFT_DAY_OFF = 'H-0';
 
 const COLOR_HOLIDAY = '#EAE7AC';
 const COLOR_FIXED_DAY_OFF = '#FFE5CD';
 const COLOR_DAY_OFF_REQUEST = '#EDD1A7';
 const COLOR_PAID = '#EEAAAA';
 const COLOR_WORKING_DAY = '#FFFFFF';
+const COLOR_HAFT_DAY_OFF = '#FFF1E4';
 
 const TEXT_DATE_HOLIDAY = 'LIST_SHIFT.TABLE_DATE_HOLIDAY';
 const TEXT_DATE_FIXED_DAY_OFF = 'LIST_SHIFT.TABLE_DATE_FIXED_DAY_OFF';
@@ -30,8 +32,9 @@ const TEXT_DATE_PAID = 'LIST_SHIFT.TABLE_DATE_PAID';
 const TEXT_DATE_LEADER_CHIEF = 'LIST_SHIFT.TABLE_DATE_LEADER_CHIEF';
 const TEXT_DATE_WAIT = 'LIST_SHIFT.TABLE_DATE_WAIT';
 const TEXT_DATE_WAIT_BETWEEN_TASK = 'LIST_SHIFT.TABLE_DATE_WAIT_BETWEEN_TASK';
-const TEXT_STAND_BY = 'LIST_SHIFT.STAND_BY';
-const TEXT_INTERNAL_BUSINESS = 'LIST_SHIFT.INTERNAL_BUSINESS';
+const TEXT_FREE = 'LIST_SHIFT.FREE';
+// const TEXT_INTERNAL_BUSINESS = 'LIST_SHIFT.INTERNAL_BUSINESS';
+// const WAIT = 'LIST_SHIFT.WAIT';
 
 const TEXT_HALF_DAY_OF = 'LIST_SHIFT.HALF_DAY_OF';
 
@@ -44,11 +47,12 @@ const MAP_TYPE_COLOR_DAY_OFF = {
 	[DATE_LEADER_CHIEF]: COLOR_WORKING_DAY,
 	[DATE_WAIT]: COLOR_WORKING_DAY,
 	[DATE_WAIT_BETWEEN_TASK]: COLOR_WORKING_DAY,
+	[DATE_HAFT_DAY_OFF]: COLOR_HAFT_DAY_OFF,
 };
 
 const MAP_TYPE_TEXT_DAY_OFF = {
 	[DATE_HOLIDAY]: TEXT_DATE_HOLIDAY,
-	[DATE_FIXED_DAY_OFF]: TEXT_DATE_FIXED_DAY_OFF,
+	[DATE_FIXED_DAY_OFF]: TEXT_FREE,
 	[DATE_DAY_OFF_REQUEST]: TEXT_DATE_DAY_OFF_REQUEST,
 	[DATE_PAID]: TEXT_DATE_PAID,
 	[DATE_LEADER_CHIEF]: TEXT_DATE_LEADER_CHIEF,
@@ -60,18 +64,18 @@ const WAINT_AI_CREATE_SHIFT_TABLE = '';
 
 const LIST_DAY_OFF = [
 	{
-		value: null,
-		text: TEXT_STAND_BY,
-		disabled: false,
-	},
-	{
-		value: null,
-		text: TEXT_INTERNAL_BUSINESS,
-		disabled: false,
-	},
-	{
 		value: 'D-1',
-		text: TEXT_DATE_HOLIDAY,
+		text: TEXT_DATE_WAIT,
+		disabled: false,
+	},
+	{
+		value: 'D-2',
+		text: TEXT_DATE_LEADER_CHIEF,
+		disabled: false,
+	},
+	{
+		value: 'D-3',
+		text: TEXT_FREE,
 		disabled: false,
 	},
 	// {
@@ -80,12 +84,17 @@ const LIST_DAY_OFF = [
 	// 	disabled: false,
 	// },
 	{
-		value: 'D-3',
+		value: 'D-4',
+		text: TEXT_DATE_HOLIDAY,
+		disabled: false,
+	},
+	{
+		value: 'D-5',
 		text: TEXT_DATE_DAY_OFF_REQUEST,
 		disabled: false,
 	},
 	{
-		value: 'D-4',
+		value: 'D-6',
 		text: TEXT_DATE_PAID,
 		disabled: false,
 	},
@@ -107,7 +116,9 @@ const LIST_DAY_OFF = [
 ];
 
 // const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
-const LIST_VALUE_DAY_OFF = ['D-1', 'D-3', 'D-4'];
+const LIST_VALUE_DAY_OFF = ['D-4', 'D-5', 'D-6', 'H-0'];
+
+const LIST_VALUE_SPECIAL_DAY = ['D-1', 'D-2', 'D-3'];
 
 const HALF_DAY_OF = [
 	{
@@ -163,4 +174,5 @@ export default {
 	LIST_DAY_OFF,
 	LIST_VALUE_DAY_OFF,
 	LIST_VALUE_HALF_DAY_OFF,
+	LIST_VALUE_SPECIAL_DAY,
 };

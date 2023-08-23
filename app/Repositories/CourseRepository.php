@@ -303,18 +303,18 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function listCourseShift($request){
         // Lấy ra tất cả các Course đặc biệt
-        $courseSpecials = Course::
-            select(
-                "id",
-                "customer_id",
-                "course_name",
-                "ship_date",
-                "start_date",
-                "end_date",
-                "break_time",
-            )
-            ->where('courses.customer_id',0)
-            ->get();
+        // $courseSpecials = Course::
+        //     select(
+        //         "id",
+        //         "customer_id",
+        //         "course_name",
+        //         "ship_date",
+        //         "start_date",
+        //         "end_date",
+        //         "break_time",
+        //     )
+        //     ->where('courses.customer_id',0)
+        //     ->get();
 
         // Lấy ra tất cả các Course trong ngày hôm đó không bao gồm Course đặc biệt
         $courseByShipDates = Course::
@@ -331,7 +331,8 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             ->whereNotIn('courses.customer_id',[0])
             ->get();
 
-        $resultCourseShifts = $courseSpecials->concat($courseByShipDates);
+        // $resultCourseShifts = $courseSpecials->concat($courseByShipDates);
+        $resultCourseShifts = $courseByShipDates;
 
         // Lấy ra tất cả các driver_course có trong ngày hôm đó
         $driver_courses = DriverCourse::where("date",$request->date)->get();

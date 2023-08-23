@@ -48,6 +48,11 @@ export default {
 		DRIVER_COURSE_MANAGEMENT_DELETE_SUCCESS: 'Delete driver course success',
 
 		// COURSE MANAGEMENT
+		SCHEDULE_MANAGEMENT_CREATE_SUCCESS: 'Create customer success',
+		SCHEDULE_MANAGEMENT_UPDATE_SUCCESS: 'Update customer success',
+		SCHEDULE_MANAGEMENT_DELETE_SUCCESS: 'Delete customer success',
+
+		// CUSTOMER MANAGEMENT
 		COURSE_MANAGEMENT_CREATE_SUCCESS: 'Create customer success',
 		COURSE_MANAGEMENT_UPDATE_SUCCESS: 'Update customer success',
 		COURSE_MANAGEMENT_DELETE_SUCCESS: 'Delete customer success',
@@ -223,7 +228,7 @@ export default {
 		TABLE_PAYMENT_DUE_DATE: 'Due date',
 		TABLE_COMPANY_NAME: 'Cooperate company name',
 		TABLE_PAYMENT_MONTHLY_AMOUNT: 'Monthly amount',
-		LABOUR: 'Labour',
+		FREE: 'Free',
 
 		SELECT_WAIT: 'Wait',
 		SELECT_WAIT_BETWEEN_TASK: 'Wait between task',
