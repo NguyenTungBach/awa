@@ -405,19 +405,23 @@ export default {
 				let idxDriver = 0;
 
 				while (idxDriver < len) {
-					const arrValue = this.listShift[idxDriver].shift_list[idx].value;
+					const arrValue = this.listShift[idxDriver].dataShift.data_by_date[idx];
 					// console.log(`loop: ${idxDriver} - ${idx}`);
 
-					const lenValue = arrValue.length;
-					let idxValue = 0;
+					// const lenValue = arrValue.length;
+					// let idxValue = 0;
 
-					while (idxValue < lenValue) {
-						const TYPE = arrValue[idxValue].type;
-						if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
-							result.push(TYPE);
-						}
+					// while (idxValue < lenValue) {
+					// 	const TYPE = arrValue[idxValue].course_ids;
+					// 	if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
+					// 		result.push(TYPE);
+					// 	}
 
-						idxValue++;
+					// 	idxValue++;
+					// }
+					const TYPE = Number(arrValue.course_ids);
+					if (!(CONSTANT.LIST_SHIFT.LIST_DAY_OFF).includes(TYPE)) {
+						result.push(TYPE);
 					}
 
 					idxDriver++;
@@ -592,21 +596,24 @@ export default {
 					idxListSelected++;
 				}
 
-				// const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
-				// this.courseDisabled = COURSE_DISABLED;
+				console.log('list course - disable', this.listCourse);
+				const COURSE_DISABLED = this.handleGetAllCourseWork(data.index - 1);
+				this.courseDisabled = COURSE_DISABLED;
+				console.log('course - disable', COURSE_DISABLED);
 
-				// const lenCourse = this.listCourse.length;
-				// let idxCourse = 0;
+				const lenCourse = this.listCourse.length;
+				let idxCourse = 0;
 
-				// while (idxCourse < lenCourse) {
-				// 	if (COURSE_DISABLED.includes(this.listCourse[idx].value)) {
-				// 		this.listCourse[idx].disabled = true;
-				// 	} else {
-				// 		this.listCourse[idx].disabled = false;
-				// 	}
+				while (idxCourse < lenCourse) {
+					if (COURSE_DISABLED.includes(this.listCourse[idxCourse].value)) {
+						console.log('aaaa', idxCourse);
+						this.listCourse[idxCourse].disabled = true;
+					} else {
+						this.listCourse[idxCourse].disabled = false;
+					}
 
-				// 	idxCourse++;
-				// }
+					idxCourse++;
+				}
 
 				// console.log(this.listCourse);
 
@@ -656,7 +663,7 @@ export default {
 								value: data[idx].id,
 								text: data[idx].course_name,
 								// status: data[idx].status,
-								// flag: data[idx].flag,
+								id: idx,
 								start_time: data[idx].start_date,
 								end_time: data[idx].end_date,
 								break_time: data[idx].break_time,
@@ -667,7 +674,7 @@ export default {
 								value: data[idx].id,
 								text: data[idx].course_name,
 								// status: data[idx].status,
-								// flag: data[idx].flag,
+								id: idx,
 								start_time: data[idx].start_date,
 								end_time: data[idx].end_date,
 								break_time: data[idx].break_time,
@@ -1179,8 +1186,23 @@ export default {
 		handleUpdateListUpdate(listUpdate, updateDayOff) {
 			if (listUpdate.length > 0) {
 				const IS_EXIT = this.handleCheckUpdateWithDataExit(listUpdate, updateDayOff);
+				const DRIVER_CODE = updateDayOff.driver_id;
+				const CHECK_ID = {
+					findID: false,
+					getIndex: null,
+				};
+				listUpdate.forEach((value, idx) => {
+					if (value.driver_id === DRIVER_CODE) {
+						CHECK_ID.findID = true;
+						CHECK_ID.getIndex = idx;
+					}
+				});
 				if (IS_EXIT.status) {
 					listUpdate[IS_EXIT.index] = updateDayOff;
+				} else if (CHECK_ID.findID) {
+					updateDayOff.listShift.forEach((item) => {
+						listUpdate[CHECK_ID.getIndex].listShift.push(item);
+					});
 				} else {
 					listUpdate.push(updateDayOff);
 				}
