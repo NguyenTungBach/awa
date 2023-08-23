@@ -9,7 +9,7 @@
     <table>
         <thead>
             <tr>
-                <th colspan="2">支払代金表</th>
+                <th colspan="2" style="width: 80px">支払代金表</th>
                 <th style="{{ $styleHeader }}">{{ $title }}</th>
             </tr>
             <tr>
