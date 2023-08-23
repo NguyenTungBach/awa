@@ -70,45 +70,74 @@ class DriverCourseDetailTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $driver_course = DriverCourse::find(1);
-        $this->actingAs($user)->json('get', "api/driver-course/$driver_course->driver_id", [
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $driver=Driver::find(1);
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $driver_course = DriverCourse::create([
+            "driver_id" => $driver->id,
+            "course_id" => $course6->id,
+            "date" => $course6->ship_date,
+            "start_time"=> "09:00",
+            "break_time"=> "00:00",
+            "end_time"=> "10:00",
+            "status" => 1,
+        ]);
+        $response = $this->actingAs($user)->json('get', "api/driver-course/$driver_course->driver_id", [
             'token' => $token,
             'date' => $driver_course->date,
         ])->assertStatus(CODE_SUCCESS)
             ->assertJsonStructure([
                 "code",
                 "data" => [
-                    [
-                        "id",
-                        "driver_id",
-                        "course_id",
-                        "start_time",
-                        "end_time",
-                        "break_time",
-                        "date",
-                        "status",
-                        "created_at",
-                        "updated_at",
-                        "deleted_at",
-                        'course' => [
+                    "driver_id",
+                    "date",
+                    'listShift' => [
+                        [
                             "id",
-                            "customer_id",
-                            "course_name",
-                            "ship_date",
-                            "start_date",
+                            "driver_id",
+                            "course_id",
+                            "start_time",
+                            "end_time",
                             "break_time",
-                            "end_date",
-                            "departure_place",
-                            "arrival_place",
-                            "ship_fee",
-                            "associate_company_fee",
-                            "expressway_fee",
-                            "commission",
-                            "meal_fee",
+                            "date",
                             "status",
+                            "created_at",
+                            "updated_at",
+                            "deleted_at",
+                            "course" => [
+                                "id",
+                                "customer_id",
+                                "course_name",
+                                "ship_date",
+                                "start_date",
+                                "break_time",
+                                "end_date",
+                                "departure_place",
+                                "arrival_place",
+                                "ship_fee",
+                                "associate_company_fee",
+                                "expressway_fee",
+                                "commission",
+                                "meal_fee",
+                                "status",
+                            ]
                         ]
                     ]
-                ],
+                ]
             ]);
     }
 
@@ -116,13 +145,42 @@ class DriverCourseDetailTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $driver_course = DriverCourse::find(1);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $driver=Driver::find(1);
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $driver_course = DriverCourse::create([
+            "driver_id" => $driver->id,
+            "course_id" => $course6->id,
+            "date" => $course6->ship_date,
+            "start_time"=> "09:00",
+            "break_time"=> "00:00",
+            "end_time"=> "10:00",
+            "status" => 1,
+        ]);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('get', "api/driver-course/99", [
             'date' => $driver_course->date,
         ])->assertStatus(CODE_SUCCESS)
-            ->assertExactJson([
-                "code" => CODE_SUCCESS,
-                "data" => [],
+            ->assertJsonStructure([
+                "code",
+                "data" => [
+                    "driver_id",
+                    "date",
+                    'listShift' => []
+                ],
             ]);
     }
     /////////Detail End//////////

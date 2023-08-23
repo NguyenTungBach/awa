@@ -70,7 +70,7 @@ class DriverCourseEditTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
-        $dayForCourse7 = Carbon::now()->addDay(2)->format("Y-m-d");
+        $dayForCourse7 = Carbon::now()->addDays(2)->format("Y-m-d");
         $course6 = Course::create([
             "customer_id"=> 5,
             "course_name"=> "Course name 6",
@@ -104,33 +104,12 @@ class DriverCourseEditTest extends TestCase
         ]);
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
             "items" => [
                 [
-                    "id"=> 1,
                     "driver_id" => 1,
-                    "course_id" => $course6->id,
-                    "date" => $course6->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "driver_id" => 2,
-                    "course_id" => $course7->id,
-                    "date" => $course7->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(CODE_SUCCESS)
-            ->assertExactJson([
-                "code"=> CODE_SUCCESS,
-                "data"=> [
-                    "items" => [
+                    "listShift" => [
                         [
-                            "id"=> 1,
-                            "driver_id" => 1,
                             "course_id" => $course6->id,
                             "date" => $course6->ship_date,
                             "start_time" => "08:00",
@@ -138,7 +117,6 @@ class DriverCourseEditTest extends TestCase
                             "end_time" => "18:00",
                         ],
                         [
-                            "driver_id" => 2,
                             "course_id" => $course7->id,
                             "date" => $course7->ship_date,
                             "start_time" => "08:00",
@@ -146,19 +124,114 @@ class DriverCourseEditTest extends TestCase
                             "end_time" => "18:00",
                         ]
                     ]
+                ],
+            ]
+        ])->assertStatus(CODE_SUCCESS)
+            ->assertExactJson([
+                "code"=> CODE_SUCCESS,
+                "data"=> [
+                    "month_year" => Carbon::now()->format('Y-m'),
+                    "items" => [
+                        [
+                            "driver_id" => 1,
+                            "listShift" => [
+                                [
+                                    "course_id" => $course6->id,
+                                    "date" => $course6->ship_date,
+                                    "start_time" => "08:00",
+                                    "break_time" => "12:00",
+                                    "end_time" => "18:00",
+                                ],
+                                [
+                                    "course_id" => $course7->id,
+                                    "date" => $course7->ship_date,
+                                    "start_time" => "08:00",
+                                    "break_time" => "12:00",
+                                    "end_time" => "18:00",
+                                ]
+                            ]
+                        ],
+                    ]
                 ]
             ]);
     }
 
-    public function testDriverCourseEditItemEmpty()
+    public function testDriverCourseEditMonthYearEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
         ->json('post', 'api/driver-course/update-course',[
-            "da"=>""
+            "items" => [
+                [
+                    "driver_id" => 1,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
+                ],
+            ]
         ])
         ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'month_year' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseEditItemsEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
@@ -172,98 +245,44 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    public function testDriverCourseEditDriveCourse_idNotFound()
+    public function testDriverCourseEditDriver_idEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
         $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
                 "items" => [
                     [
-                        "id"=> 99,
-                        "driver_id" => 1,
-                        "course_id" => 8,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "12:00",
-                        "end_time" => "18:00",
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "date" => $course6->ship_date,
+                                "start_time" => "08:00",
+                                "break_time" => "12:00",
+                                "end_time" => "18:00",
+                            ]
+                        ]
                     ],
                 ]
-            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertExactJson([
-                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans('errors.driver_course_id_not_found',[
-                    "id"=> 99,
-                ]),
-                "message_content" => null,
-                "message_internal" => null,
-                "data_error" => null
-            ]);
-    }
-
-    public function testDriverCourseEditDrive_idEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "driver_id" => 2,
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.driver_id' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditDrive_idNotFound()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 9,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
@@ -280,71 +299,47 @@ class DriverCourseEditTest extends TestCase
     public function testDriverCourseEditCourse_idEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
         $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id"=> 1,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.course_id' => [
-
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
+                "items" => [
+                    [
+                        "driver_id" => 1,
+                        "listShift" => [
+                            [
+                                "date" => $course6->ship_date,
+                                "start_time" => "08:00",
+                                "break_time" => "12:00",
+                                "end_time" => "18:00",
+                            ]
+                        ]
                     ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditCourse_idNotFound()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 99,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
                 ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 "code",
                 "message",
                 "message_content",
                 "message_internal" => [
-                    'items.0.course_id' => [
+                    'items.0.listShift.0.course_id' => [
 
                     ],
                 ],
@@ -355,436 +350,279 @@ class DriverCourseEditTest extends TestCase
     public function testDriverCourseEditDateEmpty()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
         $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 99,
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.date' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditDateNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "course_id" => 4,
-                    "date" => "2023/07/24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.date' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditStart_timeNotFound()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "driver_id" => 2,
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.start_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditStart_timeNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023/07/24",
-                    "start_time" => "08:00:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.start_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditStart_timeWrongTimeRule()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:11",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.start_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditEnd_timeNotFound()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "break_time" => "12:00",
-                    "start_time" => "08:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.end_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditEnd_timeNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023/07/24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.end_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditEnd_timeWrongTimeRule()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:11",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.end_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditEnd_timeWrongAfter_or_equalStart_time()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "07:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.end_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditBreak_timeNotFound()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "end_time" => "18:00",
-                ],
-                [
-                    "course_id" => 2,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.break_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditBreak_timeNoFomartDate()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00:00",
-                    "end_time" => "18:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.break_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    public function testDriverCourseEditBreak_timeWrongTimeRule()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:11",
-                    "end_time" => "18:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'items.0.break_time' => [
-
-                    ],
-                ],
-                "data_error"
-            ]);
-    }
-
-    // 1.0. Duplicate driver_course_id và date DriverCourseCreate
-    public function testDriverCourseEditItemMustOneWithSpecialId()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::find(1);
-        $course = Course::find(2);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
                 "items" => [
                     [
-                        "id"=>1,
                         "driver_id" => 1,
-                        "course_id" => 2,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "07:00",
-                        "end_time" => "09:00",
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "start_time" => "08:00",
+                                "break_time" => "12:00",
+                                "end_time" => "18:00",
+                            ]
+                        ]
                     ],
+                ]
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'items.0.listShift.0.date' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseEditStart_timeEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
+                "items" => [
                     [
                         "driver_id" => 1,
-                        "course_id" => 3,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "12:00",
-                        "end_time" => "18:00",
-                    ]
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "date" => $course6->ship_date,
+                                "break_time" => "12:00",
+                                "end_time" => "18:00",
+                            ]
+                        ]
+                    ],
                 ]
-            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'items.0.listShift.0.start_time' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseEditBreak_timeEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
+                "items" => [
+                    [
+                        "driver_id" => 1,
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "date" => $course6->ship_date,
+                                "start_time" => "08:00",
+                                "end_time" => "18:00",
+                            ]
+                        ]
+                    ],
+                ]
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'items.0.listShift.0.break_time' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    public function testDriverCourseEditEnd_timeEmpty()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)
+            ->json('post', 'api/driver-course/update-course',[
+                "month_year" => Carbon::now()->format('Y-m'),
+                "items" => [
+                    [
+                        "driver_id" => 1,
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "date" => $course6->ship_date,
+                                "start_time" => "08:00",
+                                "break_time" => "12:00",
+                            ]
+                        ]
+                    ],
+                ]
+            ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                "code",
+                "message",
+                "message_content",
+                "message_internal" => [
+                    'items.0.listShift.0.end_time' => [
+
+                    ],
+                ],
+                "data_error"
+            ]);
+    }
+
+    // 1.0. Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó
+    public function testDriverCourseDriverWithSpecialCourseIdMustOneInDateEditSuccess()
+    {
+        $user = User::where('user_code', '=', '1122')->first();
+        $driver = Driver::find(1);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $dayForCourse7 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+
+        $course7 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 7",
+            "ship_date"=> $dayForCourse7,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 07",
+            "arrival_place"=> "Arrival place 0 7",
+            "ship_fee"=> 7000,
+            "associate_company_fee"=> 70,
+            "expressway_fee"=> 70,
+            "commission"=> 70,
+            "meal_fee"=> 70,
+        ]);
+        $courseSpecial = Course::find(1);
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
+            "items" => [
+                [
+                    "driver_id" => $driver->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $courseSpecial->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ],
+                        [
+                            "course_id" => $course7->id,
+                            "date" => $course7->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
+                ],
+            ]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
                 "message" => trans('errors.all_id_special_must_one',[
                     "driver_id"=> $driver->id,
                     "driver_name"=> $driver->driver_name,
-                    "course_id"=> $course->id,
-                    "course_name"=> $course->course_name,
-                    "date"=> "2023-07-24",
+                    "course_id"=> $courseSpecial->id,
+                    "course_name"=> $courseSpecial->course_name,
+                    "date"=> $course6->ship_date,
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -792,38 +630,79 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 1.1. Duplicate driver_course_id và date DriverCourseCreate
-    public function testDriverCourseEditDuplicateDriverCourse_id()
+    // 1.1. Duplicate driver_id DriverCourseCreate
+    public function testDriverCourseEditDriver_idDuplicate()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $driver = Driver::find(1);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $dayForCourse7 = Carbon::now()->addDays(2)->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+
+        $course7 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 7",
+            "ship_date"=> $dayForCourse7,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 07",
+            "arrival_place"=> "Arrival place 0 7",
+            "ship_fee"=> 7000,
+            "associate_company_fee"=> 70,
+            "expressway_fee"=> 70,
+            "commission"=> 70,
+            "meal_fee"=> 70,
+        ]);
         $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-                "items" => [
-                    [
-                        "id"=>1,
-                        "driver_id" => 1,
-                        "course_id" => 8,
-                        "date" => "2023-07-25",
-                        "start_time" => "08:00",
-                        "break_time" => "07:00",
-                        "end_time" => "09:00",
-                    ],
-                    [
-                        "id"=>1,
-                        "driver_id" => 1,
-                        "course_id" => 8,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "12:00",
-                        "end_time" => "18:00",
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
+            "items" => [
+                [
+                    "driver_id" => $driver->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ],
                     ]
-                ]
-            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ],
+                [
+                    "driver_id" => $driver->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $course7->id,
+                            "date" => $course7->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
+                ],
+            ]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans('errors.duplicate_id_shift',[
-                    "id"=> 1,
+                "message" => trans('errors.duplicate_driver_id',[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -835,34 +714,61 @@ class DriverCourseEditTest extends TestCase
     public function testDriverCourseEditDuplicateDriver_idAndCourse_id()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $driver1 = Driver::find(1);
+        $driver2 = Driver::find(2);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $dayForCourse7 = Carbon::now()->addDays(2)->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+
         $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
             "items" => [
                 [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "07:00",
-                    "end_time" => "09:00",
+                    "driver_id" => $driver1->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ],
+                    ]
                 ],
                 [
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => "2023-07-24",
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
+                    "driver_id" => $driver2->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
+                ],
             ]
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
                 "message" => trans('errors.duplicate_driver_id_and_course_id',[
-                    "driver_id"=> 1,
-                    "course_id"=> 8
+                    "driver_id"=> $driver2->id,
+                    "course_id"=> $course6->id
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -871,37 +777,54 @@ class DriverCourseEditTest extends TestCase
     }
 
     // 1.3. Duplicate course_id và date DriverCourseCreate
-    public function testDriverCourseEditDuplicateCourse_idAndDate()
+    public function testDriverCourseEditNotInMonthYear()
     {
         $user = User::where('user_code', '=', '1122')->first();
+        $driver = Driver::find(1);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)
             ->actingAs($user)->json('post', 'api/driver-course/update-course', [
+                "month_year" => Carbon::now()->addMonth()->format('Y-m'),
                 "items" => [
                     [
-                        "id"=>1,
-                        "driver_id" => 1,
-                        "course_id" => 9,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "07:00",
-                        "end_time" => "09:00",
+                        "driver_id" => $driver->id,
+                        "listShift" => [
+                            [
+                                "course_id" => $course6->id,
+                                "date" => $course6->ship_date,
+                                "start_time" => "08:00",
+                                "break_time" => "12:00",
+                                "end_time" => "18:00",
+                            ],
+                        ]
                     ],
-                    [
-                        "driver_id" => 2,
-                        "course_id" => 9,
-                        "date" => "2023-07-24",
-                        "start_time" => "08:00",
-                        "break_time" => "12:00",
-                        "end_time" => "18:00",
-                    ]
                 ]
             ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans('errors.duplicate_course_id_and_date',[
-                    "course_id"=> 9,
-                    "date"=> "2023-07-24"
+                "message" => trans('errors.date_not_in_month',[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
+                    "course_id"=> $course6->id,
+                    "course_name"=> $course6->course_name,
+                    "month_year"=> Carbon::now()->addMonth()->format('Y-m')
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -916,7 +839,6 @@ class DriverCourseEditTest extends TestCase
         $driver = Driver::find(1);
 
         $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
-        $dayForCourse7 = Carbon::now()->addDay(2)->format("Y-m-d");
 
 //        dd($testFinalClosingHistories);
 //        DB::table('final_closing_histories')->where('id', $testFinalClosingHistories->id)->delete();
@@ -937,21 +859,6 @@ class DriverCourseEditTest extends TestCase
             "meal_fee"=> 60,
         ]);
 
-        $course7 = Course::create([
-            "customer_id"=> 5,
-            "course_name"=> "Course name 7",
-            "ship_date"=> $dayForCourse7,
-            "start_date"=> "09:00",
-            "break_time"=> "00:00",
-            "end_date"=> "10:00",
-            "departure_place"=> "Departure place 07",
-            "arrival_place"=> "Arrival place 0 7",
-            "ship_fee"=> 7000,
-            "associate_company_fee"=> 70,
-            "expressway_fee"=> 70,
-            "commission"=> 70,
-            "meal_fee"=> 70,
-        ]);
         $testFinalClosingHistories = FinalClosingHistories::create([
             'date' => $dayForCourse6,
             'month_year' => Carbon::parse($dayForCourse6)->format("Y-m"),
@@ -960,24 +867,20 @@ class DriverCourseEditTest extends TestCase
         ]);
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
             "items" => [
                 [
-                    "id"=> 1,
-                    "driver_id" => $driver->id,
-                    "course_id" => $course6->id,
-                    "date" => $course6->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
+                    "driver_id" => 1,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
                 ],
-                [
-                    "driver_id" => 2,
-                    "course_id" => $course7->id,
-                    "date" => $course7->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "12:00",
-                    "end_time" => "18:00",
-                ]
             ]
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
@@ -997,50 +900,9 @@ class DriverCourseEditTest extends TestCase
         DB::table('final_closing_histories')->truncate();
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(8);
-        $driver->end_date = $course->ship_date;
-        $driver->save();
-        $token = \JWTAuth::fromUser($user);
-        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => $driver->id,
-                    "course_id" => 8,
-                    "date" => $course->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "07:00",
-                    "end_time" => "09:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertExactJson([
-                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans("errors.end_date_retirement" ,[
-                    "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name, course_id: $course->id, course_name: $course->course_name",
-                    "end_date"=> Carbon::parse($driver->end_date)->format('Y-m-d')
-                ]),
-                "message_content" => null,
-                "message_internal" => null,
-                "data_error" => null
-            ]);
-    }
-
-    // 4. Day Must One With Special Id DriverCourseCreate
-    public function testDriverCourseEditDayMustOneWithSpecialId()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::create([
-            "type"=> 1,
-            "driver_code"=> "abc1234",
-            "driver_name"=> "Bach test",
-            "car"=> "Lambo",
-            "start_date"=> "2022-08-20",
-            "note"=> "thoi roi ta da xa nhau"
-        ]);
         $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
-        $course = Course::create([
+        $token = \JWTAuth::fromUser($user);
+        $course6 = Course::create([
             "customer_id"=> 5,
             "course_name"=> "Course name 6",
             "ship_date"=> $dayForCourse6,
@@ -1055,38 +917,31 @@ class DriverCourseEditTest extends TestCase
             "commission"=> 60,
             "meal_fee"=> 60,
         ]);
-        $driver_course = new DriverCourse();
-        $driver_course->driver_id = $driver->id;
-        $driver_course->course_id = $course->id;
-        $driver_course->date = $course->ship_date;
-        $driver_course->start_time = $course->start_date;
-        $driver_course->end_time = $course->end_date;
-        $driver_course->break_time = $course->break_time;
-        $driver_course->status = 1;
-        $driver_course->save();
-
-        $response = $this->withHeader('Authorization', "Bearer ". $token)
-            ->actingAs($user)->json('post', 'api/driver-course/update-course', [
-                "items" => [
-                    [
-                        "id"=>1,
-                        "driver_id" => $driver->id,
-                        "course_id" => 1,
-                        "date" => $course->ship_date,
-                        "start_time" => "08:00",
-                        "break_time" => "07:00",
-                        "end_time" => "09:00",
-                    ],
-                ]
-            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        $driver->end_date = $course6->ship_date;
+        $driver->save();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
+            "items" => [
+                [
+                    "driver_id" => 1,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $course6->ship_date,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
+                ],
+            ]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans('errors.driver_must_one_course_in_day_with_id_special',[
-                    "driver_id"=> $driver->id,
-                    "driver_name"=> $driver->driver_name,
-                    "course_id"=> $course->id,
-                    "course_name"=> $course->course_name,
-                    "date"=> $course->ship_date,
+                "message" => trans("errors.end_date_retirement" ,[
+                    "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name, course_id: $course6->id, course_name: $course6->course_name",
+                    "end_date"=> $course6->ship_date
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -1094,32 +949,52 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 5. In NotInShip_dateCourses DriverCourseCreate
-    public function testDriverCourseEditNotInShip_dateCourses()
+    // 4. Day Must One With Special Id DriverCourseCreate
+    public function testDriverCourseEditDateMustSameCourse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $driver = Driver::find(1);
-        $course = Course::find(8);
-        $fake_date = Carbon::parse($course->ship_date)->subDay()->format("Y-m-d");
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $dayForCourse7 = Carbon::now()->addDays(2)->format("Y-m-d");
+        $token = \JWTAuth::fromUser($user);
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
         $token = \JWTAuth::fromUser($user);
         $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
+            "month_year" => Carbon::now()->format('Y-m'),
             "items" => [
                 [
-                    "id"=>1,
-                    "driver_id" => 1,
-                    "course_id" => 8,
-                    "date" => $fake_date,
-                    "start_time" => "08:00",
-                    "break_time" => "07:00",
-                    "end_time" => "09:00",
+                    "driver_id" => $driver->id,
+                    "listShift" => [
+                        [
+                            "course_id" => $course6->id,
+                            "date" => $dayForCourse7,
+                            "start_time" => "08:00",
+                            "break_time" => "12:00",
+                            "end_time" => "18:00",
+                        ]
+                    ]
                 ],
             ]
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertExactJson([
                 "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
                 "message" => trans("errors.unlike_ship_date" ,[
-                    "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name, course_id: $course->id, course_name: $course->course_name, and date: $fake_date",
-                    "ship_date"=> $course->ship_date
+                    "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name, course_id: $course6->id, course_name: $course6->course_name, and date: $dayForCourse7",
+                    "ship_date"=> $course6->ship_date
                 ]),
                 "message_content" => null,
                 "message_internal" => null,
@@ -1127,46 +1002,5 @@ class DriverCourseEditTest extends TestCase
             ]);
     }
 
-    // 6. CourseExistDriver DriverCourseCreate
-    public function testDriverCourseEditCourseExistDriver()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $driver = Driver::find(1);
-        $course = Course::find(8);
-        $token = \JWTAuth::fromUser($user);
-
-        $driver_course = new DriverCourse();
-        $driver_course->driver_id = $driver->id;
-        $driver_course->course_id = $course->id;
-        $driver_course->date = $course->ship_date;
-        $driver_course->start_time = $course->start_date;
-        $driver_course->end_time = $course->end_date;
-        $driver_course->break_time = $course->break_time;
-        $driver_course->status = 1;
-        $driver_course->save();
-        $response = $this->withHeader('Authorization', "Bearer ". $token)->actingAs($user)->json('post', 'api/driver-course/update-course', [
-            'token' => $token,
-            "items" => [
-                [
-                    "id"=>1,
-                    "driver_id" => 2,
-                    "course_id" => 8,
-                    "date" => $course->ship_date,
-                    "start_time" => "08:00",
-                    "break_time" => "07:00",
-                    "end_time" => "09:00",
-                ],
-            ]
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertExactJson([
-                "code" => Response::HTTP_UNPROCESSABLE_ENTITY,
-                "message" => trans("errors.has_been_assigned" ,[
-                    "attribute"=> "driver_id: $driver_course->driver_id, driver_name: $driver->driver_name, course_id: $driver_course->course_id, course_name: $course->course_name and date: $course->ship_date"
-                ]),
-                "message_content" => null,
-                "message_internal" => null,
-                "data_error" => null
-            ]);
-    }
     /////////Edit End//////////
 }
