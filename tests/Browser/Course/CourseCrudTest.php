@@ -29,10 +29,22 @@ class CourseCrudTest extends DuskTestCase
             $this->loginAdminGeneral($browser);
             $this->listCourse($browser);
             $this->createCourse($browser);
+            $this->exportCourse($browser);
             $this->editCourse($browser);
             $this->listCourse($browser);
             $this->deleteCourse($browser);
+            $this->importFile($browser);
         });
+    }
+
+    private function importFile(Browser $browser)
+    {
+        $browser->pause(2000)
+            ->click('div:nth-child(1) > div.show-icon > i')->pause(2000)
+            ->attach('#import-file',base_path('tests/csv/test_import_course.xlsx'))->pause(2000)
+            ->click('div:nth-child(4) > .btn-color-active-import')->pause(2000)
+            ->waitFor('.toast-body')->pause(2000)
+            ->pause(4000);
     }
 
     private function listCourse(Browser $browser)
@@ -43,6 +55,13 @@ class CourseCrudTest extends DuskTestCase
             ->click('div.show-menu > ul > li:nth-child(1) > ul > li:nth-child(2) > a')
             ->waitFor('div.show-menu')
             ->pause(4000);
+    }
+
+    private function exportCourse(Browser $browser)
+    {
+        $browser->pause(2000)
+            ->click('div:nth-child(2) > div.show-icon > i')
+            ->pause(7000);
     }
 
     private function createCourse($browser){
