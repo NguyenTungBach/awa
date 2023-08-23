@@ -7,7 +7,7 @@
     <table>
         <thead>
             <tr>
-                <td colspan="2">出金情報一覧</td>
+                <td colspan="2" style="width: 80px">出金情報一覧</td>
                 <td style="{{ $styleHeader }}">{{ $title }}</td>
             </tr>
             <tr>
@@ -16,9 +16,13 @@
         </thead>
         <tbody>
             <tr>
-                @foreach (config('cash_out_statistical.header_export') as $key => $item)
-                    <th>{{ $item }}</th>
-                @endforeach
+                <th>協力会社ID</th>
+                <th>協力会社名</th>
+                <th>前月末残高</th>
+                <th style="width: 120px">当月買掛金</th>
+                <th style="width: 120px">買掛金合計</th>
+                <th style="width: 120px">当月出金金額</th>
+                <th style="width: 120px">当月残高</th>
             </tr>
             @foreach ($result as $key => $items)
             <tr>

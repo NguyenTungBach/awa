@@ -36,6 +36,9 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     public function createCustomer($input)
     {
         $note = Arr::get($input, 'note', NULL);
+        if (!empty($input['phone'])) {
+            $input['phone'] = str_replace('-', '', $input['phone']);
+        }
 
         $customer = Customer::create([
             'customer_code' => $input['customer_code'],
@@ -82,6 +85,9 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
 
     public function updateCustomer($input, $id)
     {
+        if (!empty($input['phone'])) {
+            $input['phone'] = str_replace('-', '', $input['phone']);
+        }
         $result = CustomerRepository::update($input, $id);
 
         return $result;

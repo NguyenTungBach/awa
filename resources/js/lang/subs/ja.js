@@ -16,7 +16,7 @@ export default {
 		USER_MANAGEMENT_UPDATE_SUCCESS: 'ユーザーを更新しました。',
 		USER_MANAGEMENT_DELETE_SUCCESS: 'ユーザーを削除しました。',
 		USER_MANAGEMENT_VALIDATE_REQUIRED: '入力または選択されていない項目があります。',
-		USER_MANAGEMENT_VALIDATE_USER_CODE: 'ユーザーIDは半角数字4桁で入力してください。',
+		USER_MANAGEMENT_VALIDATE_USER_CODE: 'ユーザーIDは半角数字15桁以内で入力してください。',
 		USER_MANAGEMENT_VALIDATE_USER_NAME: 'ユーザー名は20桁以内で入力してください。',
 		USER_MANAGEMENT_VALIDATE_USER_PASSWORD: 'パスワードは8文字以上16文字以内の半角英数字で入力してください。',
 		USER_MANAGEMENT_VALIDATE_USER_ROLE: 'ユーザー権限を入力してください。',

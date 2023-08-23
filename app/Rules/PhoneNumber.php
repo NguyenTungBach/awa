@@ -6,8 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class PhoneNumber implements Rule
 {
-    const PHONE_NUMBER_MINLENGTH = 12;
-    const PHONE_NUMBER_MAXLENGTH = 13;
+    const PHONE_NUMBER_MAXLENGTH = 11;
 
     protected string $attribute;
 
@@ -30,8 +29,9 @@ class PhoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
+        $value = str_replace('-', '', $value);
         $length = strlen($value);
-        if ($length < self::PHONE_NUMBER_MINLENGTH) {
+        if ($length < self::PHONE_NUMBER_MAXLENGTH) {
             return false;
         }
         if ($length > self::PHONE_NUMBER_MAXLENGTH) {

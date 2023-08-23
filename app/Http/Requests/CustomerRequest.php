@@ -61,7 +61,10 @@ class CustomerRequest extends FormRequest
             'person_charge' => 'required|string|max:20',
             'post_code' => ['required', new PostCode(__('customers.post_code'))],
             'address' => 'required|string|max:100',
-            'phone' => ['required', 'regex:/^[0-9]{11}+$/D'],
+            'phone' => [
+                'required',
+                new PhoneNumber(__('customers.phone'))
+            ],
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -89,7 +92,11 @@ class CustomerRequest extends FormRequest
             'person_charge' => 'sometimes|required|string|max:20',
             'post_code' => ['sometimes', 'required', new PostCode(__('customers.post_code'))],
             'address' => 'sometimes|required|string|max:100',
-            'phone' => ['sometimes', 'required', 'regex:/^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}+$/D'],
+            'phone' => [
+                'sometimes',
+                'required',
+                new PhoneNumber(__('customers.phone'))
+            ],
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -139,7 +146,7 @@ class CustomerRequest extends FormRequest
             'address.max' => __('validation.max.string', ['attribute' => __('customers.address'), 'max' => 100]),
             // phone
             'phone.required' => __('validation.required', ['attribute' => __('customers.phone')]),
-            'phone.regex' => __('validation.custom.phone_number.regex', ['attribute' => __('customers.phone')]),
+            // 'phone.regex' => __('validation.custom.phone_number.regex', ['attribute' => __('customers.phone')]),
             // note
             'note.string' => __('validation.string', ['attribute' => __('customers.note')]),
             'note.max' => __('validation.max.string', ['attribute' => __('customers.note'), 'max' => 1000]),
