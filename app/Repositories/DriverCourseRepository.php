@@ -130,9 +130,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $dataConverts['listShift'][] = [
                     'course_id' => $checkData->course_id,
                     'date' => $checkData->date,
-                    'start_time' => $checkData->start_time,
-                    'break_time' => $checkData->break_time,
-                    'end_time' => $checkData->end_time,
+                    'start_time' => Carbon::createFromFormat('H:i:s', $checkData->start_time)->format('H:i'),
+                    'break_time' => Carbon::createFromFormat('H:i:s', $checkData->break_time)->format('H:i'),
+                    'end_time' => Carbon::createFromFormat('H:i:s', $checkData->end_time)->format('H:i'),
                 ];
             }
             $dataCustom['items'][]=$dataConverts;
@@ -164,7 +164,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1])
             ->whereNull('driver_courses.deleted_at');
-        
+
         $dataTotalByDriverIds = [];
         if ($request->has('closing_date')){
             $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
@@ -229,7 +229,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         });
 
         $groupedDatas = collect($datas)->groupBy('driver_id');
-        
+
         // Lấy toàn bộ cho tháng này
         $startDateCalendar = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
         $endDateCalendar = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
@@ -268,7 +268,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             $listDataConverts[] = $dataConverts;
         }
-        
+
         // Tìm tất cả driver còn làm việc hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
@@ -294,7 +294,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             return $data;
         });
-        
+
         $dataConvertForDriver = [];
         foreach ($listDrivers as $driver){
             $driverConvert = [
