@@ -246,19 +246,19 @@
                                             {{ course.customer_name }}
                                         </b-td>
                                         <b-td class="td-cash-balance" :colspan="3">
-                                            {{ course.balance_previous_month }}
+                                            {{ Number(course.balance_previous_month) }}
                                         </b-td>
                                         <b-td class="td-cash-account-receiable" :colspan="3">
-                                            {{ course.receivable_this_month }}
+                                            {{ Number(course.receivable_this_month) }}
                                         </b-td>
                                         <b-td class="td-cash-total-account-receiable" :colspan="3">
-                                            {{ course.total_account_receivable }}
+                                            {{ Number(course.total_account_receivable) }}
                                         </b-td>
                                         <b-td class="td-cash-month-deposit-amount" :colspan="3">
-                                            {{ course.total_cash_in_of_current_month }}
+                                            {{ Number(course.total_cash_in_of_current_month) }}
                                         </b-td>
                                         <b-td class="td-cash-current-month-balance" :colspan="3">
-                                            {{ course.total_cash_in_current }}
+                                            {{ Number(course.total_cash_in_current) }}
                                         </b-td>
                                         <b-td class="text-center td-control" :colspan="2">
                                             <i

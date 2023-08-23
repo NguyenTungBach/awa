@@ -245,19 +245,19 @@
                                             {{ course.driver_name }}
                                         </b-td>
                                         <b-td class="td-cash-balance" :colspan="3">
-                                            {{ course.balance_previous_month }}
+                                            {{ Number(course.balance_previous_month) }}
                                         </b-td>
                                         <b-td class="td-cash-account-receiable" :colspan="3">
-                                            {{ course.payable_this_month }}
+                                            {{ Number(course.payable_this_month) }}
                                         </b-td>
                                         <b-td class="td-cash-total-account-receiable" :colspan="3">
-                                            {{ course.total_payable }}
+                                            {{ Number(course.total_payable) }}
                                         </b-td>
                                         <b-td class="td-cash-month-deposit-amount" :colspan="3">
-                                            {{ course.total_cash_out_current }}
+                                            {{ Number(course.total_cash_out_current) }}
                                         </b-td>
                                         <b-td class="td-cash-current-month-balance" :colspan="3">
-                                            {{ course.balance_current }}
+                                            {{ Number(course.balance_current) }}
                                         </b-td>
                                         <b-td class="text-center td-control" :colspan="2">
                                             <i

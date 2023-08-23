@@ -85,7 +85,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $data = [];
         $startOfMonth = Carbon::create($input['month_line'])->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::create($input['month_line'])->endOfMonth()->format('Y-m-d');
-        $courses = Course::with('customer')->whereBetween('ship_date', [$startOfMonth, $endOfMonth]);
+        $courses = Course::with('customer')->whereBetween('ship_date', [$startOfMonth, $endOfMonth])->whereNull('courses.status');
         if (!empty($input['start_date_ship']) && !empty($input['end_date_ship'])) {
             $courses = $courses->whereBetween('ship_date', [$input['start_date_ship'], $input['end_date_ship']]);
         }
@@ -107,7 +107,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
         }
 
-        $courses = $courses->whereNull('status')->get();
+        $courses = $courses->get();
         if (Route::getCurrentRoute()->getActionMethod() == 'export') {
             foreach ($courses as $key => $value) {
                 $data[$key]['id'] = $value->id;
