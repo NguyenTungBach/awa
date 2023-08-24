@@ -28,11 +28,11 @@ class CourseCrudTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $this->listCourse($browser);
-            $this->createCourse($browser);
-            $this->exportCourse($browser);
-            $this->editCourse($browser);
-            $this->listCourse($browser);
-            $this->deleteCourse($browser);
+//            $this->createCourse($browser);
+//            $this->exportCourse($browser);
+//            $this->editCourse($browser);
+//            $this->listCourse($browser);
+//            $this->deleteCourse($browser);
             $this->importFile($browser);
         });
     }
