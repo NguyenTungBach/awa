@@ -935,7 +935,7 @@ export default {
 					var updateCourseNameDayOff = '';
 					listdataUpdate.forEach(item => {
 						if (item.name) {
-							updateCourseNameDayOff += `${item.name}, `;
+							updateCourseNameDayOff += `${item.name} `;
 						}
 					});
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = updateCourseNameDayOff;
@@ -946,7 +946,7 @@ export default {
 					var updateCourseName = '';
 					listdataUpdate.forEach(item => {
 						if (item.name) {
-							updateCourseName += `${item.name}, `;
+							updateCourseName += `${item.name} `;
 						} else {
 							updateCourseName = '';
 						}

@@ -2059,7 +2059,7 @@ export default {
 						const url = window.URL.createObjectURL(new Blob([response.data]));
 						const link = document.createElement('a');
 						link.href = url;
-						link.setAttribute('download', 'シフト表_20230801-20230831.xlsx');
+						link.setAttribute('download', `シフト表_${YEAR_MONTH}.xlsx`);
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
@@ -2098,7 +2098,7 @@ export default {
 						const url = window.URL.createObjectURL(new Blob([response.data]));
 						const link = document.createElement('a');
 						link.href = url;
-						link.setAttribute('download', 'HightWay.xlsx');
+						link.setAttribute('download', `高速代金表_${YEAR_MONTH}`);
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
@@ -2201,7 +2201,7 @@ export default {
 						const url = window.URL.createObjectURL(new Blob([response.data]));
 						const link = document.createElement('a');
 						link.href = url;
-						link.setAttribute('download', 'SaleList.xlsx');
+						link.setAttribute('download', `売上金額表_${YEAR_MONTH}`);
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
@@ -2240,7 +2240,7 @@ export default {
 						const url = window.URL.createObjectURL(new Blob([response.data]));
 						const link = document.createElement('a');
 						link.href = url;
-						link.setAttribute('download', 'Payment.xlsx');
+						link.setAttribute('download', `支払代金表_${YEAR_MONTH}`);
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
