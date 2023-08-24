@@ -11,7 +11,7 @@
                         <template #prepend>
                             <b-input-group-text
                                 class="icon-delete"
-                                @click="onClickRemove(idxEdit)"
+                                @click="onClickRemove(itemEdit, idxEdit)"
                             >
                                 <i class="fas fa-times-circle" />
                             </b-input-group-text>
@@ -274,8 +274,8 @@ export default {
 			return true;
 		},
 
-		onClickRemove(index) {
-			this.$emit('remove', index);
+		onClickRemove(data, index) {
+			this.$emit('remove', data, index);
 		},
 
 		getSelectValue(select) {
