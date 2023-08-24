@@ -263,7 +263,9 @@
                                                         <b-form-input
                                                             id="input-course-phone"
                                                             v-model="isForm.customer_phone"
-                                                            type="number"
+                                                            type="text"
+                                                            maxlength="13"
+                                                            @keyup="autoFormartPhoneNumber(isForm.customer_phone)"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -476,6 +478,27 @@ export default {
 			}
 			// } else {
 			// 	TOAST_COURSE_MANAGEMENT.exception();
+			// }
+		},
+
+		// Bách thêm tự động thêm dấu gạch cho điện thoại
+		autoFormartPhoneNumber(number){
+			const cleaned = `${number}`.replace(/\D/g, '');
+
+			const match1 = cleaned.match(/^(\d{3})$/);
+			const match2 = cleaned.match(/^(\d{3})(\d{4})$/);
+			const match3 = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+			if (match1) {
+				this.isForm.customer_phone = `${match1[1]}-`;
+			} else if (match2) {
+				this.isForm.customer_phone = `${match2[1]}-${match2[2]}-`;
+			} else if (match3) {
+				this.isForm.customer_phone = `${match3[1]}-${match3[2]}-${match3[3]}`;
+			}
+
+			// if (number.length >= 13){
+			// 	// eslint-disable-next-line no-self-assign
+			// 	this.isForm.customer_phone = number.slice(0, 13);
 			// }
 		},
 
