@@ -2190,7 +2190,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $colCalendarTotal ++;
         }
         // Cập nhật nốt tổng closing date
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_closing_date']),DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'] == '' || $dataForListSales['total_all_data_sales_by_closing_date'] == "0" ? '' : number_format($dataForListSales['total_all_data_sales_by_closing_date']),DataType::TYPE_STRING);
         // Cập nhật nốt tổng month
         $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_month'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_month']),DataType::TYPE_STRING);
         //Đặt style

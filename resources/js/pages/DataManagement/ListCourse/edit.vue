@@ -245,7 +245,8 @@
                                                         <b-form-input
                                                             id="input-course-phone"
                                                             v-model="isForm.customer_phone"
-                                                            type="number"
+                                                            type="text"
+                                                            @keyup="autoFormartPhoneNumber(isForm.customer_phone)"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -527,6 +528,16 @@ export default {
 
 		onClickEdit() {
 			this.$router.push({ name: 'CourseEdit', params: { id: this.idCourse }});
+		},
+
+		autoFormartPhoneNumber(number){
+			const cleaned = `${number}`.replace(/\D/g, '');
+			const match3 = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+			if (match3) {
+				this.isForm.customer_phone = `${match3[1]}-${match3[2]}-${match3[3]}`;
+			} else {
+				this.isForm.customer_phone = cleaned;
+			}
 		},
 
 		// genereateOptionAZ() {

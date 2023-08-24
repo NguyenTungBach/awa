@@ -2,6 +2,7 @@
 
 namespace Tests\Browser\Shift;
 
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
@@ -14,11 +15,15 @@ class ShiftSalesTest extends DuskTestCase
      */
     public function testGeneral()
     {
+        Artisan::call('migrate:fresh --seed');
         $this->browse(function ($browser) {
             $browser->maximize();
-            $browser->pause(7000);
             $this->loginAdminGeneral($browser);
+            $browser->pause(5000);
             $this->list($browser);
+            $this->invoice($browser);
+            $this->finalClosing($browser);
+            $this->exportExcel($browser);
         });
     }
 
@@ -39,30 +44,25 @@ class ShiftSalesTest extends DuskTestCase
 
     private function list(Browser $browser)
     {
-        $browser->click('div > div:nth-child(1) > div > div > button:nth-child(3)')->pause(4000);
-        $browser->click('div:nth-child(3) > div > div.show-icon > i')->pause(6000);
-//        $browser->assertButtonEnabled('.picker-month-year > div > div.picker-month-year__back')->pause(5000)
-//            ->assertButtonEnabled('.picker-month-year > div > div.picker-month-year__next')->pause(5000)
-//            ->click('.picker-month-year > div > div.picker-month-year__back')->pause(10000)
-//            ->assertSee('0144')->pause(2000)
-//            ->assertSee('休日')->pause(2000)
-//            ->assertSee('管理職・リーダー')->pause(2000)
-//            ->assertSee('黒柳　俊久')->pause(2000);
+        $browser->click('div:nth-child(1) > div > div > button:nth-child(3)')->pause(6000);
+    }
 
-//        $browser->assertButtonEnabled('.btn-back')
-//            ->assertButtonEnabled('.btn-next')
-//            ->click('.btn-back')->pause(10000)
-//            ->click('.btn-next')->pause(10000)
-//            ->click('thead > tr:nth-child(2) > th.th-employee-number')->pause(10000)
-//            ->click('thead > tr:nth-child(2) > th.th-employee-number')->pause(10000)
-//            ->click('thead > tr:nth-child(2) > th.th-type-employee')->pause(10000)
-//            ->click('thead > tr:nth-child(2) > th.th-type-employee')->pause(10000);
+    private function invoice($browser)
+    {
+        $browser->waitFor('tbody:nth-child(2) > tr:nth-child(1) > td.img-pdf')->pause(2000);
+        $browser->click('tbody:nth-child(2) > tr:nth-child(1) > td.img-pdf')->pause(10000);
+    }
 
-//        $browser->assertButtonEnabled('.btn-excel')
-//            ->assertButtonEnabled('.btn-pdf')
-//            ->click('.btn-excel')->pause(5000)
-//            ->click('.btn-pdf')->pause(5000)
-//            ->click('.btn-list-shift-month')->pause(5000)
-//            ->pause(5000000);
+    private function finalClosing($browser)
+    {
+        $browser->waitFor('div:nth-child(2) > .btn-temporary')->pause(2000);
+        $browser->click('div:nth-child(2) > .btn-temporary')->pause(4000);
+        $browser->click('div:nth-child(2) > .btn.btn-final')->pause(4000);
+    }
+
+    private function exportExcel($browser)
+    {
+        $browser->waitFor('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(1) > div')->pause(2000);
+        $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(1) > div')->pause(10000);
     }
 }
