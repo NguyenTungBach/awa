@@ -246,6 +246,7 @@
                                                             id="input-course-phone"
                                                             v-model="isForm.customer_phone"
                                                             type="text"
+                                                            maxlength="13"
                                                             @keyup="autoFormartPhoneNumber(isForm.customer_phone)"
                                                         />
                                                     </b-input-group>
@@ -446,7 +447,7 @@ export default {
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
 				post_code: this.isForm.customer_postCode,
 				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
-				phone: formartPhoneNumber(this.isForm.customer_phone),
+				phone: this.isForm.customer_phone,
 				note: this.isForm.note ? this.isForm.note.trim() : '',
 			};
 		},
@@ -477,7 +478,7 @@ export default {
 					this.isForm.customer_manager = DATA.person_charge;
 					this.isForm.customer_postCode = DATA.post_code;
 					this.isForm.customer_address = DATA.address;
-					this.isForm.customer_phone = DATA.phone;
+					this.isForm.customer_phone = formartPhoneNumber(DATA.phone);
 					this.isForm.note = DATA.note;
 					console.log('form:', this.isForm);
 					setLoading(false);
@@ -530,14 +531,25 @@ export default {
 			this.$router.push({ name: 'CourseEdit', params: { id: this.idCourse }});
 		},
 
+		// Bách thêm tự động thêm dấu gạch cho điện thoại
 		autoFormartPhoneNumber(number){
 			const cleaned = `${number}`.replace(/\D/g, '');
+
+			const match1 = cleaned.match(/^(\d{3})$/);
+			const match2 = cleaned.match(/^(\d{3})(\d{4})$/);
 			const match3 = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
-			if (match3) {
+			if (match1) {
+				this.isForm.customer_phone = `${match1[1]}-`;
+			} else if (match2) {
+				this.isForm.customer_phone = `${match2[1]}-${match2[2]}-`;
+			} else if (match3) {
 				this.isForm.customer_phone = `${match3[1]}-${match3[2]}-${match3[3]}`;
-			} else {
-				this.isForm.customer_phone = cleaned;
 			}
+
+			// if (number.length >= 13){
+			// 	// eslint-disable-next-line no-self-assign
+			// 	this.isForm.customer_phone = number.slice(0, 13);
+			// }
 		},
 
 		// genereateOptionAZ() {
