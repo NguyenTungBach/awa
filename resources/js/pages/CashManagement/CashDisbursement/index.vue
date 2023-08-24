@@ -39,199 +39,185 @@
                                         :rowspan="2"
                                         @click="onSortTable('driver_code')"
                                     >
-                                        <b-row class="row-cashDisbursement-id">
-                                            <b-col>
+                                        <div class="row-cashDisbursement-id th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_ID') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'driver_code' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('driver_name')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_NAME') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('balance_previous_month')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_BALANCE_AT_END_OF_PREVIOUS_MONTH') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'balance_previous_month' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('payable_this_month')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_ACCOUNTS_RECEIVABLE') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'payable_this_month' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('total_payable')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_TOTAL_ACCOUNTS_RECEIVABLE') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'total_payable' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('total_cash_out_current')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_MONTHLY_DEPOSIT_AMOUNT') }}
-                                            </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                            <div class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'total_cash_out_current' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
+                                            </div>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="3"
                                         @click="onSortTable('balance_current')"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_CASH_DISBURSEMENT_CURRENT_MONTH_BALANCE') }}
+                                            </span>
+                                            <b-col class="icon-sorts text-right">
+                                                <i
+                                                    v-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === true"
+                                                    class="fad fa-sort-up icon-sort"
+                                                />
+                                                <i
+                                                    v-else-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === false"
+                                                    class="fad fa-sort-down icon-sort"
+                                                />
+                                                <i
+                                                    v-else
+                                                    class="fa-solid fa-sort icon-sort-default"
+                                                />
                                             </b-col>
-                                            <b-col class="icon-sorts">
-                                                <div class="text-right">
-                                                    <i
-                                                        v-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === true"
-                                                        class="fad fa-sort-up icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else-if="sortTable.sortBy === 'balance_current' && sortTable.sortType === false"
-                                                        class="fad fa-sort-down icon-sort"
-                                                    />
-                                                    <i
-                                                        v-else
-                                                        class="fa-solid fa-sort icon-sort-default"
-                                                    />
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+                                        </div>
                                     </b-th>
                                     <b-th
                                         class="th-sort th-name th-course-name"
                                         :colspan="2"
                                     >
-                                        <b-row>
-                                            <b-col>
+                                        <div class="th-col">
+                                            <span>
                                                 {{ $t('LIST_CASH.TABLE_DETAIL') }}
-                                            </b-col>
-                                        </b-row>
+                                            </span>
+                                        </div>
                                     </b-th>
                                 </b-tr>
                             </b-thead>
@@ -618,12 +604,23 @@ export default {
                                     margin-left: -6px;
                                 }
 
+                                .th-col {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+
+                                    span {
+                                        white-space: nowrap;
+                                    }
+                                }
+
                                 th.th-sort {
                                     cursor: pointer;
                                     .icon-sorts {
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: flex-end;
+                                        margin-left: 15px;
+                                        //display: flex;
+                                        //align-items: center;
+                                        //justify-content: flex-end;
 
                                         i.icon-sort-default {
                                             color: $white;
