@@ -8,15 +8,15 @@ const SALES_AMOUNT_TABLE = 'SALES AMOUNT TABLE';
 const HIGHT_WAY_FEE = 'HIGHT AWAY TABLE';
 const PAYMENT_TABLE = 'PAYMENT TABLE';
 
-const DATE_HOLIDAY = 'D-4';
-const DATE_FIXED_DAY_OFF = 'D-3';
-const DATE_DAY_OFF_REQUEST = 'D-5';
-const DATE_PAID = 'D-6';
-const DATE_WORKING_DAY = 'D-8';
-const DATE_LEADER_CHIEF = 'D-2';
-const DATE_WAIT = 'D-1';
-const DATE_WAIT_BETWEEN_TASK = 'S-9';
-const DATE_HAFT_DAY_OFF = 'H-0';
+const DATE_HOLIDAY = 4;
+const DATE_FIXED_DAY_OFF = 3;
+const DATE_DAY_OFF_REQUEST = 5;
+const DATE_PAID = 6;
+const DATE_WORKING_DAY = 8;
+const DATE_LEADER_CHIEF = 2;
+const DATE_WAIT = 1;
+const DATE_WAIT_BETWEEN_TASK = 9;
+const DATE_HAFT_DAY_OFF = 7;
 
 const COLOR_HOLIDAY = '#EAE7AC';
 const COLOR_FIXED_DAY_OFF = '#FFE5CD';
@@ -64,17 +64,17 @@ const WAINT_AI_CREATE_SHIFT_TABLE = '';
 
 const LIST_DAY_OFF = [
 	{
-		value: 'D-1',
+		value: 1,
 		text: TEXT_DATE_WAIT,
 		disabled: false,
 	},
 	{
-		value: 'D-2',
+		value: 2,
 		text: TEXT_DATE_LEADER_CHIEF,
 		disabled: false,
 	},
 	{
-		value: 'D-3',
+		value: 3,
 		text: TEXT_FREE,
 		disabled: false,
 	},
@@ -84,17 +84,17 @@ const LIST_DAY_OFF = [
 	// 	disabled: false,
 	// },
 	{
-		value: 'D-4',
+		value: 4,
 		text: TEXT_DATE_HOLIDAY,
 		disabled: false,
 	},
 	{
-		value: 'D-5',
+		value: 5,
 		text: TEXT_DATE_DAY_OFF_REQUEST,
 		disabled: false,
 	},
 	{
-		value: 'D-6',
+		value: 6,
 		text: TEXT_DATE_PAID,
 		disabled: false,
 	},
@@ -116,18 +116,18 @@ const LIST_DAY_OFF = [
 ];
 
 // const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
-const LIST_VALUE_DAY_OFF = ['D-4', 'D-5', 'D-6', 'H-0'];
+const LIST_VALUE_DAY_OFF = [4, 5, 6, 7];
 
-const LIST_VALUE_SPECIAL_DAY = ['D-1', 'D-2', 'D-3'];
+const LIST_VALUE_SPECIAL_DAY = [1, 2, 3];
 
 const HALF_DAY_OF = [
 	{
-		value: 'H-0',
+		value: 7,
 		text: TEXT_HALF_DAY_OF,
 		disabled: false,
 	},
 ];
-const LIST_VALUE_HALF_DAY_OFF = ['H-0'];
+const LIST_VALUE_HALF_DAY_OFF = [7];
 
 export default {
 	WEEK,
