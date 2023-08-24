@@ -272,6 +272,57 @@ export function convertBreakTimeNumberToTime(number) {
 	return '00:00';
 }
 
+export function convertTimeForDetail(number) {
+	if (!number) {
+		return '00:00';
+	}
+	console.log('aaaa', number);
+	// number = parseFloat(number);
+	// number = number.toFixed(2);
+	console.log('bbbb', number);
+
+	const numberSplit = number.split(':');
+	if (Array.isArray(numberSplit)) {
+		if (numberSplit.length === 2) {
+			let hour = parseInt(numberSplit[0]);
+			hour = hour > 10 ? `${hour}` : `0${hour}`;
+
+			const minute = numberSplit[1];
+			let min = '00';
+
+			switch (minute) {
+				case '00': {
+					min = '00';
+
+					break;
+				}
+
+				case '15': {
+					min = '15';
+
+					break;
+				}
+
+				case '30': {
+					min = '30';
+
+					break;
+				}
+
+				case '45': {
+					min = '45';
+
+					break;
+				}
+			}
+
+			return `${hour}:${min}`;
+		}
+	}
+
+	return '00:00';
+}
+
 export function YmdtoStringYmd(ymd) {
 	if (validateFormatYYYYMMDD(ymd)) {
 		const splitYmd = ymd.split('-');

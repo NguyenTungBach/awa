@@ -284,7 +284,7 @@ import { getListShift, putShift, getDataUpdate } from '@/api/modules/shiftManage
 import { convertValueToText } from '@/utils/handleSelect';
 import { cleanObject } from '@/utils/handleObject';
 // import { convertValueWhenNull } from '@/utils/handleListShift';
-import { convertBreakTimeNumberToTime, convertTextToSelectTime, formatArray2Time } from '@/utils/convertTime';
+import { convertBreakTimeNumberToTime, convertTextToSelectTime, formatArray2Time, convertTimeForDetail } from '@/utils/convertTime';
 import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
 // import { validateEditShift } from './helper/validateEditShift';
@@ -530,6 +530,7 @@ export default {
 
 				const lenOldSelected = OLD_SELECTED.length;
 				let idxOldSelected = 0;
+				console.log('this nodeEdit', OLD_SELECTED);
 
 				while (idxOldSelected < lenOldSelected) {
 					const OLD_DATA = {
@@ -540,10 +541,10 @@ export default {
 					};
 
 					OLD_DATA.type = OLD_SELECTED[idxOldSelected].course_id;
-					OLD_DATA.start_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].start_time));
-					OLD_DATA.end_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].end_time));
-					OLD_DATA.break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(OLD_SELECTED[idxOldSelected].break_time));
-
+					OLD_DATA.start_time = convertTextToSelectTime(convertTimeForDetail(OLD_SELECTED[idxOldSelected].start_time));
+					OLD_DATA.end_time = convertTextToSelectTime(convertTimeForDetail(OLD_SELECTED[idxOldSelected].end_time));
+					OLD_DATA.break_time = convertTextToSelectTime(convertTimeForDetail(OLD_SELECTED[idxOldSelected].break_time));
+					console.log('dữ liệu chuẩn bị push:', OLD_DATA.start_time);
 					this.listNodeEditSelected.push(OLD_DATA);
 
 					idxOldSelected++;
@@ -606,7 +607,6 @@ export default {
 
 				while (idxCourse < lenCourse) {
 					if (COURSE_DISABLED.includes(this.listCourse[idxCourse].value)) {
-						console.log('aaaa', idxCourse);
 						this.listCourse[idxCourse].disabled = true;
 					} else {
 						this.listCourse[idxCourse].disabled = false;
@@ -842,8 +842,14 @@ export default {
 			this.listNodeEditSelected[INDEX][KEY] = VALUE;
 		},
 
-		onRemoveNode(idxRemove) {
-			this.listNodeEditSelected.splice(idxRemove, 1);
+		onRemoveNode(itemEdit, idxEdit) {
+			console.log('remove', this.listUpdate);
+			console.log('list selected', itemEdit);
+			this.listUpdate.forEach((item) => {
+				item.listShift = (item.listShift).filter(value => value.course_id !== itemEdit.type);
+			});
+			console.log('dữ liệu sau khi xóa', this.listUpdate);
+			this.listNodeEditSelected.splice(idxEdit, 1);
 		},
 
 		onClickSaveNode() {
@@ -907,8 +913,8 @@ export default {
 			const INIT_DATA = this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
 			// this.handleinitObjectUpdate(this.nodeEmit, FILTER_LIST_SELECTED);
 			console.log('init data', INIT_DATA);
-			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 			console.log('data update:', this.listUpdate);
+			this.listUpdate = this.handleUpdateListUpdate(this.listUpdate, INIT_DATA);
 			this.listNodeEditSelected.length = 0;
 			this.modalEdit = false;
 		},
@@ -941,10 +947,14 @@ export default {
 					listdataUpdate.forEach(item => {
 						if (item.name) {
 							updateCourseName += `${item.name}, `;
+						} else {
+							updateCourseName = '';
 						}
 					});
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = updateCourseName;
 				}
+			} else {
+				listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = '';
 			}
 
 			this.handleReRenderTable();
@@ -984,7 +994,7 @@ export default {
 			let idx = 0;
 
 			while (idx < len) {
-				if (dataUpdate[idx].type === 'H-0') {
+				if (dataUpdate[idx].type === 7) {
 					result.push({
 						type: 7,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF),
@@ -1009,7 +1019,7 @@ export default {
 					});
 				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(dataUpdate[idx].type)) {
 					result.push({
-						type: Number((dataUpdate[idx].type).slice(-1)),
+						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
 						// course_status: this.listCourse[COURSE].status,
 						start_time: formatArray2Time(dataUpdate[idx].start_time),
@@ -1078,11 +1088,9 @@ export default {
 				const DATA = await getDataUpdate(URL, params);
 				if (DATA.code === 200) {
 					DATA.data.items.forEach((value) => {
-						console.log('list data update 1111', value);
 						this.listUpdate.push(value);
 					});
 				}
-				console.log('list data update', this.listUpdate);
 				setLoading(false);
 			} catch {
 				setLoading(false);
@@ -1150,35 +1158,37 @@ export default {
 			// const INIT_UPDATE = {
 			// };
 
-			listSelected.forEach((item) => {
-				if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(item.type)) {
-					INIT_UPDATE.listShift.push({
-						course_id: Number((item.type).slice(-1)),
-						date: otherInfo.date,
-						start_time: formatArray2Time(item.start_time),
-						break_time: formatArray2Time(item.break_time),
-						end_time: formatArray2Time(item.end_time),
-					});
-				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item.type)) {
-					INIT_UPDATE.listShift.push({
-						course_id: Number((item.type).slice(-1)),
-						date: otherInfo.date,
-					});
-				} else if (item.type === 'H-0') {
-					INIT_UPDATE.listShift.push({
-						course_id: 7,
-						date: otherInfo.date,
-					});
-				} else {
-					INIT_UPDATE.listShift.push({
-						course_id: item.type,
-						date: otherInfo.date,
-						start_time: formatArray2Time(item.start_time),
-						break_time: formatArray2Time(item.break_time),
-						end_time: formatArray2Time(item.end_time),
-					});
-				}
-			});
+			if (listSelected.length > 0) {
+				listSelected.forEach((item) => {
+					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(item.type)) {
+						INIT_UPDATE.listShift.push({
+							course_id: item.type,
+							date: otherInfo.date,
+							start_time: formatArray2Time(item.start_time),
+							break_time: formatArray2Time(item.break_time),
+							end_time: formatArray2Time(item.end_time),
+						});
+					} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item.type)) {
+						INIT_UPDATE.listShift.push({
+							course_id: item.type,
+							date: otherInfo.date,
+						});
+					} else if (item.type === 7) {
+						INIT_UPDATE.listShift.push({
+							course_id: 7,
+							date: otherInfo.date,
+						});
+					} else {
+						INIT_UPDATE.listShift.push({
+							course_id: item.type,
+							date: otherInfo.date,
+							start_time: formatArray2Time(item.start_time),
+							break_time: formatArray2Time(item.break_time),
+							end_time: formatArray2Time(item.end_time),
+						});
+					}
+				});
+			}
 
 			return INIT_UPDATE;
 		},
@@ -1219,7 +1229,7 @@ export default {
 				index: null,
 			};
 
-			const DATE_EDIT = updateDayOff.listShift[0].date;
+			const DATE_EDIT = updateDayOff.listShift.length > 0 ? updateDayOff.listShift[0].date : '';
 			const DRIVER_CODE = updateDayOff.driver_id;
 
 			// const len = listUpdate.length;
