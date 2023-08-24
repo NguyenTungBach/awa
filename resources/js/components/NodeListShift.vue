@@ -3,7 +3,7 @@
         <div class="show-node" />
     </b-td>
     <b-td
-        v-else-if="dataNode && checkTable === 'SHIFT_TABLE'"
+        v-else-if="checkTable === 'SHIFT_TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
         :style="{ backgroundColor: dataNode.course_names_color }"
@@ -61,7 +61,7 @@
         </div>
     </b-td>
     <b-td
-        v-else-if="dataNode && checkTable === 'HIGHT AWAY TABLE'"
+        v-else-if="checkTable === 'HIGHT AWAY TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
     >
@@ -113,7 +113,7 @@
         </div>
     </b-td>
     <b-td
-        v-else-if="dataNode && checkTable === 'SALES AMOUNT TABLE'"
+        v-else-if="checkTable === 'SALES AMOUNT TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
     >
@@ -166,7 +166,7 @@
     </b-td>
 
     <b-td
-        v-else-if="dataNode && checkTable === 'PAYMENT TABLE'"
+        v-else-if="checkTable === 'PAYMENT TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
     >
