@@ -1,9 +1,9 @@
 <template>
-    <b-td v-if="!dataNode">
+    <!-- <b-td v-if="!dataNode">
         <div class="show-node" />
-    </b-td>
+    </b-td> -->
     <b-td
-        v-else-if="checkTable === 'SHIFT_TABLE'"
+        v-if="checkTable === 'SHIFT_TABLE'"
         :id="`node-${idxComponent}-${date}-${driverCode}`"
         :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
         :style="{ backgroundColor: dataNode.course_names_color }"
