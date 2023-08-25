@@ -71,7 +71,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ dataNode.courses_expressway_fee }}
+                        {{ Number(dataNode.courses_expressway_fee) }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
@@ -123,7 +123,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ dataNode.courses_ship_fee }}
+                        {{ Number(dataNode.courses_ship_fee) }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
@@ -176,7 +176,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ dataNode.payment }}
+                        {{ Number(dataNode.payment) }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
