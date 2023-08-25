@@ -513,12 +513,20 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'customer_name' => $customer->customer_name,
                 'closing_date' => $customer->closing_date,
                 'closing_dateName' => $customer->closing_dateName,
-                'dataShiftExpress' => null,
+                'dataShiftExpress' => [],
                 'total_courses_expressway_fee' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
                 if ($customer->id == $dataConvert['customer_id']){
                     $driverConvert['dataShiftExpress'] = $dataConvert;
+                }
+            }
+            if (count($driverConvert['dataShiftExpress']) == 0){
+                foreach ($calendars as $calendar){
+                    $driverConvert['dataShiftExpress'][] = [
+                        "ship_date"=> $calendar->date,
+                        "courses_expressway_fee"=> "",
+                    ];
                 }
             }
             if (count($dataTotal) != 0){
