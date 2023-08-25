@@ -272,8 +272,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
-            ->whereYear('start_date',"<=", $getMonth_year[0]) // bắt đầu làm việc trong năm
-            ->whereMonth('start_date',"<=", $getMonth_year[1]) // bắt đầu làm việc trong tháng
+            ->whereRaw("DATE_FORMAT(start_date,'%Y-%m') < ?",[$request->month_year])
             ->whereNull('end_date')
             ->orWhere(function ($query) use ($getMonth_year) {
                 $query->whereYear('end_date', $getMonth_year[0])
