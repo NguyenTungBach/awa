@@ -74,6 +74,13 @@
                         {{ Number(dataNode.courses_expressway_fee) }}
                     </div>
                 </template>
+                <template v-else>
+                    <div
+                        class="show-course"
+                    >
+                        {{ dataNode.courses_expressway_fee }}
+                    </div>
+                </template>
                 <template v-if="listText.length > 2">
                     <b-row>
                         <b-col

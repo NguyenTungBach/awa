@@ -1,71 +1,85 @@
 <template>
-    <div class="zone-navbar">
-        <div class="zone-navigation">
-            <div class="show-logo">
-                <img :src="require('@/assets/images/logo.png')" alt="Logo">
+    <div v-if="screenWidth > 900">
+        <div class="zone-navbar">
+            <div class="zone-navigation">
+                <div class="show-logo">
+                    <img :src="require('@/assets/images/logo.png')" alt="Logo">
+                </div>
+                <div class="show-menu">
+                    <ul class="reset item-modules">
+                        <template v-for="(modules, idx) in routes">
+                            <li :key="`modules-${idx + 1}`">
+                                <span>
+                                    {{ $t(modules.meta.title) }}
+                                </span>
+                                <ul
+                                    class="reset item-path"
+                                    dusk="select-menu"
+                                >
+                                    <template v-for="(path, idxPath) in modules.children">
+                                        <li
+                                            v-if="path.hidden !== true"
+                                            :key="`path-${idxPath + 1}`"
+                                        >
+                                            <router-link :to="`${modules.path}/${path.path}`">
+                                                {{ $t(path.meta.title) }}
+                                            </router-link>
+                                            <ul class="reset item-child">
+                                                <template v-for="(child, idxChild) in path.children">
+                                                    <li
+                                                        v-if="child.hidden !== true"
+                                                        :key="`child-${idxChild + 1}`"
+                                                    >
+                                                        <router-link :to="`${modules.path}/${path.path}/${child.path}`">
+                                                            {{ $t(child.meta.title) }}
+                                                        </router-link>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
             </div>
-            <div class="show-menu">
-                <ul class="reset item-modules">
-                    <template v-for="(modules, idx) in routes">
-                        <li :key="`modules-${idx + 1}`">
-                            <span>
-                                {{ $t(modules.meta.title) }}
-                            </span>
-                            <ul
-                                class="reset item-path"
-                                dusk="select-menu"
-                            >
-                                <template v-for="(path, idxPath) in modules.children">
-                                    <li
-                                        v-if="path.hidden !== true"
-                                        :key="`path-${idxPath + 1}`"
-                                    >
-                                        <router-link :to="`${modules.path}/${path.path}`">
-                                            {{ $t(path.meta.title) }}
-                                        </router-link>
-                                        <ul class="reset item-child">
-                                            <template v-for="(child, idxChild) in path.children">
-                                                <li
-                                                    v-if="child.hidden !== true"
-                                                    :key="`child-${idxChild + 1}`"
-                                                >
-                                                    <router-link :to="`${modules.path}/${path.path}/${child.path}`">
-                                                        {{ $t(child.meta.title) }}
-                                                    </router-link>
-                                                </li>
-                                            </template>
-                                        </ul>
-                                    </li>
-                                </template>
-                            </ul>
+
+            <div class="show-menu-right">
+                <div v-if="showPickYearMonth" class="picker-month-year">
+                    <PickerYearMonth />
+                </div>
+
+                <div class="show-profile">
+                    <div class="icon-profile">
+                        <i class="fas fa-user-circle" />
+                    </div>
+                    <div class="username">
+                        <span>{{ username }}</span>
+                    </div>
+                    <div class="icon-dropdown">
+                        <i class="fas fa-caret-down" />
+                    </div>
+
+                    <ul class="reset menu-profile">
+                        <li @click="onClickLogout()">
+                            <span>{{ $t('LAYOUT.LOGOUT') }}</span>
+                            <i class="fas fa-sign-out" />
                         </li>
-                    </template>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-
+    </div>
+    <div v-else>
+        <div class="zone-navbar">
+            <div class="menu-navbar">
+                <i class="fas fa-bars icon-menu" />
+            </div>
+        </div>
         <div class="show-menu-right">
             <div v-if="showPickYearMonth" class="picker-month-year">
                 <PickerYearMonth />
-            </div>
-
-            <div class="show-profile">
-                <div class="icon-profile">
-                    <i class="fas fa-user-circle" />
-                </div>
-                <div class="username">
-                    <span>{{ username }}</span>
-                </div>
-                <div class="icon-dropdown">
-                    <i class="fas fa-caret-down" />
-                </div>
-
-                <ul class="reset menu-profile">
-                    <li @click="onClickLogout()">
-                        <span>{{ $t('LAYOUT.LOGOUT') }}</span>
-                        <i class="fas fa-sign-out" />
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
@@ -84,6 +98,7 @@ export default {
 	data() {
 		return {
 			showPickYearMonth: true,
+			screenWidth: window.innerWidth,
 		};
 	},
 
@@ -110,7 +125,19 @@ export default {
 		// },
 	},
 
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	},
+
 	methods: {
+		handleResize() {
+			this.screenWidth = window.innerWidth;
+		},
+
 		onClickLogout() {
 			this.$store.dispatch('login/saveLogout')
 				.then(() => {
@@ -390,6 +417,23 @@ export default {
                 }
             }
         }
+    }
+    .menu-navbar {
+        width: 20%;
+        display: flex;
+        align-items: center;
+        color: $white;
+
+        .icon-menu {
+            font-size: 35px;
+            margin: 0 15px;
+        }
+    }
+}
+@media (max-width: 900px) {
+    .picker-month-year {
+        width: 100%;
+        background-color: #F5F5F5;
     }
 }
 </style>

@@ -279,4 +279,22 @@ export default {
         }
 
     }
+	@media (max-width: 900px) {
+			.picker-month-year {
+			&__back,
+			&__time,
+			&__next {
+				height: 32px;
+				background-color: $wild-sand;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				font-size: 17px;
+				color: $mine-shaft;
+			}
+
+		}
+	}
 </style>

@@ -316,4 +316,104 @@ export default {
         }
     }
 }
+@media (max-width: 900px) {
+    .login-page {
+         width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        background-color: $white;
+        display: flex;
+        align-items: center;
+        background-color: #FFDDC8;
+
+        .login-container {
+            border: none;
+
+            .form-login {
+                .show-title {
+                    text-align: center;
+                        h1.title-login {
+                            font-family: $font-josefin-sans, 'sans-serif';
+                            width: 327px;
+                            font-size: 45px;;
+                            font-weight: 300;
+                            color: $main-header;
+                            margin-top: 60px;
+                        }
+
+                    margin-bottom: 100px;
+
+                    z-index: 2;
+                }
+                .form-input-account {
+                    width: 100%;
+
+                    .input-user-id,
+                    .input-password {
+                        margin-bottom: 30px;
+
+                        .input-group-text {
+                            background-color: $white;
+                            border-right-color: transparent;
+
+                            width: 50px;
+
+                            justify-content: center;
+                            border-top-left-radius: 50px;
+                            border-bottom-left-radius: 50px;
+
+                            i {
+                                color: $manatee;
+
+                                font-size: 22px;
+                            }
+                        }
+
+                        .form-control {
+                            border-left-color: transparent;
+
+                            height: 50px;
+
+                            font-size: 22px;
+                            border-top-right-radius: 50px;
+                            border-bottom-right-radius: 50px;
+
+                            &:focus {
+                                box-shadow: none;
+                                border-color: $mischka;
+                                border-left-color: transparent;
+                            }
+                        }
+                    }
+
+                    z-index: 2;
+                }
+                .form-submit {
+                z-index: 2;
+
+                margin-top: 10px;
+                margin-bottom: 80px;
+                width: 100%;
+
+                .btn-submit {
+                    width: 100%;
+                    height: 50px;
+                    background: #FF9E62;
+                    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                    border-radius: 50px;
+                    font-size: 21px;
+                    color: #FFFFFF;
+                    border: none;
+                    font-family: "Inter", "sans-serif";
+                    font-weight: 600;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+            }
+            }
+        }
+    }
+}
 </style>
