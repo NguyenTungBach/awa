@@ -340,6 +340,10 @@ export default {
 
 			deep: true,
 		},
+
+		pickerYearMonth() {
+			this.initData();
+		},
 	},
 
 	created() {

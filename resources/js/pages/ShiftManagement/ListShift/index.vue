@@ -552,10 +552,10 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-month">
-                                            {{ emp.total_ship_fee_by_month }}
+                                            {{ Number(emp.total_ship_fee_by_month) }}
                                         </b-td>
                                         <b-td class="td-total-closing-date">
-                                            {{ emp.total_ship_fee_by_closing_date }}
+                                            {{ Number(emp.total_ship_fee_by_closing_date) }}
                                         </b-td>
                                         <b-td class="img-pdf">
                                             <img
@@ -601,13 +601,13 @@
                                     </b-td>
 
                                     <b-td v-for="(total, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center">
-                                        {{ total.total_all_ship_fee_by_date }}
+                                        {{ Number(total.total_all_ship_fee_by_date) }}
                                     </b-td>
                                     <b-td class="td-total-month">
-                                        {{ total_all_data_sale_by_month }}
+                                        {{ Number(total_all_data_sale_by_month) }}
                                     </b-td>
                                     <b-td class="td-total-closing-date">
-                                        {{ total_all_sale_by_closing_date }}
+                                        {{ Number(total_all_sale_by_closing_date) }}
                                     </b-td>
                                     <b-td class="img-pdf">
                                         <img :src="require('@/assets/images/payment.png')" alt="Logo">
@@ -782,7 +782,7 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-shift">
-                                            {{ emp.total_courses_expressway_fee }}
+                                            {{ Number(emp.total_courses_expressway_fee) }}
                                         </b-td>
                                     </tr>
                                 </template>
@@ -902,7 +902,7 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-shift">
-                                            {{ emp.payable_this_month }}
+                                            {{ Number(emp.payable_this_month) }}
                                         </b-td>
                                     </tr>
                                 </template>
@@ -916,10 +916,10 @@
                                     </b-td>
 
                                     <b-td v-for="(total, idx) in total_payment" :key="`total-${idx}`" class="text-center">
-                                        {{ total.pay }}
+                                        {{ Number(total.pay) }}
                                     </b-td>
                                     <b-td class="td-total-month">
-                                        {{ total_payment_of_month }}
+                                        {{ Number(total_payment_of_month) }}
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
