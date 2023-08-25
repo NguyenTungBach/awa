@@ -329,7 +329,12 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         )
             ->where('courses.ship_date',$request->date)
             ->whereNotIn('courses.customer_id',[0])
-            ->get();
+            ->get()->filter(function ($data) {
+                $data->start_date = Carbon::createFromFormat('H:i:s', $data->start_date)->format('H:i');
+                $data->break_time = Carbon::createFromFormat('H:i:s', $data->break_time)->format('H:i');
+                $data->end_date = Carbon::createFromFormat('H:i:s', $data->end_date)->format('H:i');
+                return $data;
+            });
 
         // $resultCourseShifts = $courseSpecials->concat($courseByShipDates);
         $resultCourseShifts = $courseByShipDates;

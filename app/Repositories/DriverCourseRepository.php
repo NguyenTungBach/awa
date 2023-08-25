@@ -269,9 +269,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $listDataConverts[] = $dataConverts;
         }
 
-        // Tìm tất cả driver còn làm việc hoặc những driver <= tháng nghỉ hưu
+        // Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
+            ->whereYear('start_date',"<=", $getMonth_year[0]) // bắt đầu làm việc trong năm
+            ->whereMonth('start_date',"<=", $getMonth_year[1]) // bắt đầu làm việc trong tháng
             ->whereNull('end_date')
             ->orWhere(function ($query) use ($getMonth_year) {
                 $query->whereYear('end_date', $getMonth_year[0])
@@ -303,7 +305,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'driver_name' => $driver->driver_name,
                 'type' => $driver->type,
                 'typeName' => $driver->typeName,
-                'dataShift' => null,
+                'dataShift' => [],
                 'total_money' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
@@ -325,7 +327,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names_color"=> ""
                         ];
                     }
-
+                }
+            }
+            if (count($driverConvert['dataShift']) == 0){
+                $driverConvert['dataShift'] = [
+                    'driver_id' => $driver->id,
+                    'data_by_date' => [],
+                ];
+                foreach ($calendars as $calendar){
+                    $driverConvert['dataShift']['data_by_date'][] = [
+                        "driver_id" => $driver->id,
+                        "date"=> $calendar->date,
+                        "course_ids"=> "",
+                        "course_names"=> "",
+                        "course_names_color"=> ""
+                    ];
                 }
             }
             if (count($dataTotalByDriverIds) != 0){
