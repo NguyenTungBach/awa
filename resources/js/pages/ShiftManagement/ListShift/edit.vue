@@ -250,6 +250,7 @@
                     @edit="onEditNode"
                     @remove="onRemoveNode"
                     @dayoff="onSelectedDayOff"
+                    @change="onChangeNode"
                 />
                 <div class="edit-control">
                     <b-button
@@ -684,6 +685,7 @@ export default {
 
 						idx++;
 					}
+					console.log('list course detail', this.listCourse);
 				} else {
 					this.listCourse.length = 0;
 				}
@@ -1351,83 +1353,78 @@ export default {
 			this.listNodeEditSelected.length = 0;
 		},
 
-		// onChangeNode(data) {
-		// 	const value = data.value;
-		// 	console.log('change:', data);
+		onChangeNode(data) {
+			const value = data.value;
+			console.log('change:', data);
 
-		// 	if (value) {
-		// 		const idxChange = data.index;
-		// 		const COURSE = this.listCourse.find((course) => course.value === value);
+			if (value) {
+				const idxChange = data.index;
+				const COURSE = this.listCourse.find((course) => course.value === value);
 
-		// 		if (COURSE) {
-		// 			if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
-		// 				this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-		// 				this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-		// 				this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
-		// 				this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
-		// 				this.listNodeEditSelected[idxChange].course = {
-		// 					flag: null,
-		// 					start_time: null,
-		// 					end_time: null,
-		// 					break_time: null,
-		// 				};
-		// 				this.listNodeEditSelected[idxChange].course_status = null;
-		// 			} else {
-		// 				this.listNodeEditSelected[idxChange].name = COURSE.course_name;
-		// 				this.listNodeEditSelected[idxChange].start_time = convertTextToSelectTime(COURSE.start_time);
-		// 				this.listNodeEditSelected[idxChange].end_time = convertTextToSelectTime(COURSE.end_time);
-		// 				this.listNodeEditSelected[idxChange].break_time = convertTextToSelectTime(convertBreakTimeNumberToTime(COURSE.break_time));
-		// 				this.listNodeEditSelected[idxChange].course = {
-		// 					flag: COURSE.flag,
-		// 					start_time: COURSE.start_time,
-		// 					end_time: COURSE.end_time,
-		// 					break_time: COURSE.break_time,
-		// 				};
-		// 				this.listNodeEditSelected[idxChange].course_status = COURSE.status;
-		// 			}
-		// 		} else {
-		// 			if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
-		// 				this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-		// 				this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-		// 				this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
-		// 				this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
-		// 				this.listNodeEditSelected[idxChange].course = {
-		// 					flag: null,
-		// 					start_time: null,
-		// 					end_time: null,
-		// 					break_time: null,
-		// 				};
-		// 				this.listNodeEditSelected[idxChange].course_status = null;
-		// 			} else {
-		// 				if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-		// 					this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
-		// 					this.listNodeEditSelected[idxChange].start_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].end_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].break_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].course = {
-		// 						flag: 'yes',
-		// 						start_time: null,
-		// 						end_time: null,
-		// 						break_time: null,
-		// 					};
-		// 					this.listNodeEditSelected[idxChange].course_status = null;
-		// 				} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
-		// 					this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
-		// 					this.listNodeEditSelected[idxChange].start_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].end_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].break_time = [null, null];
-		// 					this.listNodeEditSelected[idxChange].course = {
-		// 						flag: 'yes',
-		// 						start_time: null,
-		// 						end_time: null,
-		// 						break_time: null,
-		// 					};
-		// 					this.listNodeEditSelected[idxChange].course_status = null;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// },
+				if (COURSE) {
+					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+						this.listNodeEditSelected[idxChange].start_time = [null, null];
+						this.listNodeEditSelected[idxChange].end_time = [null, null];
+						this.listNodeEditSelected[idxChange].break_time = [null, null];
+						this.listNodeEditSelected[idxChange].course = {
+							start_time: null,
+							end_time: null,
+							break_time: null,
+						};
+						this.listNodeEditSelected[idxChange].course_status = null;
+					} else {
+						this.listNodeEditSelected[idxChange].name = COURSE.course_name;
+						this.listNodeEditSelected[idxChange].start_time = convertTextToSelectTime(convertTimeForDetail(COURSE.start_time));
+						this.listNodeEditSelected[idxChange].end_time = convertTextToSelectTime(convertTimeForDetail(COURSE.end_time));
+						this.listNodeEditSelected[idxChange].break_time = convertTextToSelectTime(convertTimeForDetail(COURSE.break_time));
+						this.listNodeEditSelected[idxChange].course = {
+							start_time: COURSE.start_time,
+							end_time: COURSE.end_time,
+							break_time: COURSE.break_time,
+						};
+						this.listNodeEditSelected[idxChange].course_status = COURSE.status;
+					}
+				} else {
+					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
+						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+						this.listNodeEditSelected[idxChange].start_time = [null, null];
+						this.listNodeEditSelected[idxChange].end_time = [null, null];
+						this.listNodeEditSelected[idxChange].break_time = [null, null];
+						this.listNodeEditSelected[idxChange].course = {
+							start_time: null,
+							end_time: null,
+							break_time: null,
+						};
+						this.listNodeEditSelected[idxChange].course_status = null;
+					} else {
+						if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
+							this.listNodeEditSelected[idxChange].start_time = [null, null];
+							this.listNodeEditSelected[idxChange].end_time = [null, null];
+							this.listNodeEditSelected[idxChange].break_time = [null, null];
+							this.listNodeEditSelected[idxChange].course = {
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+							this.listNodeEditSelected[idxChange].course_status = null;
+						} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
+							this.listNodeEditSelected[idxChange].start_time = [null, null];
+							this.listNodeEditSelected[idxChange].end_time = [null, null];
+							this.listNodeEditSelected[idxChange].break_time = [null, null];
+							this.listNodeEditSelected[idxChange].course = {
+								start_time: null,
+								end_time: null,
+								break_time: null,
+							};
+							this.listNodeEditSelected[idxChange].course_status = null;
+						}
+					}
+				}
+			}
+		},
 	},
 };
 </script>
