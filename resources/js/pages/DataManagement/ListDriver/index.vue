@@ -157,6 +157,10 @@ export default {
 
 			deep: true,
 		},
+
+		pickerYearMonth() {
+			this.handleGetList();
+		},
 	},
 
 	created() {
