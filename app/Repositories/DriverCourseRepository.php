@@ -2213,7 +2213,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($dataForListSales['total_all_sales_by_date'] as $key => $value){
                 // Nếu trùng ngày thì truyền vào
                 if ($dataCalendar['date'] == $value['date']){
-                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_all_ship_fee_by_date'] == '' ? '' : number_format($value['total_all_ship_fee_by_date']),DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_all_ship_fee_by_date'] == '' || $value['total_all_ship_fee_by_date'] == "0" ? '' : number_format($value['total_all_ship_fee_by_date']),DataType::TYPE_STRING);
                     break;
                 }
             }
@@ -2281,11 +2281,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // Lấy khoảng ngày theo tiếng nhật
         $start_dateClosingDateJapan = Calendar::where("date",$startDateByClosingDate)->first();
         $end_dateClosingDateJapan = Calendar::where("date",$endDateByClosingDate)->first();
-        $payment_requireJapan = Calendar::where("date",$endDateByClosingDate)->first();
 
         $start_dateJapanCustomString = Carbon::parse($startDateByClosingDate)->format('Y年m月d日')."(".$start_dateClosingDateJapan['week'].")";
         $end_dateJapanCustomString = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$end_dateClosingDateJapan['week'].")";
-        $payment_require = Carbon::parse($endDateByClosingDate)->format('Y年m月d日')."(".$payment_requireJapan['week'].")";
+        $invoice_date = Carbon::now()->format('Y年m月d日')." "."発行";
 
         $aboutDateJapan = "'".$start_dateJapanCustomString."~"."'".$end_dateJapanCustomString;
 
@@ -2299,7 +2298,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             "fistDayMonth" =>$fistDayMonth,
             "lastDayMonth" =>$lastDayMonth,
             "aboutDateJapan" =>$aboutDateJapan,
-            "payment_require" =>$payment_require,
+//            "payment_require" =>$payment_require,
+            "invoice_date" =>$invoice_date,
             "closing_dateName" =>$customer->closing_dateName,
             "month_choose" => Carbon::parse($request->month_year)->format("m"),
             "customer_name" =>$customer->customer_name,
