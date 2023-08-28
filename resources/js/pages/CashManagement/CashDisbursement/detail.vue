@@ -400,10 +400,10 @@ export default {
 						const DATA = response.data;
 						this.isForm.driver_code = DATA.driver_code;
 						this.isForm.driver_name = DATA.driver_name;
-						this.isForm.balance_current = DATA.balance_current ? Number(DATA.balance_current).toLocaleString() + '円' : '';
-						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month).toLocaleString() + '円' : '';
-						this.isForm.payable_this_month = DATA.payable_this_month ? Number(DATA.payable_this_month).toLocaleString() + '円' : '';
-						this.isForm.total_payable = DATA.total_payable ? Number(DATA.total_payable).toLocaleString() + '円' : '';
+						this.isForm.balance_current = DATA.balance_current ? Number(DATA.balance_current) + '円' : '';
+						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month) + '円' : '';
+						this.isForm.payable_this_month = DATA.payable_this_month ? Number(DATA.payable_this_month) + '円' : '';
+						this.isForm.total_payable = DATA.total_payable ? Number(DATA.total_payable) + '円' : '';
 					} else {
 						TOAST_CASH_MANAGEMENT.warning(response.message_content);
 					}
