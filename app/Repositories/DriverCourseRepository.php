@@ -2388,6 +2388,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'default_font' => 'MY_FONT_NAME',
             'format' => 'A4-L'
         ]);
+
         $html = view('exportSaleDetailPDF', ['data' => $data])->render();
         $mpdf->WriteHTML($html);
         return $mpdf->Output("laraveltuts.pdf","D");

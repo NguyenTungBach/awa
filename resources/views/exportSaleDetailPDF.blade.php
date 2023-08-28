@@ -146,10 +146,10 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                     0
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'])) * 0.1}}
+                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'] * 0.1))}}
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'])) + (($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'])) * 0.1)}}
+                    {{number_format(($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + (($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date'] * 0.1)))}}
                 </td>
             </tr>
         </table>
@@ -175,7 +175,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
         </tr>
         <?php
             $dem= 0;
-            if (count($data['date_ship_fee']) != 0){
+            if (count($data['date_ship_fee'] ?? []) != 0){
                 foreach ($data['date_ship_fee'] as $course){
         ?>
         <?php
