@@ -402,10 +402,10 @@ export default {
 						const DATA = response.data;
 						this.isForm.customer_code = DATA.customer_code;
 						this.isForm.customer_name = DATA.customer_name;
-						this.isForm.total_cash_in_current = DATA.total_cash_in_current ? Number(DATA.total_cash_in_current).toLocaleString() + '円' : '';
-						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month).toLocaleString() + '円' : '';
-						this.isForm.receivable_this_month = DATA.receivable_this_month ? Number(DATA.receivable_this_month).toLocaleString() + '円' : '';
-						this.isForm.total_account_receivable = DATA.total_account_receivable ? Number(DATA.total_account_receivable).toLocaleString() + '円' : '';
+						this.isForm.total_cash_in_current = DATA.total_cash_in_current ? Number(DATA.total_cash_in_current) + '円' : '';
+						this.isForm.balance_previous_month = DATA.balance_previous_month ? Number(DATA.balance_previous_month) + '円' : '';
+						this.isForm.receivable_this_month = DATA.receivable_this_month ? Number(DATA.receivable_this_month) + '円' : '';
+						this.isForm.total_account_receivable = DATA.total_account_receivable ? Number(DATA.total_account_receivable) + '円' : '';
 					} else {
 						TOAST_CASH_MANAGEMENT.warning(response.message_content);
 					}
@@ -430,7 +430,7 @@ export default {
 				const response = await getCashIn(URL, params);
 				if (response.code === 200) {
 					this.listCashDeital = response.data.list_cash_in;
-					this.isForm.total = response.data.total_cash_in.total_cash_in ? Number(response.data.total_cash_in.total_cash_in).toLocaleString() : '';
+					this.isForm.total = response.data.total_cash_in.total_cash_in ? Number(response.data.total_cash_in.total_cash_in) : ''; // Number(response.data.total_cash_in.total_cash_in).toLocaleString()
 				} else {
 					this.listCashDeital = [];
 					TOAST_CASH_MANAGEMENT.warning(response.message_content);
