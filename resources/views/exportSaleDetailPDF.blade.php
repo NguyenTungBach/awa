@@ -88,10 +88,10 @@
         <p class="text-center m-0 p-0">&nbsp;</p>
     </div>
     <div class="w-33 float-left mt-0">
-        <h1 class="text-center m-0 p-0">内容</h1>
+        <h1 class="text-center m-0 p-0">請求書</h1>
     </div>
     <div class="w-33 float-left mt-0">
-        <p class="m-0 pt-5 text-bold" style="font-size: 10px;text-align: right">ページ '{{$data['payment_require']}}</p>
+        <p class="m-0 pt-5 text-bold" style="font-size: 10px;text-align: right">ページ 1 '{{$data['invoice_date']}}</p>
     </div>
     <div style="clear: both;"></div>
 </div>
@@ -161,6 +161,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
         <tr>
             <th>年月日</th>
             <th>車番</th>
+            <th>発地</th>
             <th>着地</th>
             <th>品名</th>
             <th>数量</th>
@@ -184,6 +185,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
         <tr>
             <td style="text-align: center">{{$course['ship_date']}}</td>
             <td style="text-align: center">{{$course['car']}}</td>
+            <td style="text-align: center">{{$course['departure_place']}}</td>
             <td style="text-align: center">{{$course['arrival_place']}}</td>
             <td style="text-align: center">
 
@@ -206,6 +208,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
+            <td style="text-align: center"></td>
             <td style="text-align: center">
                 <p>小計</p>
             </td>
@@ -220,6 +223,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
             <td style="text-align: center"></td>
         </tr>
         <tr>
+            <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
