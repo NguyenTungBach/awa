@@ -332,6 +332,12 @@ export default {
 		},
 	},
 
+	watch: {
+		pickerYearMonth() {
+			this.initData();
+		},
+	},
+
 	created() {
 		this.initData();
 	},
