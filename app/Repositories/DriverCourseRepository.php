@@ -1555,6 +1555,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     'rgb' => 'C36150'
                 ],
             ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
+            ],
         ];
 
         //Nhập khoảng ngày
@@ -1720,6 +1723,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'startColor' => [
                     'rgb' => 'C36150'
                 ],
+            ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
             ],
         ];
 
@@ -2103,6 +2109,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         ];
 
         $styleArrayDriver = [
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
             'alignment' => [
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
@@ -2125,6 +2137,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'startColor' => [
                     'rgb' => 'C36150'
                 ],
+            ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
             ],
         ];
 
@@ -2151,14 +2166,44 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
         $sheet->getStyle([4,3,$colCalendar-1,3])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
-
+        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray([
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+        ])->getAlignment()->setWrapText(true);
+        $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray([
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+        ])->getAlignment()->setWrapText(true);
+        $sheet->getStyle([$colCalendar,4,$colCalendar,4])->applyFromArray([
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+        ])->getAlignment()->setWrapText(true);
+        $sheet->getStyle([$colCalendar+1,4,$colCalendar+1,4])->applyFromArray([
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+        ])->getAlignment()->setWrapText(true);
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
         $sheet->mergeCells([$colCalendar+1,3,$colCalendar+1,4]);
         $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
         $sheet->setCellValueExplicitByColumnAndRow($colCalendar+1, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
         $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
-
         // Truyền dữ liệu tổng vào từng driver
         $styleArrayShiftList = [
             'alignment' => [
