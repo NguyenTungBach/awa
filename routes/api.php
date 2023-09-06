@@ -17,11 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     Route::post('auth/login', 'AuthController@login');
     Route::get('auth/bothutesthoi/ahii', 'AuthController@testAI');
-    Route::get('driver-course/export-shift','DriverCourseController@export_shift');
-    Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
-    Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');
-    Route::get('driver-course/export-sale-detail-pdf/{id}', 'DriverCourseController@exportSalesDetailPDF');
-    Route::get('cash-in-statical/export-cash-in-statical','CashInStaticalController@exportCashInStatical');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');
         Route::get('calendar/index', 'CalendarController@index');
@@ -37,6 +32,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('course', 'CourseController');
             Route::apiResource('customer', 'CustomerController');
             Route::apiResource('cash-in', 'CashInController');
+            Route::get('cash-in-statical/export-cash-in-statical','CashInStaticalController@exportCashInStatical');
             Route::apiResource('cash-in-statical', 'CashInStaticalController');
             Route::get('driver-course/sales-list', 'DriverCourseController@salesList');
             Route::get('driver-course/sales-detail/{id}', 'DriverCourseController@salesDetail');
@@ -45,6 +41,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
             Route::post('driver-course/update-course','DriverCourseController@update_course');
             Route::get('driver-course/detail-edit-shift','DriverCourseController@detailEditShift');
+            Route::get('driver-course/export-shift','DriverCourseController@export_shift');
+            Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
+            Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');
+            Route::get('driver-course/export-sale-detail-pdf/{id}', 'DriverCourseController@exportSalesDetailPDF');
             Route::apiResource('driver-course', 'DriverCourseController');
             Route::get('driver-course', 'DriverCourseController@index')->withoutMiddleware('admin');
             Route::apiResource('/driver/{driver}/cash-out', 'CashOutController');

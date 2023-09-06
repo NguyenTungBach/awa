@@ -73,12 +73,12 @@
     </div>
     <div v-else>
         <div class="zone-navbar">
-            <div class="menu-navbar">
+            <div class="menu-navbar" @click="onClickShowMenu()">
                 <i class="fas fa-bars icon-menu" />
             </div>
         </div>
         <div class="show-menu-right">
-            <div v-if="showPickYearMonth" class="picker-month-year">
+            <div v-if="showYearMonthForMobile" class="picker-month-year">
                 <PickerYearMonth />
             </div>
         </div>
@@ -98,6 +98,7 @@ export default {
 	data() {
 		return {
 			showPickYearMonth: true,
+			showYearMonthForMobile: true,
 			screenWidth: window.innerWidth,
 		};
 	},
@@ -123,6 +124,12 @@ export default {
 
 		// 	this.showPickYearMonth = PAGE.includes(ROUTER_NAME);
 		// },
+		currentRouter() {
+			const ROUTER_NAME = this.$route.name;
+			const PAGE_Mobile = ['ListShift'];
+
+			this.showYearMonthForMobile = PAGE_Mobile.includes(ROUTER_NAME);
+		},
 	},
 
 	mounted() {
@@ -136,6 +143,10 @@ export default {
 	methods: {
 		handleResize() {
 			this.screenWidth = window.innerWidth;
+		},
+
+		onClickShowMenu() {
+			this.$router.push({ name: 'Menu' });
 		},
 
 		onClickLogout() {
@@ -433,7 +444,7 @@ export default {
 @media (max-width: 900px) {
     .picker-month-year {
         width: 100%;
-        background-color: #F5F5F5;
+        background-color: $wild-sand;
     }
 }
 </style>
