@@ -165,11 +165,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
             <th>着地</th>
             <th>品名</th>
             <th>数量</th>
-            <th>単位</th>
+{{--            <th>単位</th>--}}
             <th>重量/Kg</th>
             <th>基本運賃</th>
-            <th>割増運賃1</th>
-            <th>割増運賃2</th>
+{{--            <th>割増運賃1</th>--}}
+{{--            <th>割増運賃2</th>--}}
             <th>非課税1</th>
             <th>非課税2</th>
             <th>摘要</th>
@@ -191,11 +191,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
 
             </td>
             <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center">{{$course['ship_fee'] == '' ? '' : number_format($course['ship_fee'])}}</td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
@@ -213,11 +213,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                 <p>小計</p>
             </td>
             <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center">{{number_format($dem)}}</td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
@@ -231,11 +231,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                 <p>合計</p>
             </td>
             <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center">{{$dem}}</td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+{{--            <td style="text-align: center"></td>--}}
+{{--            <td style="text-align: center"></td>--}}
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>

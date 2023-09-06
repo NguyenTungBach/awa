@@ -62,6 +62,8 @@ class DriverCourseRequest extends FormRequest
                   return $this->getCustomRule();
               case 'exportSalesDetailPDF':
                   return $this->getCustomRule();
+            case 'export_driver_meal_shift':
+                return $this->getCustomRule();
               case 'destroy':
                   return $this->getCustomRule();
                 default:
@@ -284,6 +286,19 @@ class DriverCourseRequest extends FormRequest
                      'required',
                      "date_format:Y-m",
                  ],
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'export_driver_meal_shift'){
+             return [
+                 "closing_date" => [
+                     "in:24,25",
+                 ],
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
+                 "field" => "in:drivers.driver_code,drivers.type,drivers.driver_name",
+                 "sortby" => "in:asc,desc"
              ];
          }
      }
