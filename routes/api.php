@@ -41,6 +41,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('driver-course/total-express-charge-cost','DriverCourseController@total_express_charge_cost');
             Route::post('driver-course/update-course','DriverCourseController@update_course');
             Route::get('driver-course/detail-edit-shift','DriverCourseController@detailEditShift');
+            Route::get('driver-course/export-driver-meal-shift','DriverCourseController@export_driver_meal_shift');
             Route::get('driver-course/export-shift','DriverCourseController@export_shift');
             Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
             Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');

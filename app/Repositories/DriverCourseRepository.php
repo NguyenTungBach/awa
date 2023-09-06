@@ -156,7 +156,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "drivers.driver_code",
                 "drivers.type",
             )
-            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names'))
+            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names, SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
             ->SortByForDriverCourse($request)
@@ -249,6 +249,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "date"=> $calendar->date,
                     "course_ids"=> "",
                     "course_names"=> "",
+                    "course_meal_fee_commission"=> "",
                     "course_names_color"=> ""
                 ];
                 // Chỉ lấy ra driver có lịch trình
@@ -259,6 +260,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "date"=> $checkData['date'],
                             "course_ids"=> $checkData['course_ids'],
                             "course_names"=> $checkData['course_names'],
+                            "course_meal_fee_commission"=> $checkData['course_meal_fee_commission'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
                         break;
@@ -323,6 +325,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "date"=> $calendar->date,
                             "course_ids"=> "",
                             "course_names"=> "",
+                            "course_meal_fee_commission"=> "",
                             "course_names_color"=> ""
                         ];
                     }
@@ -339,6 +342,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         "date"=> $calendar->date,
                         "course_ids"=> "",
                         "course_names"=> "",
+                        "course_meal_fee_commission"=> "",
                         "course_names_color"=> ""
                     ];
                 }
@@ -1584,9 +1588,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,3,$colCalendar-1,3])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
-        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
-        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+//        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+//        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
 
@@ -1620,10 +1624,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 }
                 $colCalendarDriver++;
             }
-            //Truyền dữ liệu tổng vào
-            if ($value['total_money'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
-            }
+//            //Truyền dữ liệu tổng vào
+//            if ($value['total_money'] != ""){
+//                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
+//            }
 
             //Đặt style
             $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
@@ -2439,5 +2443,175 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         return $mpdf->Output("laraveltuts.pdf","D");
 
 //        return view('testPDF', ['data'  => $data]);
+    }
+
+    // New +
+    public function export_driver_meal_shift($request)
+    {
+        ini_set('memory_limit', '-1');
+        set_time_limit(3000000);
+        ini_set('max_execution_time', '0');
+        $dataForListShifts = $this->getAll($request);
+//        $dataForTotalShiftByClosingDate = $this->totalOfExtraCost($request);
+        $getMonth_year = explode("-",$request->month_year);
+        $start_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Y-m-d');
+        $end_date = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Y-m-d');
+        $dataCalendars = $this->calendarRepository->indexGetData($start_date,$end_date);
+
+        $start_dateForNameFile = Carbon::createFromDate(null, $getMonth_year[1], 1)->startOfMonth()->format('Ymd');
+        $end_dateForNameFile = Carbon::createFromDate(null, $getMonth_year[1], 1)->endOfMonth()->format('Ymd');
+
+        $inputFileType = 'Xlsx';
+        $inputFileName = base_path('resources/excels/ShiftExport.xlsx');
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet = $reader->load($inputFileName);
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $styleArrayDate = [
+            'borders' => [ // Thêm phần borders để thiết lập viền
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'FFFFFF'],
+                ],
+            ],
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'FF765E'
+                ],
+            ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
+            ],
+        ];
+
+        $styleArrayDriver = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'FFDDC8'
+                ],
+            ],
+        ];
+
+        $styleArrayTotalExtraCost = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'C36150'
+                ],
+            ],
+            'font' => [ // Thêm phần font để thiết lập màu chữ
+                'color' => ['rgb' => 'FFFFFF'], // Đây là mã màu trắng
+            ],
+        ];
+        $sheet->setCellValue('A1', '経費表');
+        //Nhập khoảng ngày
+        $start_dateJapan = Calendar::where("date",$start_date)->first();
+        $end_dateJapan = Calendar::where("date",$end_date)->first();
+
+        $start_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->startOfMonth()->format('Y年m月d日')."(".$start_dateJapan['week'].")";
+        $end_dateJapanCustomString = Carbon::createFromFormat('Y-m',$request->month_year)->endOfMonth()->format('Y年m月d日')."(".$end_dateJapan['week'].")";
+
+        $aboutDateJapan = $start_dateJapanCustomString."~".$end_dateJapanCustomString;
+        $sheet->setCellValue('C1', $aboutDateJapan);
+
+        // tạo khung cho calendar
+        $colCalendar = 4;
+        $rowCalendar = 3;
+
+        foreach ($dataCalendars as $dataCalendar){
+            $getDay = Carbon::parse($dataCalendar['date'])->format('d');
+
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,intval($getDay)."(".$dataCalendar['week'].")",DataType::TYPE_STRING);
+            $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar+1,$dataCalendar['rokuyou'],DataType::TYPE_STRING);
+            $colCalendar++;
+        }
+        $sheet->getStyle([4,3,$colCalendar-1,3])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
+        $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
+
+        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+
+        // Truyền dữ liệu tổng vào từng driver
+
+        $styleArrayShiftList = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+            ],
+        ];
+
+        // Truyền dữ thông tin từng driver
+        $index = 5;
+        foreach ($dataForListShifts as $key => $value){
+            $sheet->setCellValue('A'.$index, $value['driver_code']);
+            $sheet->setCellValue('B'.$index, $value['typeName']);
+            $sheet->setCellValue('C'.$index, $value['driver_name']);
+
+            // Truyền thông tin course theo ngày cho từng driver
+            $colCalendarDriver = 4;
+
+            // Kiểm tra từng cột Calendar
+            foreach ($dataCalendars as $dataCalendar){
+                if ($value['dataShift'] != null){
+                    // Truyền dữ liệu giao hàng, dữ liệu giao hàng nào cùng ngày, driver_id đó thì sẽ nhập
+                    foreach ($value['dataShift']['data_by_date'] as $dataByDate){
+                        // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
+                        if ($dataCalendar['date'] == $dataByDate['date']){
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_meal_fee_commission'] == ''? '' : number_format($dataByDate['course_meal_fee_commission']),DataType::TYPE_STRING);
+                        }
+                    }
+                }
+                $colCalendarDriver++;
+            }
+            //Truyền dữ liệu tổng vào
+            if ($value['total_money'] != ""){
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
+            }
+
+            //Đặt style
+            $sheet->getStyle([4,$index,$colCalendarDriver,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
+            // Sau khi kiểm tra xong thì mới được đến driver tiếp
+            $index ++;
+        }
+
+        $indexCheckStyle = 5;
+
+        foreach ($dataForListShifts as $key => $value){
+            $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+//            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
+            $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+            $sheet->getStyle('C'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
+            $indexCheckStyle ++;
+        }
+
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");;
+        header("Content-Disposition: attachment;filename=シフト表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
+        header("Content-Transfer-Encoding: binary ");
+        $writer = new Xlsx($spreadsheet);
+        ob_get_contents();
+        ob_end_clean();
+        $writer->save('php://output');
+        die();
     }
 }

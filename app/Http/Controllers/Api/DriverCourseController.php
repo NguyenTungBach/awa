@@ -566,6 +566,79 @@ class DriverCourseController extends Controller
 
     /**
      * @OA\Get(
+     *   path="/driver-course/export-driver-meal-shift",
+     *   tags={"DriverCourse"},
+     *   summary="Export_driver_meal_shift DriverCourse",
+     *   operationId="driver_course_export_driver_meal_shift",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="closing_date",
+     *     description = "24,25",
+     *     example = "25",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="integer",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     example = "2023-07",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="field",
+     *     description = "drivers.driver_code,drivers.type,drivers.driver_name",
+     *     example = "drivers.driver_code",
+     *     in="path",
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     name="sortby",
+     *     description = "asc,desc",
+     *     example = "desc",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function export_driver_meal_shift(DriverCourseRequest $request)
+    {
+        $this->repository->export_driver_meal_shift($request);
+        return $this->responseJson(200, null, trans('messages.mes.export_success'));
+    }
+
+    /**
+     * @OA\Get(
      *   path="/api/driver-course/get-all-express-charge",
      *   tags={"DriverCourse"},
      *   summary="List Express Charge",
