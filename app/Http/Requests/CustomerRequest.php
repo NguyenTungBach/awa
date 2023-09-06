@@ -53,6 +53,7 @@ class CustomerRequest extends FormRequest
                 'regex:/^[0-9]+$/',
                 'unique:customers,customer_code,NULL,id,deleted_at,NULL',
             ],
+            'tax' => 'required|in:1,2',
             'customer_name' => 'required|string|max:20',
             'closing_date' => [
                 'required',
@@ -83,6 +84,7 @@ class CustomerRequest extends FormRequest
                 'regex:/^[0-9]+$/',
                 Rule::unique('customers')->ignore($customer->id),
             ],
+            'tax' => 'required|in:1,2',
             'customer_name' => 'sometimes|required|string|max:20',
             'closing_date' => [
                 'sometimes',

@@ -24,6 +24,7 @@ class Customer extends Model
         'person_charge',
         'post_code',
         'address',
+        'tax',
         'phone',
         'note',
     ];

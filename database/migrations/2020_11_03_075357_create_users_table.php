@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('role')->comment('admin|driver');
             $table->string('jwt_active')->nullable();
-            $table->string('remember_token')->nullable();;
+            $table->string('remember_token')->nullable();
             $table->integer('status')->nullable()->comment('1: on, 2:off');
             $table->timestamps();
             $table->softDeletes();
