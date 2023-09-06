@@ -60,18 +60,6 @@
                                     :colspan="3"
                                     class="fix-header"
                                 />
-                                <!-- <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK">
-                                    <template v-for="(date, idx) in pickerWeek.listDate">
-                                        <b-th
-                                            :key="`date-${idx}`"
-                                            class="th-show-date"
-                                        >
-                                            <div>
-                                                {{ date.date }} ({{ getTextDay(date.text) }})
-                                            </div>
-                                        </b-th>
-                                    </template>
-                                </template> -->
                                 <template v-for="date in pickerYearMonth.numberDate">
                                     <b-th
                                         :key="`date-${date}`"
@@ -93,17 +81,6 @@
                                 <b-th class="th-full-name">
                                     {{ $t("LIST_SHIFT.TABLE_FULL_NAME") }}
                                 </b-th>
-                                <!-- <template
-                                    v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.WEEK"
-                                >
-                                    <template v-for="idx in pickerWeek.listDate.length">
-                                        <b-th :key="`date-${idx}`">
-                                            <div v-if="listCalendar.length">
-                                                {{ listCalendar[idx - 1] || '' }}
-                                            </div>
-                                        </b-th>
-                                    </template>
-                                </template> -->
                                 <template v-for="date in pickerYearMonth.numberDate">
                                     <b-th :key="`date-${date}`">
                                         <span>
@@ -779,42 +756,6 @@ export default {
 			this.$router.push({ name: 'ListShift' });
 		},
 
-		activeSelectWeekMonth(type) {
-			return this.selectWeekMonth === type
-				? 'btn-select-week-month active'
-				: 'btn-select-week-month';
-		},
-
-		activeSelectTable(table) {
-			return this.selectTable === table
-				? 'control-button-group active'
-				: 'control-button-group';
-		},
-
-		onClickSelectWeekMonth(type) {
-			if (
-				[CONSTANT.LIST_SHIFT.WEEK, CONSTANT.LIST_SHIFT.MONTH].includes(type)
-			) {
-				this.selectWeekMonth = type;
-			} else {
-				this.selectWeekMonth = CONSTANT.LIST_SHIFT.WEEK;
-			}
-		},
-
-		onClickSelectTable(table) {
-			if (
-				[
-					CONSTANT.LIST_SHIFT.SHIFT_TABLE,
-					CONSTANT.LIST_SHIFT.PRACTICAL_ACHIEVEMENTS_MONTHLY,
-					CONSTANT.LIST_SHIFT.PRACTICAL_PERFORMANCE_BY_CLOSING_DATE,
-				].includes(table)
-			) {
-				this.selectTable = table;
-			} else {
-				this.selectTable = CONSTANT.LIST_SHIFT.SHIFT_TABLE;
-			}
-		},
-
 		onClickChangeNode() {
 			this.modalDetail = false;
 
@@ -1162,33 +1103,38 @@ export default {
 
 			if (listSelected.length > 0) {
 				listSelected.forEach((item) => {
-					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(item.type)) {
-						INIT_UPDATE.listShift.push({
-							course_id: item.type,
-							date: otherInfo.date,
-							start_time: formatArray2Time(item.start_time),
-							break_time: formatArray2Time(item.break_time),
-							end_time: formatArray2Time(item.end_time),
-						});
-					} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item.type)) {
-						INIT_UPDATE.listShift.push({
-							course_id: item.type,
-							date: otherInfo.date,
-						});
-					} else if (item.type === 7) {
-						INIT_UPDATE.listShift.push({
-							course_id: 7,
-							date: otherInfo.date,
-						});
-					} else {
-						INIT_UPDATE.listShift.push({
-							course_id: item.type,
-							date: otherInfo.date,
-							start_time: formatArray2Time(item.start_time),
-							break_time: formatArray2Time(item.break_time),
-							end_time: formatArray2Time(item.end_time),
-						});
-					}
+					INIT_UPDATE.listShift.push({
+						course_id: item.type,
+						date: otherInfo.date,
+						start_time: formatArray2Time(item.start_time),
+						break_time: formatArray2Time(item.break_time),
+						end_time: formatArray2Time(item.end_time),
+					});
+					// if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(item.type)) {
+					// 	INIT_UPDATE.listShift.push({
+					// 		course_id: item.type,
+					// 		date: otherInfo.date,
+					// 		start_time: formatArray2Time(item.start_time),
+					// 		break_time: formatArray2Time(item.break_time),
+					// 		end_time: formatArray2Time(item.end_time),
+					// 	});
+					// } else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(item.type)) {
+					// 	INIT_UPDATE.listShift.push({
+					// 		course_id: item.type,
+					// 		date: otherInfo.date,
+					// 		start_time: formatArray2Time(item.start_time),
+					// 		break_time: formatArray2Time(item.break_time),
+					// 		end_time: formatArray2Time(item.end_time),
+					// 	});
+					// } else {
+					// 	INIT_UPDATE.listShift.push({
+					// 		course_id: item.type,
+					// 		date: otherInfo.date,
+					// 		start_time: formatArray2Time(item.start_time),
+					// 		break_time: formatArray2Time(item.break_time),
+					// 		end_time: formatArray2Time(item.end_time),
+					// 	});
+					// }
 				});
 			}
 
@@ -1364,9 +1310,9 @@ export default {
 				if (COURSE) {
 					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
 						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = [null, null];
-						this.listNodeEditSelected[idxChange].end_time = [null, null];
-						this.listNodeEditSelected[idxChange].break_time = [null, null];
+						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].course = {
 							start_time: null,
 							end_time: null,
@@ -1388,9 +1334,9 @@ export default {
 				} else {
 					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
 						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = [null, null];
-						this.listNodeEditSelected[idxChange].end_time = [null, null];
-						this.listNodeEditSelected[idxChange].break_time = [null, null];
+						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].course = {
 							start_time: null,
 							end_time: null,

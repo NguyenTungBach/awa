@@ -9,7 +9,7 @@
         :style="{ backgroundColor: dataNode.course_names_color }"
         @click="onClickNode(dataNode.date, dataNode.driver_id)"
     >
-        <div :class="['show-node']">
+        <div v-if="screenWidth > 900" :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
                 {{ dataNode.course_names || '' }}
             </div>
@@ -56,6 +56,20 @@
                             {{ idx + 1 }}. {{ item.name }}
                         </div>
                     </b-popover>
+                </template>
+            </div>
+        </div>
+        <div v-else :class="['show-node']">
+            <div v-if="isDayOff(dataNode.course_names_color)">
+                {{ (dataNode.course_names).slice(0, 1) || '' }}
+            </div>
+            <div v-else>
+                <template v-if="dataNode.course_names">
+                    <div
+                        class="show-course"
+                    >
+                        {{ (dataNode.course_names).slice(0, 1) }}
+                    </div>
                 </template>
             </div>
         </div>
@@ -318,6 +332,7 @@ export default {
 	data() {
 		return {
 			CONSTANT,
+			screenWidth: window.innerWidth,
 
 			dateNode: {
 				nodeType: null,
@@ -328,6 +343,14 @@ export default {
 			listText: [],
 			selectTable: this.$store.getters.tableListShift || CONSTANT.LIST_SHIFT.SHIFT_TABLE,
 		};
+	},
+
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
 	},
 
 	created() {
@@ -345,6 +368,10 @@ export default {
 		// 		this.listText = (this.dataNode.value).filter((item) => !NOT_SHOW.includes(item.type));
 		// 	}
 		// },
+		handleResize() {
+			this.screenWidth = window.innerWidth;
+		},
+
 		handleChangeToMonth(index) {
 			return index < 10 ? `0${index}` : `${index}`;
 		},
