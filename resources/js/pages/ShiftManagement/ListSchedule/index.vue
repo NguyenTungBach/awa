@@ -160,8 +160,24 @@
                                         :cols="12"
                                         :sm="12"
                                         :md="12"
-                                        :lg="4"
-                                        :xl="4"
+                                        :lg="2"
+                                        :xl="2"
+                                    >
+                                        <div class="customer-name">
+                                            <label for="input-customer-name">
+                                                {{ $t('LIST_SCHEDULE.TITLE_DRIVER_NAME') }}
+                                            </label>
+                                        </div>
+                                        <div class="select-option">
+                                            <b-form-select v-model="driverName" :options="listDriverName" />
+                                        </div>
+                                    </b-col>
+                                    <b-col
+                                        :cols="12"
+                                        :sm="12"
+                                        :md="12"
+                                        :lg="2"
+                                        :xl="2"
                                     >
                                         <div class="customer-name">
                                             <label for="input-customer-name">
@@ -247,18 +263,18 @@
                                     <b-th
                                         :rowspan="2"
                                         class="row-couse-name"
-                                        @click="onSortTable('course_name')"
+                                        @click="onSortTable('driver_name')"
                                     >
-                                        <b-row class="row-course-id ">
-                                            {{ $t('LIST_SCHEDULE.TABLE_COURSE_NAME') }}
+                                        <b-row class="row-course-id">
+                                            {{ $t('LIST_SCHEDULE.TABLE_DRIVER_NAME') }}
                                             <b-col class="icon-sorts">
                                                 <div class="text-right">
                                                     <i
-                                                        v-if="sortTable.sortBy === 'course_name' && sortTable.sortType === true"
+                                                        v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
                                                         class="fad fa-sort-up icon-sort"
                                                     />
                                                     <i
-                                                        v-else-if="sortTable.sortBy === 'course_name' && sortTable.sortType === false"
+                                                        v-else-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === false"
                                                         class="fad fa-sort-down icon-sort"
                                                     />
                                                     <i
@@ -269,6 +285,31 @@
                                             </b-col>
                                         </b-row>
                                     </b-th>
+                                    <!-- <b-th
+                                        :rowspan="2"
+                                        class="row-driver-name"
+                                        @click="onSortTable('driver_name')"
+                                    >
+                                        <b-row class="row-driver-name ">
+                                            {{ $t('LIST_SCHEDULE.TABLE_DRIVER_NAME') }}
+                                            <b-col class="icon-sorts">
+                                                <div class="text-right">
+                                                    <i
+                                                        v-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === true"
+                                                        class="fad fa-sort-up icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else-if="sortTable.sortBy === 'driver_name' && sortTable.sortType === false"
+                                                        class="fad fa-sort-down icon-sort"
+                                                    />
+                                                    <i
+                                                        v-else
+                                                        class="fa-solid fa-sort icon-sort-default"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                    </b-th> -->
                                     <b-th
                                         :rowspan="2"
                                         @click="onSortTable('customer_name')"
@@ -384,7 +425,7 @@
                                             {{ schedule.ship_date }}
                                         </b-td>
                                         <b-td class="text-center">
-                                            {{ schedule.course_name }}
+                                            {{ schedule.driver_name }}
                                         </b-td>
                                         <b-td class="text-center">
                                             {{ schedule.customer_name }}
@@ -534,8 +575,10 @@ export default {
 			optionSelect: [],
 			selectedCheckbox: [],
 			customerName: null,
+			driverName: null,
 			getIDCourse: null,
 			modalDelete: false,
+			listDriverName: [],
 			listNameCustomer: [
 				{
 					value: 1,
@@ -572,7 +615,7 @@ export default {
 				// {
 				// 	id: 1,
 				// 	ship_date: '2022/12/05',
-				// 	course_name: 'テストコース2',
+				// 	driver_name: 'テストコース2',
 				// 	customer_name: 'B商事',
 				// 	departure_place: '徳島港',
 				// 	arrival_place: '高松港',
@@ -581,7 +624,7 @@ export default {
 				// {
 				// 	id: 2,
 				// 	ship_date: '2022/12/25',
-				// 	course_name: 'テストコース2',
+				// 	driver_name: 'テストコース2',
 				// 	customer_name: 'E商事',
 				// 	departure_place: 'B商事',
 				// 	arrival_place: '高松港',
@@ -630,6 +673,7 @@ export default {
 		async initData() {
 			await this.handleGetCustomer();
 			await this.handleGetListCourse();
+			await this.handleGetDriverName();
 		},
 
 		checkboxAll(){
@@ -673,6 +717,7 @@ export default {
 					start_date_ship: this.start_date ? this.start_date : '',
 					end_date_ship: this.end_date ? this.end_date : '',
 					customer_id: this.customerName,
+					driver_id: this.driverName,
 					order_by: this.sortTable.sortBy,
 					sort_by: this.sortTable.sortType,
 					// Authorization: getToken(),
@@ -724,6 +769,28 @@ export default {
 					});
 				} else {
 					this.listNameCustomer = [];
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
+		async handleGetDriverName() {
+			try {
+				setLoading(true);
+				const params = {};
+				const LIST = await getList(CONSTANT.URL_API.GET_LIST_DRIVER, params);
+				if (LIST.code === 200) {
+					this.listDriverName = [];
+					LIST.data.forEach(item => {
+						this.listDriverName.push({
+							value: item.id,
+							text: item.driver_name,
+						});
+					});
+				} else {
+					this.listDriverName = [];
 				}
 				setLoading(false);
 			} catch {
@@ -785,6 +852,7 @@ export default {
 
 		onClickReset() {
 			this.customerName = null;
+			this.driverName = null;
 			this.start_date = '';
 			this.end_date = '';
 			this.handleGetListCourse();
@@ -846,6 +914,7 @@ export default {
 				let params = {
 					end_date_ship: this.end_date ? this.end_date : '',
 					customer_id: this.customerName,
+					driver_id: this.driverName,
 					order_by: this.sortTable.sortBy,
 					sort_by: this.sortTable.sortType,
 				};
@@ -889,15 +958,15 @@ export default {
 						this.sortTable.sortType = true;
 					}
 					break;
-				case 'course_name':
-					if (this.sortTable.sortBy === 'course_name') {
+				case 'driver_name':
+					if (this.sortTable.sortBy === 'driver_name') {
 						if (this.sortTable.sortType) {
 							this.sortTable.sortType = !this.sortTable.sortType;
 						} else {
 							this.sortTable.sortType = true;
 						}
 					} else {
-						this.sortTable.sortBy = 'course_name';
+						this.sortTable.sortBy = 'driver_name';
 						this.sortTable.sortType = true;
 					}
 					break;

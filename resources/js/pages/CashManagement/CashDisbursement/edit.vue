@@ -224,7 +224,7 @@ export default {
 				},
 				{
 					value: 2,
-					text: '口座振替',
+					text: '手形',
 				},
 			],
 		};

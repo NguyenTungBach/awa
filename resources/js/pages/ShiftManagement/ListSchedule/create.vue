@@ -266,6 +266,100 @@
                                     :xl="12"
                                     class="date"
                                 >
+                                    <label for="input-item-name">
+                                        {{ $t('CREATE_SCHEDULE.ITEM_NAME') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            id="input-item-name"
+                                            v-model="isForm.itemName"
+                                            type="text"
+                                        />
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-quantity">
+                                        {{ $t('CREATE_SCHEDULE.QUANTITY') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            id="input-quantity"
+                                            v-model="isForm.quantity"
+                                            type="number"
+                                        />
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-unitPrice">
+                                        {{ $t('CREATE_SCHEDULE.UNIT_PRICE') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            id="input-unitPrice"
+                                            v-model="isForm.unitPrice"
+                                            type="number"
+                                        />
+                                        <span class="freight-cost"> 円 </span>
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-weight">
+                                        {{ $t('CREATE_SCHEDULE.WEIGHT') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
+                                        <b-form-input
+                                            id="input-weight"
+                                            v-model="isForm.weight"
+                                            type="number"
+                                        />
+                                        <span class="freight-cost"> kg </span>
+                                    </b-input-group>
+
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
                                     <label for="input-freight-cost">
                                         {{ $t('CREATE_SCHEDULE.FREIGHT_COST') }}
                                         <span class="text-danger">
@@ -292,9 +386,6 @@
                                 >
                                     <label for="input-cooperating-company-payment-amount">
                                         {{ $t('CREATE_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -316,9 +407,6 @@
                                 >
                                     <label for="input-hight-way">
                                         {{ $t('CREATE_SCHEDULE.HIGHT_WAY') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -340,9 +428,6 @@
                                 >
                                     <label for="input-expenses">
                                         {{ $t('CREATE_SCHEDULE.EXPENSES') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -354,29 +439,6 @@
                                     </b-input-group>
 
                                 </b-col>
-                                <!-- <b-col
-                                    :cols="12"
-                                    :sm="12"
-                                    :md="12"
-                                    :lg="6"
-                                    :xl="12"
-                                    class="date"
-                                >
-                                    <label for="input-bunus-targer">
-                                        {{ $t('CREATE_SCHEDULE.BONUS_TARGET') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
-                                    </label>
-                                    <b-input-group class="mb-3">
-                                        <b-form-select
-                                            v-model="bunus_target" :options="bunusTargetOptions"
-                                            :text-field="'text'"
-                                            :value-field="'rate'" size="xl"
-                                        />
-                                    </b-input-group>
-
-                                </b-col> -->
                                 <b-col
                                     :cols="12"
                                     :sm="12"
@@ -387,9 +449,6 @@
                                 >
                                     <label for="input-bunus-amount">
                                         {{ $t('CREATE_SCHEDULE.BONUS_AMOUNT') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -481,6 +540,10 @@ export default {
 				departure_place: '',
 				arrival_place: '',
 				freight_cost: '',
+				itemName: '',
+				quantity: '',
+				unitPrice: '',
+				weight: '',
 				payment_amount: '',
 				hight_way: '',
 				expenses: '',

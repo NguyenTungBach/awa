@@ -132,12 +132,6 @@
                                                     <span class="text-danger">
                                                         *
                                                     </span>
-                                                    <!-- <b-form-select
-                                                        id="customer-closing-day"
-                                                        v-model="isForm.exclusive"
-                                                        :options="optionsClosingDay"
-                                                        :disabled="isLoading"
-                                                    /> -->
                                                     <b-input-group :append="$t('CREATE_DRIVER.DAY')">
                                                         <b-form-select
                                                             id="customer-closing-day"
@@ -145,23 +139,34 @@
                                                             :options="optionsClosingDay"
                                                         />
                                                     </b-input-group>
-                                                    <!-- <b-form-select
-                                                        id="customer-closing-day"
-                                                        v-model="isForm.exclusive"
-                                                        :options="optionsClosingDay"
-                                                    /> -->
                                                 </div>
                                             </b-col>
-                                            <!-- <b-col
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
                                                 :lg="12"
-                                                :xl="1"
-                                                style="bottom: -41px;"
+                                                :xl="12"
                                             >
-                                                <span class="text-closing-day">日</span>
-                                            </b-col> -->
+                                                <div class="item-form">
+                                                    <label for="customer-sales-tax">
+                                                        {{ $t('CUSTOMER_CREATE.SALE_TAX') }}
+                                                    </label>
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-input-group>
+                                                        <b-form-select
+                                                            id="customer-sales-tax"
+                                                            v-model="isForm.saleTax"
+                                                            :options="optionsSaleTax"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
                                         </b-row>
 
                                         <b-row>
@@ -346,6 +351,17 @@ export default {
 				},
 			],
 
+			optionsSaleTax: [
+				{
+					value: 1,
+					text: '内税',
+				},
+				{
+					value: 2,
+					text: '外税',
+				},
+			],
+
 			stringGroup: [null, null],
 
 			valueGroup: [],
@@ -356,6 +372,7 @@ export default {
 				course_id: '',
 				course_name: '',
 				exclusive: '',
+				saleTax: '',
 				customer_manager: '',
 				customer_address: '',
 				customer_phone: '',
@@ -473,7 +490,8 @@ export default {
 				}
 
 				setLoading(false);
-			} catch {
+			} catch (error) {
+				console.log(error);
 				setLoading(false);
 			}
 			// } else {

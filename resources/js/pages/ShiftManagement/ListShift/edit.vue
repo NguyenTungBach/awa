@@ -192,13 +192,13 @@
                     >
                         {{ $t('APP.TEXT_CLOSE') }}
                     </b-button>
-                    <b-button
+                    <!-- <b-button
                         pill
                         class="btn-change"
                         @click="onClickChangeNode"
                     >
                         {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
-                    </b-button>
+                    </b-button> -->
                 </div>
             </template>
         </b-modal>
@@ -263,7 +263,7 @@ import { convertValueToText } from '@/utils/handleSelect';
 import { cleanObject } from '@/utils/handleObject';
 // import { convertValueWhenNull } from '@/utils/handleListShift';
 import { convertBreakTimeNumberToTime, convertTextToSelectTime, formatArray2Time, convertTimeForDetail } from '@/utils/convertTime';
-import { getList } from '@/api/modules/courseManagement';
+// import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
 // import { validateEditShift } from './helper/validateEditShift';
 
@@ -430,7 +430,7 @@ export default {
 		async createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
-				await this.handleGetListCourse(data.dateDriver);
+				// await this.handleGetListCourse(data.dateDriver);
 				await this.detailShift(data.id, data.dateDriver);
 
 				// const DATE_CHECK = data.dateDriver;
@@ -550,21 +550,21 @@ export default {
 					} else {
 						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
 							this.listNodeEditSelected[idxListSelected].course = {
-								flag: 'yes',
+								// flag: 'yes',
 								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
 								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
 								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
 							};
 						} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
 							this.listNodeEditSelected[idxListSelected].course = {
-								flag: 'yes',
+								// flag: 'yes',
 								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
 								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
 								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
 							};
 						} else {
 							this.listNodeEditSelected[idxListSelected].course = {
-								flag: null,
+								// flag: null,
 								start_time: null,
 								end_time: null,
 								break_time: null,
@@ -612,64 +612,64 @@ export default {
 			this.$bus.off('LIST_SHITF_CLICK_NODE');
 		},
 
-		async handleGetListCourse(dateDriver) {
-			// const LABOUR = {
-			// 	value: 'L-0',
-			// 	text: this.$t('LIST_SHIFT.LABOUR'),
-			// 	flag: 'yes',
-			// 	status: 'on',
-			// 	start_time: '',
-			// 	end_time: '',
-			// 	break_time: '',
-			// 	disabled: false,
-			// };
-			try {
-				const param = {
-					date: dateDriver,
-				};
-				const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
-				if (code === 200) {
-					this.listCourse = [];
+		// async handleGetListCourse(dateDriver) {
+		// 	// const LABOUR = {
+		// 	// 	value: 'L-0',
+		// 	// 	text: this.$t('LIST_SHIFT.LABOUR'),
+		// 	// 	flag: 'yes',
+		// 	// 	status: 'on',
+		// 	// 	start_time: '',
+		// 	// 	end_time: '',
+		// 	// 	break_time: '',
+		// 	// 	disabled: false,
+		// 	// };
+		// 	try {
+		// 		const param = {
+		// 			date: dateDriver,
+		// 		};
+		// 		const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
+		// 		if (code === 200) {
+		// 			this.listCourse = [];
 
-					// this.listCourse.push(LABOUR);
-					const len = data.length;
-					let idx = 0;
+		// 			// this.listCourse.push(LABOUR);
+		// 			const len = data.length;
+		// 			let idx = 0;
 
-					while (idx < len) {
-						if (data[idx].driver_id !== null) {
-							this.listCourse.push({
-								value: data[idx].id,
-								text: data[idx].course_name,
-								// status: data[idx].status,
-								id: idx,
-								start_time: data[idx].start_date,
-								end_time: data[idx].end_date,
-								break_time: data[idx].break_time,
-								disabled: true,
-							});
-						} else {
-							this.listCourse.push({
-								value: data[idx].id,
-								text: data[idx].course_name,
-								// status: data[idx].status,
-								id: idx,
-								start_time: data[idx].start_date,
-								end_time: data[idx].end_date,
-								break_time: data[idx].break_time,
-								disabled: false,
-							});
-						}
+		// 			while (idx < len) {
+		// 				if (data[idx].driver_id !== null) {
+		// 					this.listCourse.push({
+		// 						value: data[idx].id,
+		// 						text: data[idx].course_name,
+		// 						// status: data[idx].status,
+		// 						id: idx,
+		// 						start_time: data[idx].start_date,
+		// 						end_time: data[idx].end_date,
+		// 						break_time: data[idx].break_time,
+		// 						disabled: true,
+		// 					});
+		// 				} else {
+		// 					this.listCourse.push({
+		// 						value: data[idx].id,
+		// 						text: data[idx].course_name,
+		// 						// status: data[idx].status,
+		// 						id: idx,
+		// 						start_time: data[idx].start_date,
+		// 						end_time: data[idx].end_date,
+		// 						break_time: data[idx].break_time,
+		// 						disabled: false,
+		// 					});
+		// 				}
 
-						idx++;
-					}
-					console.log('list course detail', this.listCourse);
-				} else {
-					this.listCourse.length = 0;
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
+		// 				idx++;
+		// 			}
+		// 			console.log('list course detail', this.listCourse);
+		// 		} else {
+		// 			this.listCourse.length = 0;
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+		// },
 
 		async handleGetListCalendar() {
 			try {
@@ -756,11 +756,11 @@ export default {
 			this.$router.push({ name: 'ListShift' });
 		},
 
-		onClickChangeNode() {
-			this.modalDetail = false;
+		// onClickChangeNode() {
+		// 	this.modalDetail = false;
 
-			this.modalEdit = true;
-		},
+		// 	this.modalEdit = true;
+		// },
 
 		onAddNode() {
 			this.listNodeEditSelected.push({
@@ -1085,21 +1085,8 @@ export default {
 		handleinitObjectUpdate(otherInfo, listSelected) {
 			const INIT_UPDATE = {
 				driver_id: Number(otherInfo.driver_id),
-				// date: otherInfo.date,
 				listShift: [],
 			};
-
-			// listSelected.forEach((item) => {
-			// 	INIT_UPDATE.listShift.push({
-			// 		type: item.type,
-			// 		start_time: formatArray2Time(item.start_time),
-			// 		end_time: formatArray2Time(item.end_time),
-			// 		break_time: convertTimeCourse(formatArray2Time(item.break_time)),
-			// 	});
-			// });
-
-			// const INIT_UPDATE = {
-			// };
 
 			if (listSelected.length > 0) {
 				listSelected.forEach((item) => {

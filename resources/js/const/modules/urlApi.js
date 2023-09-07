@@ -66,6 +66,7 @@ const GET_EXPORT_SHIFT_PDF_ONLY_WEEK = '/shift/export-to-pdf';
 const GET_EXPORT_HIGHT_WAY = '/driver-course/export-shift-express-charge';
 const GET_EXPORT_SHIFT_FILE = '/shift/grade-tab-to-excel';
 const GET_EXPORT_PAYMENT = '/payment/export';
+const GET_EXPORT_EXPENSE = '/driver-course/export-driver-meal-shift';
 const GET_EXPORT_SALE_LIST_PDF = '/driver-course/export-sale-detail-pdf';
 const GET_EXPORT_PRACTICAL_PERFORMANCE_PDF = '/parctical-performance/export-to-pdf';
 const POST_UPDATE_CELL_SHIFT = '/driver-course/update-course';
@@ -167,6 +168,7 @@ export default {
 	GET_EXPORT_PRACTICAL_PERFORMANCE_PDF,
 	GET_EXPORT_SALE_LIST_PDF,
 	GET_EXPORT_PAYMENT,
+	GET_EXPORT_EXPENSE,
 	POST_UPDATE_CELL_SHIFT,
 	GET_DATA_UPDATE,
 	POST_UPDATE_COURSE_BASE,
