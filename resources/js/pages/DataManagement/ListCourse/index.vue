@@ -16,9 +16,9 @@
                                 <b-button
                                     pill
                                     class="btn-control"
-                                    @click="onClickSignUp()"
+                                    @click="onClickCreate()"
                                 >
-                                    {{ $t('APP.BUTTON_SIGN_UP') }}
+                                    {{ $t('APP.BUTTON_CREATE') }}
                                 </b-button>
                             </div>
                         </b-col>
@@ -366,7 +366,7 @@ export default {
 			}
 		},
 
-		onClickSignUp() {
+		onClickCreate() {
 			this.$router.push({
 				name: 'CourseCreate',
 			});
