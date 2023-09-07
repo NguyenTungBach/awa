@@ -510,6 +510,11 @@ export default {
 		CLIENT_EMAIL: '請求書送付連絡先',
 		CLIENT_PHONE: '請求書送付連絡先',
 		NOTE: 'メモ:',
+		TAX: '消費税:',
+		TAX_OPTION: {
+			TAX_INCLUDE: '内税',
+			TAX_EXCLUDE: '外税',
+		},
 	},
 	CUSTOMER_DETAIL: {
 		TITLE_CUSTOMER_DETAIL: '荷主詳細',

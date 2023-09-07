@@ -111,6 +111,19 @@
                                             </b-col>
                                         </b-row>
 
+                                        <!-- bach them-->
+                                        <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.TAX')"
+                                                        :value="isForm.tax"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                        <!-- bach them-->
+
                                         <b-row>
                                             <b-col>
                                                 <div class="item-form">
@@ -210,6 +223,7 @@ export default {
 				customer_id: '',
 				customer_name: '',
 				closing_date: '',
+				tax: '', // bach them
 				client_manager: '',
 				post_code: '',
 				address: '',
@@ -270,6 +284,7 @@ export default {
 						// this.isForm.end_time = convertValueToText(this.isForm.listTime, DATA.end_time);
 						// this.isForm.break_time = convertValueToText(this.isForm.listTime, convertBreakTimeNumberToTime(DATA.break_time));
 						this.isForm.closing_date = DATA.closing_date;
+						this.isForm.tax = DATA.tax; // bach them
 						this.isForm.client_manager = DATA.person_charge;
 						this.isForm.post_code = DATA.post_code;
 						this.isForm.note = DATA.note;

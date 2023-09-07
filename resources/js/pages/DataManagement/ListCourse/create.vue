@@ -163,6 +163,33 @@
                                                 <span class="text-closing-day">日</span>
                                             </b-col> -->
                                         </b-row>
+                                        <!-- bach them-->
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="customer-tax">
+                                                        {{ $t('CUSTOMER_CREATE.TAX') }}
+                                                    </label>
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-input-group>
+                                                        <b-form-select
+                                                            id="customer-tax"
+                                                            v-model="isForm.tax"
+                                                            :options="optionsTax"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                        <!-- bach them-->
 
                                         <b-row>
                                             <b-col
@@ -205,14 +232,15 @@
                                                 <div class="item-form-postCode">
                                                     <b-form-input
                                                         id="postCode-first" v-model="postalCode_first"
-                                                        type="number"
-                                                        min="1"
-                                                        max="3"
+                                                        type="text"
+                                                        onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                        maxlength="3"
                                                     />
                                                     <span class="postCode">-</span>
                                                     <b-form-input
                                                         id="postCode-second" v-model="postalCode_last"
-                                                        type="number"
+                                                        type="text"
+                                                        onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                                         maxlength="4"
                                                     />
                                                 </div>
@@ -265,6 +293,7 @@
                                                             v-model="isForm.customer_phone"
                                                             type="text"
                                                             maxlength="13"
+                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                                             @keyup="autoFormartPhoneNumber(isForm.customer_phone)"
                                                         />
                                                     </b-input-group>
@@ -313,6 +342,7 @@ import { postCourse } from '@/api/modules/courseManagement';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
+import i18n from '@/lang';
 // import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
@@ -355,12 +385,25 @@ export default {
 			isForm: {
 				course_id: '',
 				course_name: '',
+				tax: '', // bach them
 				exclusive: '',
 				customer_manager: '',
 				customer_address: '',
 				customer_phone: '',
 				note: '',
 			},
+
+			// Bach them
+			optionsTax: [
+				{
+					value: 1,
+					text: i18n.t('CUSTOMER_CREATE.TAX_OPTION.TAX_INCLUDE'),
+				},
+				{
+					value: 2,
+					text: i18n.t('CUSTOMER_CREATE.TAX_OPTION.TAX_EXCLUDE'),
+				},
+			],
 		};
 	},
 
@@ -439,6 +482,7 @@ export default {
 				customer_code: this.isForm.course_id,
 				customer_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
 				closing_date: this.isForm.exclusive,
+				tax: this.isForm.tax, // bach them
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
 				post_code: this.postalCode_first + '-' + this.postalCode_last,
 				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
@@ -482,7 +526,7 @@ export default {
 		},
 
 		// Bách thêm tự động thêm dấu gạch cho điện thoại
-		autoFormartPhoneNumber(number){
+		autoFormartPhoneNumber(number) {
 			const cleaned = `${number}`.replace(/\D/g, '');
 
 			const match1 = cleaned.match(/^(\d{3})$/);
@@ -490,9 +534,11 @@ export default {
 			const match3 = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
 			if (match1) {
 				this.isForm.customer_phone = `${match1[1]}-`;
-			} else if (match2) {
+			}
+			if (match2) {
 				this.isForm.customer_phone = `${match2[1]}-${match2[2]}-`;
-			} else if (match3) {
+			}
+			if (match3) {
 				this.isForm.customer_phone = `${match3[1]}-${match3[2]}-${match3[3]}`;
 			}
 

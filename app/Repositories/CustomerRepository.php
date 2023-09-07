@@ -80,7 +80,8 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     {
         $result = CustomerRepository::find($id);
         $result['closing_date'] = __('customers.closing_date_lang.' . $result->closing_date);
-        $result['tax'] = __('customers.tax.' . $result->tax);
+        $result['tax_value'] = $result->tax;
+        $result['tax'] = trans('customers.tax.' . $result->tax);
 
         return $result;
     }
