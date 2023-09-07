@@ -609,11 +609,16 @@ export default {
 		COURSE_ID: 'Customer ID',
 		COURSE_NAME: 'Customer name',
 		CLOSING_DAY: 'Closing day',
-		CLIENT_MANAGER: 'Person_charge',
+		CLIENT_MANAGER: 'Number_car',
 		ADDRESS_OF_CLIENT: 'Address of client',
 		CLIENT_EMAIL: 'client e-mail',
 		CLIENT_PHONE: 'Client Phone Number',
 		NOTE: 'Note',
+		TAX: 'Tax',
+		TAX_OPTION: {
+			TAX_INCLUDE: 'include',
+			TAX_EXCLUDE: 'exclude',
+		},
 	},
 	CUSTOMER_DETAIL: {
 		TITLE_CUSTOMER_DETAIL: 'Detail Customer',

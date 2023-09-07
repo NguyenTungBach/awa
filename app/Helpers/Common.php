@@ -5,7 +5,11 @@ namespace Helper;
 
 
 use App\Models\Calendar;
+use App\Models\Course;
 use App\Models\DayOff;
+use App\Models\Driver;
+use App\Models\DriverCourse;
+use App\Models\FinalClosingHistories;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -86,9 +90,9 @@ class Common
             $endDate = Carbon::parse($startDate)->endOfMonth()->toDateString();
         }
         $result = Calendar::select('date', 'week', 'rokuyou', 'holiday')
-                    ->whereDate('date', '>=', $startDate)
-                    ->whereDate('date', '<=', $endDate)
-                    ->get();
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->get();
         return $result->keyBy('date')->toArray();
     }
 
@@ -383,7 +387,8 @@ class Common
     /**
      * @return string
      */
-    public static function getPathAI(){
+    public static function getPathAI()
+    {
         $production = App::environment();
         switch ($production) {
             case 'dev' :
@@ -400,7 +405,8 @@ class Common
     /**
      * @return string
      */
-    public static function getEnvironmentAI(){
+    public static function getEnvironmentAI()
+    {
         $production = App::environment();
         switch ($production) {
             case 'dev' :
@@ -428,5 +434,57 @@ class Common
             $limit = is_null(request('per_page')) ? config('repository.pagination.limit', 15) : request('per_page');
             return $data->paginate($limit);
         }
+    }
+
+    public static function checkValidateShift($driver_id,$date){
+        $driver = Driver::find($driver_id);
+        // 1. Kiểm tra ngày đó có rơi vào final_closing không?
+        $getMonthYear = Carbon::parse($date)->format('Y-m');
+        $checkFinalClosingHistories = FinalClosingHistories::where('month_year',$getMonthYear)
+            ->exists();
+        // Nếu có tồn tại (không là duy nhất)
+        if ($checkFinalClosingHistories){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
+                trans("errors.final_closing_histories" ,[
+                    "attribute"=> "course"
+                ]),[
+                    "attribute"=> "course"
+                ]);
+        }
+        // 2. Kiểm tra ngày đó có rơi vào ngày nghỉ của driver không?
+        $course = DriverCourse::
+            where('driver_id',$driver_id)
+            ->where('date',$date)
+            ->whereIn('course_id',DriverCourse::ALL_ID_SPECIAL)
+            ->first();
+        if ($course){
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
+                trans('errors.driver_in_day_off'),[
+                    "driver_id"=> $driver->id,
+                    "driver_name"=> $driver->driver_name,
+                    "course_id"=> $course->id,
+                    "course_name"=> $course->course_name,
+                    "date"=> $date,
+                ]);
+        }
+        // 3. Kiểm tra driver đó có nghỉ hưu chưa?
+        if ($driver->end_date != null){
+            $dateRetirement = Carbon::parse($driver->end_date);
+            $checkDate = Carbon::parse($date);
+            // Nếu ngày chọn đã đến hoặc qua ngày nghỉ hưu thì báo lỗi
+            if ($checkDate->gte($dateRetirement)){
+                return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
+                    trans("errors.end_date_retirement" ,[
+                        "attribute"=> "driver $driver->driver_name",
+                        "end_date"=> $dateRetirement->format('Y-m-d')
+                    ]),
+                    [
+                        "driver_id"=> "driver_id: $driver->id",
+                        "driver_name"=> "driver_name: $driver->driver_name",
+                        "end_date"=> $dateRetirement->format('Y-m-d')
+                    ]);
+            }
+        }
+        return ResponseService::responseData(CODE_SUCCESS, 'success');
     }
 }

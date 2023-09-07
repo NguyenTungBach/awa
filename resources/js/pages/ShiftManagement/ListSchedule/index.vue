@@ -84,8 +84,8 @@
                                         :cols="12"
                                         :sm="12"
                                         :md="12"
-                                        :lg="6"
-                                        :xl="6"
+                                        :lg="4"
+                                        :xl="4"
                                     >
                                         <div class="course-rate-range">
                                             <label for="input-course-date-range">
@@ -160,8 +160,8 @@
                                         :cols="12"
                                         :sm="12"
                                         :md="12"
-                                        :lg="2"
-                                        :xl="2"
+                                        :lg="3"
+                                        :xl="3"
                                     >
                                         <div class="customer-name">
                                             <label for="input-customer-name">
@@ -176,8 +176,8 @@
                                         :cols="12"
                                         :sm="12"
                                         :md="12"
-                                        :lg="2"
-                                        :xl="2"
+                                        :lg="3"
+                                        :xl="3"
                                     >
                                         <div class="customer-name">
                                             <label for="input-customer-name">
@@ -670,10 +670,10 @@ export default {
 	},
 
 	methods: {
-		async initData() {
-			await this.handleGetCustomer();
-			await this.handleGetListCourse();
-			await this.handleGetDriverName();
+		initData() {
+			this.handleGetCustomer();
+			this.handleGetListCourse();
+			this.handleGetDriverName();
 		},
 
 		checkboxAll(){

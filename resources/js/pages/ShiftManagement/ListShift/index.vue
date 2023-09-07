@@ -358,9 +358,9 @@
                                             </b-th>
                                         </template>
                                     </template>
-                                    <b-th class="total-shift" :rowspan="2">
+                                    <!-- <b-th class="total-shift" :rowspan="2">
                                         {{ $t('LIST_SHIFT.TABLE_TOTAL') }}
-                                    </b-th>
+                                    </b-th> -->
                                 </b-tr>
                                 <b-tr>
                                     <b-th
@@ -464,9 +464,9 @@
                                                 />
                                             </template>
                                         </template>
-                                        <b-td class="td-total-shift">
+                                        <!-- <b-td class="td-total-shift">
                                             {{ emp.total_money }}
-                                        </b-td>
+                                        </b-td> -->
                                     </tr>
                                 </template>
                             </b-tbody>
@@ -500,9 +500,9 @@
                                             </b-th>
                                         </template>
                                     </template>
-                                    <b-th class="total-shift" :rowspan="2">
+                                    <!-- <b-th class="total-shift" :rowspan="2">
                                         {{ $t('LIST_SHIFT.TABLE_TOTAL') }}
-                                    </b-th>
+                                    </b-th> -->
                                 </b-tr>
                                 <b-tr>
                                     <!-- <b-th
@@ -584,9 +584,9 @@
                                                 />
                                             </template>
                                         </template>
-                                        <b-td class="td-total-shift">
+                                        <!-- <b-td class="td-total-shift">
                                             {{ emp.total_money }}
-                                        </b-td>
+                                        </b-td> -->
                                     </tr>
                                 </template>
                             </b-tbody>
@@ -3672,14 +3672,11 @@ export default {
 								}
 
 							}
-							tr:nth-child(1) {
-								min-height: 53px;
-							}
 
 							tr:nth-child(2) {
 								position: sticky;
 								z-index: 10;
-								top: 54px;
+								top: 42px;
 							}
 						}
 

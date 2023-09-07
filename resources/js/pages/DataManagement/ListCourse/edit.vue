@@ -135,7 +135,7 @@
                                                 </div>
                                             </b-col>
                                         </b-row>
-                                        <b-row>
+                                        <!-- <b-row>
                                             <b-col
                                                 :cols="12"
                                                 :sm="12"
@@ -155,6 +155,32 @@
                                                             id="customer-sales-tax"
                                                             v-model="isForm.saleTax"
                                                             :options="optionsSaleTax"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row> -->
+
+                                        <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="customer-tax">
+                                                        {{ $t('CUSTOMER_CREATE.TAX') }}
+                                                    </label>
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-input-group>
+                                                        <b-form-select
+                                                            id="customer-tax"
+                                                            v-model="isForm.tax"
+                                                            :options="optionsTax"
                                                         />
                                                     </b-input-group>
                                                 </div>
@@ -191,22 +217,29 @@
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
-                                                :lg="12"
-                                                :xl="12"
+                                                :lg="4"
+                                                :xl="4"
                                             >
-                                                <div class="item-form">
-                                                    <label for="input-course-postCode">
-                                                        {{ $t('CUSTOMER_CREATE.POST_CODE') }}
-                                                        <span class="text-danger">
-                                                            *
-                                                        </span>
-                                                    </label>
-                                                    <b-input-group>
-                                                        <b-form-input
-                                                            id="input-course-postCode"
-                                                            v-model="isForm.customer_postCode"
-                                                        />
-                                                    </b-input-group>
+                                                <label for="input-course-id">
+                                                    {{ $t('CUSTOMER_CREATE.POST_CODE') }}
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                </label>
+                                                <div class="item-form-postCode">
+                                                    <b-form-input
+                                                        id="postCode-first" v-model="postalCode_first"
+                                                        type="text"
+                                                        onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                        maxlength="3"
+                                                    />
+                                                    <span class="postCode">-</span>
+                                                    <b-form-input
+                                                        id="postCode-second" v-model="postalCode_last"
+                                                        type="text"
+                                                        onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                        maxlength="4"
+                                                    />
                                                 </div>
                                             </b-col>
                                         </b-row>
@@ -257,6 +290,7 @@
                                                             v-model="isForm.customer_phone"
                                                             type="text"
                                                             maxlength="13"
+                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                                             @keyup="autoFormartPhoneNumber(isForm.customer_phone)"
                                                         />
                                                     </b-input-group>
@@ -306,6 +340,7 @@ import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
 import { formartPhoneNumber } from '@/utils/formatNumber';
+import i18n from '@/lang';
 
 export default {
 	name: 'CourseEdit',
@@ -359,12 +394,26 @@ export default {
 				customer_address: '',
 				customer_phone: '',
 				exclusive: '',
-				saleTax: '',
+				tax: '',
 				//
 				note: '',
 			},
 
 			inited: false,
+
+			// Bach them
+			postalCode_first: '',
+			postalCode_last: '',
+			optionsTax: [
+				{
+					value: 1,
+					text: i18n.t('CUSTOMER_CREATE.TAX_OPTION.TAX_INCLUDE'),
+				},
+				{
+					value: 2,
+					text: i18n.t('CUSTOMER_CREATE.TAX_OPTION.TAX_EXCLUDE'),
+				},
+			],
 		};
 	},
 
@@ -466,8 +515,9 @@ export default {
 				customer_code: this.isForm.customer_id,
 				customer_name: this.isForm.customer_name ? this.isForm.customer_name.trim() : '',
 				closing_date: this.isForm.exclusive,
+				tax: this.isForm.tax, // bach them
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
-				post_code: this.isForm.customer_postCode,
+				post_code: this.postalCode_first + '-' + this.postalCode_last,
 				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
 				phone: this.isForm.customer_phone,
 				note: this.isForm.note ? this.isForm.note.trim() : '',
@@ -495,10 +545,18 @@ export default {
 							this.isForm.exclusive = item.value;
 						}
 					});
+					// bach them start
+					this.optionsTax.forEach(item => {
+						if (item.value === DATA.tax_value) {
+							this.isForm.tax = item.value;
+						}
+					});
+					// bach them end
 					this.isForm.customer_id = DATA.customer_code;
 					this.isForm.customer_name = DATA.customer_name;
 					this.isForm.customer_manager = DATA.person_charge;
-					this.isForm.customer_postCode = DATA.post_code;
+					this.postalCode_first = DATA.post_code.split('-')[0];
+					this.postalCode_last = DATA.post_code.split('-')[1];
 					this.isForm.customer_address = DATA.address;
 					this.isForm.customer_phone = formartPhoneNumber(DATA.phone);
 					this.isForm.note = DATA.note;
@@ -532,7 +590,7 @@ export default {
 						if (COURSE.code === 200) {
 							// this.goToList();
 							this.goToDetail();
-							TOAST_COURSE_MANAGEMENT.success();
+							TOAST_COURSE_MANAGEMENT.update();
 						}
 
 						setLoading(false);
@@ -562,9 +620,11 @@ export default {
 			const match3 = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
 			if (match1) {
 				this.isForm.customer_phone = `${match1[1]}-`;
-			} else if (match2) {
+			}
+			if (match2) {
 				this.isForm.customer_phone = `${match2[1]}-${match2[2]}-`;
-			} else if (match3) {
+			}
+			if (match3) {
 				this.isForm.customer_phone = `${match3[1]}-${match3[2]}-${match3[3]}`;
 			}
 
@@ -667,6 +727,18 @@ export default {
 
                         .select-multiple {
                             width: 100%;
+                        }
+
+                        .item-form-postCode {
+                            display: flex;
+                            margin-bottom: 10px;
+                            font-size: 18px;
+
+                            .postCode {
+                                margin: 0 8px;
+                                display: flex;
+                                align-items: center;
+                            }
                         }
                     }
                 }
