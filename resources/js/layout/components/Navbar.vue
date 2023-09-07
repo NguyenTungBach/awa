@@ -187,7 +187,7 @@ export default {
             margin: 10px 40px;
 
             img {
-                height: 35px;
+                height: 50px;
                 padding-right: 20px;
             }
         }

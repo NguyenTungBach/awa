@@ -99,10 +99,6 @@
                                         <b-row>
                                             <b-col>
                                                 <div class="item-form">
-                                                    <!-- <DetailForm
-                                                        :label="$t('CUSTOMER_CREATE.CLOSING_DAY')"
-                                                        :value="isForm.course_name"
-                                                    /> -->
                                                     <DetailForm
                                                         :label="$t('CUSTOMER_CREATE.CLOSING_DAY')"
                                                         :value="isForm.closing_date"
@@ -123,6 +119,17 @@
                                             </b-col>
                                         </b-row>
                                         <!-- bach them-->
+
+                                        <!-- <b-row>
+                                            <b-col>
+                                                <div class="item-form">
+                                                    <DetailForm
+                                                        :label="$t('CUSTOMER_CREATE.SALE_TAX')"
+                                                        :value="isForm.saleTax"
+                                                    />
+                                                </div>
+                                            </b-col>
+                                        </b-row> -->
 
                                         <b-row>
                                             <b-col>

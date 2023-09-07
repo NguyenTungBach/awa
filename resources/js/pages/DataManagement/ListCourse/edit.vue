@@ -132,24 +132,34 @@
                                                             :options="optionsClosingDay"
                                                         />
                                                     </b-input-group>
-                                                    <!-- <b-form-select
-                                                        id="customer-closing-day"
-                                                        v-model="isForm.exclusive"
-                                                        :options="optionsClosingDay"
-                                                    /> -->
                                                 </div>
                                             </b-col>
-                                            <!-- <b-col
+                                        </b-row>
+                                        <!-- <b-row>
+                                            <b-col
                                                 :cols="12"
                                                 :sm="12"
                                                 :md="12"
                                                 :lg="12"
-                                                :xl="1"
-                                                style="bottom: -41px;"
+                                                :xl="12"
                                             >
-                                                <span class="text-closing-day">日</span>
-                                            </b-col> -->
-                                        </b-row>
+                                                <div class="item-form">
+                                                    <label for="customer-sales-tax">
+                                                        {{ $t('CUSTOMER_CREATE.SALE_TAX') }}
+                                                    </label>
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-input-group>
+                                                        <b-form-select
+                                                            id="customer-sales-tax"
+                                                            v-model="isForm.saleTax"
+                                                            :options="optionsSaleTax"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row> -->
 
                                         <b-row>
                                             <b-col
@@ -358,6 +368,17 @@ export default {
 				{
 					value: 4,
 					text: '末日',
+				},
+			],
+
+			optionsSaleTax: [
+				{
+					value: 1,
+					text: '内税',
+				},
+				{
+					value: 2,
+					text: '外税',
 				},
 			],
 

@@ -132,12 +132,6 @@
                                                     <span class="text-danger">
                                                         *
                                                     </span>
-                                                    <!-- <b-form-select
-                                                        id="customer-closing-day"
-                                                        v-model="isForm.exclusive"
-                                                        :options="optionsClosingDay"
-                                                        :disabled="isLoading"
-                                                    /> -->
                                                     <b-input-group :append="$t('CREATE_DRIVER.DAY')">
                                                         <b-form-select
                                                             id="customer-closing-day"
@@ -145,23 +139,8 @@
                                                             :options="optionsClosingDay"
                                                         />
                                                     </b-input-group>
-                                                    <!-- <b-form-select
-                                                        id="customer-closing-day"
-                                                        v-model="isForm.exclusive"
-                                                        :options="optionsClosingDay"
-                                                    /> -->
                                                 </div>
                                             </b-col>
-                                            <!-- <b-col
-                                                :cols="12"
-                                                :sm="12"
-                                                :md="12"
-                                                :lg="12"
-                                                :xl="1"
-                                                style="bottom: -41px;"
-                                            >
-                                                <span class="text-closing-day">日</span>
-                                            </b-col> -->
                                         </b-row>
                                         <!-- bach them-->
                                         <b-row>
@@ -376,6 +355,17 @@ export default {
 				},
 			],
 
+			optionsSaleTax: [
+				{
+					value: 1,
+					text: '内税',
+				},
+				{
+					value: 2,
+					text: '外税',
+				},
+			],
+
 			stringGroup: [null, null],
 
 			valueGroup: [],
@@ -387,6 +377,7 @@ export default {
 				course_name: '',
 				tax: '', // bach them
 				exclusive: '',
+				saleTax: '',
 				customer_manager: '',
 				customer_address: '',
 				customer_phone: '',
@@ -517,7 +508,8 @@ export default {
 				}
 
 				setLoading(false);
-			} catch {
+			} catch (error) {
+				console.log(error);
 				setLoading(false);
 			}
 			// } else {

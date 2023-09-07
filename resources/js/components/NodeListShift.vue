@@ -85,7 +85,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ Number(dataNode.courses_expressway_fee) }}
+                        {{ dataNode.courses_expressway_fee ? Number(dataNode.courses_expressway_fee) : dataNode.courses_expressway_fee}}
                     </div>
                 </template>
                 <template v-else>
@@ -144,7 +144,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ Number(dataNode.courses_ship_fee) }}
+                        {{ dataNode.courses_ship_fee ? Number(dataNode.courses_ship_fee) : dataNode.courses_ship_fee }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
@@ -197,7 +197,59 @@
                     <div
                         class="show-course"
                     >
-                        {{ Number(dataNode.payment) }}
+                        {{ dataNode.payment ? Number(dataNode.payment) : dataNode.payment}}
+                    </div>
+                </template>
+                <template v-if="listText.length > 2">
+                    <b-row>
+                        <b-col
+                            cols="11"
+                            style="padding: 0"
+                        >
+                            <div class="show-course-more">
+                                {{ listText[0].name }}
+                            </div>
+                            <div class="show-course-more">
+                                {{ listText[1].name }}
+                            </div>
+                        </b-col>
+                        <b-col
+                            cols="1"
+                            style="padding: 0"
+                        >
+                            <div class="icon-more">
+                                <i class="fad fa-plus-circle icon-show-more" />
+                            </div>
+                        </b-col>
+                    </b-row>
+
+                    <b-popover
+                        :target="`node-${idxComponent}-${date}-${driverCode}`"
+                        triggers="hover"
+                    >
+                        <div
+                            v-for="(item, idx) in listText"
+                            :key="idx"
+                        >
+                            {{ idx + 1 }}. {{ item.name }}
+                        </div>
+                    </b-popover>
+                </template>
+            </div>
+        </div>
+    </b-td>
+    <b-td
+        v-else-if="checkTable === 'EXPENSE TABLE'"
+        :id="`node-${idxComponent}-${date}-${driverCode}`"
+        :class="['node-base', isEdit ? 'show-node-edit node-base-hover' : '']"
+    >
+        <div :class="['show-node']">
+            <div>
+                <template v-if="dataNode">
+                    <div
+                        class="show-course"
+                    >
+                        {{ dataNode.course_meal_fee_commission ? Number(dataNode.course_meal_fee_commission) : dataNode.course_meal_fee_commission }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
