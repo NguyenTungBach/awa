@@ -459,13 +459,7 @@ class Common
             ->first();
         if ($course){
             return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
-                trans('errors.driver_in_day_off',[
-                    "driver_id"=> $driver->id,
-                    "driver_name"=> $driver->driver_name,
-                    "course_id"=> $course->id,
-                    "course_name"=> $course->course_name,
-                    "date"=> $date,
-                ]),[
+                trans('errors.driver_in_day_off'),[
                     "driver_id"=> $driver->id,
                     "driver_name"=> $driver->driver_name,
                     "course_id"=> $course->id,
@@ -481,11 +475,12 @@ class Common
             if ($checkDate->gte($dateRetirement)){
                 return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
                     trans("errors.end_date_retirement" ,[
-                        "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name",
+                        "attribute"=> "driver $driver->driver_name",
                         "end_date"=> $dateRetirement->format('Y-m-d')
                     ]),
                     [
-                        "attribute"=> "driver_id: $driver->id, driver_name: $driver->driver_name",
+                        "driver_id"=> "driver_id: $driver->id",
+                        "driver_name"=> "driver_name: $driver->driver_name",
                         "end_date"=> $dateRetirement->format('Y-m-d')
                     ]);
             }

@@ -2606,7 +2606,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
         header("Content-Type: application/download");;
-        header("Content-Disposition: attachment;filename=シフト表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
+        header("Content-Disposition: attachment;filename=経費表_". $start_dateForNameFile."-".$end_dateForNameFile .".xlsx");
         header("Content-Transfer-Encoding: binary ");
         $writer = new Xlsx($spreadsheet);
         ob_get_contents();
