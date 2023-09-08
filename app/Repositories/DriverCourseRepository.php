@@ -1011,35 +1011,35 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 //        // 5.Kiểm tra ngày chọn có đúng như trong ship_date của courses không end
 
         // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
-        foreach ($items as $item) {
-            foreach ($item['listShift'] as $shift){
-                // Trong trường hợp thấy id đặc biệt thì danh sách chỉ được mỗi id ngày đó thôi
-                if (in_array($shift['course_id'], DriverCourse::ALL_ID_SPECIAL)){
-                    $idCourseSPECIAL = $shift['course_id'];
-                    $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d'); // Ngày cần check
-                    //Quay về Kiểm tra lại xem trong lịch trình ngày đó chỉ được một nếu còn tồn tại ngày khác thì báo lỗi
-                    $filterDate = array_filter($item['listShift'], function ($item) use ($checkDateFind) {
-                        return $item['date'] === $checkDateFind;
-                    });
-
-                    // Nếu lịch trình lớn hơn 1 thì báo lỗi
-                    if (count($filterDate) >1){
-                        $driver = Driver::find($item['driver_id']);
-                        $course = Course::find($idCourseSPECIAL);
-                        $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d');
-
-                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
-                            trans('errors.all_id_special_must_one',[
-                                "driver_id"=> $item['driver_id'],
-                                "driver_name"=> $driver->driver_name,
-                                "course_id"=> $idCourseSPECIAL,
-                                "course_name"=> $course->course_name,
-                                "date"=> $checkDateFind,
-                            ]));
-                    }
-                }
-            }
-        }
+//        foreach ($items as $item) {
+//            foreach ($item['listShift'] as $shift){
+//                // Trong trường hợp thấy id đặc biệt thì danh sách chỉ được mỗi id ngày đó thôi
+//                if (in_array($shift['course_id'], DriverCourse::ALL_ID_SPECIAL)){
+//                    $idCourseSPECIAL = $shift['course_id'];
+//                    $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d'); // Ngày cần check
+//                    //Quay về Kiểm tra lại xem trong lịch trình ngày đó chỉ được một nếu còn tồn tại ngày khác thì báo lỗi
+//                    $filterDate = array_filter($item['listShift'], function ($item) use ($checkDateFind) {
+//                        return $item['date'] === $checkDateFind;
+//                    });
+//
+//                    // Nếu lịch trình lớn hơn 1 thì báo lỗi
+//                    if (count($filterDate) >1){
+//                        $driver = Driver::find($item['driver_id']);
+//                        $course = Course::find($idCourseSPECIAL);
+//                        $checkDateFind = Carbon::parse($shift['date'])->format('Y-m-d');
+//
+//                        return ResponseService::responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY,
+//                            trans('errors.all_id_special_must_one',[
+//                                "driver_id"=> $item['driver_id'],
+//                                "driver_name"=> $driver->driver_name,
+//                                "course_id"=> $idCourseSPECIAL,
+//                                "course_name"=> $course->course_name,
+//                                "date"=> $checkDateFind,
+//                            ]));
+//                    }
+//                }
+//            }
+//        }
         // 1.0 Kiểm tra nếu có id đặc biệt thì driver chỉ định ngày đó thì tất cả items chỉ có mỗi id đó start
 
         // 1.1 Kiểm tra các driver_id có bị trùng nhau không
