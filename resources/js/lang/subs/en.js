@@ -226,6 +226,7 @@ export default {
 		TABLE_HIGHT_WAY_DUE_DATE: 'Due date',
 		TABLE_HIGHT_WAY_CUSTOMER_NAME: 'Customer name',
 		TABLE_HIGHT_WAY_MONTHLY_AMOUNT: 'Monthly amount',
+		TABLE_TOTAL_EXPENSE: 'Total by Closing Date',
 		HALF_DAY_OF: 'Half Day Off',
 		TABLE_PAYMENT_COMPANY_ID: 'Cooperate company ID',
 		TABLE_PAYMENT_DUE_DATE: 'Due date',
