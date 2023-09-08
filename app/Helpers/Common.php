@@ -451,22 +451,22 @@ class Common
                     "attribute"=> "course"
                 ]);
         }
-        // 2. Kiểm tra ngày đó có rơi vào ngày nghỉ của driver không?
-        $course = DriverCourse::
-            where('driver_id',$driver_id)
-            ->where('date',$date)
-            ->whereIn('course_id',DriverCourse::ALL_ID_SPECIAL)
-            ->first();
-        if ($course){
-            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
-                trans('errors.driver_in_day_off'),[
-                    "driver_id"=> $driver->id,
-                    "driver_name"=> $driver->driver_name,
-                    "course_id"=> $course->id,
-                    "course_name"=> $course->course_name,
-                    "date"=> $date,
-                ]);
-        }
+//        // 2. Kiểm tra ngày đó có rơi vào ngày nghỉ của driver không?
+//        $course = DriverCourse::
+//            where('driver_id',$driver_id)
+//            ->where('date',$date)
+//            ->whereIn('course_id',DriverCourse::ALL_ID_SPECIAL)
+//            ->first();
+//        if ($course){
+//            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',
+//                trans('errors.driver_in_day_off'),[
+//                    "driver_id"=> $driver->id,
+//                    "driver_name"=> $driver->driver_name,
+//                    "course_id"=> $course->id,
+//                    "course_name"=> $course->course_name,
+//                    "date"=> $date,
+//                ]);
+//        }
         // 3. Kiểm tra driver đó có nghỉ hưu chưa?
         if ($driver->end_date != null){
             $dateRetirement = Carbon::parse($driver->end_date);
