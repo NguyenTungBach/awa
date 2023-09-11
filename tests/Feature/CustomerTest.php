@@ -28,12 +28,10 @@ class CustomerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed --class=UserSeeder');
         $user = User::first();
         if (!$user) {
             $user = User::factory()->count(5)->create();
         }
-        $this->artisan('db:seed --class=CustomerSeeder');
         $customer = Customer::first();
         if (!$customer) {
             $customer = Customer::factory()->count(5)->create();
@@ -126,6 +124,7 @@ class CustomerTest extends TestCase
             'customer_code' => '123456',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -143,6 +142,7 @@ class CustomerTest extends TestCase
             'customer_code' => '',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -170,6 +170,7 @@ class CustomerTest extends TestCase
             'customer_code' => '0001',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -197,6 +198,7 @@ class CustomerTest extends TestCase
             'customer_code' => 'abc',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -224,6 +226,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678954236178542962',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -250,6 +253,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => '',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -276,6 +280,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Admin Admin Admin Admin Admin Admin Admin',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -302,6 +307,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -328,6 +334,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -354,6 +361,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => '',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -380,6 +388,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => 'person charge person charge person charge person charge',
             'post_code' => '123-4567',
             'address' => 'Address 01',
@@ -406,6 +415,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => 'person charge',
             'post_code' => '',
             'address' => '',
@@ -432,6 +442,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => 'person charge',
             'post_code' => '123-4567',
             'address' => '',
@@ -458,6 +469,7 @@ class CustomerTest extends TestCase
             'customer_code' => '12345678',
             'customer_name' => 'Customer',
             'closing_date' => '5',
+            'tax' => '1',
             'person_charge' => 'person charge',
             'post_code' => '123-4567',
             'address' => 'address',
@@ -482,7 +494,7 @@ class CustomerTest extends TestCase
         $customer = Customer::first();
         $response = $this->actingAs($user)->json('put', 'api/customer/' . $customer->id, [
             'token' => $token,
-            "customer_name" => "Customer update",
+            'customer_name' => 'Customer update',
         ])->assertStatus(Response::HTTP_OK);
     }
 
@@ -670,6 +682,7 @@ class CustomerTest extends TestCase
             'customer_code' => '1234567890',
             'customer_name' => 'Customer 01',
             'closing_date' => '1',
+            'tax' => '1',
             'person_charge' => 'Person charge 01',
             'post_code' => '123-4567',
             'address' => 'Address 01',
