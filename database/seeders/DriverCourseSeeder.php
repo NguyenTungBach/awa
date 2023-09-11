@@ -97,5 +97,20 @@ class DriverCourseSeeder extends Seeder
 //                ]);
 //            }
 //        }
+
+        $courses = Course::get();
+        foreach ($courses as $key => $course) {
+            if ($course->customer_id != 0) {
+                DriverCourse::factory()->create([
+                    'driver_id' => $course->driver_id,
+                    'course_id' => $course->id,
+                    'start_time' => $course->start_date,
+                    'end_time' => $course->end_date,
+                    'break_time' => $course->break_time,
+                    'date' => $course->ship_date,
+                    'status' => 1,
+                ]);
+            }
+        }
     }
 }

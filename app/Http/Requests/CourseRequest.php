@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Course;
 use App\Models\Customer;
+use App\Models\Driver;
 use Illuminate\Validation\Rule;
 use App\Rules\CompareHours;
 use App\Rules\CheckDriverCourseExists;
@@ -55,17 +56,22 @@ class CourseRequest extends FormRequest
 
     public function getCustomRuleStore(){
         $arrCustomerId = Customer::get()->pluck('id');
+        $arrDriverId = Driver::get()->pluck('id');
 
         $rules = [
             'customer_id' => [
                 'required',
                 Rule::in($arrCustomerId)
             ],
-            'course_name' => [
+            // 'course_name' => [
+            //     'required',
+            //     'string',
+            //     'max:20',
+            //     'unique:courses,course_name,NULL,id,deleted_at,NULL',
+            // ],
+            'driver_id' => [
                 'required',
-                'string',
-                'max:20',
-                'unique:courses,course_name,NULL,id,deleted_at,NULL',
+                Rule::in($arrDriverId)
             ],
             'ship_date' => [
                 'required',
@@ -90,6 +96,10 @@ class CourseRequest extends FormRequest
             ],
             'departure_place' => 'required|string|max:20',
             'arrival_place' => 'required|string|max:20',
+            'item_name' => 'required|string|max:20',
+            'quantity' => 'nullable|numeric',
+            'price' => 'nullable|numeric',
+            'weight' => 'nullable|numeric',
             'ship_fee' => 'required|numeric',
             'associate_company_fee' => 'nullable|numeric',
             'expressway_fee' => 'nullable|numeric',
@@ -103,6 +113,7 @@ class CourseRequest extends FormRequest
 
     public function getCustomRuleIndex(){
         $arrCustomerId = Customer::get()->pluck('id');
+        $arrDriverId = Driver::get()->pluck('id');
 
         $rules = [
             'start_date_ship' => [
@@ -118,9 +129,13 @@ class CourseRequest extends FormRequest
                 'sometimes',
                 Rule::in($arrCustomerId)
             ],
+            'driver_id' => [
+                'sometimes',
+                Rule::in($arrDriverId)
+            ],
             'order_by' => [
                 'sometimes',
-                Rule::in(['ship_date', 'course_name', 'customer_name', 'departure_place', 'arrival_place', 'ship_fee'])
+                Rule::in(['ship_date', 'course_name', 'customer_name', 'departure_place', 'arrival_place', 'ship_fee', 'driver_name'])
             ],
             'sort_by' =>  [
                 'sometimes',
@@ -208,11 +223,9 @@ class CourseRequest extends FormRequest
             // customer_id
             'customer_id.required' => __('validation.custom.required_custom'),
             'customer_id.in' => __('validation.in', ['attribute' => __('courses.customer_id')]),
-            // course_name
-            'course_name.required' => __('validation.custom.required_custom'),
-            'course_name.string' => __('validation.string', ['attribute' => __('courses.course_name')]),
-            'course_name.max' => __('validation.max.string', ['attribute' => __('courses.course_name'), 'max' => 20]),
-            'course_name.unique' => 'このコース名は既に登録されています。',
+            // driver_id
+            'driver_id.required' => __('validation.custom.required_custom'),
+            'driver_id.in' => __('validation.in', ['attribute' => __('courses.driver_id')]),
             // ship_date
             'ship_date.required' => __('validation.custom.required_custom'),
             'ship_date.date_format' => __('validation.date_format', ['attribute' => __('courses.ship_date'), 'format' => 'Y-m-d']),
@@ -233,6 +246,19 @@ class CourseRequest extends FormRequest
             'arrival_place.required' => __('validation.custom.required_custom'),
             'arrival_place.string' => __('validation.string', ['attribute' => __('courses.arrival_place')]),
             'arrival_place.max' => __('validation.max.string', ['attribute' => __('courses.arrival_place'), 'max' => 20]),
+            // item_name
+            'item_name.required' => __('validation.custom.required_custom'),
+            'item_name.string' => __('validation.string', ['attribute' => __('courses.item_name')]),
+            'item_name.max' => __('validation.max.string', ['attribute' => __('courses.item_name'), 'max' => 20]),
+            // quantity
+            'quantity.numeric' => __('validation.numeric', ['attribute' => __('courses.quantity')]),
+            'quantity.max' => __('validation.max.string', ['attribute' => __('courses.quantity'), 'max' => 15]),
+            // price
+            'price.numeric' => __('validation.numeric', ['attribute' => __('courses.price')]),
+            'price.max' => __('validation.max.string', ['attribute' => __('courses.price'), 'max' => 15]),
+            // weight
+            'weight.numeric' => __('validation.numeric', ['attribute' => __('courses.weight')]),
+            'weight.max' => __('validation.max.string', ['attribute' => __('courses.weight'), 'max' => 15]),
             // ship_fee
             'ship_fee.required' => __('validation.custom.required_custom'),
             'ship_fee.numeric' => __('validation.numeric', ['attribute' => __('courses.ship_fee')]),

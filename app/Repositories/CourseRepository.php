@@ -11,6 +11,7 @@ use App\Models\FinalClosingHistories;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\Contracts\CourseRepositoryInterface;
 use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
+use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 use Helper\Common;
 use Helper\ResponseService;
 use Illuminate\Http\Response;
@@ -22,16 +23,18 @@ use App\Models\DriverCourse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
-class CourseRepository extends BaseRepository implements CourseRepositoryInterface, CashOutStatisticalRepositoryInterface
+class CourseRepository extends BaseRepository implements CourseRepositoryInterface, CashOutStatisticalRepositoryInterface, DriverCourseRepositoryInterface
 {
     public function __construct(
         Application $app,
         CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository,
-        CashInStaticalRepositoryInterface  $cashInStaticalRepository
+        CashInStaticalRepositoryInterface $cashInStaticalRepository,
+        DriverCourseRepositoryInterface $driverCourseRepository
     ){
         parent::__construct($app);
         $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
         $this->cashInStaticalRepository = $cashInStaticalRepository;
+        $this->driverCourseRepository = $driverCourseRepository;
     }
 
     /**
@@ -47,30 +50,69 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function createCourse($input)
     {
+        $input['course_name'] = 'driver '.$input['driver_id'];
+        $input['quantity'] = empty($input['quantity']) ? 0 : Arr::get($input, 'quantity', 0);
+        $input['price'] = empty($input['price']) ? 0 : Arr::get($input, 'price', 0);
+        $input['weight'] = empty($input['weight']) ? 0 : Arr::get($input, 'weight', 0);
         $input['associate_company_fee'] = empty($input['associate_company_fee']) ? 0 : Arr::get($input, 'associate_company_fee', 0);
         $input['expressway_fee'] = empty($input['expressway_fee']) ? 0 : Arr::get($input, 'expressway_fee', 0);
         $input['commission'] = empty($input['commission']) ? 0 : Arr::get($input, 'commission', 0);
         $input['meal_fee'] = empty($input['meal_fee']) ? 0 : Arr::get($input, 'meal_fee', 0);
         $input['note'] = Arr::get($input, 'note', NULL);
+        try {
+            DB::beginTransaction();
+            $course = [];
 
-        $course = Course::create([
-            'customer_id' => $input['customer_id'],
-            'course_name' => $input['course_name'],
-            'ship_date' => $input['ship_date'],
-            'start_date' => $input['start_date'],
-            'end_date' => $input['end_date'],
-            'break_time' => $input['break_time'],
-            'departure_place' => $input['departure_place'],
-            'arrival_place' => $input['arrival_place'],
-            'ship_fee' => $input['ship_fee'],
-            'associate_company_fee' => $input['associate_company_fee'],
-            'expressway_fee' => $input['expressway_fee'],
-            'commission' => $input['commission'],
-            'meal_fee' => $input['meal_fee'],
-            'note' => $input['note'],
-        ]);
+            $course = Course::create([
+                'customer_id' => $input['customer_id'],
+                'driver_id' => $input['driver_id'],
+                'course_name' => $input['course_name'],
+                'ship_date' => $input['ship_date'],
+                'start_date' => $input['start_date'],
+                'end_date' => $input['end_date'],
+                'break_time' => $input['break_time'],
+                'departure_place' => $input['departure_place'],
+                'arrival_place' => $input['arrival_place'],
+                'item_name' => $input['item_name'],
+                'quantity' => $input['quantity'],
+                'price' => $input['price'],
+                'weight' => $input['weight'],
+                'ship_fee' => $input['ship_fee'],
+                'associate_company_fee' => $input['associate_company_fee'],
+                'expressway_fee' => $input['expressway_fee'],
+                'commission' => $input['commission'],
+                'meal_fee' => $input['meal_fee'],
+                'note' => $input['note'],
+            ]);
 
-        return $course;
+            // create driver_course
+            $check = Common::checkValidateShift($course->driver_id, $course->ship_date);
+            if ($check['code'] == 200) {
+                $driverCourse = DriverCourse::create([
+                    'driver_id' => $course->driver_id,
+                    'course_id' => $course->id,
+                    'start_time' => $course->start_date,
+                    'end_time' => $course->end_date,
+                    'break_time' => $course->break_time,
+                    'date' => $course->ship_date,
+                    'status' => 1
+                ]);
+
+                // update cash
+                $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse->date);
+                $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
+            } else {
+                $course = [];
+            }
+
+            DB::commit();
+
+            return $course;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception;
+        }
     }
 
     public function getAll($input)
@@ -85,7 +127,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $data = [];
         $startOfMonth = Carbon::create($input['month_line'])->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::create($input['month_line'])->endOfMonth()->format('Y-m-d');
-        $courses = Course::with('customer')->whereBetween('ship_date', [$startOfMonth, $endOfMonth])->whereNull('courses.status');
+        $courses = Course::with(['customer', 'driver'])->whereBetween('ship_date', [$startOfMonth, $endOfMonth])->whereNull('courses.status');
         if (!empty($input['start_date_ship']) && !empty($input['end_date_ship'])) {
             $courses = $courses->whereBetween('ship_date', [$input['start_date_ship'], $input['end_date_ship']]);
         }
@@ -132,6 +174,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                 $data[$key]['ship_date'] = $value->ship_date;
                 $data[$key]['course_name'] = $value->course_name;
                 $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
+                $data[$key]['driver_name'] = empty($value->driver) ? '' : $value->driver->driver_name;
                 $data[$key]['departure_place'] = $value->departure_place;
                 $data[$key]['arrival_place'] = $value->arrival_place;
                 $data[$key]['ship_fee'] = $value->ship_fee;

@@ -32,6 +32,7 @@ class Course extends Model
 
     protected $fillable = [
         'customer_id',
+        'driver_id',
         'course_name',
         'ship_date',
         'start_date',
@@ -39,6 +40,10 @@ class Course extends Model
         'break_time',
         'departure_place',
         'arrival_place',
+        'item_name',
+        'quantity',
+        'price',
+        'weight',
         'ship_fee',
         'associate_company_fee',
         'expressway_fee',
@@ -66,5 +71,10 @@ class Course extends Model
             $query->orderBy($field, $sortby);
         }
         return $query;
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
     }
 }

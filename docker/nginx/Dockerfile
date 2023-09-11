@@ -2,8 +2,8 @@
 FROM node:14-alpine as build-stage
 WORKDIR /app
 RUN npm install
-COPY ./package.json /app
-COPY ./package-lock.json /app
+# COPY ./package.json /app
+# COPY ./package-lock.json /app
 COPY ./ /app
 RUN npm run production
 
