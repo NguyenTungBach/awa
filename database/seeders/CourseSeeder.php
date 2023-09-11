@@ -35,6 +35,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "待機", // wait
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '00:00',
@@ -58,6 +59,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "社内業務", // leader/Chief
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '09:00',
@@ -81,6 +83,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "手間", // working status
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '09:00',
@@ -103,6 +106,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "公休", // holiday
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '00:00',
@@ -126,6 +130,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "希望休", // day-off request
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '00:00',
@@ -149,6 +154,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "有給休暇", // paid
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '00:00',
@@ -172,6 +178,7 @@ class CourseSeeder extends Seeder
         Course::factory()->create([
             'customer_id' => 0,
             'driver_id' => 0,
+            'vehicle_number' => NULL,
             'course_name' => "半休", // half off
             'ship_date' => Carbon::now()->format("Y-m-d"),
             'start_date' => '00:00',
@@ -205,6 +212,7 @@ class CourseSeeder extends Seeder
             $course = Course::factory()->create([
                 'customer_id' => $value,
                 'driver_id' => $valueRandom,
+                'vehicle_number' => '123' . $dem,
                 'course_name' => 'Course name ' . $value,
                 'ship_date' => $aboutSevenDaysAgo->format("Y-m-d"),
                 'start_date' => '09:00',

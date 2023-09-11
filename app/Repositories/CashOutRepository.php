@@ -9,6 +9,7 @@ namespace Repository;
 use App\Models\CashOut;
 use App\Models\CashOutHistory;
 use App\Models\DriverCourse;
+use App\Models\Driver;
 use App\Repositories\Contracts\CashOutRepositoryInterface;
 use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use Helper\ResponseService;
@@ -48,17 +49,19 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
             DB::beginTransaction();
             $cashOut = [];
             $input['note'] = Arr::get($input, 'note', NULL);
-
-            $cashOut = CashOut::create([
-                'driver_id' => $input['driver_id'],
-                'cash_out' => $input['cash_out'],
-                'payment_method' => $input['payment_method'],
-                'payment_date' => $input['payment_date'],
-                'note' => $input['note'],
-            ]);
-
-            unset($input['payment_method'], $input['note']);
-            $cashOutCreate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
+            $check = $this->checkDriverAssociate($input['driver_id']);
+            if ($check) {
+                $cashOut = CashOut::create([
+                    'driver_id' => $input['driver_id'],
+                    'cash_out' => $input['cash_out'],
+                    'payment_method' => $input['payment_method'],
+                    'payment_date' => $input['payment_date'],
+                    'note' => $input['note'],
+                ]);
+    
+                unset($input['payment_method'], $input['note']);
+                $cashOutCreate = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
+            }
             DB::commit();
 
             return $cashOut;
@@ -192,6 +195,14 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         if (!($driverCourses->isEmpty())) {
             $result = true;
         }
+
+        return $result;
+    }
+
+    public function checkDriverAssociate($driverId)
+    {
+        $arrDriverAssociate = Driver::where('type', 4)->pluck('id')->toArray();
+        $result = in_array($driverId, $arrDriverAssociate);
 
         return $result;
     }

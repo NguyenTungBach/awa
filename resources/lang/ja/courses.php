@@ -3,6 +3,7 @@
 return [
     'customer_id' => '荷主名',
     'driver_id' => '従業員名',
+    'vehicle_number' => '車両番号',
     'course_name' => '運行名',
     'ship_date' => '運行日',
     'start_date' => '始業時間',
