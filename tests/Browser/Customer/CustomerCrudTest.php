@@ -55,6 +55,9 @@ class CustomerCrudTest extends DuskTestCase
         $browser->click('#customer-closing-day')->pause(1000);
         $browser->click('#customer-closing-day > option:nth-child(4)')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('#customer-tax')->pause(1000);
+        $browser->click('#customer-tax > option:nth-child(2)')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-manager','abc')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-first','123')->pause(1000);

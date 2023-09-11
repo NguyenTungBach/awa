@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -89,22 +90,22 @@ class DriverTest extends TestCase
             ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testSortByDriverStatusSuccess()
+    public function testSortByDriverTypeSuccess()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/driver?field=status&sortby=desc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/driver?field=typeName&sortby=desc' . '&token=' . $token)
             ->assertStatus(CODE_SUCCESS);
         if (count($response->decodeResponseJson()['data'])) {
             $this->assertEquals(\Illuminate\Http\Response::HTTP_OK, $response->decodeResponseJson()['code']);
         }
     }
 
-    public function testSortByDriverStatusFalse()
+    public function testSortByDriverTypeFalse()
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
-        $response = $this->actingAs($user)->json('get', 'api/driver?field=status&sortby=abc' . '&token=' . $token)
+        $response = $this->actingAs($user)->json('get', 'api/driver?field=typeName&sortby=abc' . '&token=' . $token)
             ->assertStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -651,30 +652,30 @@ class DriverTest extends TestCase
             ]);
     }
 
-    public function testUpdateDriverCodeEmpty()
-    {
-        $user = User::where('user_code', '=', '1122')->first();
-        $token = \JWTAuth::fromUser($user);
-        $driver = Driver::first();
-        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
-            'token' => $token,
-            "type" => 1,
-            "driver_name" => "TuanMinh",
-            "driver_code" => "",
-            "car" => "LamBo",
-            "start_date" => "2022-08-20",
-            "note" => "thoi roi ta da xa nhau",
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                "code",
-                "message",
-                "message_content",
-                "message_internal" => [
-                    'driver_code' => [
-                    ],
-                ],
-            ]);
-    }
+//    public function testUpdateDriverCodeEmpty()
+//    {
+//        $user = User::where('user_code', '=', '1122')->first();
+//        $token = \JWTAuth::fromUser($user);
+//        $driver = Driver::first();
+//        $response = $this->actingAs($user)->json('put', 'api/driver/' . $driver->id, [
+//            'token' => $token,
+//            "type" => 1,
+//            "driver_name" => "TuanMinh",
+//            "driver_code" => "",
+//            "car" => "LamBo",
+//            "start_date" => "2022-08-20",
+//            "note" => "thoi roi ta da xa nhau",
+//        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+//            ->assertJsonStructure([
+//                "code",
+//                "message",
+//                "message_content",
+//                "message_internal" => [
+//                    'driver_code' => [
+//                    ],
+//                ],
+//            ]);
+//    }
 
     public function testUpdateDriverCodeDuplicate()
     {
@@ -972,6 +973,32 @@ class DriverTest extends TestCase
     {
         $user = User::where('user_code', '=', '1122')->first();
         $token = \JWTAuth::fromUser($user);
+        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+        $driver=Driver::find(1);
+        $course6 = Course::create([
+            "customer_id"=> 5,
+            "course_name"=> "Course name 6",
+            "ship_date"=> $dayForCourse6,
+            "start_date"=> "09:00",
+            "break_time"=> "00:00",
+            "end_date"=> "10:00",
+            "departure_place"=> "Departure place 06",
+            "arrival_place"=> "Arrival place 0 6",
+            "ship_fee"=> 6000,
+            "associate_company_fee"=> 60,
+            "expressway_fee"=> 60,
+            "commission"=> 60,
+            "meal_fee"=> 60,
+        ]);
+        DriverCourse::create([
+            "driver_id" => $driver->id,
+            "course_id" => $course6->id,
+            "date" => $course6->ship_date,
+            "start_time"=> "09:00",
+            "break_time"=> "00:00",
+            "end_time"=> "10:00",
+            "status" => 1,
+        ]);
         $driver_course = DriverCourse::where("driver_id",1)->first();
         $driver = Driver::find(1);
         $course = Course::find($driver_course->course_id);

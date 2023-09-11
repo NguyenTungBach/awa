@@ -51,7 +51,7 @@ class DriverRequest extends FormRequest
                 case 'update':
                     return [
                         "type" => ["required", "in:1,2,3,4"],
-//                        "driver_code" => ["required", "min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
+                        "driver_code" => ["min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
                         "driver_name" => "required|string|max:20",
                         "car" => "required",
                         "start_date" => "required|date|date_format:Y-m-d",
