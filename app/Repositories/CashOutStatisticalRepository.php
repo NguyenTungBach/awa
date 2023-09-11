@@ -99,7 +99,6 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function updateCashOutStatisticalByCashOut($input)
     {
-        // dd(empty($input['payment_date_update']));
         $data = [];
 
         // by month line (start date month line and end date month line)
@@ -131,7 +130,6 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
             return true;
         } else {
-
             $update = CashOutStatisticalRepository::update($data, $cashOutStatisticals->id);
         }
 
@@ -290,8 +288,8 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
         $totalAssociate = DriverCourse::join('courses', 'driver_courses.course_id', '=', 'courses.id')
                         ->select('driver_courses.id AS driver_courses_id', 'driver_courses.driver_id', 'driver_courses.course_id', 'driver_courses.date', 'courses.id AS id', 'courses.ship_date', 'courses.associate_company_fee')
-                        ->where('driver_id', $driverId)
-                        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                        ->where('driver_courses.driver_id', $driverId)
+                        ->whereBetween('driver_courses.date', [$startOfMonth, $endOfMonth])
                         ->sum('courses.associate_company_fee');
 
         return $totalAssociate;

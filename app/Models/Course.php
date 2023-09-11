@@ -33,6 +33,7 @@ class Course extends Model
     protected $fillable = [
         'customer_id',
         'driver_id',
+        'vehicle_number',
         'course_name',
         'ship_date',
         'start_date',

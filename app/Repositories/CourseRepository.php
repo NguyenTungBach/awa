@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Models\Course;
 use App\Models\FinalClosingHistories;
+use App\Models\Driver;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\Contracts\CourseRepositoryInterface;
 use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
@@ -51,6 +52,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     public function createCourse($input)
     {
         $input['course_name'] = 'driver '.$input['driver_id'];
+        $input['vehicle_number'] = empty($input['vehicle_number']) ? NULL : Arr::get($input, 'vehicle_number', NULL);
         $input['quantity'] = empty($input['quantity']) ? 0 : Arr::get($input, 'quantity', 0);
         $input['price'] = empty($input['price']) ? 0 : Arr::get($input, 'price', 0);
         $input['weight'] = empty($input['weight']) ? 0 : Arr::get($input, 'weight', 0);
@@ -59,6 +61,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $input['commission'] = empty($input['commission']) ? 0 : Arr::get($input, 'commission', 0);
         $input['meal_fee'] = empty($input['meal_fee']) ? 0 : Arr::get($input, 'meal_fee', 0);
         $input['note'] = Arr::get($input, 'note', NULL);
+
         try {
             DB::beginTransaction();
             $course = [];
@@ -66,6 +69,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $course = Course::create([
                 'customer_id' => $input['customer_id'],
                 'driver_id' => $input['driver_id'],
+                'vehicle_number' => $input['vehicle_number'],
                 'course_name' => $input['course_name'],
                 'ship_date' => $input['ship_date'],
                 'start_date' => $input['start_date'],
@@ -187,13 +191,15 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function getDetail($id)
     {
-        $result = CourseRepository::with('customer')->find($id);
+        $result = CourseRepository::with(['customer', 'driver'])->find($id);
         $result['customer_name'] = $result->customer->customer_name;
+        $result['driver_name'] = $result->driver->driver_name;
+        $result['vehicle_number'] = empty($result->vehicle_number) ? '' : $result->vehicle_number;
         $result['ship_date'] = date('Y年m月d日', strtotime($result->ship_date));
         $result['start_date'] = date('H:i', strtotime($result->start_date));
         $result['end_date'] = date('H:i', strtotime($result->end_date));
         $result['break_time'] = date('H:i', strtotime($result->break_time));
-        unset($result['customer']);
+        unset($result['customer'], $result['driver']);
 
         return $result;
     }
@@ -220,12 +226,31 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                     }
 
                     $result = CourseRepository::update($input, $id);
-                    $input['course_id'] = $id;
-                    unset($input['_method']);
-                    if (!empty($input['associate_company_fee'])) {
-                        $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
-                    }
+                    // update driver course
+                    if ($result) {
+                        $data = [];
+                        $data['driver_id'] = $result->driver_id;
+                        $data['course_id'] = $result->id;
+                        $data['start_time'] = $result->start_date;
+                        $data['end_time'] = $result->end_date;
+                        $data['break_time'] = $result->break_time;
+                        $data['date'] = $result->ship_date;
+                        $data['status'] = 1;
 
+                        $driverCourseId = DriverCourse::where('course_id', $result->id)->first()->id;
+                        $driverCourse = $this->driverCourseRepository->update($data, $driverCourseId);
+
+                        if ($driverCourse) {
+                            // update cash
+                            $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
+                        }
+                        $input['course_id'] = $id;
+                        unset($input['_method']);
+                        
+                        // if (!empty($input['associate_company_fee'])) {
+                        //     $cashOutStatistical = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCourse($input);
+                        // }
+                    }
                     if ($checkCashInStatisticalCheckUpdateIfShipFreeChange) {
                         // Cập nhật nếu thỏa mãn điều kiện trên
                         // Cập nhật lại CashInStatic theo khách và ngày
@@ -395,5 +420,13 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         }
 
         return $resultCourseShifts;
+    }
+
+    public function checkDriverAssociate($driverId)
+    {
+        $arrDriverAssociate = Driver::where('type', 4)->pluck('id')->toArray();
+        $result = in_array($driverId, $arrDriverAssociate);
+
+        return $result;
     }
 }

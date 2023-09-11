@@ -73,6 +73,7 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrDriverId)
             ],
+            'vehicle_number' => 'nullable|numeric|digits_between:1,20',
             'ship_date' => [
                 'required',
                 'date_format:Y-m-d',
@@ -97,14 +98,14 @@ class CourseRequest extends FormRequest
             'departure_place' => 'required|string|max:20',
             'arrival_place' => 'required|string|max:20',
             'item_name' => 'required|string|max:20',
-            'quantity' => 'nullable|numeric',
-            'price' => 'nullable|numeric',
-            'weight' => 'nullable|numeric',
-            'ship_fee' => 'required|numeric',
-            'associate_company_fee' => 'nullable|numeric',
-            'expressway_fee' => 'nullable|numeric',
-            'commission' => 'nullable|numeric',
-            'meal_fee' => 'nullable|numeric',
+            'quantity' => 'nullable|numeric|digits_between:1,15',
+            'price' => 'nullable|numeric|digits_between:1,15',
+            'weight' => 'nullable|numeric|digits_between:1,15',
+            'ship_fee' => 'required|numeric|digits_between:1,15',
+            'associate_company_fee' => 'nullable|numeric|digits_between:1,15',
+            'expressway_fee' => 'nullable|numeric|digits_between:1,15',
+            'commission' => 'nullable|numeric|digits_between:1,15',
+            'meal_fee' => 'nullable|numeric|digits_between:1,15',
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -153,6 +154,7 @@ class CourseRequest extends FormRequest
     public function getCustomRuleUpdate(){
         $arrCustomerId = Customer::get()->pluck('id');
         $course = Course::find(request()->route('course'));
+        $arrDriverId = Driver::get()->pluck('id');
 
         $rules = [
             'customer_id' => [
@@ -160,13 +162,19 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrCustomerId)
             ],
-            'course_name' => [
+            // 'course_name' => [
+            //     'sometimes',
+            //     'required',
+            //     'string',
+            //     'max:20',
+            //     Rule::unique('courses')->ignore($course->id),
+            // ],
+            'driver_id' => [
                 'sometimes',
                 'required',
-                'string',
-                'max:20',
-                Rule::unique('courses')->ignore($course->id),
+                Rule::in($arrDriverId)
             ],
+            'vehicle_number' => 'nullable|numeric|digits_between:1,15',
             'ship_date' => [
                 'sometimes',
                 'required',
@@ -194,11 +202,15 @@ class CourseRequest extends FormRequest
             ],
             'departure_place' => 'sometimes|required|string|max:20',
             'arrival_place' => 'sometimes|required|string|max:20',
-            'ship_fee' => 'sometimes|required|max:15',
-            'associate_company_fee' => 'nullable|max:15',
-            'expressway_fee' => 'nullable|max:15',
-            'commission' => 'nullable|max:15',
-            'meal_fee' => 'nullable|max:15',
+            'item_name' => 'sometimes|required|string|max:20',
+            'quantity' => 'nullable|numeric|digits_between:1,15',
+            'price' => 'nullable|numeric|digits_between:1,15',
+            'weight' => 'nullable|numeric|digits_between:1,15',
+            'ship_fee' => 'sometimes|required|numeric|digits_between:1,15',
+            'associate_company_fee' => 'nullable|numeric|digits_between:1,15',
+            'expressway_fee' => 'nullable|numeric|digits_between:1,15',
+            'commission' => 'nullable|numeric|digits_between:1,15',
+            'meal_fee' => 'nullable|numeric|digits_between:1,15',
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -226,6 +238,9 @@ class CourseRequest extends FormRequest
             // driver_id
             'driver_id.required' => __('validation.custom.required_custom'),
             'driver_id.in' => __('validation.in', ['attribute' => __('courses.driver_id')]),
+            // vehicle_number
+            'vehicle_number.integer' => __('validation.integer', ['attribute' => __('courses.vehicle_number')]),
+            'vehicle_number.max' => __('validation.max.string', ['attribute' => __('courses.vehicle_number')]),
             // ship_date
             'ship_date.required' => __('validation.custom.required_custom'),
             'ship_date.date_format' => __('validation.date_format', ['attribute' => __('courses.ship_date'), 'format' => 'Y-m-d']),
