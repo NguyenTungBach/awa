@@ -148,7 +148,11 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             $courses = $courses->join('customers', 'courses.customer_id', '=', 'customers.id');
             $courses = $courses->select('courses.*', 'customers.customer_name');
             $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
-        } else {
+        } elseif ($input['order_by'] == 'driver_name') {
+            $courses = $courses->join('drivers', 'courses.driver_id', '=', 'drivers.id');
+            $courses = $courses->select('courses.*', 'drivers.driver_name');
+            $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
+        }else {
             $courses = $courses->orderBy($input['order_by'], $input['sort_by']);
         }
 
@@ -157,13 +161,18 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             foreach ($courses as $key => $value) {
                 $data[$key]['id'] = $value->id;
                 $data[$key]['ship_date'] = $value->ship_date;
-                $data[$key]['course_name'] = $value->course_name;
+                $data[$key]['driver_name'] = empty($value->driver) ? '' : $value->driver->driver_name;
+                $data[$key]['vehicle_number'] = empty($value->vehicle_number) ? '' : $value->vehicle_number;
                 $data[$key]['start_date'] = date('H:i', strtotime($value->start_date));
                 $data[$key]['end_date'] = date('H:i', strtotime($value->end_date));
                 $data[$key]['break_time'] = date('H:i', strtotime($value->break_time));
                 $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
                 $data[$key]['departure_place'] = $value->departure_place;
                 $data[$key]['arrival_place'] = $value->arrival_place;
+                $data[$key]['item_name'] = empty($value->item_name) ? '' : $value->item_name;
+                $data[$key]['quantity'] = $value->quantity;
+                $data[$key]['price'] = $value->price;
+                $data[$key]['weight'] = $value->weight;
                 $data[$key]['ship_fee'] = $value->ship_fee;
                 $data[$key]['associate_company_fee'] = $value->associate_company_fee;
                 $data[$key]['expressway_fee'] = $value->expressway_fee;
@@ -175,7 +184,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             foreach ($courses as $key => $value) {
                 $data[$key]['id'] = $value->id;
                 $data[$key]['ship_date'] = $value->ship_date;
-                $data[$key]['course_name'] = $value->course_name;
                 $data[$key]['customer_name'] = empty($value->customer) ? '' : $value->customer->customer_name;
                 $data[$key]['driver_name'] = empty($value->driver) ? '' : $value->driver->driver_name;
                 $data[$key]['departure_place'] = $value->departure_place;
