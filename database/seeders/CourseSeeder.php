@@ -6,6 +6,8 @@ use App\Models\Course;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\DriverCourse;
+use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
+use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Application;
 use Repository\CourseRepository;
@@ -16,9 +18,13 @@ class CourseSeeder extends Seeder
 {
     protected $courseRepository;
 
-    public function __construct(CourseRepository $courseRepositorys)
+    public function __construct(CourseRepository $courseRepositorys,
+                                CashInStaticalRepositoryInterface $cashInStaticalRepository,
+                                DriverCourseRepositoryInterface $driverCourseRepository)
     {
         $this->courseRepository = $courseRepositorys;
+        $this->cashInStaticalRepository = $cashInStaticalRepository;
+        $this->driverCourseRepository = $driverCourseRepository;
     }
 
     /**
@@ -231,6 +237,20 @@ class CourseSeeder extends Seeder
                 'meal_fee' => $dem,
                 'note' => NULL,
             ]);
+
+            $driverCourse = DriverCourse::create([
+                'driver_id' => $course->driver_id,
+                'course_id' => $course->id,
+                'start_time' => $course->start_date,
+                'end_time' => $course->end_date,
+                'break_time' => $course->break_time,
+                'date' => $course->ship_date,
+                'status' => 1
+            ]);
+
+            // update cash
+            $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse->date);
+            $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
         }
     }
 }
