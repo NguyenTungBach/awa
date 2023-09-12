@@ -14,9 +14,18 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
+use App\Repositories\Contracts\DriverCourseRepositoryInterface;
 
 class DriverCourseSeeder extends Seeder
 {
+    public function __construct(CashInStaticalRepositoryInterface $cashInStaticalRepository,
+                                DriverCourseRepositoryInterface $driverCourseRepository)
+    {
+        $this->cashInStaticalRepository = $cashInStaticalRepository;
+        $this->driverCourseRepository = $driverCourseRepository;
+    }
+
     /**
      * Run the database seeds.
      *
@@ -101,7 +110,7 @@ class DriverCourseSeeder extends Seeder
         $courses = Course::get();
         foreach ($courses as $key => $course) {
             if ($course->customer_id != 0) {
-                DriverCourse::factory()->create([
+                $driverCourse = DriverCourse::factory()->create([
                     'driver_id' => $course->driver_id,
                     'course_id' => $course->id,
                     'start_time' => $course->start_date,
@@ -110,6 +119,10 @@ class DriverCourseSeeder extends Seeder
                     'date' => $course->ship_date,
                     'status' => 1,
                 ]);
+
+                // update cash
+                $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse->date);
+                $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
             }
         }
     }
