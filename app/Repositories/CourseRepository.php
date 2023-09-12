@@ -298,32 +298,77 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function deleteCourse($id)
     {
-        $checkDriverCourse = $this->checkDriverCourse($id);
-        if ($checkDriverCourse) {
-            $courseNameError = $this->getCourseName($checkDriverCourse);
+        try {
+            DB::beginTransaction();
+            $result = [];
+            $checkFinalClosing = $this->checkFinalClosing($id);
+            if (!$checkFinalClosing) {
+                // delete driver course
+                $driverCourse = DriverCourse::where('course_id', $id)->first();
+                $deleteDriverCourse = $driverCourse->delete();
+                $course = CourseRepository::find($id);
+                // update cash
+                $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse->date);
+                $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
+                // delete course
+                $result = $course->delete();
+            }
+            DB::commit();
 
-            return $this->responseJsonError(Response::HTTP_BAD_REQUEST, '削除できません: '. $courseNameError);
+            return $result;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception->getMessage();
         }
-        $result = CourseRepository::find($id)->delete();
-
-        return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
     }
 
     public function destroyCourse($arrId)
     {
-        $checkDriverCourse = $this->checkDriverCourse($arrId);
-        if ($checkDriverCourse) {
-            if (is_array($checkDriverCourse)) {
-                $courseNameError = $this->getCourseName($checkDriverCourse);
+        try {
+            DB::beginTransaction();
+            $result = [];
+            $checkFinalClosing = $this->checkFinalClosing($arrId);
+            if ($checkFinalClosing) {
+                if (is_array($checkFinalClosing)) {
+                    $result['code'] = Response::HTTP_BAD_REQUEST;
+                    $result['message'] = DELETE_ERROR;
+                    $result['message_content'] = '最終決算日中に存在していた';
 
-                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, '削除できません: '. $courseNameError);
+                    return $result;
+                }
+
+                $result['code'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+                $result['message'] = DELETE_ERROR;
+                $result['message_content'] = '削除するコースを少なくとも 1 つ選択してください';
+
+                return $result;
+            } else {
+                // delete driver course
+                $driverCourses = DriverCourse::whereIn('course_id', $arrId)->get();
+                $deleteDriverCourses = DriverCourse::destroy($driverCourses->pluck('id')->toArray());
+                // dd($driverCourses);
+                foreach ($driverCourses as $key => $driverCourse) {
+                    $course = CourseRepository::find($driverCourse['course_id']);
+                    // update cash
+                    $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse['date']);
+                    $this->driverCourseRepository->cashOutStatistical($driverCourse['driver_id'], $driverCourse['date'], $driverCourse['course_id']);
+                }
+                // delete course
+                $deleteCourse = Course::destroy($arrId);
+                if ($deleteCourse != []) {
+                    $result['code'] = Response::HTTP_OK;
+                }
             }
 
-            return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, '削除するコースを少なくとも 1 つ選択してください');
-        }
-        $result = Course::destroy($arrId);
+            DB::commit();
 
-        return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+            return $result;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception->getMessage();
+        }
     }
 
     public function checkDriverCourse($id)
@@ -369,10 +414,24 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function checkFinalClosing($id)
     {
-        $course = Course::find($id);
-        $month = date('Y-m', strtotime($course->ship_date));
+        if (empty($id)) {
+            return $result = true;
+        }
         $finalClosing = FinalClosingHistories::get()->pluck('month_year')->toArray();
-        $result = in_array($month, $finalClosing);
+
+        if (is_array($id)) {
+            $courses = Course::findMany($id)->toArray();
+            $arrMonth = [];
+            foreach ($courses as $key => $value) {
+                $arrMonth[$value['id']] = date('Y-m', strtotime($value['ship_date']));
+            }
+            $result = array_intersect($arrMonth, $finalClosing);
+            $result = ($result == []) ? false : $result;
+        } else {
+            $course = Course::find($id);
+            $month = date('Y-m', strtotime($course->ship_date));
+            $result = in_array($month, $finalClosing);
+        }
 
         return $result;
     }

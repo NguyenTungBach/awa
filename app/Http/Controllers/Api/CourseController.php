@@ -281,9 +281,17 @@ class CourseController extends Controller
      * */
     public function destroy($id)
     {
-        $result = $this->repository->deleteCourse($id);
+        try {
+            $result = $this->repository->deleteCourse($id);
+            if (empty($result)) {
+                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, DELETE_ERROR, DELETE_ERROR);
+            }
 
-        return $result;
+            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR, $exception->getMessage());
+        }
     }
 
     public function export(CourseRequest $request)
@@ -300,10 +308,21 @@ class CourseController extends Controller
 
     public function deleteMultiple(CourseRequest $request)
     {
-        $arrId = $request->course_ids;
-        $result = $this->repository->destroyCourse($arrId);
+        try {
+            $arrId = $request->course_ids;
+            $result = $this->repository->destroyCourse($arrId);
+            if (empty($result)) {
+                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, DELETE_ERROR, DELETE_ERROR);
+            }
+            if ($result['code'] != 200) {
+                return $this->responseJsonError($result['code'], $result['message'], $result['message_content']);
+            }
 
-        return $result;
+            return $this->responseJson(Response::HTTP_OK, DELETE_SUCCESS, DELETE_SUCCESS);
+        } catch (\Exception $exception) {
+
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR, $exception->getMessage());
+        }
     }
 
     public function import(CourseRequest $request)
