@@ -2437,12 +2437,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'default_font' => 'MY_FONT_NAME',
             'format' => 'A4-L'
         ]);
-
-        $html = view('exportSaleDetailPDF', ['data' => $data])->render();
-        $mpdf->WriteHTML($html);
+//        return view('exportSaleDetailPDF', ['data' => $data]);
+        $chunkedArrays = array_chunk($data['date_ship_fee'] ?? [], 9);
+        foreach ($chunkedArrays as $page => $chunks){
+            $html = view('exportSaleDetailPDF', ['data' => $data,'chunks' => $chunks, 'page' => $page])->render();
+            $mpdf->WriteHTML($html);
+            if (($page +1) != count($chunkedArrays)){
+                $mpdf->AddPage();
+            }
+        }
         return $mpdf->Output("laraveltuts.pdf","D");
 
-//        return view('testPDF', ['data'  => $data]);
+//        return view('testPDFTemplate');
     }
 
     // New +
