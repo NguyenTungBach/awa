@@ -38,10 +38,10 @@
             </tr>
             @foreach ($result['list_data'] as $key => $value)
                 <tr>
-                    <td style="{{ $styleColumn }}">{{ $value['driver_code'] }}</td>
-                    <td style="{{ $styleColumn }}">{{ $value['closing_date'] }}</td>
-                    <td style="{{ $styleColumn }}">{{ $value['driver_name'] }}</td>
-                    <td style="{{ $styleColumn }}">{{ $value['vehicle_number'] }}</td>
+                    <td style="{{ $styleColumn }} text-align: center; vertical-align: center;">{{ $value['driver_code'] }}</td>
+                    <td style="{{ $styleColumn }} text-align: center; vertical-align: center;">{{ $value['closing_date'] }}</td>
+                    <td style="{{ $styleColumn }} text-align: center; vertical-align: center;">{{ $value['driver_name'] }}</td>
+                    <td style="{{ $styleColumn }} text-align: center; vertical-align: center;">{{ $value['vehicle_number'] }}</td>
                     @foreach ($calendar as $item)
                         @if (!empty($value['total_payable_day']) && array_key_exists($item['date'], $value['total_payable_day']))
                             <td style="{{ $styleDefault }}">{{ $value['total_payable_day'][$item['date']] }}</td>
@@ -54,7 +54,7 @@
             @endforeach
 
             <tr>
-                <td colspan="4" style="{{ $styleColumn }} text-align: right; vertical-align: right; font-weight: bold">日別合計</td>
+                <td colspan="4" style="{{ $styleColumn }} text-align: right; vertical-align: right;">日別合計</td>
                 @foreach ($calendar as $item)
                     @if (array_key_exists($item['date'], $result['sum_total_day']))
                         <td style="{{ $styleDefault }}">{{ $result['sum_total_day'][$item['date']] }}</td>
