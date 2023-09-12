@@ -65,33 +65,32 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         try {
             DB::beginTransaction();
             $course = [];
-
-            $course = Course::create([
-                'customer_id' => $input['customer_id'],
-                'driver_id' => $input['driver_id'],
-                'vehicle_number' => $input['vehicle_number'],
-                'course_name' => $input['course_name'],
-                'ship_date' => $input['ship_date'],
-                'start_date' => $input['start_date'],
-                'end_date' => $input['end_date'],
-                'break_time' => $input['break_time'],
-                'departure_place' => $input['departure_place'],
-                'arrival_place' => $input['arrival_place'],
-                'item_name' => $input['item_name'],
-                'quantity' => $input['quantity'],
-                'price' => $input['price'],
-                'weight' => $input['weight'],
-                'ship_fee' => $input['ship_fee'],
-                'associate_company_fee' => $input['associate_company_fee'],
-                'expressway_fee' => $input['expressway_fee'],
-                'commission' => $input['commission'],
-                'meal_fee' => $input['meal_fee'],
-                'note' => $input['note'],
-            ]);
-
-            // create driver_course
-            $check = Common::checkValidateShift($course->driver_id, $course->ship_date);
+            $check = Common::checkValidateShift($input['driver_id'], $input['ship_date']);
             if ($check['code'] == 200) {
+                $course = Course::create([
+                    'customer_id' => $input['customer_id'],
+                    'driver_id' => $input['driver_id'],
+                    'vehicle_number' => $input['vehicle_number'],
+                    'course_name' => $input['course_name'],
+                    'ship_date' => $input['ship_date'],
+                    'start_date' => $input['start_date'],
+                    'end_date' => $input['end_date'],
+                    'break_time' => $input['break_time'],
+                    'departure_place' => $input['departure_place'],
+                    'arrival_place' => $input['arrival_place'],
+                    'item_name' => $input['item_name'],
+                    'quantity' => $input['quantity'],
+                    'price' => $input['price'],
+                    'weight' => $input['weight'],
+                    'ship_fee' => $input['ship_fee'],
+                    'associate_company_fee' => $input['associate_company_fee'],
+                    'expressway_fee' => $input['expressway_fee'],
+                    'commission' => $input['commission'],
+                    'meal_fee' => $input['meal_fee'],
+                    'note' => $input['note'],
+                ]);
+
+                // create driver_course
                 $driverCourse = DriverCourse::create([
                     'driver_id' => $course->driver_id,
                     'course_id' => $course->id,
@@ -115,7 +114,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception;
+            return $exception->getMessage();
         }
     }
 
@@ -225,6 +224,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                         }
                     }
 
+                    if (!empty($input['driver_id'])) {
+                        $driverIdOld = Course::find($id)->driver_id;
+                    }
+                    // create driver_course
                     $result = CourseRepository::update($input, $id);
                     // update driver course
                     if ($result) {
@@ -242,6 +245,11 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
                         if ($driverCourse) {
                             // update cash
+                            $this->cashInStaticalRepository->saveCashInStatic($result->customer_id, $driverCourse->date);
+                            if (!empty($input['driver_id'])) {
+                                // update cash out driver_id old
+                                $this->driverCourseRepository->cashOutStatistical($driverIdOld, $driverCourse->date, $driverCourse->course_id);
+                            }
                             $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
                         }
                         $input['course_id'] = $id;
