@@ -73,6 +73,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             $data[$key]['driver_code'] = $value->driver_code;
             $data[$key]['driver_name'] = $value->driver_name;
             $data[$key]['closing_date'] = '25日';
+            $data[$key]['vehicle_number'] = empty($value->car) ? '' : $value->car;
             // driver_courses
             // $data[$key]['driver_course'] = $value->driverCourses;
 
@@ -131,6 +132,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             $listDataResult[$kItem]['driver_code'] = $item['driver_code'];
             $listDataResult[$kItem]['driver_name'] = $item['driver_name'];
             $listDataResult[$kItem]['closing_date'] = $item['closing_date'];
+            $listDataResult[$kItem]['vehicle_number'] = $item['vehicle_number'];
             foreach ($calendars as $kCalendar => $calendar) {
                 if (!empty($item['total_payable_day']) && array_key_exists($calendar, $item['total_payable_day'])) {
                     $listDataResult[$kItem]['total_payable_day'][$kCalendar]['date'] = $calendar;
@@ -202,6 +204,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             $data[$key]['driver_code'] = $value->driver_code;
             $data[$key]['driver_name'] = $value->driver_name;
             $data[$key]['closing_date'] = '25日';
+            $data[$key]['vehicle_number'] = empty($value->car) ? '' : $value->car;
             // driver_courses
             // $data[$key]['driver_course'] = $value->driverCourses;
 

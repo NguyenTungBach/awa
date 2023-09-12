@@ -18,7 +18,7 @@
         </thead>
         <tbody>
             <tr>
-                <th style="{{ $styleRow }}" colspan="3"></th>
+                <th style="{{ $styleRow }}" colspan="4"></th>
                 {{-- foreach calendar --}}
                 @foreach ($calendar as $item)
                     <th style="{{ $styleRow }}">{{ date('d', strtotime($item['date'])).'('.$item['week'].')' }}</th>
@@ -30,6 +30,7 @@
                 <th style="{{ $styleRow }}">協力会社ID</th>
                 <th style="{{ $styleRow }} width: 60px">締日</th>
                 <th style="{{ $styleRow }}">協力会社名</th>
+                <th style="{{ $styleRow }}">車両番号</th>
                 {{-- foreach calendar --}}
                 @foreach ($calendar as $item)
                     <th style="{{ $styleRow }} width: 60px">{{ $item['rokuyou'] }}</th>
@@ -40,6 +41,7 @@
                     <td style="{{ $styleColumn }}">{{ $value['driver_code'] }}</td>
                     <td style="{{ $styleColumn }}">{{ $value['closing_date'] }}</td>
                     <td style="{{ $styleColumn }}">{{ $value['driver_name'] }}</td>
+                    <td style="{{ $styleColumn }}">{{ $value['vehicle_number'] }}</td>
                     @foreach ($calendar as $item)
                         @if (!empty($value['total_payable_day']) && array_key_exists($item['date'], $value['total_payable_day']))
                             <td style="{{ $styleDefault }}">{{ $value['total_payable_day'][$item['date']] }}</td>
@@ -52,7 +54,7 @@
             @endforeach
 
             <tr>
-                <td colspan="3" style="{{ $styleColumn }} text-align: right; vertical-align: right; font-weight: bold">日別合計</td>
+                <td colspan="4" style="{{ $styleColumn }} text-align: right; vertical-align: right; font-weight: bold">日別合計</td>
                 @foreach ($calendar as $item)
                     @if (array_key_exists($item['date'], $result['sum_total_day']))
                         <td style="{{ $styleDefault }}">{{ $result['sum_total_day'][$item['date']] }}</td>
