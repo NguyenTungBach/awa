@@ -75,7 +75,7 @@ class DriverCourseRequest extends FormRequest
          if(Route::getCurrentRoute()->getActionMethod() == 'index'){
              return [
                  "closing_date" => [
-                     "in:24,25",
+                     "in:15,20,25,28,29,30,31",
                  ],
                  "month_year" => [
                      'required',
