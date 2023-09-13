@@ -271,10 +271,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $listDataConverts[] = $dataConverts;
         }
 
-        // Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
+        // (Before) Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
+        // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
-            ->whereRaw("DATE_FORMAT(start_date,'%Y-%m') <= ?",[$request->month_year])
+//            ->whereRaw("DATE_FORMAT(start_date,'%Y-%m') <= ?",[$request->month_year])
             ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
             ->orWhere(function ($query) use ($getMonth_year) {
                 $query->whereYear('end_date', $getMonth_year[0])
@@ -306,6 +307,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'driver_name' => $driver->driver_name,
                 'type' => $driver->type,
                 'typeName' => $driver->typeName,
+                'end_date' => $driver->end_date,
                 'dataShift' => [],
                 'total_money' => '',
             ];
@@ -2423,7 +2425,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
     public function exportSalesDetailPDF($request,$id){
         $data = $this->saleDetailByClosingDate($request,$id);
-
+        $tax = $request->tax;
         $fontDirs = public_path('fonts/');
         // specify the font
         $fontData = [
@@ -2435,18 +2437,24 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'fontDir' => $fontDirs,
             'fontdata' => $fontData,
             'default_font' => 'MY_FONT_NAME',
-            'format' => 'A4-L'
+            'format' => 'A4-P'
         ]);
 //        return view('exportSaleDetailPDF', ['data' => $data]);
         $chunkedArrays = array_chunk($data['date_ship_fee'] ?? [], 9);
-        foreach ($chunkedArrays as $page => $chunks){
-            $html = view('exportSaleDetailPDF', ['data' => $data,'chunks' => $chunks, 'page' => $page])->render();
+        if ($chunkedArrays == []){
+            $html = view('exportSaleDetailPDF', ['data' => $data,'chunks' => [], 'page' => 0, 'tax' => $tax])->render();
             $mpdf->WriteHTML($html);
-            if (($page +1) != count($chunkedArrays)){
-                $mpdf->AddPage();
+        } else{
+            foreach ($chunkedArrays as $page => $chunks){
+                $html = view('exportSaleDetailPDF', ['data' => $data,'chunks' => $chunks, 'page' => $page, 'tax' => $tax])->render();
+                $mpdf->WriteHTML($html);
+                if (($page +1) != count($chunkedArrays)){
+                    $mpdf->AddPage();
+                }
             }
         }
-        return $mpdf->Output("laraveltuts.pdf","D");
+
+        return $mpdf->Output("請求書.pdf","D");
 
 //        return view('testPDFTemplate');
     }
