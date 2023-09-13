@@ -23,7 +23,7 @@ class DriverSeeder extends Seeder
                 'driver_name' => 'Manager',
                 'type' => 1,
                 'start_date' => '2022-06-16',
-                'car' => 'Truck',
+                'car' => '0011',
                 'status' => 1,
             ],
             [
@@ -31,7 +31,7 @@ class DriverSeeder extends Seeder
                 'driver_name' => 'Part-time',
                 'type' => 2,
                 'start_date' => '2022-07-17',
-                'car' => 'Container',
+                'car' => '0022',
                 'status' => 1,
             ],
             [
@@ -39,7 +39,7 @@ class DriverSeeder extends Seeder
                 'driver_name' => 'Full time',
                 'type' => 3,
                 'start_date' => '2022-08-18',
-                'car' => 'Labo',
+                'car' => '0033',
                 'status' => 1,
             ],
             [
@@ -47,7 +47,7 @@ class DriverSeeder extends Seeder
                 'driver_name' => 'Associate company',
                 'type' => 4,
                 'start_date' => '2022-09-19',
-                'car' => 'Grap',
+                'car' => '0044',
                 'status' => 1,
             ],
         ]);
