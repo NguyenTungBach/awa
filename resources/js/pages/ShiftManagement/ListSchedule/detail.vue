@@ -80,6 +80,16 @@
                                     </b-col>
                                 </b-row>
                             </div>
+                            <div class="item-form">
+                                <b-row>
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.VIHICLE_NUMBER')"
+                                            :value="isForm.vehicle_number"
+                                        />
+                                    </b-col>
+                                </b-row>
+                            </div>
                             <div>
                                 <b-row>
                                     <b-col
@@ -151,6 +161,38 @@
                                 {{ $t('DETAIL_SCHEDULE.FEE_INFORMATION') }}
                             </TitlePathForm>
                             <div>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.ITEM_NAME')"
+                                            :value="isForm.item_name"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.QUANTITY')"
+                                            :value="isForm.quantity"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.UNIT_PRICE')"
+                                            :value="isForm.unit_price"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="item-form">
+                                    <b-col>
+                                        <DetailForm
+                                            :label="$t('DETAIL_SCHEDULE.WEIGHT')"
+                                            :value="isForm.weight"
+                                        />
+                                    </b-col>
+                                </b-row>
                                 <b-row class="item-form">
                                     <b-col>
                                         <DetailForm
@@ -257,12 +299,17 @@ export default {
 				customer_id: '',
 				ship_date: '',
 				course_name: '',
+				vehicle_number: '',
 				start_time: '',
 				end_time: '',
 				break_time: '',
 				customer_name: '',
 				departure_place: '',
 				arrival_place: '',
+				item_name: '',
+				quantity: '',
+				unit_price: '',
+				weight: '',
 				freight_cost: '',
 				payment_amount: '',
 				hight_way: '',
@@ -310,12 +357,17 @@ export default {
 						// const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
 						this.isForm.ship_date = DATA.ship_date;
 						this.isForm.course_name = DATA.course_name;
+						this.isForm.vehicle_number = DATA.vehicle_number;
 						this.isForm.customer_name = DATA.customer_name;
 						this.isForm.start_time = DATA.start_date;
 						this.isForm.end_time = DATA.end_date;
 						this.isForm.break_time = DATA.break_time;
 						this.isForm.departure_place = DATA.departure_place;
 						this.isForm.arrival_place = DATA.arrival_place;
+						this.isForm.item_name = DATA.item_name;
+						this.isForm.quantity = DATA.quantity ? Number(DATA.quantity).toLocaleString() : '';
+						this.isForm.unit_price = DATA.price ? Number(DATA.price).toLocaleString() + '円' : '';
+						this.isForm.weight = DATA.weight ? Number(DATA.weight).toLocaleString() + 'kg' : '';
 						this.isForm.freight_cost = DATA.ship_fee ? Number(DATA.ship_fee).toLocaleString() + '円' : '';
 						this.isForm.payment_amount = DATA.associate_company_fee ? Number(DATA.associate_company_fee).toLocaleString() + '円' : '';
 						this.isForm.hight_way = DATA.expressway_fee ? Number(DATA.expressway_fee).toLocaleString() + '円' : '';

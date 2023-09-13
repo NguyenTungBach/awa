@@ -805,7 +805,7 @@
                                         </template>
                                     </template>
                                     <b-th class="total-shift" :rowspan="2">
-                                        {{ $t('LIST_SHIFT.TABLE_HIGHT_WAY_MONTHLY_AMOUNT') }}
+                                        {{ $t('LIST_SHIFT.TABLE_TOTAL_EXPENSE') }}
                                     </b-th>
                                 </b-tr>
                                 <b-tr>
@@ -1304,12 +1304,32 @@ export default {
 			showModalClosingDate: false,
 			optionsClosingDate: [
 				{
-					value: '24',
-					text: '24日',
+					value: '15',
+					text: '15日',
+				},
+				{
+					value: '20',
+					text: '20日',
 				},
 				{
 					value: '25',
 					text: '25日',
+				},
+				{
+					value: '28',
+					text: '28日',
+				},
+				{
+					value: '29',
+					text: '29日',
+				},
+				{
+					value: '30',
+					text: '30日',
+				},
+				{
+					value: '31',
+					text: '31日',
 				},
 			],
 

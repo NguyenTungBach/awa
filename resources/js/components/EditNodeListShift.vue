@@ -6,51 +6,9 @@
                 class="edit-item"
                 @click="onClickSelect(idxEdit)"
             >
-                <div class="select-type">
-                    <b-input-group>
-                        <template #prepend>
-                            <b-input-group-text
-                                class="icon-delete"
-                                @click="onClickRemove(itemEdit, idxEdit)"
-                            >
-                                <i class="fas fa-times-circle" />
-                            </b-input-group-text>
-                        </template>
-
-                        <b-form-select v-model="itemEdit.type" @change="handleSelectChange">
-                            <b-form-select-option
-                                v-for="(item, idx) in listSelect"
-                                :key="`select-dayoff-${idx + 1}`"
-                                :value="item.value"
-                                :disabled="item.disabled"
-                            >
-                                {{ $t(item.text) }}
-                            </b-form-select-option>
-
-                            <b-form-select-option
-                                v-for="(item, idx) in halfDayOff"
-                                :key="`select-halfdayoff-${idx + 1}`"
-                                :value="item.value"
-                                :disabled="item.disabled"
-                            >
-                                {{ $t(item.text) }}
-                            </b-form-select-option>
-
-                            <b-form-select-option
-                                v-for="(course, idxCourse) in listCourse"
-                                :key="`select-course-${idxCourse + 1}`"
-                                :value="course.value"
-                                :disabled="course.disabled"
-                            >
-                                {{ course.text }}
-                            </b-form-select-option>
-                        </b-form-select>
-                    </b-input-group>
-                </div>
-
                 <div v-if="itemEdit.type">
-                    <div v-if="!isSelectDayOff" class="select-time">
-                        <div v-if="itemEdit.type !== null">
+                    <div class="select-time">
+                        <!-- <div v-if="itemEdit.type !== null">
                             <div class="item-time">
                                 <b-row>
                                     <b-col sm="3">
@@ -102,31 +60,88 @@
                                     </b-col>
                                 </b-row>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div v-if="itemEdit.course.flag !== 'yes'"> -->
-                        <div v-if="itemEdit.type === null">
-                            <div class="item-time text-center">
+                        <!-- <div>
+                            <div class="course_name text-center">
                                 <span>
-                                    <b>始業時間: </b>{{ itemEdit.course.start_time }}
+                                    {{ itemEdit.name }}
                                 </span>
                             </div>
                             <div class="item-time text-center">
                                 <span>
-                                    <b>終業時間: </b>{{ itemEdit.course.end_time }}
+                                    <b>始業時間: </b>{{ formatArray2Time(itemEdit.start_time) }}
                                 </span>
                             </div>
                             <div class="item-time text-center">
                                 <span>
-                                    <b>休憩時間: </b>{{ convertBreakTimeNumberToTime(itemEdit.course.break_time) }}
+                                    <b>終業時間: </b>{{ formatArray2Time(itemEdit.end_time) }}
                                 </span>
                             </div>
-                        </div>
+                            <div class="item-time text-center">
+                                <span>
+                                    <b>休憩時間: </b>{{ formatArray2Time(itemEdit.break_time) }}
+                                </span>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
+
+                <div v-if="[null,1,2,3,4,5,6,7].includes(itemEdit.type)" class="select-type">
+                    <b-input-group>
+                        <template #prepend>
+                            <b-input-group-text
+                                class="icon-delete"
+                                @click="onClickRemove(itemEdit, idxEdit)"
+                            >
+                                <i class="fas fa-times-circle" />
+                            </b-input-group-text>
+                        </template>
+
+                        <b-form-select v-model="itemEdit.type" @change="handleSelectChange">
+                            <b-form-select-option
+                                v-for="(item, idx) in listSelect"
+                                :key="`select-dayoff-${idx + 1}`"
+                                :value="item.value"
+                                :disabled="item.disabled"
+                            >
+                                {{ $t(item.text) }}
+                            </b-form-select-option>
+
+                            <b-form-select-option
+                                v-for="(item, idx) in halfDayOff"
+                                :key="`select-halfdayoff-${idx + 1}`"
+                                :value="item.value"
+                                :disabled="item.disabled"
+                            >
+                                {{ $t(item.text) }}
+                            </b-form-select-option>
+
+                            <b-form-select-option
+                                v-for="(course, idxCourse) in listCourse"
+                                :key="`select-course-${idxCourse + 1}`"
+                                :value="course.value"
+                                :disabled="course.disabled"
+                            >
+                                {{ course.text }}
+                            </b-form-select-option>
+                        </b-form-select>
+                    </b-input-group>
+                </div>
+
             </div>
         </template>
 
-        <div :class="{ 'zone-add': true, 'disabled': handleDisabledAdd() }">
+        <!-- <div :class="{ 'zone-add': true, 'disabled': handleDisabledAdd() }">
+            <div class="zone-icon-add">
+                <h6>
+                    <span @click="onClickAdd">
+                        +
+                    </span>
+                </h6>
+            </div>
+        </div> -->
+        <div :class="{ 'zone-add': true }">
             <div class="zone-icon-add">
                 <h6>
                     <span @click="onClickAdd">
@@ -140,14 +155,14 @@
 
 <script>
 import CONSTANT from '@/const';
-import SelectMultiple from '@/components/SelectMultiple';
-import { convertBreakTimeNumberToTime } from '@/utils/convertTime';
+// import SelectMultiple from '@/components/SelectMultiple';
+import { convertBreakTimeNumberToTime, formatArray2Time } from '@/utils/convertTime';
 
 export default {
 	name: 'EditNodeListShift',
-	components: {
-		SelectMultiple,
-	},
+	// components: {
+	// 	SelectMultiple,
+	// },
 
 	props: {
 		halfDayOff: {
@@ -214,6 +229,7 @@ export default {
 
 	methods: {
 		convertBreakTimeNumberToTime,
+		formatArray2Time,
 
 		genereateOptionTime(min = 0, max = 23) {
 			const result = [];
@@ -249,15 +265,16 @@ export default {
 		},
 
 		onClickAdd() {
-			if (this.listSelected.length === 0) {
-				this.$emit('add');
-			} else {
-				if (this.isSelected) {
-					if (this.isCheckSelectedDayOff() === false) {
-						this.$emit('add');
-					}
-				}
-			}
+			this.$emit('add');
+			// if (this.listSelected.length === 0) {
+			// 	this.$emit('add');
+			// } else {
+			// 	if (this.isSelected) {
+			// 		if (this.isCheckSelectedDayOff() === false) {
+			// 			this.$emit('add');
+			// 		}
+			// 	}
+			// }
 		},
 
 		handleDisabledAdd() {
@@ -365,6 +382,12 @@ export default {
             .select-time {
                 .item-time {
                     margin-bottom: 10px;
+                }
+                .course_name {
+                    font-size: 20px;
+			font-weight: bold;
+                    text-decoration: underline;
+                    margin: 10px 0;
                 }
             }
         }
