@@ -670,9 +670,9 @@ export default {
 	},
 
 	methods: {
-		initData() {
+		async initData() {
+			await this.handleGetListCourse();
 			this.handleGetCustomer();
-			this.handleGetListCourse();
 			this.handleGetDriverName();
 		},
 

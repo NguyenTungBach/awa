@@ -105,9 +105,32 @@
                                         </span>
                                     </label>
                                     <b-input-group class="mb-3">
+                                        <b-form-select
+                                            id="input-driver-name"
+                                            v-model="isForm.driverName"
+                                            :options="isForm.listDriverName"
+                                            @change="handleVihicleNumber()"
+                                        />
+                                    </b-input-group>
+                                </b-col>
+                                <b-col
+                                    :cols="12"
+                                    :sm="12"
+                                    :md="12"
+                                    :lg="6"
+                                    :xl="12"
+                                    class="date"
+                                >
+                                    <label for="input-vihicle-number">
+                                        {{ $t('CREATE_SCHEDULE.VIHICLE_NUMBER') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
+                                    </label>
+                                    <b-input-group class="mb-3">
                                         <b-form-input
-                                            id="input-course-name"
-                                            v-model="isForm.course_name"
+                                            id="input-vihicle-number"
+                                            v-model="isForm.vihicle_number"
                                             type="text"
                                         />
                                     </b-input-group>
@@ -536,6 +559,8 @@ export default {
 				start_time: [null, null],
 				end_time: [null, null],
 				break_time: [null, null],
+				driverName: null,
+				vihicle_number: '',
 				customer_name: null,
 				departure_place: '',
 				arrival_place: '',
@@ -550,8 +575,11 @@ export default {
 				bonus_amount: '',
 				note: '',
 				optionListCustomer: [],
+				listDriverName: [],
 				listTime: [],
+				ListVihicleNumber: [],
 			},
+
 		};
 	},
 
@@ -564,7 +592,7 @@ export default {
 	},
 
 	created() {
-		this.initDate();
+		this.initData();
 	},
 
 	methods: {
@@ -627,9 +655,18 @@ export default {
 			this.$router.push({ name: 'ListSchedule' });
 		},
 
-		async initDate() {
+		async initData() {
 			await this.handleGetCustomer();
+			await this.handleGetDriverName();
 			this.isForm.listTime = this.genereateOptionTime();
+		},
+
+		handleVihicleNumber() {
+			this.isForm.ListVihicleNumber.forEach(item => {
+				if (item.id === this.isForm.driverName) {
+					this.isForm.vihicle_number = item.car;
+				}
+			});
 		},
 
 		async handleGetCustomer() {
@@ -654,17 +691,45 @@ export default {
 			}
 		},
 
+		async handleGetDriverName() {
+			try {
+				setLoading(true);
+				const params = {};
+				const LIST = await getList(CONSTANT.URL_API.GET_LIST_DRIVER, params);
+				if (LIST.code === 200) {
+					this.isForm.listDriverName = [];
+					LIST.data.forEach(item => {
+						this.isForm.listDriverName.push({
+							value: item.id,
+							text: item.driver_name,
+						});
+					});
+					this.isForm.ListVihicleNumber = LIST.data;
+				} else {
+					this.isForm.listDriverName = [];
+				}
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		},
+
 		async onClickSave() {
 			setLoading(true);
 			const course = {
 				customer_id: this.isForm.customer_name,
-				course_name: this.isForm.course_name,
+				driver_id: this.isForm.driverName,
+				vehicle_number: this.isForm.vihicle_number,
 				ship_date: this.isForm.ship_date,
 				start_date: this.formatter(this.isForm.start_time) ? this.formatter(this.isForm.start_time) : '',
 				end_date: this.formatter(this.isForm.end_time) ? this.formatter(this.isForm.end_time) : '',
 				break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '',
 				departure_place: this.isForm.departure_place,
 				arrival_place: this.isForm.arrival_place,
+				item_name: this.isForm.itemName,
+				quantity: this.isForm.quantity,
+				weight: this.isForm.weight,
+				price: this.isForm.unitPrice,
 				ship_fee: this.isForm.freight_cost,
 				associate_company_fee: this.isForm.payment_amount,
 				expressway_fee: this.isForm.hight_way,
