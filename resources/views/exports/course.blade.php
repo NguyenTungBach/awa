@@ -18,13 +18,18 @@
             <tr>
                 <th>ID</th>
                 <th>運行日</th>
-                <th>運行名</th>
+                <th>従業員名</th>
+                <th>車両番号</th>
                 <th style="width: 100px;">始業時間</th>
                 <th style="width: 100px;">終業時間</th>
                 <th style="width: 120px;">休憩時間</th>
                 <th style="width: 120px;">荷主名</th>
                 <th style="width: 120px;">発地</th>
                 <th style="width: 120px;">着地</th>
+                <th>品名</th>
+                <th>数量</th>
+                <th>単価</th>
+                <th>重量</th>
                 <th style="width: 120px;">運賃</th>
                 <th style="width: 180px;">協力会社支払金額</th>
                 <th style="width: 180px;">高速道路・フェリー料金</th>

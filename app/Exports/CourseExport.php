@@ -64,7 +64,7 @@ class CourseExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        $headerRange = 'A3:O3';
+        $headerRange = 'A3:T3';
         $sheet->getStyle($headerRange)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('ff765e');
         $sheet->getStyle($headerRange)->getFont()->setColor(new Color(Color::COLOR_WHITE));
         $sheet->getStyle($headerRange)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
@@ -84,7 +84,7 @@ class CourseExport implements FromView, ShouldAutoSize, WithStyles
                     ],
                 ],
             ],
-            'A3:O3' => [
+            'A3:T3' => [
                 'font' => [
                     'size' => 11, // Set the font size here
                     'name' => 'Calibri',

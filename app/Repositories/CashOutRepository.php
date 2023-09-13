@@ -68,7 +68,7 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception;
+            return $exception->getMessage();
         }
     }
 

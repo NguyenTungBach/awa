@@ -91,7 +91,7 @@
         <h1 class="text-center m-0 p-0">請求書</h1>
     </div>
     <div class="w-33 float-left mt-0">
-        <p class="m-0 pt-5 text-bold" style="font-size: 10px;text-align: right">ページ 1 '{{$data['invoice_date']}}</p>
+        <p class="m-0 pt-5 text-bold" style="font-size: 10px;text-align: right">ページ {{$page + 1}} '{{$data['invoice_date']}}</p>
     </div>
     <div style="clear: both;"></div>
 </div>
@@ -99,6 +99,7 @@
     <div class="w-33 float-left mt-0">
         <p class="m-0 pt-5 text-bold w-100">〒 {{$data['post_code']}}</p>
         <p class="m-0 pt-5 text-bold w-100">{{$data['address']}}</p>
+        <p class="m-0 pt-5 text-bold w-100">{{$data['customer_name']}} 御中</p>
     </div>
     <div class="w-33 float-left logo mt-0">
         <p class="m-0 pt-5 text-bold w-100 text-center" style="font-size: 10px">{{$data['aboutDateJapan']}}</p>
@@ -108,23 +109,11 @@
         <pre class="m-0 text-bold w-100">〒770-8001
 徳島県徳島市津田海岸町11125-23
 適格事業者登録番号：T2480001000065
-
 阿波急行運輸株式会社
 TEL (088) 662-2226㈹　FAX (088) 662-2216
-
 取引銀行　　徳島大正銀行　本店営業部
 当座預金　６４９６３５１
         </pre>
-    </div>
-    <div style="clear: both;"></div>
-</div>
-<div class="add-detail mt-10">
-    <div class="w-50 float-left mt-10">
-        <p class="m-0 pt-5 text-bold w-100">{{$data['customer_name']}} 御中</p>
-    </div>
-    <div class="w-50 float-left logo mt-10">
-        <p class="m-0 pt-5 text-bold w-100">
-        </p>
     </div>
     <div style="clear: both;"></div>
 </div>
@@ -164,64 +153,35 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
             <th>発地</th>
             <th>着地</th>
             <th>品名</th>
-            <th>数量</th>
-{{--            <th>単位</th>--}}
             <th>重量/Kg</th>
             <th>基本運賃</th>
-{{--            <th>割増運賃1</th>--}}
-{{--            <th>割増運賃2</th>--}}
-            <th>非課税1</th>
-            <th>非課税2</th>
             <th>摘要</th>
         </tr>
         <?php
-            $dem= 0;
-            if (count($data['date_ship_fee'] ?? []) != 0){
-                foreach ($data['date_ship_fee'] as $course){
-        ?>
-        <?php
-            $dem= $dem + $course['ship_fee'];
+        if (count($data['date_ship_fee'] ?? []) != 0){
+        foreach ($chunks as $course){
         ?>
         <tr>
             <td style="text-align: center">{{$course['ship_date']}}</td>
             <td style="text-align: center">{{$course['car']}}</td>
             <td style="text-align: center">{{$course['departure_place']}}</td>
             <td style="text-align: center">{{$course['arrival_place']}}</td>
-            <td style="text-align: center">
-
-            </td>
             <td style="text-align: center"></td>
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
+            <td style="text-align: center">{{$course['weight']}}</td>
             <td style="text-align: center">{{$course['ship_fee'] == '' ? '' : number_format($course['ship_fee'])}}</td>
-{{--            <td style="text-align: center"></td>--}}
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
             <td style="text-align: center"></td>
         </tr>
         <?php
-            }
+        }
         }
         ?>
-        <tr>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center">
-                <p>小計</p>
-            </td>
-            <td style="text-align: center"></td>
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
-            <td style="text-align: center">{{number_format($dem)}}</td>
-{{--            <td style="text-align: center"></td>--}}
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
-        </tr>
+        <?php
+        if ($page == 0){
+            $dem= 0;
+            foreach ($data['date_ship_fee'] as $course){
+                $dem= $dem + $course['ship_fee'];
+            }
+        ?>
         <tr>
             <td style="text-align: center"></td>
             <td style="text-align: center"></td>
@@ -231,32 +191,12 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                 <p>合計</p>
             </td>
             <td style="text-align: center"></td>
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
-            <td style="text-align: center">{{$dem}}</td>
-{{--            <td style="text-align: center"></td>--}}
-{{--            <td style="text-align: center"></td>--}}
-            <td style="text-align: center"></td>
-            <td style="text-align: center"></td>
+            <td style="text-align: center">{{number_format($dem)}}</td>
             <td style="text-align: center"></td>
         </tr>
-{{--        <tr>--}}
-{{--            <td colspan="7">--}}
-{{--                <div class="total-part">--}}
-{{--                    <div class="total-left w-85 float-left" align="right">--}}
-{{--                        <p>Sub Total</p>--}}
-{{--                        <p>Tax (18%)</p>--}}
-{{--                        <p>Total Payable</p>--}}
-{{--                    </div>--}}
-{{--                    <div class="total-right w-15 float-left text-bold" align="right">--}}
-{{--                        <p>$7600</p>--}}
-{{--                        <p>$400</p>--}}
-{{--                        <p>$8000.00</p>--}}
-{{--                    </div>--}}
-{{--                    <div style="clear: both;"></div>--}}
-{{--                </div>--}}
-{{--            </td>--}}
-{{--        </tr>--}}
+        <?php
+        }
+        ?>
     </table>
 </div>
 </body>
