@@ -711,16 +711,16 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-month">
-                                            {{ emp.total_ship_fee_by_month }}
+                                            {{ Number(emp.total_ship_fee_by_month) }}
                                         </b-td>
                                         <b-td class="td-total-closing-date">
-                                            {{ emp.total_ship_fee_by_closing_date }}
+                                            {{ Number(emp.total_ship_fee_by_closing_date) }}
                                         </b-td>
                                         <b-td class="img-pdf">
                                             <img
                                                 :src="require('@/assets/images/payment.png')"
                                                 alt="Logo"
-                                                @click="handleExportPDF(emp.customer_id)"
+                                                @click="handleShowModalExportPDF(emp)"
                                             >
                                         </b-td>
                                     </tr>
@@ -1154,7 +1154,7 @@
                                             {{ emp.driver_name }}
                                         </td>
                                         <td class="td-vehicle-name text-center">
-                                            {{ emp.driver_name }}
+                                            {{ emp.vehicle_number }}
                                         </td>
                                         <template v-if="selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH">
                                             <template v-for="(date, idxDate) in pickerYearMonth.numberDate">
@@ -1259,6 +1259,84 @@
                 </b-button>
             </div>
         </b-modal>
+        <b-modal
+            id="modal-tax"
+            v-model="showModalExportPDF"
+            body-class="modal-tax"
+            hide-header
+            hide-footer
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+            @close="handleCloseModalExportPDF()"
+        >
+            <div class="text-center">
+                <h5 class="font-weight-bolde">
+                    請求書出力
+                </h5>
+            </div>
+            <div class="body-item">
+                <b-row>
+                    <b-col cols="8" style="margin: 10px auto; display: flex;">
+                        <label class="width_label total-fare-name" for="total-fare-name">
+                            {{ $t('LIST_SHIFT.TOTAL_FARE_NAME') }}
+                            <span>
+                                :
+                            </span>
+                        </label>
+                        <div class="width_value total-fare">
+                            {{ total_fare === '' ? 0 : Number(total_fare) }}
+                        </div>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="8" style="margin: 10px auto; display: flex;">
+                        <label class="width_label consumption-tax" for="input-consumption-tax">
+                            {{ $t('LIST_SHIFT.CONSUMPTION_TAX') }}
+                            <span>
+                                :
+                            </span>
+                        </label>
+                        <b-input-group class="mb-3 width_value">
+                            <b-form-input
+                                id="input-consumption-tax"
+                                v-model="consumption_tax"
+                                type="number"
+                            />
+
+                        </b-input-group>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="8" style="margin: 10px auto; display: flex;">
+                        <label class="width_label total-fare" for="total-fare">
+                            {{ $t('LIST_SHIFT.TOTAL') }}
+                            <span>
+                                :
+                            </span>
+                        </label>
+                        <div class="width_value total">
+                            {{ total }}
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+            <div class="text-center">
+                <b-button
+                    pill
+                    @click="handleCloseModalExportPDF()"
+                >
+                    キャンセル
+                </b-button>
+                <b-button
+                    pill
+                    class="mr-2 btn-color-active-import"
+                    @click="handleExportPDF()"
+                >
+                    OK
+                </b-button>
+            </div>
+        </b-modal>
     </b-col>
 </template>
 
@@ -1302,6 +1380,7 @@ export default {
 			screenWidth: window.innerWidth,
 			closingDate: '',
 			showModalClosingDate: false,
+			showModalExportPDF: false,
 			optionsClosingDate: [
 				{
 					value: '15',
@@ -1426,6 +1505,11 @@ export default {
 
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
+			getIdExportPDF: '',
+			tax: '',
+			total_fare: '',
+			total: '',
+			consumption_tax: '',
 		};
 	},
 
@@ -1601,6 +1685,10 @@ export default {
 
 		handleCloseModalClosingDate() {
 			this.showModalClosingDate = false;
+		},
+
+		handleCloseModalExportPDF() {
+			this.showModalExportPDF = false;
 		},
 
 		handleShowModal() {
@@ -2452,13 +2540,22 @@ export default {
 			}
 		},
 
-		async handleExportPDF(idCustomer) {
+		handleShowModalExportPDF(data) {
+			this.showModalExportPDF = true;
+			this.total_fare = data.total_ship_fee_by_closing_date;
+			this.consumption_tax = (Number(data.total_ship_fee_by_closing_date) * 10) / 100;
+			this.total = this.consumption_tax + Number(data.total_ship_fee_by_closing_date);
+			this.getIdExportPDF = data.customer_id;
+			// this.handleExportPDF(data.customer_id);
+		},
+
+		async handleExportPDF() {
 			const YEAR = this.pickerYearMonth.year;
 			const MONTH = this.pickerYearMonth.month;
 
 			const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-			const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST_PDF}/${idCustomer}?month_year=${YEAR_MONTH}`;
+			const URL = `/api${CONSTANT.URL_API.GET_EXPORT_SALE_LIST_PDF}/${this.getIdExportPDF}?month_year=${YEAR_MONTH}&tax=${this.consumption_tax}`;
 			console.log('url', URL);
 			let FILE_DOWNLOAD;
 
@@ -3751,6 +3848,28 @@ export default {
             margin-bottom: 30px;
         }
     }
+	.modal-tax {
+		.body-item {
+			margin-top: 40px;
+            margin-bottom: 40px;
+
+			.total-fare-name {
+				margin-right: 10px;
+			}
+			.consumption-tax {
+				margin-right: 10px;
+			}
+			.total-fare {
+				margin-right: 10px;
+			}
+			.width_label {
+				width: 30%;
+			}
+			.width_value {
+				width: 70%;
+			}
+		}
+	}
 
     .create-ai-shift__table {
         margin-bottom: 400px;

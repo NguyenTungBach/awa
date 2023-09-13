@@ -295,6 +295,9 @@ export default {
 		TABLE_COURSE_COURSE_ID: 'Course ID',
 		TABLE_COURSE_COURSE_GROUP: 'Group',
 		TABLE_COURSE_COURSE_NAME: 'Course name',
+		TOTAL_FARE_NAME: 'Total fare',
+		CONSUMPTION_TAX: 'Consumption tax',
+		TOTAL: 'Total',
 
 	},
 	DAY_OFF: {

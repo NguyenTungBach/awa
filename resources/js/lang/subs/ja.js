@@ -245,6 +245,9 @@ export default {
 		TABLE_COURSE_COURSE_ID: 'コース ID',
 		TABLE_COURSE_COURSE_GROUP: 'グループ',
 		TABLE_COURSE_COURSE_NAME: 'コース名',
+		TOTAL_FARE_NAME: '運賃合計',
+		CONSUMPTION_TAX: '消費税',
+		TOTAL: '合計',
 	},
 	DAY_OFF: {
 		TITLE_LIST_DAY_OFF: 'シフト希望表',

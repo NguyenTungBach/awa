@@ -914,10 +914,10 @@ export default {
 					var updateCourseNameDayOff = '';
 					listdataUpdate.forEach(item => {
 						if (item.name) {
-							updateCourseNameDayOff += `${item.name} `;
+							updateCourseNameDayOff += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
 						}
 					});
-					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names += ` ${updateCourseNameDayOff}`;
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = ` ${updateCourseNameDayOff}`;
 				} else {
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
 					const listdataUpdate = this.generateListValueWork(dataUpdate);
@@ -925,12 +925,12 @@ export default {
 					var updateCourseName = '';
 					listdataUpdate.forEach(item => {
 						if (item.name) {
-							updateCourseName += `${item.name} `;
+							updateCourseName += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
 						} else {
 							updateCourseName = '';
 						}
 					});
-					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = updateCourseName;
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = `  ${updateCourseName}`;
 				}
 			} else {
 				listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = '';
@@ -953,7 +953,7 @@ export default {
 				result.push({
 					type: dataUpdate[idx].type,
 					name: this.role === CONSTANT.ROLE.ADMIN ? this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]) : this.$t(CONSTANT.LIST_SHIFT.TABLE_DATE_HOLIDAY),
-					course_status: null,
+					// course_status: null,
 					start_time: '09:00',
 					end_time: '18:00',
 					break_time: '0.00',
@@ -977,21 +977,15 @@ export default {
 					result.push({
 						type: 7,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF),
-					});
-				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
-					result.push({
-						type: dataUpdate[idx].type,
-						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_WAIT_BETWEEN_TASK),
-						course_status: null,
-						start_time: formatArray2Time(dataUpdate[idx].start_time),
-						end_time: formatArray2Time(dataUpdate[idx].end_time),
-						break_time: formatArray2Time(dataUpdate[idx].break_time),
+						start_time: '09:00',
+						end_time: '18:00',
+						break_time: '0.00',
 					});
 				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
 					result.push({
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_LEADER_CHIEF),
-						course_status: null,
+						// course_status: null,
 						start_time: formatArray2Time(dataUpdate[idx].start_time),
 						end_time: formatArray2Time(dataUpdate[idx].end_time),
 						break_time: formatArray2Time(dataUpdate[idx].break_time),
