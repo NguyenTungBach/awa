@@ -2077,7 +2077,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'data'=> $dataListSales,
             'total_all_sales_by_date'=> $totalAllDataListSalesByDate,
             'total_all_data_sales_by_closing_date'=> $totalAllDataListSalesByClosingDate,
-            'total_all_data_sales_by_month'=> $totalAllDataListSalesByMonth,
+            'total_all_data_sales_by_month'=> ceil($totalAllDataListSalesByMonth),
         ];
 
 
