@@ -275,13 +275,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         $listDrivers = Driver::query()
-//            ->whereRaw("DATE_FORMAT(start_date,'%Y-%m') <= ?",[$request->month_year])
+            ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
             ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
             ->orWhere(function ($query) use ($getMonth_year) {
                 $query->whereYear('end_date', $getMonth_year[0])
-                    ->whereMonth('end_date',"<=", $getMonth_year[1]);
+                    ->whereMonth('end_date',">=", $getMonth_year[1]);
             })
-            ->SortByForDriver($request)->get()->filter(function ($data) {
+            ->SortByForDriver($request)->get()
+            ->filter(function ($data) {
             switch ($data['type']){
                 case 1:
                     $data['typeName'] = trans('drivers.type.1');
@@ -300,7 +301,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         });
 
         $dataConvertForDriver = [];
+        // Kiểm tra xem ngày tạo có rơi vào final_closing không
+        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
         foreach ($listDrivers as $driver){
+            // Kiểm tra xem có rơi vào ngày final_closing
+            if ($final_closing){
+                $checkDateFinal = Carbon::parse($final_closing->date);
+                $checkDate = Carbon::parse($driver->start_date != null ? $driver->start_date : $driver->created_at);
+                //Bỏ nếu driver ngày bắt đầu làm việc mà đã qua ngày chốt và tháng năm này = tháng năm closing
+                if ($checkDate->gte($checkDateFinal)){
+                    continue;
+                }
+            }
             $driverConvert = [
                 'driver_code' => $driver->driver_code,
                 'driver_id' => $driver->id,
@@ -2437,7 +2449,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'fontDir' => $fontDirs,
             'fontdata' => $fontData,
             'default_font' => 'MY_FONT_NAME',
-            'format' => 'A4-P'
+            'format' => 'A4-L'
         ]);
 //        return view('exportSaleDetailPDF', ['data' => $data]);
         $chunkedArrays = array_chunk($data['date_ship_fee'] ?? [], 9);
