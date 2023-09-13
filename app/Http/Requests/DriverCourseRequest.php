@@ -282,6 +282,7 @@ class DriverCourseRequest extends FormRequest
              return  [
                  "field" => "in:customers.customer_code,customers.type,customers.customer_name",
                  "sortby" => "in:asc,desc",
+                 "tax" => "required|numeric|digits_between:1,20",
                  "month_year" => [
                      'required',
                      "date_format:Y-m",

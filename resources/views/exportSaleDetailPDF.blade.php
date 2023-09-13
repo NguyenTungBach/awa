@@ -135,10 +135,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                     0
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'] * 0.1))}}
+{{--                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'] * 0.1))}}--}}
+                    {{ ceil($tax) }}
                 </td>
                 <td style="text-align: right">
-                    {{number_format(($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + (($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date'] * 0.1)))}}
+                    {{number_format(($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + ceil($tax))}}
                 </td>
             </tr>
         </table>
