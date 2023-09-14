@@ -160,33 +160,33 @@
                                                 </div>
                                             </b-col>
                                         </b-row> -->
-
-                                        <b-row>
-                                            <b-col
-                                                :cols="12"
-                                                :sm="12"
-                                                :md="12"
-                                                :lg="12"
-                                                :xl="12"
-                                            >
-                                                <div class="item-form">
-                                                    <label for="customer-tax">
-                                                        {{ $t('CUSTOMER_CREATE.TAX') }}
-                                                    </label>
-                                                    <span class="text-danger">
-                                                        *
-                                                    </span>
-                                                    <b-input-group>
-                                                        <b-form-select
-                                                            id="customer-tax"
-                                                            v-model="isForm.tax"
-                                                            :options="optionsTax"
-                                                        />
-                                                    </b-input-group>
-                                                </div>
-                                            </b-col>
-                                        </b-row>
-
+                                        <!--bach them-->
+                                        <!--                                        <b-row>-->
+                                        <!--                                            <b-col-->
+                                        <!--                                                :cols="12"-->
+                                        <!--                                                :sm="12"-->
+                                        <!--                                                :md="12"-->
+                                        <!--                                                :lg="12"-->
+                                        <!--                                                :xl="12"-->
+                                        <!--                                            >-->
+                                        <!--                                                <div class="item-form">-->
+                                        <!--                                                    <label for="customer-tax">-->
+                                        <!--                                                        {{ $t('CUSTOMER_CREATE.TAX') }}-->
+                                        <!--                                                    </label>-->
+                                        <!--                                                    <span class="text-danger">-->
+                                        <!--                                                        *-->
+                                        <!--                                                    </span>-->
+                                        <!--                                                    <b-input-group>-->
+                                        <!--                                                        <b-form-select-->
+                                        <!--                                                            id="customer-tax"-->
+                                        <!--                                                            v-model="isForm.tax"-->
+                                        <!--                                                            :options="optionsTax"-->
+                                        <!--                                                        />-->
+                                        <!--                                                    </b-input-group>-->
+                                        <!--                                                </div>-->
+                                        <!--                                            </b-col>-->
+                                        <!--                                        </b-row>-->
+                                        <!--bach them-->
                                         <b-row>
                                             <b-col
                                                 :cols="12"
@@ -515,7 +515,7 @@ export default {
 				customer_code: this.isForm.customer_id,
 				customer_name: this.isForm.customer_name ? this.isForm.customer_name.trim() : '',
 				closing_date: this.isForm.exclusive,
-				tax: this.isForm.tax, // bach them
+				// tax: this.isForm.tax, // bach them
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
 				post_code: this.postalCode_first + '-' + this.postalCode_last,
 				address: this.isForm.customer_address ? this.isForm.customer_address.trim() : '',
@@ -546,11 +546,11 @@ export default {
 						}
 					});
 					// bach them start
-					this.optionsTax.forEach(item => {
-						if (item.value === DATA.tax_value) {
-							this.isForm.tax = item.value;
-						}
-					});
+					// this.optionsTax.forEach(item => {
+					// 	if (item.value === DATA.tax_value) {
+					// 		this.isForm.tax = item.value;
+					// 	}
+					// });
 					// bach them end
 					this.isForm.customer_id = DATA.customer_code;
 					this.isForm.customer_name = DATA.customer_name;

@@ -8,6 +8,7 @@ namespace App\Http\Requests;
 
 use App\Models\DriverCourse;
 use App\Models\User;
+use App\Rules\ClosingDateRule;
 use App\Rules\DriverCourseUniqueRule;
 use App\Rules\ShipDateRule;
 use App\Rules\TimeRule;
@@ -76,6 +77,7 @@ class DriverCourseRequest extends FormRequest
              return [
                  "closing_date" => [
                      "in:15,20,25,28,29,30,31",
+                     new ClosingDateRule($this->get('month_year'))
                  ],
                  "month_year" => [
                      'required',
@@ -200,8 +202,8 @@ class DriverCourseRequest extends FormRequest
          if(Route::getCurrentRoute()->getActionMethod() == 'total_extra_cost'){
              return [
                  "closing_date" => [
-                     'required',
-                     "in:24,25",
+                     "in:15,20,25,28,29,30,31",
+                     new ClosingDateRule($this->get('month_year'))
                  ],
                  "month_year" => [
                      'required',
@@ -246,8 +248,8 @@ class DriverCourseRequest extends FormRequest
          if(Route::getCurrentRoute()->getActionMethod() == 'export_shift'){
              return [
                  "closing_date" => [
-//                     'required',
-                     "in:24,25",
+                     "in:15,20,25,28,29,30,31",
+                     new ClosingDateRule($this->get('month_year'))
                  ],
                  "month_year" => [
                      'required',
@@ -292,7 +294,8 @@ class DriverCourseRequest extends FormRequest
          if(Route::getCurrentRoute()->getActionMethod() == 'export_driver_meal_shift'){
              return [
                  "closing_date" => [
-                     "in:24,25",
+                     "in:15,20,25,28,29,30,31",
+                     new ClosingDateRule($this->get('month_year'))
                  ],
                  "month_year" => [
                      'required',
@@ -311,7 +314,7 @@ class DriverCourseRequest extends FormRequest
             'driver_id.exists' => "driver_id not found in database",
             'items.*.course_id.exists' => "course_id not found in database",
             'sortby.in' => 'Please input asc or desc',
-            'closing_date.in' => 'Please input 24 or 25',
+            'closing_date.in' => 'Please input 15,20,25,28,29,30,31',
         ];
     }
 }
