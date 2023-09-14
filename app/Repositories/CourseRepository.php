@@ -64,6 +64,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         try {
             DB::beginTransaction();
+            $result = [];
             $course = [];
             $check = Common::checkValidateShift($input['driver_id'], $input['ship_date']);
             if ($check['code'] == 200) {
@@ -105,12 +106,18 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                 $this->cashInStaticalRepository->saveCashInStatic($course->customer_id, $driverCourse->date);
                 $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
             } else {
-                $course = [];
+                $result['message'] = $check['message'];
+                $result['code'] = $check['code'];
+            }
+            if ($course != []) {
+                $result['message'] = CREATE_SUCCESS;
+                $result['code'] = Response::HTTP_OK;
+                $result['data'] = $course;
             }
 
             DB::commit();
 
-            return $course;
+            return $result;
         } catch (\Exception $exception) {
             DB::rollBack();
 
@@ -142,6 +149,9 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         }
         if (!empty($input['customer_id'])) {
             $courses = $courses->where('customer_id', $input['customer_id']);
+        }
+        if (!empty($input['driver_id'])) {
+            $courses = $courses->where('driver_id', $input['driver_id']);
         }
 
         if ($input['order_by'] == 'customer_name') {

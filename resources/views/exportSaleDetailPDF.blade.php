@@ -56,14 +56,14 @@
         table tr,th,td{
             border: 1px solid #d2d2d2;
             border-collapse:collapse;
-            padding:7px 8px;
+            /*padding:7px 8px;*/
         }
         table tr th{
             background: #F4F4F4;
-            font-size:15px;
+            font-size:10px;
         }
         table tr td{
-            font-size:13px;
+            font-size:10px;
         }
         table{
             border-collapse:collapse;
@@ -73,6 +73,9 @@
         }
         .float-left{
             float:left;
+        }
+        .float-right{
+            float:right;
         }
         .total-part{
             font-size:16px;
@@ -106,11 +109,12 @@
         <p class="m-0 pt-5 text-bold w-100 text-center">未日締　{{$data['month_choose']}}月分</p>
     </div>
     <div class="w-33 float-left logo mt-0">
-        <pre class="m-0 text-bold w-100">〒770-8001
+        <pre class="m-0 text-bold w-100" style="font-size:10px;text-align: right;display: flex;justify-content: right;">〒770-8001
 徳島県徳島市津田海岸町11125-23
 適格事業者登録番号：T2480001000065
 阿波急行運輸株式会社
-TEL (088) 662-2226㈹　FAX (088) 662-2216
+TEL (088) 662-2226㈹　
+FAX (088) 662-2216
 取引銀行　　徳島大正銀行　本店営業部
 当座預金　６４９６３５１
         </pre>
@@ -135,10 +139,11 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
                     0
                 </td>
                 <td style="text-align: right">
-                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'] * 0.1))}}
+{{--                    {{($data['total_ship_fee_by_closing_date'] == "" ? 0 : number_format($data['total_ship_fee_by_closing_date'] * 0.1))}}--}}
+                    {{ ceil($tax) }}
                 </td>
                 <td style="text-align: right">
-                    {{number_format(($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + (($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date'] * 0.1)))}}
+                    {{number_format(($data['total_ship_fee_by_closing_date'] == "" ? 0 : $data['total_ship_fee_by_closing_date']) + ceil($tax))}}
                 </td>
             </tr>
         </table>
@@ -163,7 +168,7 @@ TEL (088) 662-2226㈹　FAX (088) 662-2216
         ?>
         <tr>
             <td style="text-align: center">{{$course['ship_date']}}</td>
-            <td style="text-align: center">{{$course['car']}}</td>
+            <td style="text-align: center">{{$course['vehicle_number']}}</td>
             <td style="text-align: center">{{$course['departure_place']}}</td>
             <td style="text-align: center">{{$course['arrival_place']}}</td>
             <td style="text-align: center"></td>

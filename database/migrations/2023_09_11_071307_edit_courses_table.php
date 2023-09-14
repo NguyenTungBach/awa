@@ -15,7 +15,7 @@ class EditCoursesTable extends Migration
     {
         Schema::table('courses', function (Blueprint $table) {
             $table->integer('driver_id')->after('customer_id');
-            $table->string('item_name', 20)->after('arrival_place');
+            $table->string('item_name', 20)->nullable()->after('arrival_place');
             $table->decimal('quantity', 15)->default(0)->after('item_name');
             $table->decimal('price', 15)->default(0)->after('quantity');
             $table->decimal('weight', 15)->default(0)->after('price');

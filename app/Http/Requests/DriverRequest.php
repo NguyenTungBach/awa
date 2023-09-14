@@ -38,13 +38,17 @@ class DriverRequest extends FormRequest
                   return [
                       "sortby" => "in:asc,desc"
                   ];
+              case 'driver_for_course':
+                  return [
+                      "ship_date" => "required|date_format:Y-m-d"
+                  ];
               case 'store':
                   return  [
                       "type" => ["required", "in:1,2,3,4"],
                       "driver_code" => ["required", "min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
                       "driver_name" => "required|string|max:15",
-                      "car" => "required",
-                      "start_date" => "required|date|date_format:Y-m-d",
+                      "car" => "required|numeric|digits_between:1,20",
+                      "start_date" => "date|date_format:Y-m-d",
                       "end_date" => "nullable|date|date_format:Y-m-d|after_or_equal:start_date",
                       "note" => "max:1000",
                   ];
@@ -53,8 +57,8 @@ class DriverRequest extends FormRequest
                         "type" => ["required", "in:1,2,3,4"],
                         "driver_code" => ["min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
                         "driver_name" => "required|string|max:20",
-                        "car" => "required",
-                        "start_date" => "required|date|date_format:Y-m-d",
+                        "car" => "required|numeric|digits_between:1,20",
+                        "start_date" => "date|date_format:Y-m-d",
                         "end_date" => "nullable|date|date_format:Y-m-d|after_or_equal:start_date",
                         "note" => "max:1000",
                     ];

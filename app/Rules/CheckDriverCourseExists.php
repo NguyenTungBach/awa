@@ -31,10 +31,10 @@ class CheckDriverCourseExists implements Rule
         $courseId = request()->route('course');
         $existsCourse = DriverCourse::where('course_id', $courseId)->get();
         if ($existsCourse->isEmpty()) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**

@@ -91,7 +91,7 @@ class DriverController extends Controller
      *          mediaType="application/json",
      *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"type","driver_code","car","driver_name","start_date"},
+     *            required={"type","driver_code","car","driver_name"},
      *            @OA\Property(
      *              property="type",
      *              format="integer",
@@ -239,7 +239,7 @@ class DriverController extends Controller
      *          mediaType="application/json",
      *          example={"type": 1,"driver_code": "abc123","driver_name": "Bach","car": "Lambo","start_date": "2022-08-20","note": "thoi roi ta da xa nhau"},
      *          @OA\Schema(
-     *            required={"type","car","driver_name","start_date"},
+     *            required={"type","car","driver_name"},
      *            @OA\Property(
      *              property="type",
      *              format="integer",
@@ -332,5 +332,46 @@ class DriverController extends Controller
     public function destroy($id)
     {
         return $this->repository->destroy($id);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/driver/driver_for_course",
+     *   tags={"Driver"},
+     *   summary="List Driver",
+     *   operationId="driver_index",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="ship_date",
+     *     description = "ship_date",
+     *     in="path",
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function driver_for_course(DriverRequest $request)
+    {
+        return $this->repository->driver_for_course($request);
     }
 }
