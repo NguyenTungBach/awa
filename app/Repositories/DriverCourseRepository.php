@@ -169,8 +169,20 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         if ($request->has('closing_date')){
             $checkArrayClosingDate = [29,28,30,31];
             if (in_array($request->closing_date,$checkArrayClosingDate)){
-                $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
-                $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+                // Kiểm tra trường hợp tháng 2
+                if ($request->closing_date == 28 || $request->closing_date == 29){
+                    $checkMonth2 = Carbon::parse($month_year)->month;
+                    if ($checkMonth2 == 2){
+                        $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                        $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+                    } else {
+                        $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
+                        $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+                    }
+                } else{
+                    $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                    $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+                }
             } else{
                 $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
                 $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
@@ -384,8 +396,20 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $month_year = $request->month_year;
         $checkArrayClosingDate = [29,28,30,31];
         if (in_array($request->closing_date,$checkArrayClosingDate)){
-            $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
-            $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+            // Kiểm tra trường hợp tháng 2
+            if ($request->closing_date == 28 || $request->closing_date == 29){
+                $checkMonth2 = Carbon::parse($month_year)->month;
+                if ($checkMonth2 == 2){
+                    $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                    $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+                } else {
+                    $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
+                    $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+                }
+            } else{
+                $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+            }
         } else{
             $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
             $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
