@@ -131,10 +131,13 @@ class CourseController extends Controller
         try {
             $result = $this->repository->createCourse($request->all());
             if (empty($result)) {
-                return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, CREATE_ERROR, CREATE_ERROR);
+                return $this->responseJsonError(Response::HTTP_BAD_REQUEST, CREATE_ERROR, CREATE_ERROR);
+            }
+            if ($result['code'] != 200) {
+                return $this->responseJsonError($result['code'], $result['message'], CREATE_ERROR);
             }
 
-            return $this->responseJson(Response::HTTP_OK, new CourseResource($result), CREATE_SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, new CourseResource($result['data']), CREATE_SUCCESS);
         } catch (\Exception $exception) {
 
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $exception->getMessage());
