@@ -2496,7 +2496,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             'format' => 'A4-L'
         ]);
 //        return view('exportSaleDetailPDF', ['data' => $data]);
-        $chunkedArrays = array_chunk($data['date_ship_fee'] ?? [], 9);
+        $chunkedArrays = array_chunk($data['date_ship_fee'] ?? [], 20);
+//        return view('exportSaleDetailPDF', ['data' => $data,'chunks' => $chunkedArrays[0], 'page' => 1, 'tax' => $tax])->render();
         if ($chunkedArrays == []){
             $html = view('exportSaleDetailPDF', ['data' => $data,'chunks' => [], 'page' => 0, 'tax' => $tax])->render();
             $mpdf->WriteHTML($html);
