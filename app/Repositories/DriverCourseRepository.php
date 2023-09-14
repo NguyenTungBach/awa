@@ -167,10 +167,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $dataTotalByDriverIds = [];
         if ($request->has('closing_date')){
-            $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
-            $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
-//            $datas->whereBetween('driver_courses.date', [$startDate, $endDate]);
-
+            $checkArrayClosingDate = [29,28,30,31];
+            if (in_array($request->closing_date,$checkArrayClosingDate)){
+                $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+            } else{
+                $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
+                $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+            }
             // Tổng tiền những course nằm trong driver
             $dataTotalByDriverIds = $this->model->query()
                 ->select(
@@ -378,8 +382,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
     public function totalOfExtraCost($request)
     {
         $month_year = $request->month_year;
-        $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
-        $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+        $checkArrayClosingDate = [29,28,30,31];
+        if (in_array($request->closing_date,$checkArrayClosingDate)){
+            $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+            $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+        } else{
+            $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
+            $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
+        }
 
         // Nhóm tất cả những course nằm trong driver
         $datas = $this->model->query()
@@ -2465,8 +2475,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 }
             }
         }
-
-        return $mpdf->Output("請求書.pdf","D");
+        $year_month = Carbon::now()->format('Y-m');
+        return $mpdf->Output("経費表_$year_month.pdf","D");
 
 //        return view('testPDFTemplate');
     }

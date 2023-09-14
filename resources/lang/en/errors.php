@@ -23,4 +23,5 @@ return [
     'driver_in_day_off' => 'driver in day off',
     'driver_must_one_course_in_day_with_id_special' => 'driver must one course in day with id special, remain driver_id :driver_id, driver_name :driver_name course_id :course_id, course_name :course_name, date :date',
     'cash_in_statistical_not_found' => 'cash in statistical for payment month :month_year not found',
+    'month_not_day' => 'this month does not have this day',
 ];
