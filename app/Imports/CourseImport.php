@@ -13,33 +13,30 @@ use App\Rules\CourseRule;
 use App\Models\Customer;
 use App\Models\Course;
 use App\Models\Driver;
+use App\Models\DriverCourse;
 use App\Rules\CompareHours;
 use Repository\CourseRepository;
+use Repository\DriverCourseRepository;
+use Helper\Common;
+// use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
+use App\Repositories\Contracts\DriverCourseRepositoryInterface;
+use Repository\BaseRepository;
 
 class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithValidation
 {
+    // protected $driverCourseRepository;
+
+    // public function __construct(DriverCourseRepositoryInterface $driverCourseRepository)
+    // {
+    //     $this->driverCourseRepository = $driverCourseRepository;
+    // }
+
     /**
      * @return array
      */
     public function headings(): array
     {
         return [
-            '運行日', // 0 ship_date
-            '運行名', // 1 course_name
-            '始業時間', // 2 start_date
-            '終業時間', // 3 end_date
-            '休憩時間', // 4 break_time
-            '荷主名', // 5 customer_id
-            '発地', // 6 departure_place
-            '着地', // 7 arrival_place
-            '運賃', // 8 ship_fee
-            '協力会社支払金額', // 9 associate_company_fee
-            '高速道路・フェリー料金', // 10 expressway_fee
-            '歩合', // 11 commission
-            '食事補助金額', // 12 meal_fee
-            'メモ', // 13 note
-
-
             '運行日', // 0 ship_date 0
             '従業員名', // 1 driver_id
             '車両番号', // 2 vehicle_number
@@ -76,17 +73,20 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
     public function rules(): array
     {
         $arrCustomerName = Customer::get()->pluck('customer_name');
+        $arrDriverName = Driver::get()->pluck('driver_name');
 
         $rules = [
             // 0 ship_date
             '*.0' => ['required', 'date_format:Y-m-d', new CourseRule($this->headings()[0])],
 
-            // 1 driver_id
-
             // // 1 course_name
             // '*.1'  => ['required', 'string', 'max:20', 'unique:courses,course_name,NULL,id,deleted_at,NULL',],
 
+            // 1 driver_id
+            '*.1' => ['required', 'string', Rule::in($arrDriverName)],
+
             // 2 vehicle_number
+            '*.2' => ['nullable', 'numeric', 'digits_between:1,20', Rule::in($arrDriverName)],
 
             // 3 start_date
             '*.3' => ['required', 'date_format:H:i'],
@@ -107,12 +107,16 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.8' => ['required', 'string', 'max:20'],
 
             // 9 item_name
+            '*.9' => ['nullable', 'string', 'max:20'],
 
             // 10 quantity
+            '*.10' => ['nullable', 'numeric', 'digits_between:1,15'],
 
             // 11 price
+            '*.11' => ['nullable', 'numeric', 'digits_between:1,15'],
 
             // 12 weight
+            '*.12' => ['nullable', 'numeric', 'digits_between:1,15'],
 
             // 13 ship_fee
             '*.13' => ['required', 'numeric'],
@@ -154,8 +158,13 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             // '*.1.unique'  => __('validation.custom.csv.unique', ['attribute' => $this->headings()[1]]),
 
             // 1 driver_id
+            '*.1.required'  => __('validation.custom.csv.required', ['attribute' => $this->headings()[1]]),
+            '*.1.string'  => __('validation.custom.csv.string', ['attribute' => $this->headings()[1]]),
+            '*.1.in'  => __('validation.custom.csv.in', ['attribute' => $this->headings()[1]]),
 
             // 2 vehicle_number
+            '*.2.numeric'  => __('validation.custom.csv.numeric', ['attribute' => $this->headings()[2]]),
+            '*.2.digits_between'  => __('validation.custom.csv.digits_between', ['attribute' => $this->headings()[2], 'min' => 1, 'max' => 20]),
 
             // 3 start_date
             '*.3.required'  => __('validation.custom.csv.required', ['attribute' => $this->headings()[3]]),
@@ -184,12 +193,20 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.8.max'  => __('validation.custom.csv.max', ['attribute' => $this->headings()[8], 'max' => 20]),
 
             // 9 item_name
+            '*.9.string'  => __('validation.custom.csv.string', ['attribute' => $this->headings()[9]]),
+            '*.9.max'  => __('validation.custom.csv.max', ['attribute' => $this->headings()[9], 'max' => 20]),
 
             // 10 quantity
+            '*.10.numeric'  => __('validation.custom.csv.numeric', ['attribute' => $this->headings()[10]]),
+            '*.10.digits_between'  => __('validation.custom.csv.digits_between', ['attribute' => $this->headings()[10], 'min' => 1, 'nax' => 15]),
 
             // 11 price
+            '*.11.numeric'  => __('validation.custom.csv.numeric', ['attribute' => $this->headings()[11]]),
+            '*.11.digits_between'  => __('validation.custom.csv.digits_between', ['attribute' => $this->headings()[11], 'min' => 1, 'nax' => 15]),
 
             // 12 weight
+            '*.12.numeric'  => __('validation.custom.csv.numeric', ['attribute' => $this->headings()[12]]),
+            '*.12.digits_between'  => __('validation.custom.csv.digits_between', ['attribute' => $this->headings()[12], 'min' => 1, 'nax' => 15]),
 
             // 13 ship_fee
             '*.13.required'  => __('validation.custom.csv.required', ['attribute' => $this->headings()[13]]),
@@ -225,14 +242,13 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
         $arrCollection = $collection->toArray();
         $arrCustomer = $this->getCustomerId();
         $arrDriver = $this->getDriverId();
-        // $arrVehicle = $this->getVehicleNumber();
         $dataImport = [];
         $errors = [];
         $result = [];
 
         try {
             DB::beginTransaction();
-            for ($i=0; $i < count($arrCollection); $i++) { 
+            for ($i=0; $i < count($arrCollection); $i++) {
                 $row = $collection[$i];
                 $rowIndex = $i + $this->startRow();
 
@@ -242,30 +258,59 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
                 if ($start_time >= $end_time) {
                     $errors[] = __('validation.custom.csv.compare_date', ['row' => $rowIndex]);
                 }
+                // vehicle_number
+                $row[2] = empty($row[2]) ? $this->getVehicleNumber($row[1]) : $row[2];
+                // customer_id
+                $row[6] = array_search($row[6], $arrCustomer);
+                // driver_id
+                $row[1] = array_search($row[1], $arrDriver);
+                $check = Common::checkValidateShift($row[1], $row[0]);
 
-                $dataImport['customer_id'] = array_search($row[6], $arrCustomer);
-                $dataImport['course_name'] = 'driver ' . array_search($row[1], $arrDriver);
-                $dataImport['ship_date'] = $row[0];
-                $dataImport['driver_id'] = array_search($row[1], $arrDriver);
-                // $dataImport['vehicle_number'] = $row[2];
-                $dataImport['start_date'] = $row[3];
-                $dataImport['end_date'] = $row[4];
-                $dataImport['break_time'] = $row[5];
-                $dataImport['departure_place'] = $row[7];
-                $dataImport['arrival_place'] = $row[8];
-                $dataImport['item_name'] = $row[9];
-                $dataImport['quantity'] = empty($row[10]) ? 0 : $row[10];
-                $dataImport['price'] = empty($row[11]) ? 0 : $row[11];
-                $dataImport['weight'] = empty($row[12]) ? 0 : $row[12];
-                $dataImport['ship_fee'] = $row[13];
-                $dataImport['associate_company_fee'] = empty($row[14]) ? 0 : $row[14];
-                $dataImport['expressway_fee'] = empty($row[15]) ? 0 : $row[15];
-                $dataImport['commission'] = empty($row[16]) ? 0 : $row[16];
-                $dataImport['meal_fee'] = empty($row[17]) ? 0 : $row[17];
-                $dataImport['note'] = $row[18];
+                if ($check['code'] == 200) {
+                    $dataImport['customer_id'] = $row[6];
+                    $dataImport['course_name'] = 'driver ' . $row[1];
+                    $dataImport['ship_date'] = $row[0];
+                    $dataImport['driver_id'] = $row[1];
+                    $dataImport['vehicle_number'] = $row[2];
+                    $dataImport['start_date'] = $row[3];
+                    $dataImport['end_date'] = $row[4];
+                    $dataImport['break_time'] = $row[5];
+                    $dataImport['departure_place'] = $row[7];
+                    $dataImport['arrival_place'] = $row[8];
+                    $dataImport['item_name'] = $row[9];
+                    $dataImport['quantity'] = empty($row[10]) ? 0 : $row[10];
+                    $dataImport['price'] = empty($row[11]) ? 0 : $row[11];
+                    $dataImport['weight'] = empty($row[12]) ? 0 : $row[12];
+                    $dataImport['ship_fee'] = $row[13];
+                    $dataImport['associate_company_fee'] = empty($row[14]) ? 0 : $row[14];
+                    $dataImport['expressway_fee'] = empty($row[15]) ? 0 : $row[15];
+                    $dataImport['commission'] = empty($row[16]) ? 0 : $row[16];
+                    $dataImport['meal_fee'] = empty($row[17]) ? 0 : $row[17];
+                    $dataImport['note'] = $row[18];
 
-                if (!count($errors)) {
-                    $result = Course::create($dataImport);
+                    if (!count($errors)) {
+                        $result = Course::create($dataImport);
+                    }
+                    // create driver course
+                    if (!(empty($result))) {
+                        // create driver_course
+                        $driverCourse = DriverCourse::create([
+                            'driver_id' => $result->driver_id,
+                            'course_id' => $result->id,
+                            'start_time' => $result->start_date,
+                            'end_time' => $result->end_date,
+                            'break_time' => $result->break_time,
+                            'date' => $result->ship_date,
+                            'status' => 1
+                        ]);
+                        // update cash
+                        if (!empty($driverCourse)) {
+                            // $this->cashInStaticalRepository->saveCashInStatic($result->customer_id, $driverCourse->date);
+                            $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
+                        }
+                    }
+                } else {
+                    $errors[] = $check['message'];
                 }
             }
             if(count($errors)) {
@@ -303,14 +348,10 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
         return $result;
     }
 
-    // public function getVehicleNumber()
-    // {
-    //     $drivers = Driver::get();
-    //     $result = [];
-    //     foreach ($customers as $key => $value) {
-    //         $result[$value->car] = $value->driver_name;
-    //     }
+    public function getVehicleNumber($driverName)
+    {
+        $result = Driver::where('driver_name', $driverName)->first()->car;
 
-    //     return $result;
-    // }
+        return $result;
+    }
 }
