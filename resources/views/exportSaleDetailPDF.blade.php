@@ -74,6 +74,9 @@
         .float-left{
             float:left;
         }
+        .float-right{
+            float:right;
+        }
         .total-part{
             font-size:16px;
             line-height:12px;
@@ -105,7 +108,7 @@
         <p class="m-0 pt-5 text-bold w-100 text-center" style="font-size: 10px">{{$data['aboutDateJapan']}}</p>
         <p class="m-0 pt-5 text-bold w-100 text-center">未日締　{{$data['month_choose']}}月分</p>
     </div>
-    <div class="w-33 float-left logo mt-0">
+    <div class="w-33 float-right logo mt-0">
         <pre class="m-0 text-bold w-100" style="font-size:10px;">〒770-8001
 徳島県徳島市津田海岸町11125-23
 適格事業者登録番号：T2480001000065

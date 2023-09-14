@@ -38,6 +38,10 @@ class DriverRequest extends FormRequest
                   return [
                       "sortby" => "in:asc,desc"
                   ];
+              case 'driver_for_course':
+                  return [
+                      "ship_date" => "required|date_format:Y-m-d"
+                  ];
               case 'store':
                   return  [
                       "type" => ["required", "in:1,2,3,4"],
