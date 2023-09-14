@@ -195,13 +195,15 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "drivers.driver_code",
                     "drivers.type",
                 )
-                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names
+                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names,
+                GROUP_CONCAT(customers.id) as customer_ids,GROUP_CONCAT(customers.customer_name) as customer_names
             ,SUM(CASE WHEN
             `driver_courses`.`date` BETWEEN '$startDate' AND '$endDate'
             THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
             as `total_money`"))
                 ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
                 ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+                ->join('customers', 'courses.customer_id', '=', 'customers.id')
                 ->groupBy("driver_courses.driver_id")
                 ->SortByForDriverCourse($request)
                 ->whereBetween('driver_courses.date', [$startDate, $endDate])
@@ -265,6 +267,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "date"=> $calendar->date,
                     "course_ids"=> "",
                     "course_names"=> "",
+                    "customer_ids"=> "",
+                    "customer_names"=> "",
                     "course_meal_fee_commission"=> "",
                     "course_names_color"=> ""
                 ];
@@ -276,6 +280,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "date"=> $checkData['date'],
                             "course_ids"=> $checkData['course_ids'],
                             "course_names"=> $checkData['course_names'],
+                            "customer_ids"=> $checkData['customer_ids'],
+                            "customer_names"=> $checkData['customer_names'],
                             "course_meal_fee_commission"=> $checkData['course_meal_fee_commission'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
@@ -355,6 +361,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "date"=> $calendar->date,
                             "course_ids"=> "",
                             "course_names"=> "",
+                            "customer_ids"=> "",
+                            "customer_names"=> "",
                             "course_meal_fee_commission"=> "",
                             "course_names_color"=> ""
                         ];
@@ -372,6 +380,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         "date"=> $calendar->date,
                         "course_ids"=> "",
                         "course_names"=> "",
+                        "customer_ids"=> "",
+                        "customer_names"=> "",
                         "course_meal_fee_commission"=> "",
                         "course_names_color"=> ""
                     ];
@@ -1666,7 +1676,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['dataShift']['data_by_date'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataByDate['date']){
-                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names'],DataType::TYPE_STRING);
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['customer_names'],DataType::TYPE_STRING);
                         }
                     }
                 }

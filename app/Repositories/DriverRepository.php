@@ -92,14 +92,14 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         // Lấy ra tất cả các driver không nghỉ và những driver được báo nghỉ nhưng chưa đến
         $listDriverNotRetirement = Driver::query()
             ->whereNull('end_date') // chưa nghỉ
-            ->orWhere("end_date",">",$now) // nằm trong hoặc lớn hơn ngày nghỉ tức là vẫn trong tương lai và chưa đến
+            ->orWhere("end_date",">",$now) // nhỏ hơn ngày nghỉ tức là vẫn trong tương lai và chưa đến
             ->SortByForDriver($request)
             ->get();
 
         // Lấy ra tất cả các driver đã nghỉ hoặc qua rồi
         $listDriverRetirement = Driver::query()
             ->whereNotNull('end_date')
-            ->where("end_date","<=",$now) // nằm trong hoặc nhỏ hơn ngày nghỉ tức là đến ngày hoặc đã qua ngày nghỉ
+            ->where("end_date","<=",$now) // nằm trong hoặc lớn hơn ngày nghỉ tức là đến ngày hoặc đã qua ngày nghỉ
             ->get();
 
         $data = [];
@@ -202,6 +202,15 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
 //        }
 //        return $flagCheck;
 //    }
+    public function driver_for_course($request){
+        // Lấy ra tất cả các driver không nghỉ và những driver được báo nghỉ nhưng chưa đến
+        $data = Driver::query()
+            ->whereNull('end_date') // chưa nghỉ
+            ->orWhere("end_date",">",$request->ship_date) // nhỏ hơn ngày nghỉ tức là vẫn trong tương lai và chưa đến
+            ->orderBy("created_at")
+            ->get();
 
+        return ResponseService::responseJson(200, new BaseResource($data));
+    }
 
 }
