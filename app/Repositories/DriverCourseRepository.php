@@ -272,6 +272,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "customer_names"=> "",
                     "course_names_special"=> "",
                     "course_names_special_and_customer_names"=> "",
+                    "course_names_special_and_customer_names_array"=> "",
                     "course_meal_fee_commission"=> "",
                     "course_names_color"=> ""
                 ];
@@ -291,6 +292,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         ];
 
                         $dataByCalendar['course_names_special_and_customer_names'] = $checkData['course_names_special'] == null || $checkData['course_names_special'] == '' ? $checkData['customer_names'] : $checkData['course_names_special'].','.$checkData['customer_names'];
+                        $dataByCalendar['course_names_special_and_customer_names_array'] = explode(",", $dataByCalendar['course_names_special_and_customer_names']);
+
                         break;
                     }
                 }
@@ -371,6 +374,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "customer_names"=> "",
                             "course_names_special"=> "",
                             "course_names_special_and_customer_names"=> "",
+                            "course_names_special_and_customer_names_array"=> "",
                             "course_meal_fee_commission"=> "",
                             "course_names_color"=> ""
                         ];
@@ -392,6 +396,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         "customer_names"=> "",
                         "course_names_special"=> "",
                         "course_names_special_and_customer_names"=> "",
+                        "course_names_special_and_customer_names_array"=> "",
                         "course_meal_fee_commission"=> "",
                         "course_names_color"=> ""
                     ];
