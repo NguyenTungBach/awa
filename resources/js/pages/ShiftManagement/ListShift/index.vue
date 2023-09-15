@@ -1381,36 +1381,36 @@ export default {
 			closingDate: '',
 			showModalClosingDate: false,
 			showModalExportPDF: false,
-			optionsClosingDate: [
-				{
-					value: '15',
-					text: '15日',
-				},
-				{
-					value: '20',
-					text: '20日',
-				},
-				{
-					value: '25',
-					text: '25日',
-				},
-				{
-					value: '28',
-					text: '28日',
-				},
-				{
-					value: '29',
-					text: '29日',
-				},
-				{
-					value: '30',
-					text: '30日',
-				},
-				{
-					value: '31',
-					text: '31日',
-				},
-			],
+			// optionsClosingDate: [
+			// 	{
+			// 		value: '15',
+			// 		text: '15日',
+			// 	},
+			// 	{
+			// 		value: '20',
+			// 		text: '20日',
+			// 	},
+			// 	{
+			// 		value: '25',
+			// 		text: '25日',
+			// 	},
+			// 	{
+			// 		value: '28',
+			// 		text: '28日',
+			// 	},
+			// 	{
+			// 		value: '29',
+			// 		text: '29日',
+			// 	},
+			// 	{
+			// 		value: '30',
+			// 		text: '30日',
+			// 	},
+			// 	{
+			// 		value: '31',
+			// 		text: '31日',
+			// 	},
+			// ],
 
 			totalShift: '',
 
@@ -1506,6 +1506,7 @@ export default {
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
 			getIdExportPDF: '',
+			getNameExportPDF: '',
 			tax: '',
 			total_fare: '',
 			total: '',
@@ -1553,6 +1554,47 @@ export default {
 			}
 
 			return result;
+		},
+
+		optionsClosingDate() {
+			const listDate = [
+				{
+					value: '15',
+					text: '15日',
+				},
+				{
+					value: '20',
+					text: '20日',
+				},
+				{
+					value: '25',
+					text: '25日',
+				},
+				{
+					value: '28',
+					text: '28日',
+				},
+				{
+					value: '29',
+					text: '29日',
+				},
+				{
+					value: '30',
+					text: '30日',
+				},
+				{
+					value: '31',
+					text: '31日',
+				},
+			];
+			const month = this.pickerYearMonth.month;
+			if (month === 2) {
+				return listDate.filter(item => item.value !== '31' && item.value !== '30');
+			} else if ([1, 3, 5, 7, 8, 10, 12].includes(month)) {
+				return listDate;
+			} else {
+				return listDate.filter(item => item.value !== '31');
+			}
 		},
 
 		// currentPageTableLogChange() {
@@ -2528,7 +2570,7 @@ export default {
 						const url = window.URL.createObjectURL(new Blob([response.data]));
 						const link = document.createElement('a');
 						link.href = url;
-						link.setAttribute('download', `高速代金表_${YEAR_MONTH}.xlsx`);
+						link.setAttribute('download', `経費表_${YEAR_MONTH}.xlsx`);
 						document.body.appendChild(link);
 						link.click();
 					}).catch((error) => {
@@ -2546,6 +2588,7 @@ export default {
 			this.consumption_tax = (Number(data.total_ship_fee_by_closing_date) * 10) / 100;
 			this.total = this.consumption_tax + Number(data.total_ship_fee_by_closing_date);
 			this.getIdExportPDF = data.customer_id;
+			this.getNameExportPDF = data.customer_name;
 			// this.handleExportPDF(data.customer_id);
 		},
 
@@ -2566,7 +2609,7 @@ export default {
 					'accept': 'application/json',
 				},
 			}).then(async(res) => {
-				let filename = `saleList_{${YEAR_MONTH}}`;
+				let filename = `【請求書】${this.getNameExportPDF}様_${YEAR_MONTH}`;
 				filename = filename.replaceAll('"', '');
 				await res.blob().then((res) => {
 					FILE_DOWNLOAD = res;
@@ -2583,6 +2626,7 @@ export default {
 				.catch((err) => {
 					console.log(err);
 				});
+			this.showModalExportPDF = false;
 		},
 
 		onExportPDF() {

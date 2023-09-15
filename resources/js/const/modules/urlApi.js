@@ -13,6 +13,7 @@ const DELETE_USER = '/user';
 
 // Driver API
 const GET_LIST_DRIVER = '/driver';
+const GET_LIST_DRIVER_VALIDATE = '/driver/driver-for-course';
 const GET_ONE_DRIVER = '/driver';
 const POST_DRIVER = '/driver';
 const PUT_DRIVER = '/driver';
@@ -115,6 +116,7 @@ export default {
 
 	// Driver API
 	GET_LIST_DRIVER,
+	GET_LIST_DRIVER_VALIDATE,
 	GET_ONE_DRIVER,
 	POST_DRIVER,
 	PUT_DRIVER,

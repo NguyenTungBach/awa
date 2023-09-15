@@ -86,6 +86,7 @@
                                                 v-model="isForm.ship_date"
                                                 button-only
                                                 right
+                                                @input="checkRetiredDrivers()"
                                             />
                                         </b-input-group-append>
                                     </b-input-group>
@@ -291,9 +292,9 @@
                                 >
                                     <label for="input-item-name">
                                         {{ $t('CREATE_SCHEDULE.ITEM_NAME') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -314,9 +315,9 @@
                                 >
                                     <label for="input-quantity">
                                         {{ $t('CREATE_SCHEDULE.QUANTITY') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -337,9 +338,9 @@
                                 >
                                     <label for="input-unitPrice">
                                         {{ $t('CREATE_SCHEDULE.UNIT_PRICE') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -361,9 +362,9 @@
                                 >
                                     <label for="input-weight">
                                         {{ $t('CREATE_SCHEDULE.WEIGHT') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -385,9 +386,9 @@
                                 >
                                     <label for="input-freight-cost">
                                         {{ $t('CREATE_SCHEDULE.FREIGHT_COST') }}
-                                        <span class="text-danger">
+                                        <!-- <span class="text-danger">
                                             *
-                                        </span>
+                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -451,6 +452,9 @@
                                 >
                                     <label for="input-expenses">
                                         {{ $t('CREATE_SCHEDULE.EXPENSES') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -472,6 +476,9 @@
                                 >
                                     <label for="input-bunus-amount">
                                         {{ $t('CREATE_SCHEDULE.BONUS_AMOUNT') }}
+                                        <span class="text-danger">
+                                            *
+                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -661,6 +668,16 @@ export default {
 			this.isForm.listTime = this.genereateOptionTime();
 		},
 
+		checkRetiredDrivers() {
+			this.isForm.listDriverName = this.isForm.listDriverName.filter((driver) => {
+				if (driver.end_date !== null) {
+					return this.isForm.ship_date && driver.end_date <= this.isForm.ship_date;
+				} else {
+					return driver.end_date === null;
+				}
+			});
+		},
+
 		handleVihicleNumber() {
 			this.isForm.ListVihicleNumber.forEach(item => {
 				if (item.id === this.isForm.driverName) {
@@ -702,6 +719,7 @@ export default {
 						this.isForm.listDriverName.push({
 							value: item.id,
 							text: item.driver_name,
+							end_date: item.end_date,
 						});
 					});
 					this.isForm.ListVihicleNumber = LIST.data;
@@ -728,7 +746,7 @@ export default {
 				arrival_place: this.isForm.arrival_place,
 				item_name: this.isForm.itemName,
 				quantity: this.isForm.quantity,
-				weight: this.isForm.weight,
+				weight: this.isForm.weight ? this.isForm.weight : 0,
 				price: this.isForm.unitPrice,
 				ship_fee: this.isForm.freight_cost,
 				associate_company_fee: this.isForm.payment_amount,
