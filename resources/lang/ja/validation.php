@@ -164,6 +164,7 @@ return [
             'unique' => ':row行目の項目『:attribute』は既に存在しています。',
             'check_date' => ':row行目の『:attribute』時間は作成日以降である必要があります',
             'compare_date' => ':row行目の始業時間は終業時間より早い時間に設定してください',
+            'digits_between' => ':row行目の『:attribute』は、:min桁から:max桁にしてください。',
             'headings' => [
                 'required' => '『:attribute』を必ず指定してください。',
                 'matched' => '1行目の項目『:names』が不正です。'
