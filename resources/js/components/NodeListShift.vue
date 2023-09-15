@@ -11,11 +11,16 @@
     >
         <div v-if="screenWidth > 900" :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
-                {{ dataNode.customer_names || '' }}
-                {{ dataNode.course_names || '' }}
+                <div
+                    v-for="(course, idx) in dataNode.course_names_special_and_customer_names_array"
+                    :key="idx"
+                    class="show-course"
+                >
+                    {{ course }}
+                </div>
             </div>
             <div v-else>
-                <template v-if="dataNode.customer_names || dataNode.course_names">
+                <!-- <template v-if="course_names_special_and_customer_names_array">
                     <div
                         class="show-course"
                     >
@@ -33,27 +38,66 @@
                                 {{ dataNode.customer_names }}
                                 {{ dataNode.course_names }}
                             </div>
-                        <!-- <div
-                            v-for="(item, idx) in listText"
+                        </b-popover>
+                    </template> -->
+
+                <template v-if="dataNode.course_names_special_and_customer_names_array.length <= 2">
+                    <div
+                        v-for="(course, idx) in dataNode.course_names_special_and_customer_names_array"
+                        :key="idx"
+                        class="show-course"
+                    >
+                        {{ course }}
+                    </div>
+                </template>
+
+                <template v-if="dataNode.course_names_special_and_customer_names_array.length > 2">
+                    <b-row>
+                        <b-col
+                            cols="11"
+                            style="padding: 0"
+                        >
+                            <div class="show-course-more">
+                                {{ dataNode.course_names_special_and_customer_names_array[0].name }}
+                            </div>
+                            <div class="show-course-more">
+                                {{ dataNode.course_names_special_and_customer_names_array[1].name }}
+                            </div>
+                        </b-col>
+                        <b-col
+                            cols="1"
+                            style="padding: 0"
+                        >
+                            <div class="icon-more">
+                                <i class="fad fa-plus-circle icon-show-more" />
+                            </div>
+                        </b-col>
+                    </b-row>
+
+                    <b-popover
+                        :target="`node-${idxComponent}-${date}-${driverCode}`"
+                        triggers="hover"
+                    >
+                        <div
+                            v-for="(item, idx) in dataNode.course_names_special_and_customer_names_array"
                             :key="idx"
                         >
-                            {{ idx + 1 }}. {{ item.name }}
-                        </div> -->
-                        </b-popover>
-                    </template>
+                            {{ idx + 1 }}. {{ item }}
+                        </div>
+                    </b-popover>
                 </template>
             </div>
         </div>
         <div v-else :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
-                {{ (dataNode.customer_names).slice(0, 1) || '' }}
+                {{ (dataNode.course_names_special_and_customer_names_array[0]).slice(0, 1) || '' }}
             </div>
             <div v-else>
-                <template v-if="dataNode.customer_names">
+                <template v-if="dataNode.course_names_special_and_customer_names_array[0]">
                     <div
                         class="show-course"
                     >
-                        {{ (dataNode.customer_names).slice(0, 1) }}
+                        {{ (dataNode.course_names_special_and_customer_names_array[0]).slice(0, 1) }}
                     </div>
                 </template>
             </div>
