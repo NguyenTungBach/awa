@@ -22,6 +22,11 @@ use Maatwebsite\Excel\Validators\ValidationException;
 use Illuminate\Validation\ValidationException as Validation;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Validators\Failure;
+use Repository\DriverCourseRepository;
+use Repository\CashInStaticalRepository;
+use App\Repositories\Contracts\CalendarRepositoryInterface;
+use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
+use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 
 class CourseController extends Controller
 {
@@ -30,9 +35,16 @@ class CourseController extends Controller
      */
     protected $repository;
 
-    public function __construct(CourseRepositoryInterface $repository)
-    {
+    public function __construct(
+        CourseRepositoryInterface $repository,
+        CalendarRepositoryInterface $calendarRepository,
+        CashOutStatisticalRepositoryInterface $cashOutStatisticalRepository,
+        CashInStaticalRepositoryInterface $cashInStaticalRepository
+    ){
         $this->repository = $repository;
+        $this->calendarRepository = $calendarRepository;
+        $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
+        $this->cashInStaticalRepository = $cashInStaticalRepository;
     }
 
     /**
@@ -340,7 +352,9 @@ class CourseController extends Controller
                 ]);
             }
             // read data
-            $courseImport = new CourseImport;
+            $cashInStaticalRepository = new CashInStaticalRepository(app());
+            $driverCourseRepository = new DriverCourseRepository(app(), $this->calendarRepository, $this->cashOutStatisticalRepository, $this->cashInStaticalRepository);
+            $courseImport = new CourseImport($cashInStaticalRepository, $driverCourseRepository);
             Excel::import($courseImport, $file);
             if(!empty($courseImport->data) && is_array($courseImport->data) && count($courseImport->data)) {
                 return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, ERROR, $courseImport->data);

@@ -16,20 +16,22 @@ use App\Models\Driver;
 use App\Models\DriverCourse;
 use App\Rules\CompareHours;
 use Repository\CourseRepository;
+use Repository\CashInStaticalRepository;
 use Repository\DriverCourseRepository;
 use Helper\Common;
-// use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
-use App\Repositories\Contracts\DriverCourseRepositoryInterface;
-use Repository\BaseRepository;
 
 class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithValidation
 {
-    // protected $driverCourseRepository;
+    private $cashInstaticalRepository;
+    private $driverCourseRepository;
 
-    // public function __construct(DriverCourseRepositoryInterface $driverCourseRepository)
-    // {
-    //     $this->driverCourseRepository = $driverCourseRepository;
-    // }
+    public function __construct(
+        CashInStaticalRepository $cashInstaticalRepository,
+        DriverCourseRepository $driverCourseRepository
+    ){
+        $this->cashInstaticalRepository = $cashInstaticalRepository;
+        $this->driverCourseRepository = $driverCourseRepository;
+    }
 
     /**
      * @return array
@@ -305,7 +307,7 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
                         ]);
                         // update cash
                         if (!empty($driverCourse)) {
-                            // $this->cashInStaticalRepository->saveCashInStatic($result->customer_id, $driverCourse->date);
+                            $this->cashInstaticalRepository->saveCashInStatic($result->customer_id, $driverCourse->date);
                             $this->driverCourseRepository->cashOutStatistical($driverCourse->driver_id, $driverCourse->date, $driverCourse->course_id);
                         }
                     }
