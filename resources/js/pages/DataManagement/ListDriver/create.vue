@@ -169,9 +169,9 @@
                                                     >
                                                         <label for="input-date-hire-date">
                                                             {{ $t('CREATE_DRIVER.HIRE_DATE') }}
-                                                            <span class="text-danger">
+                                                            <!-- <span class="text-danger">
                                                                 *
-                                                            </span>
+                                                            </span> -->
                                                         </label>
                                                         <b-input-group class="mb-3">
                                                             <b-form-input

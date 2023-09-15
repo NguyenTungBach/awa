@@ -11,64 +11,49 @@
     >
         <div v-if="screenWidth > 900" :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
+                {{ dataNode.customer_names || '' }}
                 {{ dataNode.course_names || '' }}
             </div>
             <div v-else>
-                <template v-if="dataNode.course_names">
+                <template v-if="dataNode.customer_names || dataNode.course_names">
                     <div
                         class="show-course"
                     >
+                        {{ dataNode.customer_names }}
                         {{ dataNode.course_names }}
                     </div>
-                </template>
-
-                <template v-if="listText.length > 2">
-                    <b-row>
-                        <b-col
-                            cols="11"
-                            style="padding: 0"
+                    <template v-if="dataNode.course_names.includes(',')">
+                        <b-popover
+                            :target="`node-${idxComponent}-${date}-${driverCode}`"
+                            triggers="hover"
                         >
-                            <div class="show-course-more">
-                                {{ listText[0].name }}
+                            <div
+                                class="show-course"
+                            >
+                                {{ dataNode.customer_names }}
+                                {{ dataNode.course_names }}
                             </div>
-                            <div class="show-course-more">
-                                {{ listText[1].name }}
-                            </div>
-                        </b-col>
-                        <b-col
-                            cols="1"
-                            style="padding: 0"
-                        >
-                            <div class="icon-more">
-                                <i class="fad fa-plus-circle icon-show-more" />
-                            </div>
-                        </b-col>
-                    </b-row>
-
-                    <b-popover
-                        :target="`node-${idxComponent}-${date}-${driverCode}`"
-                        triggers="hover"
-                    >
-                        <div
+                        <!-- <div
                             v-for="(item, idx) in listText"
                             :key="idx"
                         >
                             {{ idx + 1 }}. {{ item.name }}
-                        </div>
-                    </b-popover>
+                        </div> -->
+                        </b-popover>
+                    </template>
                 </template>
             </div>
         </div>
         <div v-else :class="['show-node']">
             <div v-if="isDayOff(dataNode.course_names_color)">
-                {{ (dataNode.course_names).slice(0, 1) || '' }}
+                {{ (dataNode.customer_names).slice(0, 1) || '' }}
             </div>
             <div v-else>
-                <template v-if="dataNode.course_names">
+                <template v-if="dataNode.customer_names">
                     <div
                         class="show-course"
                     >
-                        {{ (dataNode.course_names).slice(0, 1) }}
+                        {{ (dataNode.customer_names).slice(0, 1) }}
                     </div>
                 </template>
             </div>
@@ -85,7 +70,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ dataNode.courses_expressway_fee ? Number(dataNode.courses_expressway_fee) : dataNode.courses_expressway_fee}}
+                        {{ dataNode.courses_expressway_fee ? Number(dataNode.courses_expressway_fee) : dataNode.courses_expressway_fee }}
                     </div>
                 </template>
                 <template v-else>
@@ -197,7 +182,7 @@
                     <div
                         class="show-course"
                     >
-                        {{ dataNode.payment ? Number(dataNode.payment) : dataNode.payment}}
+                        {{ dataNode.payment ? Number(dataNode.payment) : dataNode.payment }}
                     </div>
                 </template>
                 <template v-if="listText.length > 2">
@@ -571,7 +556,7 @@ export default {
         .show-course {
             margin-bottom: 5px;
 
-            white-space: nowrap;
+            white-space: wrap;
             max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -580,7 +565,7 @@ export default {
         .show-course-more {
             margin-bottom: 5px;
 
-            white-space: nowrap;
+            white-space: wrap;
             max-width: 100px;
             overflow: hidden;
             text-overflow: ellipsis;
