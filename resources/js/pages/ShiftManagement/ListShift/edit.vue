@@ -918,20 +918,21 @@ export default {
 						}
 					});
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = ` ${updateCourseNameDayOff}`;
-				} else {
-					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
-					const listdataUpdate = this.generateListValueWork(dataUpdate);
-					console.log('LIST_TYPE_SELECTED: ', listdataUpdate);
-					var updateCourseName = '';
-					listdataUpdate.forEach(item => {
-						if (item.name) {
-							updateCourseName += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
-						} else {
-							updateCourseName = '';
-						}
-					});
-					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = `  ${updateCourseName}`;
 				}
+				// else {
+				// 	listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
+				// 	const listdataUpdate = this.generateListValueWork(dataUpdate);
+				// 	console.log('LIST_TYPE_SELECTED: ', listdataUpdate);
+				// 	var updateCourseName = '';
+				// 	listdataUpdate.forEach(item => {
+				// 		if (item.name) {
+				// 			updateCourseName += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
+				// 		} else {
+				// 			updateCourseName = '';
+				// 		}
+				// 	});
+				// 	listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = `  ${updateCourseName}`;
+				// }
 			} else {
 				listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = '';
 			}
