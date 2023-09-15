@@ -293,6 +293,7 @@ export default {
 		BONUS_AMOUNT: '食事補助金額',
 		SHIP_DATE: '運行日',
 		COURSE_NAME: '運行名',
+		DRIVER_NAME: '従業員名',
 		VIHICLE_NUMBER: '車両番号',
 		START_TIME: '始業時間',
 		END_TIME: ' 終業時間',

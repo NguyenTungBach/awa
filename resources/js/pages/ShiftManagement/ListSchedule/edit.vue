@@ -67,7 +67,7 @@
                                     :md="12"
                                     :lg="6"
                                     :xl="12"
-                                    class="date"
+                                    class="date title_path_form"
                                 >
                                     <label for="input-date-date-of-birth">
                                         {{ $t('CREATE_SCHEDULE.SHIP_DATE') }}
@@ -86,6 +86,7 @@
                                                 v-model="isForm.ship_date"
                                                 button-only
                                                 right
+                                                @input="checkRetiredDrivers()"
                                             />
                                         </b-input-group-append>
                                     </b-input-group>
@@ -99,7 +100,7 @@
                                     class="date"
                                 >
                                     <label for="input-course-name">
-                                        {{ $t('CREATE_SCHEDULE.COURSE_NAME') }}
+                                        {{ $t('CREATE_SCHEDULE.DRIVER_NAME') }}
                                         <span class="text-danger">
                                             *
                                         </span>
@@ -123,9 +124,6 @@
                                 >
                                     <label for="input-vihicle-number">
                                         {{ $t('CREATE_SCHEDULE.VIHICLE_NUMBER') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -343,7 +341,7 @@
                                     :md="12"
                                     :lg="6"
                                     :xl="12"
-                                    class="date"
+                                    class="date arrival_place"
                                 >
                                     <label for="input-arrival_place">
                                         {{ $t('CREATE_SCHEDULE.ARRIVAL_PLACE') }}
@@ -369,13 +367,10 @@
                                     :md="12"
                                     :lg="6"
                                     :xl="12"
-                                    class="date"
+                                    class="date title_path_form"
                                 >
                                     <label for="input-item-name">
                                         {{ $t('CREATE_SCHEDULE.ITEM_NAME') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -396,9 +391,6 @@
                                 >
                                     <label for="input-quantity">
                                         {{ $t('CREATE_SCHEDULE.QUANTITY') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -419,9 +411,6 @@
                                 >
                                     <label for="input-unitPrice">
                                         {{ $t('CREATE_SCHEDULE.UNIT_PRICE') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -443,9 +432,6 @@
                                 >
                                     <label for="input-weight">
                                         {{ $t('CREATE_SCHEDULE.WEIGHT') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -467,9 +453,6 @@
                                 >
                                     <label for="input-freight-cost">
                                         {{ $t('CREATE_SCHEDULE.FREIGHT_COST') }}
-                                        <span class="text-danger">
-                                            *
-                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -490,9 +473,6 @@
                                 >
                                     <label for="input-cooperating-company-payment-amount">
                                         {{ $t('CREATE_SCHEDULE.COOPERATING_COMPANY_PAYMENT_AMOUNT') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -514,9 +494,6 @@
                                 >
                                     <label for="input-hight-way">
                                         {{ $t('CREATE_SCHEDULE.HIGHT_WAY') }}
-                                        <!-- <span class="text-danger">
-                                            *
-                                        </span> -->
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -538,9 +515,9 @@
                                 >
                                     <label for="input-expenses">
                                         {{ $t('CREATE_SCHEDULE.EXPENSES') }}
-                                        <!-- <span class="text-danger">
+                                        <span class="text-danger">
                                             *
-                                        </span> -->
+                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -585,9 +562,9 @@
                                 >
                                     <label for="input-bunus-amount">
                                         {{ $t('CREATE_SCHEDULE.BONUS_AMOUNT') }}
-                                        <!-- <span class="text-danger">
+                                        <span class="text-danger">
                                             *
-                                        </span> -->
+                                        </span>
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
@@ -716,6 +693,16 @@ export default {
 			await this.handleGetDriverName();
 			await this.handleGetCourseShedule();
 			this.isForm.listTime = this.genereateOptionTime();
+		},
+
+		checkRetiredDrivers() {
+			this.isForm.listDriverName.forEach((driver) => {
+				if (driver.end_date !== null && driver.end_date <= this.isForm.ship_date) {
+					driver.disabled = true;
+				} else {
+					driver.disabled = false;
+				}
+			});
 		},
 
 		handleVihicleNumber() {
@@ -964,6 +951,12 @@ export default {
 
                     .date{
                         padding: 0;
+                    }
+                    .arrival_place {
+                        margin-bottom: 20px;
+                    }
+                    .title_path_form {
+                        margin-top: 30px;
                     }
                     .freight-cost{
                         margin-left: 10px;

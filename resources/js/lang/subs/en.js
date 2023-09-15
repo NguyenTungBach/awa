@@ -347,6 +347,7 @@ export default {
 		BONUS_AMOUNT: 'Meal subsidy amount',
 		SHIP_DATE: 'Ship date',
 		COURSE_NAME: 'Name',
+		DRIVER_NAME: 'Driver name',
 		VIHICLE_NUMBER: 'Vihicle number',
 		START_TIME: 'Start time',
 		END_TIME: ' End time',
