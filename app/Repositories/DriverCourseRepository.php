@@ -156,9 +156,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "drivers.driver_code",
                 "drivers.type",
             )
-            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names, SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission'))
+            ->addSelect(\DB::raw('GROUP_CONCAT(driver_courses.course_id) as course_ids, GROUP_CONCAT(`courses`.`course_name`) as course_names, SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission
+            ,GROUP_CONCAT(CASE WHEN driver_courses.course_id IN (1,2,3,4,5,6,7) THEN courses.course_name END) as course_names_special
+            ,GROUP_CONCAT(DISTINCT customers.id) as customer_ids,GROUP_CONCAT(DISTINCT customers.customer_name) as customer_names'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->leftJoin('customers', 'courses.customer_id', '=', 'customers.id')
             ->SortByForDriverCourse($request)
             ->groupBy("driver_courses.driver_id","driver_courses.date")
             ->whereYear("driver_courses.date",$getMonth_year[0])
@@ -173,14 +176,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 if ($request->closing_date == 28 || $request->closing_date == 29){
                     $checkMonth2 = Carbon::parse($month_year)->month;
                     if ($checkMonth2 == 2){
-                        $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                        $startDate = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
                         $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
                     } else {
                         $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
                         $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
                     }
                 } else{
-                    $startDate = Carbon::parse($month_year)->subMonth()->endOfMonth()->format('Y-m-d');
+                    $startDate = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
                     $endDate = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
                 }
             } else{
@@ -195,15 +198,13 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "drivers.driver_code",
                     "drivers.type",
                 )
-                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names,
-                GROUP_CONCAT(customers.id) as customer_ids,GROUP_CONCAT(customers.customer_name) as customer_names
+                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names
             ,SUM(CASE WHEN
             `driver_courses`.`date` BETWEEN '$startDate' AND '$endDate'
             THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
             as `total_money`"))
                 ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
                 ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-                ->join('customers', 'courses.customer_id', '=', 'customers.id')
                 ->groupBy("driver_courses.driver_id")
                 ->SortByForDriverCourse($request)
                 ->whereBetween('driver_courses.date', [$startDate, $endDate])
@@ -269,6 +270,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     "course_names"=> "",
                     "customer_ids"=> "",
                     "customer_names"=> "",
+                    "course_names_special"=> "",
+                    "course_names_special_and_customer_names"=> "",
                     "course_meal_fee_commission"=> "",
                     "course_names_color"=> ""
                 ];
@@ -282,9 +285,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names"=> $checkData['course_names'],
                             "customer_ids"=> $checkData['customer_ids'],
                             "customer_names"=> $checkData['customer_names'],
+                            "course_names_special"=> $checkData['course_names_special'],
                             "course_meal_fee_commission"=> $checkData['course_meal_fee_commission'],
                             "course_names_color"=> $checkData['course_names_color']
                         ];
+
+                        $dataByCalendar['course_names_special_and_customer_names'] = $checkData['course_names_special'] == null || $checkData['course_names_special'] == '' ? $checkData['customer_names'] : $checkData['course_names_special'].','.$checkData['customer_names'];
                         break;
                     }
                 }
@@ -330,8 +336,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             if ($final_closing){
                 $checkDateFinal = Carbon::parse($final_closing->date);
                 $checkDate = Carbon::parse($driver->start_date != null ? $driver->start_date : $driver->created_at);
-                //Bỏ nếu driver ngày bắt đầu làm việc mà đã qua ngày chốt và tháng năm này = tháng năm closing
-                if ($checkDate->gte($checkDateFinal)){
+                //Bỏ nếu driver ngày bắt đầu làm việc mà chưa qua ngày chốt
+                if ($checkDate->gt($checkDateFinal)){
                     continue;
                 }
             }
@@ -363,6 +369,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names"=> "",
                             "customer_ids"=> "",
                             "customer_names"=> "",
+                            "course_names_special"=> "",
+                            "course_names_special_and_customer_names"=> "",
                             "course_meal_fee_commission"=> "",
                             "course_names_color"=> ""
                         ];
@@ -382,6 +390,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                         "course_names"=> "",
                         "customer_ids"=> "",
                         "customer_names"=> "",
+                        "course_names_special"=> "",
+                        "course_names_special_and_customer_names"=> "",
                         "course_meal_fee_commission"=> "",
                         "course_names_color"=> ""
                     ];
@@ -1676,7 +1686,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['dataShift']['data_by_date'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataByDate['date']){
-                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['customer_names'],DataType::TYPE_STRING);
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_names_special_and_customer_names'],DataType::TYPE_STRING);
                         }
                     }
                 }
