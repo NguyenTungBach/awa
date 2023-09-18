@@ -213,4 +213,13 @@ class DriverRepository extends BaseRepository implements DriverRepositoryInterfa
         return ResponseService::responseJson(200, new BaseResource($data));
     }
 
+    public function listDriverIdsByFinal($input) {
+        $driverIds = Driver::whereRaw('IF(start_date IS NOT NULL, DATE_FORMAT(start_date, "%Y-%m") <= ?, DATE_FORMAT(created_at, "%Y-%m") <= ?)', [$input['month_year'], $input['month_year']])r
+                    ->where(function ($query) use ($input) {
+                        $query->whereNull('end_date')
+                            ->orWhereRaw('DATE_FORMAT(end_date, "%Y-%m") >= ?', [$input['month_year']]);
+                    })->get()->pluck('id')->toArray();
+
+        return $driverIds;
+    }
 }
