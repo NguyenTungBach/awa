@@ -146,8 +146,9 @@ class DriverController extends Controller
     {
         try {
             $request->merge(['status' => 1]);
-            $data = $this->repository->create($request->all());
-            return $this->responseJson(200, new DriverResource($data));
+//            $data = $this->repository->create($request->all());
+            return $this->repository->createDriver($request);
+//            return $this->responseJson(200, new DriverResource($data));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -296,9 +297,10 @@ class DriverController extends Controller
      */
     public function update(DriverRequest $request, $id)
     {
-        $attributes = $request->except([]);
-        $data = $this->repository->update($attributes, $id);
-        return $this->responseJson(200, new BaseResource($data));
+//        $attributes = $request->except([]);
+//        $data = $this->repository->update($attributes, $id);
+        return $this->repository->updateDriver($request, $id);
+//        return $this->responseJson(200, new BaseResource($data));
     }
 
     /**

@@ -305,45 +305,68 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // (Before) Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
         // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
-        $listDrivers = Driver::query()
-            ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
-            ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
-            ->orWhere(function ($query) use ($getMonth_year) {
-                $query->whereYear('end_date', $getMonth_year[0])
-                    ->whereMonth('end_date',">=", $getMonth_year[1]);
-            })
-            ->SortByForDriver($request)->get()
-            ->filter(function ($data) {
-            switch ($data['type']){
-                case 1:
-                    $data['typeName'] = trans('drivers.type.1');
-                    break;
-                case 2:
-                    $data['typeName'] = trans('drivers.type.2');
-                    break;
-                case 3:
-                    $data['typeName'] = trans('drivers.type.3');
-                    break;
-                case 4:
-                    $data['typeName'] = trans('drivers.type.4');
-                    break;
-            }
-            return $data;
-        });
+        // Kiểm tra xem ngày tạo có rơi vào final_closing không, nếu có thì lấy tất cả driver theo final_closing
+        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
+
+        if ($final_closing){
+            $listDrivers = Driver::query()
+                ->whereIn('id', json_decode($final_closing->driver_ids))
+                ->SortByForDriver($request)->get()->filter(function ($data) {
+                switch ($data['type']){
+                    case 1:
+                        $data['typeName'] = trans('drivers.type.1');
+                        break;
+                    case 2:
+                        $data['typeName'] = trans('drivers.type.2');
+                        break;
+                    case 3:
+                        $data['typeName'] = trans('drivers.type.3');
+                        break;
+                    case 4:
+                        $data['typeName'] = trans('drivers.type.4');
+                        break;
+                }
+                return $data;
+            });
+        } else{
+            $listDrivers = Driver::query()
+                ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
+                ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
+                ->orWhere(function ($query) use ($getMonth_year) {
+                    $query->whereYear('end_date', $getMonth_year[0])
+                        ->whereMonth('end_date',">=", $getMonth_year[1]);
+                })
+                ->SortByForDriver($request)->get()
+                ->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    }
+                    return $data;
+                });
+        }
 
         $dataConvertForDriver = [];
-        // Kiểm tra xem ngày tạo có rơi vào final_closing không
-        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
         foreach ($listDrivers as $driver){
-            // Kiểm tra xem có rơi vào ngày final_closing
-            if ($final_closing){
-                $checkDateFinal = Carbon::parse($final_closing->date);
-                $checkDate = Carbon::parse($driver->start_date != null ? $driver->start_date : $driver->created_at);
-                //Bỏ nếu driver ngày bắt đầu làm việc mà chưa qua ngày chốt
-                if ($checkDate->gt($checkDateFinal)){
-                    continue;
-                }
-            }
+//            // Kiểm tra xem có rơi vào ngày final_closing
+//            if ($final_closing){
+//                $checkDateFinal = Carbon::parse($final_closing->date);
+//                $checkDate = Carbon::parse($driver->start_date != null ? $driver->start_date : $driver->created_at);
+//                //Bỏ nếu driver ngày bắt đầu làm việc mà chưa qua ngày chốt
+//                if ($checkDate->gt($checkDateFinal)){
+//                    continue;
+//                }
+//            }
             $driverConvert = [
                 'driver_code' => $driver->driver_code,
                 'driver_id' => $driver->id,
