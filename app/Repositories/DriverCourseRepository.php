@@ -307,9 +307,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
         // Kiểm tra xem ngày tạo có rơi vào final_closing không, nếu có thì lấy tất cả driver theo final_closing
         $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
+
         if ($final_closing){
             $listDrivers = Driver::query()
-                ->whereIn('id',$final_closing->driver_ids)
+                ->whereIn('id', json_decode($final_closing->driver_ids))
                 ->SortByForDriver($request)->get()->filter(function ($data) {
                 switch ($data['type']){
                     case 1:

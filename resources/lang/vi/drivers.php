@@ -13,4 +13,5 @@ return [
         3 => '契約社員',
         4 => '協力会社',
     ],
+    'end_date_not_after_or_equal_now' => 'end date not after or equal now',
 ];
