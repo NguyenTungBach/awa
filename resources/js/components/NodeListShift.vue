@@ -20,27 +20,6 @@
                 </div>
             </div>
             <div v-else>
-                <!-- <template v-if="course_names_special_and_customer_names_array">
-                    <div
-                        class="show-course"
-                    >
-                        {{ dataNode.customer_names }}
-                        {{ dataNode.course_names }}
-                    </div>
-                    <template v-if="dataNode.course_names.includes(',')">
-                        <b-popover
-                            :target="`node-${idxComponent}-${date}-${driverCode}`"
-                            triggers="hover"
-                        >
-                            <div
-                                class="show-course"
-                            >
-                                {{ dataNode.customer_names }}
-                                {{ dataNode.course_names }}
-                            </div>
-                        </b-popover>
-                    </template> -->
-
                 <template v-if="dataNode.course_names_special_and_customer_names_array.length <= 2">
                     <div
                         v-for="(course, idx) in dataNode.course_names_special_and_customer_names_array"
@@ -58,10 +37,10 @@
                             style="padding: 0"
                         >
                             <div class="show-course-more">
-                                {{ dataNode.course_names_special_and_customer_names_array[0].name }}
+                                {{ dataNode.course_names_special_and_customer_names_array[0] }}
                             </div>
                             <div class="show-course-more">
-                                {{ dataNode.course_names_special_and_customer_names_array[1].name }}
+                                {{ dataNode.course_names_special_and_customer_names_array[1] }}
                             </div>
                         </b-col>
                         <b-col
