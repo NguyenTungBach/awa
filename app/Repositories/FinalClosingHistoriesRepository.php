@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Models\FinalClosingHistories;
 use App\Repositories\Contracts\FinalClosingHistoriesRepositoryInterface;
+use Repository\DriverRepository;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +34,13 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
 
     public function createFinalClosing($input)
     {
+        $driverIds = DriverRepository::listDriverIdsByFinal($input);
+        $driverIds = empty($driverIds) ? NULL : json_encode($driverIds);
+
         $result = FinalClosingHistories::create([
             'date' => $input['date'],
             'month_year' => $input['month_year'],
+            'driver_ids' => $driverIds,
         ]);
 
         return $result;
