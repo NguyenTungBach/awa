@@ -159,7 +159,7 @@
                         <span v-if="item.course" class="type-node">
                             {{ item.course.course_name }}
                         </span>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
 
                             <b-col>
                                 <div class="item-time">
@@ -168,14 +168,14 @@
                             </b-col>
 
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
                             <b-col>
                                 <div class="item-time">
                                     <span>終業時間: {{ item.end_time }}</span>
                                 </div>
                             </b-col>
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
                             <b-col>
                                 <div class="item-time">
                                     <span>休憩時間: {{ convertBreakTimeNumberToTime(item.break_time) }}</span>
@@ -223,10 +223,10 @@
                         :key="`item-detail-node-${idx}`"
                         class="item-node"
                     >
-                        <span v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)" class="type-node">
+                        <span v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)" class="type-node">
                             {{ item.course.course_name }}
                         </span>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
 
                             <b-col>
                                 <div class="item-time">
@@ -235,14 +235,14 @@
                             </b-col>
 
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
                             <b-col>
                                 <div class="item-time">
                                     <span>終業時間: {{ item.end_time }}</span>
                                 </div>
                             </b-col>
                         </b-row>
-                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_HALF_DAY_OFF.includes(item.course_id)">
+                        <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
                             <b-col>
                                 <div class="item-time">
                                     <span>休憩時間: {{ convertBreakTimeNumberToTime(item.break_time) }}</span>
@@ -254,7 +254,6 @@
                 <EditNodeListShift
                     :list-select="listNodeEdit"
                     :half-day-off="halfDayOff"
-                    :list-course="listCourse"
                     :list-selected="listNodeEditSelected"
                     @add="onAddNode"
                     @edit="onEditNode"
@@ -296,7 +295,7 @@ import { convertValueToText } from '@/utils/handleSelect';
 import { cleanObject } from '@/utils/handleObject';
 // import { convertValueWhenNull } from '@/utils/handleListShift';
 import { convertBreakTimeNumberToTime, convertTextToSelectTime, formatArray2Time, convertTimeForDetail } from '@/utils/convertTime';
-// import { getList } from '@/api/modules/courseManagement';
+import { getList } from '@/api/modules/courseManagement';
 import Notification from '@/toast/notification';
 // import { validateEditShift } from './helper/validateEditShift';
 
@@ -464,7 +463,7 @@ export default {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
 				this.listNodeEditSelected = [];
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
-				// await this.handleGetListCourse(data.dateDriver);
+				await this.handleGetListCourse(data.dateDriver);
 				await this.detailShift(data.id, data.dateDriver);
 
 				// const DATE_CHECK = data.dateDriver;
@@ -648,64 +647,64 @@ export default {
 			this.$bus.off('LIST_SHITF_CLICK_NODE');
 		},
 
-		// async handleGetListCourse(dateDriver) {
-		// 	// const LABOUR = {
-		// 	// 	value: 'L-0',
-		// 	// 	text: this.$t('LIST_SHIFT.LABOUR'),
-		// 	// 	flag: 'yes',
-		// 	// 	status: 'on',
-		// 	// 	start_time: '',
-		// 	// 	end_time: '',
-		// 	// 	break_time: '',
-		// 	// 	disabled: false,
-		// 	// };
-		// 	try {
-		// 		const param = {
-		// 			date: dateDriver,
-		// 		};
-		// 		const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
-		// 		if (code === 200) {
-		// 			this.listCourse = [];
+		async handleGetListCourse(dateDriver) {
+			// const LABOUR = {
+			// 	value: 'L-0',
+			// 	text: this.$t('LIST_SHIFT.LABOUR'),
+			// 	flag: 'yes',
+			// 	status: 'on',
+			// 	start_time: '',
+			// 	end_time: '',
+			// 	break_time: '',
+			// 	disabled: false,
+			// };
+			try {
+				const param = {
+					date: dateDriver,
+				};
+				const { code, data } = await getList(CONSTANT.URL_API.GET_COURSE_SHIFT, param);
+				if (code === 200) {
+					this.listCourse = [];
 
-		// 			// this.listCourse.push(LABOUR);
-		// 			const len = data.length;
-		// 			let idx = 0;
+					// this.listCourse.push(LABOUR);
+					const len = data.length;
+					let idx = 0;
 
-		// 			while (idx < len) {
-		// 				if (data[idx].driver_id !== null) {
-		// 					this.listCourse.push({
-		// 						value: data[idx].id,
-		// 						text: data[idx].course_name,
-		// 						// status: data[idx].status,
-		// 						id: idx,
-		// 						start_time: data[idx].start_date,
-		// 						end_time: data[idx].end_date,
-		// 						break_time: data[idx].break_time,
-		// 						disabled: true,
-		// 					});
-		// 				} else {
-		// 					this.listCourse.push({
-		// 						value: data[idx].id,
-		// 						text: data[idx].course_name,
-		// 						// status: data[idx].status,
-		// 						id: idx,
-		// 						start_time: data[idx].start_date,
-		// 						end_time: data[idx].end_date,
-		// 						break_time: data[idx].break_time,
-		// 						disabled: false,
-		// 					});
-		// 				}
+					while (idx < len) {
+						if (data[idx].driver_id !== null) {
+							this.listCourse.push({
+								value: data[idx].id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								id: idx,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: true,
+							});
+						} else {
+							this.listCourse.push({
+								value: data[idx].id,
+								text: data[idx].course_name,
+								// status: data[idx].status,
+								id: idx,
+								start_time: data[idx].start_date,
+								end_time: data[idx].end_date,
+								break_time: data[idx].break_time,
+								disabled: false,
+							});
+						}
 
-		// 				idx++;
-		// 			}
-		// 			console.log('list course detail', this.listCourse);
-		// 		} else {
-		// 			this.listCourse.length = 0;
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// },
+						idx++;
+					}
+					console.log('list course detail', this.listCourse);
+				} else {
+					this.listCourse.length = 0;
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
 
 		async handleGetListCalendar() {
 			try {
@@ -910,29 +909,27 @@ export default {
 					// console.log(listShift[idxOfDriver].shift_list);
 
 					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = this.role === CONSTANT.ROLE.ADMIN ? CONSTANT.LIST_SHIFT.MAP_TYPE_COLOR_DAY_OFF[LIST_DAY_OFF[0]] : CONSTANT.LIST_SHIFT.COLOR_HOLIDAY;
-					const listdataUpdate = this.generateListValueDayOff(dataUpdate);
-					var updateCourseNameDayOff = '';
+					const listdataUpdate = this.generateListValueWork(dataUpdate);
+					console.log('LIST_TYPE_dont selected: ', listdataUpdate);
+					const updateCourseNameDayOff = [];
 					listdataUpdate.forEach(item => {
 						if (item.name) {
-							updateCourseNameDayOff += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
+							updateCourseNameDayOff.push(item.name);
 						}
 					});
-					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = ` ${updateCourseNameDayOff}`;
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_special_and_customer_names_array = updateCourseNameDayOff;
+				} else {
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
+					const listdataUpdate = this.generateListValueWork(dataUpdate);
+					console.log('LIST_TYPE_SELECTED: ', listdataUpdate);
+					var updateCourseName = [];
+					listdataUpdate.forEach(item => {
+						if (item.name) {
+							updateCourseName.push(item.name);
+						}
+					});
+					listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_special_and_customer_names_array = updateCourseName;
 				}
-				// else {
-				// 	listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names_color = CONSTANT.LIST_SHIFT.COLOR_WORKING_DAY;
-				// 	const listdataUpdate = this.generateListValueWork(dataUpdate);
-				// 	console.log('LIST_TYPE_SELECTED: ', listdataUpdate);
-				// 	var updateCourseName = '';
-				// 	listdataUpdate.forEach(item => {
-				// 		if (item.name) {
-				// 			updateCourseName += listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names + `${item.name} `;
-				// 		} else {
-				// 			updateCourseName = '';
-				// 		}
-				// 	});
-				// 	listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = `  ${updateCourseName}`;
-				// }
 			} else {
 				listShift[idxOfDriver].dataShift.data_by_date[idxCellOfDriver].course_names = '';
 			}
@@ -982,23 +979,23 @@ export default {
 						end_time: '18:00',
 						break_time: '0.00',
 					});
-				} else if (dataUpdate[idx].type === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
+				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(dataUpdate[idx].type)) {
 					result.push({
 						type: dataUpdate[idx].type,
-						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_DATE_LEADER_CHIEF),
+						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
 						// course_status: null,
-						start_time: formatArray2Time(dataUpdate[idx].start_time),
-						end_time: formatArray2Time(dataUpdate[idx].end_time),
-						break_time: formatArray2Time(dataUpdate[idx].break_time),
+						start_time: '09:00',
+						end_time: '18:00',
+						break_time: '0.00',
 					});
 				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(dataUpdate[idx].type)) {
 					result.push({
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
 						// course_status: this.listCourse[COURSE].status,
-						start_time: formatArray2Time(dataUpdate[idx].start_time),
-						end_time: formatArray2Time(dataUpdate[idx].end_time),
-						break_time: formatArray2Time(dataUpdate[idx].break_time),
+						start_time: '09:00',
+						end_time: '18:00',
+						break_time: '0.00',
 					});
 				} else {
 					const COURSE = this.listCourse.findIndex((item) => item.value === dataUpdate[idx].type);
@@ -1174,21 +1171,23 @@ export default {
 					}
 				});
 				if (IS_EXIT.status) {
-					listUpdate[CHECK_ID.getIndex].listShift.forEach((value) => {
-						updateDayOff.listShift.forEach((item) => {
-							if (value.course_id === item.course_id) {
-								updateDayOff.listShift = updateDayOff.listShift.filter(data => data.course_id !== item.course_id);
-							}
-						});
-					});
-					const set = new Set([...listUpdate[CHECK_ID.getIndex].listShift, ...updateDayOff.listShift]);
-					listUpdate[CHECK_ID.getIndex].listShift = Array.from(set);
+					// listUpdate[CHECK_ID.getIndex].listShift.forEach((value) => {
+					// 	updateDayOff.listShift.forEach((item) => {
+					// 		if (value.course_id === item.course_id) {
+					// 			updateDayOff.listShift = updateDayOff.listShift.filter(data => data.course_id !== item.course_id);
+					// 		}
+					// 	});
+					// });
+					// const set = new Set([...listUpdate[CHECK_ID.getIndex].listShift, ...updateDayOff.listShift]);
+					// listUpdate[CHECK_ID.getIndex].listShift = Array.from(set);
+					listUpdate[IS_EXIT.index] = updateDayOff;
 					console.log('bbbbbbb', listUpdate);
 				} else if (CHECK_ID.findID) {
-					// updateDayOff.listShift.forEach((item) => {
-					// 	listUpdate[CHECK_ID.getIndex].listShift.push(item);
-					// });
-					listUpdate[IS_EXIT.index] = updateDayOff;
+					updateDayOff.listShift.forEach((item) => {
+						listUpdate[CHECK_ID.getIndex].listShift.push(item);
+					});
+					// listUpdate[IS_EXIT.index] = updateDayOff;
+					console.log('cccccc', listUpdate);
 				} else {
 					listUpdate.push(updateDayOff);
 				}
@@ -1375,11 +1374,11 @@ export default {
 						};
 						this.listNodeEditSelected[idxChange].course_status = null;
 					} else {
-						if (value === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF]);
-							this.listNodeEditSelected[idxChange].start_time = [null, null];
-							this.listNodeEditSelected[idxChange].end_time = [null, null];
-							this.listNodeEditSelected[idxChange].break_time = [null, null];
+						if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(value)) {
+							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
+							this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+							this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+							this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].course = {
 								start_time: null,
 								end_time: null,
@@ -1388,9 +1387,9 @@ export default {
 							this.listNodeEditSelected[idxChange].course_status = null;
 						} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
 							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
-							this.listNodeEditSelected[idxChange].start_time = [null, null];
-							this.listNodeEditSelected[idxChange].end_time = [null, null];
-							this.listNodeEditSelected[idxChange].break_time = [null, null];
+							this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
+							this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+							this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].course = {
 								start_time: null,
 								end_time: null,

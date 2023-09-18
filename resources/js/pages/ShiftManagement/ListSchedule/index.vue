@@ -671,9 +671,11 @@ export default {
 
 	methods: {
 		async initData() {
+			setLoading(true);
+			await this.handleGetCustomer();
+			await this.handleGetDriverName();
 			await this.handleGetListCourse();
-			this.handleGetCustomer();
-			this.handleGetDriverName();
+			setLoading(false);
 		},
 
 		checkboxAll(){
@@ -711,7 +713,7 @@ export default {
 
 		async handleGetListCourse() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const URL = CONSTANT.URL_API.GET_LIST_COURSE_SCHEDULE;
 				let params = {
 					start_date_ship: this.start_date ? this.start_date : '',
@@ -748,15 +750,16 @@ export default {
 					this.listSchedule = [];
 					this.listCourse = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 
 		async handleGetCustomer() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, params);
 				if (LIST.code === 200) {
@@ -770,15 +773,16 @@ export default {
 				} else {
 					this.listNameCustomer = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 
 		async handleGetDriverName() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_DRIVER, params);
 				if (LIST.code === 200) {
@@ -792,9 +796,10 @@ export default {
 				} else {
 					this.listDriverName = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 

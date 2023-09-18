@@ -639,8 +639,10 @@ export default {
 		},
 
 		async initData() {
+			setLoading(true);
 			await this.handleGetCustomer();
 			await this.handleGetDriverName();
+			setLoading(false);
 			this.isForm.listTime = this.genereateOptionTime();
 		},
 
@@ -664,7 +666,7 @@ export default {
 
 		async handleGetCustomer() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, params);
 				if (LIST.code === 200) {
@@ -678,15 +680,16 @@ export default {
 				} else {
 					this.isForm.optionListCustomer = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 
 		async handleGetDriverName() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_DRIVER, params);
 				if (LIST.code === 200) {
@@ -703,9 +706,10 @@ export default {
 				} else {
 					this.isForm.listDriverName = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 

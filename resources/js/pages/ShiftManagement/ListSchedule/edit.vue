@@ -689,9 +689,11 @@ export default {
 
 		async initData() {
 			this.isForm.customer_id = this.$route.params.id || null;
+			setLoading(true);
 			await this.handleGetCustomer();
 			await this.handleGetDriverName();
 			await this.handleGetCourseShedule();
+			setLoading(false);
 			this.isForm.listTime = this.genereateOptionTime();
 		},
 
@@ -770,7 +772,7 @@ export default {
 
 		async handleGetCustomer() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_COURSE, params);
 				if (LIST.code === 200) {
@@ -784,16 +786,17 @@ export default {
 				} else {
 					this.isForm.optionListCustomer = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 
 		async handleGetCourseShedule() {
 			try {
 				if (this.isForm.customer_id) {
-					setLoading(true);
+					// setLoading(true);
 					const customer = await getDetail(`${CONSTANT.URL_API.GET_DETAIL_COURSE_SCHEDULE}/${this.isForm.customer_id}`);
 
 					if (customer.code === 200) {
@@ -819,16 +822,17 @@ export default {
 						this.isForm.bonus_amount = Number(DATA.meal_fee);
 						this.isForm.note = DATA.note;
 					}
-					setLoading(false);
+					// setLoading(false);
 				}
-			} catch {
+			} catch (error) {
 				setLoading(false);
+				console.log(error);
 			}
 		},
 
 		async handleGetDriverName() {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const params = {};
 				const LIST = await getList(CONSTANT.URL_API.GET_LIST_DRIVER, params);
 				if (LIST.code === 200) {
@@ -843,9 +847,10 @@ export default {
 				} else {
 					this.isForm.listDriverID = [];
 				}
+				// setLoading(false);
+			} catch (error) {
 				setLoading(false);
-			} catch {
-				setLoading(false);
+				console.log(error);
 			}
 		},
 
