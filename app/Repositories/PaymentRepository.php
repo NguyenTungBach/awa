@@ -199,17 +199,34 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         // 1: driverCourses.date thuoc input['month_year']: whereBetween('driverCourses.date', [$startOfMonth, $endOfMonth])
         // 2: course.ship_date thuoc input['month_year']: whereBetween('course.ship_date', [$startOfMonth, $endOfMonth])
 
-        $drivers = Driver::where('type', 4)
-                    ->with(['driverCourses' => function ($query) use($startOfMonth, $endOfMonth) {
-                        $query->whereBetween('date', [$startOfMonth, $endOfMonth]);
-                        $query->join('courses', 'driver_courses.course_id', '=', 'courses.id');
-                        $query->whereBetween('courses.ship_date', [$startOfMonth, $endOfMonth]);
-                        // dd($query->toSql());
-                    }])
-                    ->orderBy($input['order_by'], $input['sort_by']);
-                    // ->with(['cashOutStatistical' => function ($query) use($monthYear) {
-                    //     $query->where('month_line', $monthYear);
-                    // }]);
+        $check = $this->checkFinalClosing($monthYear);
+        if ($check) {
+            $drivers = Driver::where('type', 4)
+                        ->with(['driverCourses' => function ($query) use($startOfMonth, $endOfMonth) {
+                            $query->whereBetween('date', [$startOfMonth, $endOfMonth]);
+                            $query->join('courses', 'driver_courses.course_id', '=', 'courses.id');
+                            $query->whereBetween('courses.ship_date', [$startOfMonth, $endOfMonth]);
+                        }])
+                        // ->with(['cashOutStatistical' => function ($query) use($monthYear) {
+                        //     $query->where('month_line', $monthYear);
+                        // }]);
+                        ->whereRaw('IF(start_date IS NOT NULL, DATE_FORMAT(start_date, "%Y-%m") <= ?, DATE_FORMAT(created_at, "%Y-%m") <= ?)', [$monthYear, $monthYear])
+                        ->where(function ($query) use ($monthYear) {
+                            $query->whereNull('end_date')
+                                ->orWhereRaw('DATE_FORMAT(end_date, "%Y-%m") >= ?', [$monthYear]);
+                        })
+                        ->orderBy($input['order_by'], $input['sort_by']);
+        } else {
+            $driverIdByFinal = FinalClosingHistories::where('month_year', $monthYear)->first()->pluck('driver_ids');
+            $driverIdByFinal = json_decode($driverIdByFinal[0]);
+            $drivers = Driver::whereIn('id', $driverIdByFinal)->where('type', 4)
+                        ->with(['driverCourses' => function ($query) use($startOfMonth, $endOfMonth) {
+                            $query->whereBetween('date', [$startOfMonth, $endOfMonth]);
+                            $query->join('courses', 'driver_courses.course_id', '=', 'courses.id');
+                            $query->whereBetween('courses.ship_date', [$startOfMonth, $endOfMonth]);
+                        }])
+                        ->orderBy($input['order_by'], $input['sort_by']);
+        }
 
         $drivers = $drivers->get();
 
