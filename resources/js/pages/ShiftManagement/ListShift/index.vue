@@ -260,6 +260,7 @@
                                 v-show="!isLoading.show"
                                 pill
                                 class="btn-edit btn-color-active"
+                                :disabled="disableEditShift"
                                 @click="goToPageListShiftEdit"
                             >
                                 {{ $t("LIST_SHIFT.BUTTON_EDIT") }}
@@ -1457,6 +1458,7 @@ export default {
 
 			listPractical: [],
 			disableTem: false,
+			disableEditShift: false,
 			disableFinal: true,
 
 			sortTable: {
@@ -2003,6 +2005,7 @@ export default {
 					// TOAST_SUCCESS_FINAL.closingDate(data.message);
 					this.disableTem = true;
 					this.disableFinal = true;
+					this.disableEditShift = true;
 				}
 				setLoading(false);
 			} catch (error) {
