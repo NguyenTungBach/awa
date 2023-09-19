@@ -97,7 +97,7 @@ class CourseRequest extends FormRequest
             ],
             'departure_place' => 'required|string|max:20',
             'arrival_place' => 'required|string|max:20',
-            'item_name' => 'nullable|string|max:20',
+            'item_name' => 'nullable|string|max:20|regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/',
             'quantity' => 'nullable|numeric|digits_between:1,15',
             'price' => 'nullable|numeric|digits_between:1,15',
             'weight' => 'nullable|numeric|digits_between:1,15',

@@ -44,13 +44,15 @@ class ShiftSalesTest extends DuskTestCase
 
     private function list(Browser $browser)
     {
-        $browser->click('div:nth-child(1) > div > div > button:nth-child(3)')->pause(6000);
+        $browser->click('div:nth-child(1) > div > div > button:nth-child(4)')->pause(6000);
     }
 
     private function invoice($browser)
     {
         $browser->waitFor('tbody:nth-child(2) > tr:nth-child(1) > td.img-pdf')->pause(2000);
-        $browser->click('tbody:nth-child(2) > tr:nth-child(1) > td.img-pdf')->pause(10000);
+        $browser->click('tbody:nth-child(2) > tr:nth-child(1) > td.img-pdf')->pause(2000);
+        $browser->waitFor('#modal-tax___BV_modal_body_ > div:nth-child(3) > button.btn.mr-2.btn-color-active-import.btn-secondary.rounded-pill')->pause(2000);
+        $browser->click('#modal-tax___BV_modal_body_ > div:nth-child(3) > button.btn.mr-2.btn-color-active-import.btn-secondary.rounded-pill')->pause(10000);
     }
 
     private function finalClosing($browser)
