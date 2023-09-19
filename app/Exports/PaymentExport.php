@@ -48,8 +48,10 @@ class PaymentExport implements FromView, ShouldAutoSize, WithStyles
         $endDate = Carbon::create($this->input['month_year'])->endOfMonth()->format('Y年m月d日');
 
         $title = $startDate.'('.$startDateJapan.')'.'〜'.$endDate.'('.$endDateJapan.')';
+        $paymentRepository = new PaymentRepository(app());
+
         return view('exports.payment', [
-            'result' => PaymentRepository::getAll($this->input),
+            'result' => $paymentRepository->getAll($this->input),
             'title' => $title,
             'calendar' => $calendar,
         ]);
