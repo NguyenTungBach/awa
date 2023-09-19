@@ -54,7 +54,7 @@ class CustomerRequest extends FormRequest
                 'unique:customers,customer_code,NULL,id,deleted_at,NULL',
             ],
 //            'tax' => 'required|in:1,2',
-            'customer_name' => 'required|string|max:20',
+            'customer_name' => 'required|string|max:20|regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/',
             'closing_date' => [
                 'required',
                 Rule::in(config('customers.closing_date'))
@@ -85,7 +85,7 @@ class CustomerRequest extends FormRequest
                 Rule::unique('customers')->ignore($customer->id),
             ],
 //            'tax' => 'sometimes|required|in:1,2',
-            'customer_name' => 'sometimes|required|string|max:20',
+            'customer_name' => 'sometimes|required|string|max:20|regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/',
             'closing_date' => [
                 'sometimes',
                 'required',

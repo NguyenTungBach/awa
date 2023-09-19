@@ -29,7 +29,7 @@ class FinalClosingHistoriesController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/final-closing-histories",
+     *   path="/api/final-closing",
      *   tags={"FinalClosingHistories"},
      *   summary="List FinalClosingHistories",
      *   operationId="final_closing_histories_index",
@@ -83,7 +83,7 @@ class FinalClosingHistoriesController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/api/final-closing-histories",
+     *   path="/api/final-closing",
      *   tags={"FinalClosingHistories"},
      *   summary="Add new FinalClosingHistories",
      *   operationId="final_closing_histories_create",
@@ -122,7 +122,7 @@ class FinalClosingHistoriesController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/final-closing-histories/{id}",
+     *   path="/api/final-closing/{id}",
      *   tags={"FinalClosingHistories"},
      *   summary="Detail FinalClosingHistories",
      *   operationId="final_closing_histories_show",
@@ -170,7 +170,7 @@ class FinalClosingHistoriesController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/api/final-closing-histories/{id}",
+     *   path="/api/final-closing/{id}",
      *   tags={"FinalClosingHistories"},
      *   summary="Delete FinalClosingHistories",
      *   operationId="final_closing_histories_delete",
@@ -204,5 +204,46 @@ class FinalClosingHistoriesController extends Controller
         }
 
         return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/final-closing/check-final-closing",
+     *   tags={"FinalClosingHistories"},
+     *   summary="Check FinalClosingHistories",
+     *   operationId="check_final_closing_histories",
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{"id": 1,"name":"......"}}
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkFinalClosing(FinalClosingHistoriesRequest $request)
+    {
+        return $this->repository->checkFinalClosing($request);
     }
 }

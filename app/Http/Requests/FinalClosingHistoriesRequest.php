@@ -34,6 +34,8 @@ class FinalClosingHistoriesRequest extends FormRequest
                 return $this->getCustomRuleStore();
             case 'index':
                 return $this->getCustomRuleIndex();
+            case 'checkFinalClosing':
+                return $this->getCustomRuleCheckFinalClosing();
             default:
                 return [];
         }
@@ -56,6 +58,17 @@ class FinalClosingHistoriesRequest extends FormRequest
             'month_year' => [
                 'sometimes',
                 'date_format:Y-m'
+            ],
+        ];
+
+        return $rules;
+    }
+
+    public function getCustomRuleCheckFinalClosing(){
+        $rules = [
+            'month_year' => [
+                'required',
+                'date_format:Y-m',
             ],
         ];
 
