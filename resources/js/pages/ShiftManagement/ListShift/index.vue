@@ -179,6 +179,7 @@
                             <div
                                 v-if="hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
                                 v-show="showControlTime"
+                                id="select-closing-date"
                                 class="item-function"
                                 @click="handleShowModal()"
                             >

@@ -60,6 +60,7 @@ class DriverCrudTest extends DuskTestCase
         $browser->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-character','29E2-12362')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         //Validate
         $browser->type('#input-date-hire-date','2023/01-08')->pause(1000);
         $getDate = Carbon::now()->format('Y-m-d');
@@ -68,7 +69,9 @@ class DriverCrudTest extends DuskTestCase
         $browser->type('#input-fullname','Bach Driverzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-fullname','Bach Driver')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-character','12362')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000)
             ->assertSee('Create driver success')->pause(4000);
 
 //        $browser->mouseover('.app-layout__navbar > div > div.zone-navigation > div.show-menu > ul > li:nth-child(2)')->pause(6000)
