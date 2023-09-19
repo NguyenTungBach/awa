@@ -80,18 +80,18 @@ class CourseRequest extends FormRequest
                 new CourseRule(__('courses.ship_date')),
             ],
             'start_date' => [
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.start_date')),
                 new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.end_date'))
             ],
             'break_time' => [
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.break_time'))
             ],
@@ -101,11 +101,11 @@ class CourseRequest extends FormRequest
             'quantity' => 'nullable|numeric|digits_between:1,15',
             'price' => 'nullable|numeric|digits_between:1,15',
             'weight' => 'nullable|numeric|digits_between:1,15',
-            'ship_fee' => 'required|numeric|digits_between:1,15',
+            'ship_fee' => 'nullable|numeric|digits_between:1,15',
             'associate_company_fee' => 'nullable|numeric|digits_between:1,15',
             'expressway_fee' => 'nullable|numeric|digits_between:1,15',
-            'commission' => 'nullable|numeric|digits_between:1,15',
-            'meal_fee' => 'nullable|numeric|digits_between:1,15',
+            'commission' => 'required|numeric|digits_between:1,15',
+            'meal_fee' => 'required|numeric|digits_between:1,15',
             'note' => 'nullable|string|max:1000',
         ];
 
@@ -182,35 +182,32 @@ class CourseRequest extends FormRequest
                 new CheckDriverCourseExists(__('courses.ship_date'))
             ],
             'start_date' => [
-                'sometimes',
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.start_date')),
                 new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
-                'sometimes',
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.end_date'))
             ],
             'break_time' => [
-                'sometimes',
-                'required',
+                'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.break_time'))
             ],
             'departure_place' => 'sometimes|required|string|max:20',
             'arrival_place' => 'sometimes|required|string|max:20',
-            'item_name' => 'nullable|required|string|max:20',
+            'item_name' => 'nullable|string|max:20',
             'quantity' => 'nullable|numeric|digits_between:1,15',
             'price' => 'nullable|numeric|digits_between:1,15',
             'weight' => 'nullable|numeric|digits_between:1,15',
-            'ship_fee' => 'sometimes|required|numeric|digits_between:1,15',
+            'ship_fee' => 'nullable|numeric|digits_between:1,15',
             'associate_company_fee' => 'nullable|numeric|digits_between:1,15',
             'expressway_fee' => 'nullable|numeric|digits_between:1,15',
-            'commission' => 'nullable|numeric|digits_between:1,15',
-            'meal_fee' => 'nullable|numeric|digits_between:1,15',
+            'commission' => 'sometimes|required|numeric|digits_between:1,15',
+            'meal_fee' => 'sometimes|required|numeric|digits_between:1,15',
             'note' => 'nullable|string|max:1000',
         ];
 
