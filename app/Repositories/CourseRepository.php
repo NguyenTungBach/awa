@@ -56,10 +56,13 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $input['quantity'] = empty($input['quantity']) ? 0 : Arr::get($input, 'quantity', 0);
         $input['price'] = empty($input['price']) ? 0 : Arr::get($input, 'price', 0);
         $input['weight'] = empty($input['weight']) ? 0 : Arr::get($input, 'weight', 0);
+        $input['ship_fee'] = empty($input['ship_fee']) ? 0 : Arr::get($input, 'ship_fee', 0);
         $input['associate_company_fee'] = empty($input['associate_company_fee']) ? 0 : Arr::get($input, 'associate_company_fee', 0);
         $input['expressway_fee'] = empty($input['expressway_fee']) ? 0 : Arr::get($input, 'expressway_fee', 0);
-        $input['commission'] = empty($input['commission']) ? 0 : Arr::get($input, 'commission', 0);
-        $input['meal_fee'] = empty($input['meal_fee']) ? 0 : Arr::get($input, 'meal_fee', 0);
+        $input['start_date'] = empty($input['start_date']) ? '00:00' : Arr::get($input, 'start_date', '00:00');
+        $input['end_date'] = empty($input['end_date']) ? '00:00' : Arr::get($input, 'end_date', '00:00');
+        $input['break_time'] = empty($input['break_time']) ? '00:00' : Arr::get($input, 'break_time', '00:00');
+        $input['item_name'] = Arr::get($input, 'item_name', NULL);
         $input['note'] = Arr::get($input, 'note', NULL);
 
         try {
