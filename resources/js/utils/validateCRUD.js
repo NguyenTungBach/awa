@@ -63,8 +63,8 @@ function validateUser(user, list = ['user_code', 'user_name', 'password', 'role'
 function validateDriver(driver, list = ['type', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'car', 'working_day', 'day_of_week', 'working_time', 'note']) {
 // function validateDriver(driver, list = ['flag', 'driver_code', 'driver_name', 'start_date', 'end_date', 'birth_day', 'grade', 'working_day', 'working_time', 'note']) {
 	if (
-		!driver.driver_code && list.includes('driver_code') ||
-        !driver.driver_name && list.includes('driver_name') ||
+		// !driver.driver_code && list.includes('driver_code') ||
+		!driver.driver_name && list.includes('driver_name') ||
         !driver.start_date && list.includes('start_date') ||
         !driver.type && list.includes('type') ||
         !driver.car && list.includes('car')
@@ -75,12 +75,12 @@ function validateDriver(driver, list = ['type', 'driver_code', 'driver_name', 's
 		};
 	}
 
-	if (!validateCrewCode(driver.driver_code) && list.includes('driver_code')) {
-		return {
-			status: false,
-			message: 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE',
-		};
-	}
+	// if (!validateCrewCode(driver.driver_code) && list.includes('driver_code')) {
+	// 	return {
+	// 		status: false,
+	// 		message: 'MESSAGE_APP.DRIVER_MANAGEMENT_VALIDATE_DRIVER_CODE',
+	// 	};
+	// }
 
 	// if (!validateGrade(driver.grade) && list.includes('grade')) {
 	// 	return {
