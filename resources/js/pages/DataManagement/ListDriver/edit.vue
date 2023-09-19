@@ -682,7 +682,7 @@ export default {
 
 						const DRIVER = {
 							type: this.isForm.typeDriver,
-							driver_code: this.isForm.employeeNumber,
+							// driver_code: this.isForm.employeeNumber,
 							driver_name: this.isForm.fullname,
 							start_date: this.isForm.hireDate,
 							car: this.isForm.character,
