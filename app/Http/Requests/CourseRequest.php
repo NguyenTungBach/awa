@@ -83,7 +83,7 @@ class CourseRequest extends FormRequest
                 'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.start_date')),
-                new CompareHours($this->get('end_date')),
+                // new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
                 'nullable',
@@ -185,7 +185,7 @@ class CourseRequest extends FormRequest
                 'nullable',
                 'date_format:H:i',
                 new TimeRule(__('courses.start_date')),
-                new CompareHours($this->get('end_date')),
+                // new CompareHours($this->get('end_date')),
             ],
             'end_date' => [
                 'nullable',

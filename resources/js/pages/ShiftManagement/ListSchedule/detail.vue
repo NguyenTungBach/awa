@@ -366,13 +366,13 @@ export default {
 						this.isForm.arrival_place = DATA.arrival_place;
 						this.isForm.item_name = DATA.item_name;
 						this.isForm.quantity = DATA.quantity ? Number(DATA.quantity).toLocaleString() : '';
-						this.isForm.unit_price = DATA.price ? Number(DATA.price).toLocaleString() + '円' : '';
-						this.isForm.weight = DATA.weight ? Number(DATA.weight).toLocaleString() + 'kg' : '';
-						this.isForm.freight_cost = DATA.ship_fee ? Number(DATA.ship_fee).toLocaleString() + '円' : '';
-						this.isForm.payment_amount = DATA.associate_company_fee ? Number(DATA.associate_company_fee).toLocaleString() + '円' : '';
-						this.isForm.hight_way = DATA.expressway_fee ? Number(DATA.expressway_fee).toLocaleString() + '円' : '';
-						this.isForm.commission = DATA.commission ? Number(DATA.commission).toLocaleString() + '円' : '';
-						this.isForm.meal_fee = DATA.meal_fee ? Number(DATA.meal_fee).toLocaleString() + '円' : '';
+						this.isForm.unit_price = DATA.price ? Number(DATA.price).toLocaleString() + ' 円' : '';
+						this.isForm.weight = DATA.weight ? Number(DATA.weight).toLocaleString() + ' kg' : '';
+						this.isForm.freight_cost = DATA.ship_fee ? Number(DATA.ship_fee).toLocaleString() + ' 円' : '';
+						this.isForm.payment_amount = DATA.associate_company_fee ? Number(DATA.associate_company_fee).toLocaleString() + ' 円' : '';
+						this.isForm.hight_way = DATA.expressway_fee ? Number(DATA.expressway_fee).toLocaleString() + ' 円' : '';
+						this.isForm.commission = DATA.commission ? Number(DATA.commission).toLocaleString() + ' 円' : '';
+						this.isForm.meal_fee = DATA.meal_fee ? Number(DATA.meal_fee).toLocaleString() + ' 円' : '';
 						this.isForm.note = DATA.note;
 					}
 					setLoading(false);

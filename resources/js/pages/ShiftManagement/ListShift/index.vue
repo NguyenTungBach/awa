@@ -1302,6 +1302,7 @@
                                 id="input-consumption-tax"
                                 v-model="consumption_tax"
                                 type="number"
+                                @input="UpdateTotalTax()"
                             />
 
                         </b-input-group>
@@ -1720,6 +1721,10 @@ export default {
 	methods: {
 		convertValueToText,
 		convertStatusToText,
+
+		UpdateTotalTax() {
+			this.total = Number(this.consumption_tax) + Number(this.total_fare);
+		},
 
 		handleResize() {
 			this.screenWidth = window.innerWidth;

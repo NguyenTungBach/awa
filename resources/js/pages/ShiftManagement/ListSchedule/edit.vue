@@ -143,9 +143,6 @@
                                     >
                                         <label for="input-start-time">
                                             {{ $t('CREATE_SCHEDULE.START_TIME') }}
-                                            <span class="text-danger">
-                                                *
-                                            </span>
                                         </label>
                                         <b-input-group class="mb-3">
                                             <!-- <b-form-input
@@ -225,9 +222,6 @@
                                     >
                                         <label for="input-end-time">
                                             {{ $t('CREATE_SCHEDULE.END_TIME') }}
-                                            <span class="text-danger">
-                                                *
-                                            </span>
                                         </label>
                                         <b-input-group class="mb-3">
                                             <!-- <b-form-input
@@ -261,9 +255,6 @@
                                     >
                                         <label for="input-break-time">
                                             {{ $t('CREATE_SCHEDULE.BREAK_TIME') }}
-                                            <span class="text-danger">
-                                                *
-                                            </span>
                                         </label>
                                         <b-input-group class="mb-3">
                                             <!-- <b-form-input
@@ -863,18 +854,18 @@ export default {
 					driver_id: this.isForm.driver_id,
 					vehicle_number: this.isForm.vehicle_number,
 					ship_date: convertDate,
-					start_date: this.formatter(this.isForm.start_time),
-					end_date: this.formatter(this.isForm.end_time),
-					break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '0.00',
+					start_date: this.formatter(this.isForm.start_time) ? this.formatter(this.isForm.start_time) : '00:00',
+					end_date: this.formatter(this.isForm.end_time) ? this.formatter(this.isForm.end_time) : '00:00',
+					break_time: this.formatter(this.isForm.break_time) ? this.formatter(this.isForm.break_time) : '00.00',
 					departure_place: this.isForm.departure_place,
 					arrival_place: this.isForm.arrival_place,
 					item_name: this.isForm.itemName,
-					quantity: this.isForm.quantity,
-					weight: this.isForm.weight,
-					price: this.isForm.unitPrice,
-					ship_fee: this.isForm.freight_cost,
-					associate_company_fee: this.isForm.payment_amount,
-					expressway_fee: this.isForm.hight_way,
+					quantity: this.isForm.quantity ? this.isForm.quantity : 0,
+					weight: this.isForm.weight ? this.isForm.weight : 0,
+					price: this.isForm.unitPrice ? this.isForm.unitPrice : 0,
+					ship_fee: this.isForm.freight_cost ? this.isForm.freight_cost : 0,
+					associate_company_fee: this.isForm.payment_amount ? this.isForm.payment_amount : 0,
+					expressway_fee: this.isForm.hight_way ? this.isForm.hight_way : 0,
 					commission: this.isForm.expenses,
 					meal_fee: this.isForm.bonus_amount,
 					note: this.isForm.note,
