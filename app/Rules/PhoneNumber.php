@@ -37,7 +37,8 @@ class PhoneNumber implements Rule
         if ($length > self::PHONE_NUMBER_MAXLENGTH) {
             return false;
         }
-        if (!preg_match('/^[0-9-]+$/D', $value)) {
+        $pattern = '/^[0-9-]+$/D';
+        if (!preg_match($pattern, $value)) {
             return false;
         }
 
