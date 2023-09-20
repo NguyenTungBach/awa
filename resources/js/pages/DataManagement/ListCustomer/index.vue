@@ -194,7 +194,7 @@ import { getList, deleteCourse } from '@/api/modules/courseManagement';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 
 export default {
-	name: 'ListCourse',
+	name: 'ListCustomer',
 	components: {
 		LineGray,
 	},
@@ -322,7 +322,7 @@ export default {
 
 		onClickDetail(scope) {
 			this.$router.push({
-				name: 'CourseDetail',
+				name: 'CustomerDetail',
 				params: {
 					id: scope.id,
 				},
@@ -368,7 +368,7 @@ export default {
 
 		onClickCreate() {
 			this.$router.push({
-				name: 'CourseCreate',
+				name: 'CustomerCreate',
 			});
 		},
 

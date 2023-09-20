@@ -695,7 +695,7 @@ export default {
 							// note: this.isForm.notes,
 						};
 
-						const VALIDATE = validateDriver(DRIVER, ['type', 'driver_name', 'start_date', 'end_date', 'car', 'working_day', 'day_of_week', 'working_time', 'note']);
+						const VALIDATE = validateDriver(DRIVER, ['type', 'driver_name', 'end_date', 'car', 'working_day', 'day_of_week', 'working_time', 'note']);
 
 						if (VALIDATE.status) {
 							const UPDATE_DRIVER = await putDriver(`${CONSTANT.URL_API.PUT_DRIVER}/${this.idDriver}`, DRIVER);

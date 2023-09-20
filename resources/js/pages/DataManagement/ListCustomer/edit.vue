@@ -1,21 +1,21 @@
 <template>
     <b-col>
         <b-container>
-            <div class="page-course-create">
-                <div class="page-course-create__header">
+            <div class="page-course-edit">
+                <div class="page-course-edit__header">
                     <b-row>
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('CUSTOMER_CREATE.TITLE_CUSTOMER_CREATE') }}
+                                    {{ $t('CUSTOMER_EDIT.TITLE_CUSTOMER_EDIT') }}
                                 </span>
                             </div>
                         </b-col>
                     </b-row>
                     <LineGray />
                 </div>
-                <div class="page-course-create__body">
-                    <div class="body-control">
+                <div class="page-course-edit__body">
+                    <div class="body-control zone-content">
                         <b-row>
                             <b-col>
                                 <div class="zone-control text-right">
@@ -28,8 +28,8 @@
                                     </b-button>
                                     <b-button
                                         pill
-                                        class="btn-color-active btn-save"
-                                        @click="onClickSave()"
+                                        class="btn-save btn-color-active"
+                                        @click="onClickSaveCourse()"
                                     >
                                         {{ $t('APP.BUTTON_SAVE') }}
                                     </b-button>
@@ -66,44 +66,37 @@
                                             {{ $t('CUSTOMER_CREATE.FORM_BASIC_INFORMATION') }}
                                         </TitlePathForm>
                                     </div>
+
                                     <div class="zone-form__body">
-                                        <b-row>
-                                            <b-col
-                                                :cols="12"
-                                                :sm="12"
-                                                :md="12"
-                                                :lg="12"
-                                                :xl="12"
-                                            >
-                                                <div class="item-form">
-                                                    <label for="input-course-id">
-                                                        {{ $t('CUSTOMER_CREATE.COURSE_ID') }}
-                                                        <span class="text-danger">
-                                                            *
-                                                        </span>
-                                                    </label>
-                                                    <b-input-group>
-                                                        <!-- <b-form-input
-                                                            id="input-course-id"
-                                                            v-model="isForm.course_id"
-                                                            type="text"
-                                                            onpaste="return false;"
-                                                            ondrop="return false;"
-                                                            autocomplete="off"
-                                                            @keydown.native="validInputCourseCode"
-                                                        /> -->
-                                                        <b-form-input
-                                                            id="input-course-id"
-                                                            v-model="isForm.course_id"
-                                                            type="text"
-                                                            onpaste="return false;"
-                                                            ondrop="return false;"
-                                                            autocomplete="off"
-                                                        />
-                                                    </b-input-group>
-                                                </div>
-                                            </b-col>
-                                        </b-row>
+
+                                        <div class="item-form">
+                                            <label for="input-course-id">
+                                                {{ $t('CUSTOMER_CREATE.COURSE_ID') }}
+                                                <span class="text-danger">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <!-- <b-form-input
+                                                id="input-course-id"
+                                                v-model="isForm.course_id"
+                                                type="text"
+                                                onpaste="return false;"
+                                                ondrop="return false;"
+                                                autocomplete="off"
+                                                disabled
+                                                @keydown.native="validInputCourseCode"
+                                            /> -->
+                                            <b-form-input
+                                                id="input-course-id"
+                                                v-model="isForm.customer_id"
+                                                type="text"
+                                                onpaste="return false;"
+                                                ondrop="return false;"
+                                                autocomplete="off"
+                                                disabled
+                                            />
+                                        </div>
+
                                         <div class="item-form">
                                             <label for="input-course-name">
                                                 {{ $t('CUSTOMER_CREATE.COURSE_NAME') }}
@@ -113,7 +106,7 @@
                                             </label>
                                             <b-form-input
                                                 id="input-course-name"
-                                                v-model="isForm.course_name"
+                                                v-model="isForm.customer_name"
                                             />
                                         </div>
 
@@ -142,7 +135,32 @@
                                                 </div>
                                             </b-col>
                                         </b-row>
-                                        <!-- bach them-->
+                                        <!-- <b-row>
+                                            <b-col
+                                                :cols="12"
+                                                :sm="12"
+                                                :md="12"
+                                                :lg="12"
+                                                :xl="12"
+                                            >
+                                                <div class="item-form">
+                                                    <label for="customer-sales-tax">
+                                                        {{ $t('CUSTOMER_CREATE.SALE_TAX') }}
+                                                    </label>
+                                                    <span class="text-danger">
+                                                        *
+                                                    </span>
+                                                    <b-input-group>
+                                                        <b-form-select
+                                                            id="customer-sales-tax"
+                                                            v-model="isForm.saleTax"
+                                                            :options="optionsSaleTax"
+                                                        />
+                                                    </b-input-group>
+                                                </div>
+                                            </b-col>
+                                        </b-row> -->
+                                        <!--bach them-->
                                         <!--                                        <b-row>-->
                                         <!--                                            <b-col-->
                                         <!--                                                :cols="12"-->
@@ -168,8 +186,7 @@
                                         <!--                                                </div>-->
                                         <!--                                            </b-col>-->
                                         <!--                                        </b-row>-->
-                                        <!-- bach them-->
-
+                                        <!--bach them-->
                                         <b-row>
                                             <b-col
                                                 :cols="12"
@@ -179,7 +196,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-manager">
+                                                    <label for="input-course-clineManager">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
                                                         <span class="text-danger">
                                                             *
@@ -187,13 +204,14 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-manager"
+                                                            id="input-course-clineManager"
                                                             v-model="isForm.customer_manager"
                                                         />
                                                     </b-input-group>
                                                 </div>
                                             </b-col>
                                         </b-row>
+
                                         <b-row>
                                             <b-col
                                                 :cols="12"
@@ -235,7 +253,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-address">
+                                                    <label for="input-course-addressOfClient">
                                                         {{ $t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT') }}
                                                         <span class="text-danger">
                                                             *
@@ -243,7 +261,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-address"
+                                                            id="input-course-addressOfClient"
                                                             v-model="isForm.customer_address"
                                                         />
                                                     </b-input-group>
@@ -279,7 +297,6 @@
                                                 </div>
                                             </b-col>
                                         </b-row>
-
                                     </div>
                                 </div>
                             </b-col>
@@ -314,18 +331,19 @@
 import CONSTANT from '@/const';
 import LineGray from '@/components/LineGray';
 import { setLoading } from '@/utils/handleLoading';
-// import { validateCourse } from '@/utils/validateCRUD';
 import TitlePathForm from '@/components/TitlePathForm';
+import { getCourse, putCourse } from '@/api/modules/courseManagement';
 // import { convertTimeCourse } from '@/utils/convertTime';
-import { postCourse } from '@/api/modules/courseManagement';
+// import { convertBreakTimeNumberToTime, convertTimeToSelect, convertStingToSelect } from '@/utils/convertTime';
+// import { validateCourse } from '@/utils/validateCRUD';
 import TOAST_COURSE_MANAGEMENT from '@/toast/modules/courseManagement';
 // import SelectMultiple from '@/components/SelectMultiple';
 import { validInputFloat, validInputCourseCode } from '@/utils/handleInput';
+import { formartPhoneNumber } from '@/utils/formatNumber';
 import i18n from '@/lang';
-// import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
-	name: 'CourseCreate',
+	name: 'CustomerEdit',
 	components: {
 		LineGray,
 		TitlePathForm,
@@ -334,8 +352,6 @@ export default {
 
 	data() {
 		return {
-			postalCode_first: '',
-			postalCode_last: '',
 			optionsClosingDay: [
 				{
 					value: 1,
@@ -366,25 +382,28 @@ export default {
 				},
 			],
 
-			stringGroup: [null, null],
-
-			valueGroup: [],
-
-			CONSTANT,
+			optionsAZ: [],
+			idCourse: null,
 
 			isForm: {
-				course_id: '',
-				course_name: '',
-				// tax: '', // bach them
-				exclusive: '',
-				saleTax: '',
+				customer_id: '',
+				customer_name: '',
+				customer_postCode: '',
+				//
 				customer_manager: '',
 				customer_address: '',
 				customer_phone: '',
+				exclusive: '',
+				tax: '',
+				//
 				note: '',
 			},
 
+			inited: false,
+
 			// Bach them
+			postalCode_first: '',
+			postalCode_last: '',
 			optionsTax: [
 				{
 					value: 1,
@@ -402,6 +421,22 @@ export default {
 		language() {
 			return this.$store.getters.language;
 		},
+
+		changeForm() {
+			return this.isForm;
+		},
+	},
+
+	watch: {
+		changeForm: {
+			handler: function() {
+				if (this.inited) {
+					this.$store.dispatch('course/setWarningNotSave', true);
+				}
+			},
+
+			deep: true,
+		},
 	},
 
 	created() {
@@ -413,9 +448,16 @@ export default {
 		validInputFloat,
 		validInputCourseCode,
 
-		initData() {
+		async initData() {
+			this.inited = false;
+			setLoading(true);
+			this.idCourse = this.$route.params.id || null;
 			this.isForm.listTime = this.genereateOptionTime();
 			this.isForm.listFatigue = this.generateListFatigue(1, 5);
+			await this.handleGetCourse();
+			this.inited = true;
+
+			setLoading(false);
 		},
 
 		genereateOptionTime(min = 0, max = 31) {
@@ -470,8 +512,8 @@ export default {
 
 		initBody() {
 			return {
-				customer_code: this.isForm.course_id,
-				customer_name: this.isForm.course_name ? this.isForm.course_name.trim() : '',
+				customer_code: this.isForm.customer_id,
+				customer_name: this.isForm.customer_name ? this.isForm.customer_name.trim() : '',
 				closing_date: this.isForm.exclusive,
 				// tax: this.isForm.tax, // bach them
 				person_charge: this.isForm.customer_manager ? this.isForm.customer_manager.trim() : '',
@@ -482,43 +524,95 @@ export default {
 			};
 		},
 
-		onClickReturn() {
-			this.$router.push({ name: 'ListCourseIndex' });
+		// goToList() {
+		// this.$router.push({ name: 'ListCustomerIndex' });
+		// },
+
+		goToDetail() {
+			// this.$router.push({ name: 'ListCourseIndex' });
+			this.$router.push({ name: 'CustomerDetail', params: { id: this.idCourse }});
 		},
 
-		goToList() {
-			this.$router.push({ name: 'ListCourseIndex' });
+		async handleGetCourse() {
+			try {
+				setLoading(true);
+				const COURSE = await getCourse(`${CONSTANT.URL_API.GET_COURSE}/${this.idCourse}`);
+
+				if (COURSE.code === 200) {
+					const DATA = COURSE.data;
+					this.optionsClosingDay.forEach(item => {
+						if (item.text === DATA.closing_date) {
+							this.isForm.exclusive = item.value;
+						}
+					});
+					// bach them start
+					// this.optionsTax.forEach(item => {
+					// 	if (item.value === DATA.tax_value) {
+					// 		this.isForm.tax = item.value;
+					// 	}
+					// });
+					// bach them end
+					this.isForm.customer_id = DATA.customer_code;
+					this.isForm.customer_name = DATA.customer_name;
+					this.isForm.customer_manager = DATA.person_charge;
+					this.postalCode_first = DATA.post_code.split('-')[0];
+					this.postalCode_last = DATA.post_code.split('-')[1];
+					this.isForm.customer_address = DATA.address;
+					this.isForm.customer_phone = formartPhoneNumber(DATA.phone);
+					this.isForm.note = DATA.note;
+					console.log('form:', this.isForm);
+					setLoading(false);
+				}
+			} catch (error) {
+				console.log(error);
+				setLoading(false);
+			}
 		},
 
-		async onClickSave() {
+		// onClickSaveCourse() {
+		//     this.goToDetail();
+		//     TOAST_COURSE_MANAGEMENT.success();
+		// },
+		async onClickSaveCourse() {
 			const BODY = this.initBody();
 			// const VALIDATE = validateCourse(BODY);
 
 			// if (VALIDATE.status) {
 			try {
-				setLoading(true);
+				await this.$store.dispatch('course/setWarningNotSave', false)
+					.then(async() => {
+						setLoading(true);
 
-				// BODY.break_time = convertTimeCourse(BODY.break_time);
+						// BODY.break_time = convertTimeCourse(BODY.break_time);
 
-				const COURSE = await postCourse(CONSTANT.URL_API.POST_COURSE, BODY);
+						const COURSE = await putCourse(`${CONSTANT.URL_API.PUT_COURSE}/${this.idCourse}`, BODY);
 
-				if (COURSE.code === 200) {
-					this.goToList();
-					TOAST_COURSE_MANAGEMENT.success();
-				}
+						if (COURSE.code === 200) {
+							// this.goToList();
+							this.goToDetail();
+							TOAST_COURSE_MANAGEMENT.update();
+						}
 
-				setLoading(false);
-			} catch (error) {
-				console.log(error);
+						setLoading(false);
+					});
+			} catch {
 				setLoading(false);
 			}
 			// } else {
-			// 	TOAST_COURSE_MANAGEMENT.exception();
+			// 	TOAST_COURSE_MANAGEMENT.validate(VALIDATE.message);
 			// }
 		},
 
+		onClickReturn() {
+			this.$router.push({ name: 'CustomerDetail', params: { id: this.idCourse }});
+		},
+
+		onClickEdit() {
+			this.$router.push({ name: 'CustomerEdit', params: { id: this.idCourse }});
+		},
+
 		// Bách thêm tự động thêm dấu gạch cho điện thoại
-		autoFormartPhoneNumber(number) {
+		autoFormartPhoneNumber(number){
 			const cleaned = `${number}`.replace(/\D/g, '');
 
 			const match1 = cleaned.match(/^(\d{3})$/);
@@ -575,7 +669,7 @@ export default {
 		// },
 
 		// getSelectValueAZ(select) {
-		// 	this.selectAZ = select;
+		// 	this.isForm.group = select;
 		// },
 
 		// getSelectStartTime(select) {
@@ -596,7 +690,7 @@ export default {
 <style lang="scss" scoped>
     @import '@/scss/variables';
 
-    .page-course-create {
+    .page-course-edit {
         &__body {
             .body-form {
                 border: 1px solid $geyser;
@@ -622,6 +716,7 @@ export default {
                             margin-bottom: 10px;
                             font-size: 18px;
                         }
+
                         .text-closing-day {
                             font-family: 'Inter';
                             font-style: normal;
@@ -629,9 +724,11 @@ export default {
                             font-size: 24px;
                             line-height: 29px;
                         }
+
                         .select-multiple {
                             width: 100%;
                         }
+
                         .item-form-postCode {
                             display: flex;
                             margin-bottom: 10px;
