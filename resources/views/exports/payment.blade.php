@@ -21,7 +21,7 @@
                 <th style="{{ $styleRow }}" colspan="4"></th>
                 {{-- foreach calendar --}}
                 @foreach ($calendar as $item)
-                    <th style="{{ $styleRow }}">{{ date('d', strtotime($item['date'])).'('.$item['week'].')' }}</th>
+                    <th style="{{ $styleRow }}">{{ date('j', strtotime($item['date'])).'('.$item['week'].')' }}</th>
                 @endforeach
                 {{-- 月額合計 --}}
                 <th style="{{ $styleColumnLast }} width: 120px" rowspan="2">月額合計</th>
