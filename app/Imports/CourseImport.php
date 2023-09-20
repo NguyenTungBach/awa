@@ -88,16 +88,16 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.1' => ['required', 'string', Rule::in($arrDriverName)],
 
             // 2 vehicle_number
-            '*.2' => ['nullable', 'numeric', 'digits_between:1,20', Rule::in($arrDriverName)],
+            '*.2' => ['nullable', 'numeric', 'digits_between:1,20'],
 
             // 3 start_date
-            '*.3' => ['required', 'date_format:H:i'],
+            '*.3' => ['nullable', 'date_format:H:i'],
 
             // 4 end_date
-            '*.4' => ['required', 'date_format:H:i'],
+            '*.4' => ['nullable', 'date_format:H:i'],
 
             // 5 break_time
-            '*.5' => ['required', 'date_format:H:i'],
+            '*.5' => ['nullable', 'date_format:H:i'],
 
             // 6 customer_id
             '*.6' => ['required', Rule::in($arrCustomerName)],
@@ -121,7 +121,7 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.12' => ['nullable', 'numeric', 'digits_between:1,15'],
 
             // 13 ship_fee
-            '*.13' => ['required', 'numeric'],
+            '*.13' => ['nullable', 'numeric'],
 
             // 14 associate_company_fee
             '*.14' => ['nullable', 'numeric'],
@@ -130,10 +130,10 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.15' => ['nullable', 'numeric'],
 
             // 16 commission
-            '*.16' => ['nullable', 'numeric'],
+            '*.16' => ['required', 'numeric'],
 
             // 17 meal_fee
-            '*.17' => ['nullable', 'numeric'],
+            '*.17' => ['required', 'numeric'],
 
             // 18 note
             '*.18' => ['nullable', 'string', 'max:1000'],
@@ -254,12 +254,18 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
                 $row = $collection[$i];
                 $rowIndex = $i + $this->startRow();
 
-                // check start_time >= end_time
-                $start_time = date('H:i', strtotime('today '.$row[3]));
-                $end_time = date('H:i', strtotime('today '.$row[4]));
-                if ($start_time >= $end_time) {
-                    $errors[] = __('validation.custom.csv.compare_date', ['row' => $rowIndex]);
-                }
+                // // check start_time >= end_time
+                // $start_time = date('H:i', strtotime('today '.$row[3]));
+                // $end_time = date('H:i', strtotime('today '.$row[4]));
+                // if ($start_time >= $end_time) {
+                //     $errors[] = __('validation.custom.csv.compare_date', ['row' => $rowIndex]);
+                // }
+                // start_date
+                $row[3] = empty($row[3]) ? '00:00' : $row[3];
+                // end_date
+                $row[4] = empty($row[4]) ? '00:00' : $row[4];
+                // break_time
+                $row[5] = empty($row[5]) ? '00:00' : $row[5];
                 // vehicle_number
                 $row[2] = empty($row[2]) ? $this->getVehicleNumber($row[1]) : $row[2];
                 // customer_id
@@ -283,11 +289,11 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
                     $dataImport['quantity'] = empty($row[10]) ? 0 : $row[10];
                     $dataImport['price'] = empty($row[11]) ? 0 : $row[11];
                     $dataImport['weight'] = empty($row[12]) ? 0 : $row[12];
-                    $dataImport['ship_fee'] = $row[13];
+                    $dataImport['ship_fee'] = empty($row[13]) ? 0 : $row[13];
                     $dataImport['associate_company_fee'] = empty($row[14]) ? 0 : $row[14];
                     $dataImport['expressway_fee'] = empty($row[15]) ? 0 : $row[15];
-                    $dataImport['commission'] = empty($row[16]) ? 0 : $row[16];
-                    $dataImport['meal_fee'] = empty($row[17]) ? 0 : $row[17];
+                    $dataImport['commission'] = $row[16];
+                    $dataImport['meal_fee'] = $row[17];
                     $dataImport['note'] = $row[18];
 
                     if (!count($errors)) {
