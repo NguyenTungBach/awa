@@ -1685,7 +1685,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
 //        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
 //        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
@@ -1852,7 +1852,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
@@ -2300,7 +2300,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         ])->getAlignment()->setWrapText(true);
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
         $sheet->mergeCells([$colCalendar+1,3,$colCalendar+1,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
         $sheet->setCellValueExplicitByColumnAndRow($colCalendar+1, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
         $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
@@ -2653,7 +2653,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
