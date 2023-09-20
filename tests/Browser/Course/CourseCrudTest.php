@@ -143,7 +143,7 @@ class CourseCrudTest extends DuskTestCase
     private function editCourse($browser){
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(8) > i')->pause(4000)
             ->click(".btn-save")->pause(2000)
-            ->type('#input-course-name',"Bach Update Course")->pause(2000);
+            ->type('#input-item-name',"Milk new")->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')
             ->pause(4000);
     }
