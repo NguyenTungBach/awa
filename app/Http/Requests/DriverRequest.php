@@ -45,7 +45,7 @@ class DriverRequest extends FormRequest
               case 'store':
                   return  [
                       "type" => ["required", "in:1,2,3,4"],
-                      "driver_code" => ["required", "min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
+                      "driver_code" => ["required", "min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^[0-9]+$/"],
                       "driver_name" => "required|string|max:15",
                       "car" => "required|numeric|digits_between:1,20",
                       "start_date" => "nullable|date|date_format:Y-m-d",
@@ -55,7 +55,7 @@ class DriverRequest extends FormRequest
                 case 'update':
                     return [
                         "type" => ["required", "in:1,2,3,4"],
-                        "driver_code" => ["min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/"],
+                        "driver_code" => ["min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^[0-9]+$/"],
                         "driver_name" => "required|string|max:20",
                         "car" => "required|numeric|digits_between:1,20",
                         "start_date" => "nullable|date|date_format:Y-m-d",
@@ -71,7 +71,7 @@ class DriverRequest extends FormRequest
     {
         return [
             'driver_code.max' => 'Crew番号は半角数字15桁で入力してください。',
-            'driver_name.max' => 'Crew名は20文字以下で入力してください。',
+            'driver_name.max' => 'Crew名は15文字以下で入力してください。',
             'driver_code.unique' => 'このCrew番号は既に登録されています。',
             'start_date.*' => '入社日の形式が正しくありません。',
             'end_date.*' => '退職日の形式が正しくありません。',
