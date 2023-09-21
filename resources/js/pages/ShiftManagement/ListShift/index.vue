@@ -1353,7 +1353,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckFinalClosingDate } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1760,6 +1760,28 @@ export default {
 			}
 		},
 
+		async handleCheckFinalClosing() {
+			try {
+				setLoading(true);
+				let PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_line = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_LIST_CASH_DISBUSEMENT;
+				const response = await CheckFinalClosingDate(URL, PARAMS);
+				if (response.code === 200) {
+					this.disableEditShift = response.data.finalClosing;
+				}
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
 		turnOnButtonFinal() {
 			this.disableFinal = false;
 		},
@@ -1792,6 +1814,7 @@ export default {
 			await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
+			await this.handleCheckFinalClosing();
 		},
 
 		async handleGetListCalendar() {
@@ -2004,7 +2027,6 @@ export default {
 					// TOAST_SUCCESS_FINAL.closingDate(data.message);
 					this.disableTem = true;
 					this.disableFinal = true;
-					this.disableEditShift = true;
 				}
 				setLoading(false);
 			} catch (error) {

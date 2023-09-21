@@ -372,7 +372,7 @@ export default {
 		MEAL_SUBSIDY_AMOUNT: 'Meal subsidy amount',
 		// BONUS_AMOUNT: 'bonus amount',
 		SHIP_DATE: 'Ship date',
-		COURSE_NAME: 'Name',
+		COURSE_NAME: 'Employee name',
 		VIHICLE_NUMBER: 'Vihicle number',
 		START_TIME: 'Start time',
 		END_TIME: ' End time',
@@ -415,7 +415,7 @@ export default {
 		TITLE_CREATE_DRIVER: 'Create Driver',
 		TITLE_EMPLOYEE_DETAILS: 'Employee details',
 
-		TITLE_EDIT_DRIVER: 'Driver Edit',
+		TITLE_EDIT_DRIVER: 'Edit Employee',
 
 		TAB_TITLE_BASIC_INFORMATION: 'Basic information',
 		TAB_TITLE_COURSE_INFORMATION: 'Course information',

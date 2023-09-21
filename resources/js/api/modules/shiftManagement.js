@@ -48,6 +48,10 @@ function getDataUpdate(url, data) {
 	return request.getRequest(url, data);
 }
 
+function CheckFinalClosingDate(url, data) {
+	return request.getRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -60,5 +64,6 @@ export {
 	getListMessageResponseAI,
 	editShift,
 	putShift,
-	getDataUpdate
+	getDataUpdate,
+	CheckFinalClosingDate
 };
