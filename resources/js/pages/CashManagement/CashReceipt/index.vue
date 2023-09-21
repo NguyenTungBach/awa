@@ -286,44 +286,7 @@ export default {
 				sortType: null,
 			},
 
-			listCash: [
-				{
-					id: 1,
-					name: '荷主名',
-					balance: '200,000',
-					account_receivable: '300,000',
-					total_account_receivable: '100',
-					monthly_deposit_amount: '150,00',
-					current_month_balance: '110,00',
-				},
-				{
-					id: 2,
-					name: '荷主名',
-					balance: '222,022',
-					account_receivable: '333,00',
-					total_account_receivable: '111,00',
-					monthly_deposit_amount: '222,22',
-					current_month_balance: '123,11',
-				},
-				{
-					id: 3,
-					name: '荷主名',
-					balance: '666,12',
-					account_receivable: '122,22',
-					total_account_receivable: '144,33',
-					monthly_deposit_amount: '155,55',
-					current_month_balance: '123,12',
-				},
-				{
-					id: 4,
-					name: '荷主名',
-					balance: '321,21',
-					account_receivable: '522,12',
-					total_account_receivable: '632,32',
-					monthly_deposit_amount: '123,32',
-					current_month_balance: '155,55',
-				},
-			],
+			listCash: [],
 		};
 	},
 
@@ -356,8 +319,8 @@ export default {
 			this.$router.push({ name: 'ListCashReceiptDetail', params: { id: scopeId }});
 		},
 
-		initData() {
-			this.handleGetCashReciept();
+		async initData() {
+			await this.handleGetCashReciept();
 		},
 
 		async handleGetCashReciept() {

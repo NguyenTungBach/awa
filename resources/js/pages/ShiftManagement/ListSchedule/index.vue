@@ -1038,7 +1038,7 @@ export default {
 <style lang="scss" scoped>
     @import '@/scss/variables';
     .container{
-        max-width: 1500px !important;
+        max-width: 1350px !important;
     }
 
     .page-schedule {

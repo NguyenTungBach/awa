@@ -321,7 +321,7 @@ export default {
 		MEAL_SUBSIDY_AMOUNT: '食事補助金額',
 		// BONUS_AMOUNT: 'ボーナス金額',
 		SHIP_DATE: '運行日',
-		COURSE_NAME: '運行名',
+		COURSE_NAME: '従業員名',
 		VIHICLE_NUMBER: '車両番号',
 		START_TIME: '始業時間',
 		END_TIME: ' 終業時間',
@@ -362,7 +362,7 @@ export default {
 	CREATE_DRIVER: {
 		TITLE_CREATE_DRIVER: '従業員新規登録',
 		TITLE_EMPLOYEE_DETAILS: '従業員詳細',
-		TITLE_EDIT_DRIVER: '従業員詳細',
+		TITLE_EDIT_DRIVER: '従業員編集',
 		TAB_TITLE_BASIC_INFORMATION: '基本情報',
 		TAB_TITLE_COURSE_INFORMATION: 'コース情報',
 		FORM_PATH_BASIC_INFORMATION: '基本情報',

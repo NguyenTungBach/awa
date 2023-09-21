@@ -345,8 +345,10 @@ export default {
 
 		async initData() {
 			this.idCash = this.$route.params.id || null;
+			setLoading(true);
 			await this.handleGetListCashIn();
 			await this.handleGetDetailReciept();
+			setLoading(false);
 		},
 
 		handlePaymentMethod(cashIn) {
@@ -396,7 +398,6 @@ export default {
 		async handleGetDetailReciept() {
 			try {
 				if (this.idCash) {
-					setLoading(true);
 					const PARAMS = {};
 					const YEAR = this.pickerYearMonth.year;
 					const MONTH = this.pickerYearMonth.month;
@@ -415,7 +416,6 @@ export default {
 					} else {
 						TOAST_CASH_MANAGEMENT.warning(response.message_content);
 					}
-					setLoading(false);
 				}
 			} catch (error) {
 				console.log(error);
@@ -424,7 +424,6 @@ export default {
 
 		async handleGetListCashIn() {
 			try {
-				setLoading(true);
 				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_IN}`;
 				const params = {
 					customer_id: this.idCash,
@@ -441,7 +440,6 @@ export default {
 					this.listCashDeital = [];
 					TOAST_CASH_MANAGEMENT.warning(response.message_content);
 				}
-				setLoading(false);
 			} catch (error) {
 				console.log(error);
 			}
