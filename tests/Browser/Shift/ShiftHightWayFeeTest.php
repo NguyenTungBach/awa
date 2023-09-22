@@ -18,8 +18,8 @@ class ShiftHightWayFeeTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(3000);
-            $this->list($browser);
-            $this->exportExcel($browser);
+            $this->listHighWayFee($browser);
+            $this->exportExcelHighWayFee($browser);
         });
     }
 
@@ -38,12 +38,12 @@ class ShiftHightWayFeeTest extends DuskTestCase
 //            ->assertSee('社員区分')->pause(2000);
 //    }
 
-    private function list(Browser $browser)
+    private function listHighWayFee(Browser $browser)
     {
         $browser->click('div:nth-child(1) > div > div > button:nth-child(2)')->pause(6000);
     }
 
-    private function exportExcel($browser)
+    private function exportExcelHighWayFee($browser)
     {
         $browser->waitFor('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(2) > div')->pause(2000);
         $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(2) > div')->pause(10000);

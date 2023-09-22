@@ -105,7 +105,7 @@ abstract class DuskTestCase extends BaseTestCase
             ->waitFor('.toast-body')->assertSee('Login success')
             ->assertSeeIn('.toast-body', 'Login success')
             ->pause(5000)
-            ->waitFor('.zone-table')
+            ->waitFor('.zone-table')->pause(1000)
             ->assertPathIs('/shift-management/list-shift')
             ->waitFor('div.show-menu > ul > li:nth-child(2) > span');
     }
