@@ -19,8 +19,8 @@ class ShiftTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(5000);
-            $this->edit($browser);
-            $this->exportExcel($browser);
+            $this->editShift($browser);
+            $this->exportExcelShift($browser);
         });
     }
 
@@ -31,7 +31,7 @@ class ShiftTest extends DuskTestCase
 //        $browser->click('div:nth-child(2) > div > div.show-icon > i')->pause(6000);
 //    }
 
-    private function edit($browser)
+    private function editShift($browser)
     {
         $browser->waitFor('div:nth-child(2) > div:nth-child(1) > button')->pause(2000);
         $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(4000);
@@ -44,7 +44,7 @@ class ShiftTest extends DuskTestCase
         $browser->waitFor('.zone-table')->pause(4000);
     }
 
-    private function exportExcel($browser)
+    private function exportExcelShift($browser)
     {
         $browser->waitFor('div:nth-child(1) > .btn-excel')->pause(2000);
         $browser->click('div:nth-child(1) > .btn-excel')->pause(10000);

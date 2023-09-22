@@ -18,8 +18,8 @@ class ShiftMealTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(3000);
-            $this->list($browser);
-            $this->exportExcel($browser);
+            $this->listMeal($browser);
+            $this->exportExcelMeal($browser);
         });
     }
 
@@ -38,12 +38,12 @@ class ShiftMealTest extends DuskTestCase
 //            ->assertSee('社員区分')->pause(2000);
 //    }
 
-    private function list(Browser $browser)
+    private function listMeal(Browser $browser)
     {
         $browser->click('div:nth-child(1) > div > div > button:nth-child(3)')->pause(6000);
     }
 
-    private function exportExcel($browser)
+    private function exportExcelMeal($browser)
     {
         $browser->waitFor('div:nth-child(4) > .btn-excel')->pause(2000);
         $browser->click('div:nth-child(4) > .btn-excel')->pause(10000);

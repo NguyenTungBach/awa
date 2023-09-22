@@ -214,7 +214,9 @@ class DriverController extends Controller
                         break;
                 }
             }
-            $data->start_date = Carbon::parse(explode(" ",$data->start_date)[0])->format('Y年m月d日');
+            if ($data->start_date != null){
+                $data->start_date = Carbon::parse(explode(" ",$data->start_date)[0])->format('Y年m月d日');
+            }
             return $this->responseJson(200, new BaseResource($data));
         } catch (\Exception $e) {
             throw $e;
