@@ -890,7 +890,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
     public function getDetalDriverCourse($driver_id,$request){
         // Tìm đến tất cả course của driver theo ngày trong request
-        $driver_courses = $this->model->with("course")
+        $driver_courses = DriverCourse::with("course")
             ->where("driver_id",$driver_id)
             ->where("date",$request->date)->get()->filter(function ($data) {
                 $data->start_time = Carbon::createFromFormat('H:i:s', $data->start_time)->format('H:i');
