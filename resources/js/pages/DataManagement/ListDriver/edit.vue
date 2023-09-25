@@ -651,7 +651,7 @@ export default {
 
 				if (DRIVER.code === 200) {
 					const DATA = DRIVER.data;
-					const convertDate = `${(DATA.start_date).slice(0, 4)}-${(DATA.start_date).slice(5, 7)}-${(DATA.start_date).slice(8, 10)}`;
+					const convertDate = DATA.start_date ? `${(DATA.start_date).slice(0, 4)}-${(DATA.start_date).slice(5, 7)}-${(DATA.start_date).slice(8, 10)}` : '';
 					this.isForm.typeDriver = DATA.type;
 					this.isForm.employeeNumber = DATA.driver_code;
 					this.isForm.fullname = DATA.driver_name;

@@ -361,6 +361,8 @@ export default {
 		UNIT_PRICE: 'Unit Price',
 		WEIGHT: 'weight',
 		NOTE: 'Note:',
+		BUTTON_RETURN: 'Cancel',
+		BUTTON_SAVE: 'Registration',
 	},
 	DETAIL_SCHEDULE: {
 		TITLE_DETAIL_SCHEDULE: 'Service information details',
@@ -510,7 +512,7 @@ export default {
 		TABLE_DELETE: 'Delete',
 	},
 	EDIT_DRIVER: {
-		TITLE_EDIT_DRIVER: 'Edit Driver',
+		TITLE_EDIT_DRIVER: 'Edit Employee',
 		TITLE_EMPLOYEE_DETAILS: 'Employee details',
 
 		TAB_TITLE_BASIC_INFORMATION: 'Basic information',

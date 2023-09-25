@@ -244,7 +244,7 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListCashReceipt' });
+			this.$router.push({ name: 'ListCashReceiptDetail', params: { id: this.isForm.customer_id }});
 		},
 
 		goToDetailCashIn() {

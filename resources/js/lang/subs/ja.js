@@ -310,6 +310,8 @@ export default {
 		UNIT_PRICE: '単価',
 		WEIGHT: '重量',
 		NOTE: 'メモ:',
+		BUTTON_RETURN: 'キャンセル',
+		BUTTON_SAVE: '登録',
 	},
 	DETAIL_SCHEDULE: {
 		TITLE_DETAIL_SCHEDULE: '運行情報詳細',
@@ -439,7 +441,7 @@ export default {
 		TABLE_DELETE: '削除',
 	},
 	EDIT_DRIVER: {
-		TITLE_EDIT_DRIVER: '従業員詳細',
+		TITLE_EDIT_DRIVER: '従業員編集',
 		TITLE_EMPLOYEE_DETAILS: '従業員詳細',
 		TAB_TITLE_BASIC_INFORMATION: '基本情報',
 		TAB_TITLE_COURSE_INFORMATION: 'コース情報',
@@ -622,7 +624,7 @@ export default {
 		TABLE_DELETE: '削除',
 		MESSAGE_DELETE: 'このデータを削除してもよろしいですか？',
 
-		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 登録',
+		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 編集',
 		CASH_DISBURSEMENT_PAYMENT_DAY: '出金日',
 		NOTE_CASH_DISBURSEMENT: '備考',
 	},

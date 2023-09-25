@@ -241,7 +241,7 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListCashDisbursement' });
+			this.$router.push({ name: 'ListCashDisbursementDetail', params: { id: this.isForm.id }});
 		},
 
 		async initData() {

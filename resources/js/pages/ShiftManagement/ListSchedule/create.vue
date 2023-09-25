@@ -24,14 +24,14 @@
                         class="btn-return"
                         @click="onClickReturn()"
                     >
-                        {{ $t('APP.BUTTON_RETURN') }}
+                        {{ $t('CREATE_SCHEDULE.BUTTON_RETURN') }}
                     </b-button>
                     <b-button
                         pill
                         class="btn-save"
                         @click="onClickSave()"
                     >
-                        {{ $t('APP.BUTTON_SAVE') }}
+                        {{ $t('CREATE_SCHEDULE.BUTTON_SAVE') }}
                     </b-button>
                 </div>
                 <div class="body-form">

@@ -924,6 +924,9 @@ export default {
 					sort_by: this.sortTable.sortType,
 				};
 				params = cleanObject(params);
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 				const URL = `/api${CONSTANT.URL_API.POST_EXPORT_COURSE_SCHEDULE}`;
 				await axios.get(URL, {
 					params: params,
@@ -937,7 +940,7 @@ export default {
 					const url = window.URL.createObjectURL(new Blob([response.data]));
 					const link = document.createElement('a');
 					link.href = url;
-					link.setAttribute('download', '運行情報.xlsx');
+					link.setAttribute('download', `運行情報_${YEAR_MONTH}.xlsx`);
 					document.body.appendChild(link);
 					link.click();
 				}).catch((error) => {
@@ -946,6 +949,7 @@ export default {
 				setLoading(false);
 			} catch (error) {
 				setLoading(false);
+				console.log(error);
 			}
 		},
 

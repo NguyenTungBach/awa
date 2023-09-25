@@ -75,7 +75,7 @@
                                     <b-col>
                                         <DetailForm
                                             :label="$t('DETAIL_SCHEDULE.COURSE_NAME')"
-                                            :value="isForm.course_name"
+                                            :value="isForm.driver_name"
                                         />
                                     </b-col>
                                 </b-row>
@@ -298,7 +298,7 @@ export default {
 			isForm: {
 				customer_id: '',
 				ship_date: '',
-				course_name: '',
+				driver_name: '',
 				vehicle_number: '',
 				start_time: '',
 				end_time: '',
@@ -356,7 +356,7 @@ export default {
 						const DATA = customer.data;
 						// const convertDate = `${(DATA.ship_date).slice(0, 4)}-${(DATA.ship_date).slice(5, 7)}-${(DATA.ship_date).slice(8, 10)}`;
 						this.isForm.ship_date = DATA.ship_date;
-						this.isForm.course_name = DATA.course_name;
+						this.isForm.driver_name = DATA.driver_name;
 						this.isForm.vehicle_number = DATA.vehicle_number;
 						this.isForm.customer_name = DATA.customer_name;
 						this.isForm.start_time = DATA.start_date;
