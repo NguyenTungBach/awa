@@ -55,7 +55,7 @@ class CustomerRequest extends FormRequest
             ],
 //            'tax' => 'required|in:1,2',
 //            'customer_name' => ['required','string','max:20','regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/'],
-            'customer_name' => ['required','string','max:20','regex:/^[a-zA-Z0-9\s]+$/'],
+            'customer_name' => ['required','string','max:20','regex:/^[a-zA-Z0-9\sぁ-んァ-ン一-龥]+$/'],
             'closing_date' => [
                 'required',
                 Rule::in(config('customers.closing_date'))
@@ -87,7 +87,7 @@ class CustomerRequest extends FormRequest
             ],
 //            'tax' => 'sometimes|required|in:1,2',
 //            'customer_name' => ['sometimes','required','string','max:20','regex:/^(([a-zA-Z]|\d)+-*)*([a-zA-Z]|\d)$/'],
-            'customer_name' => ['sometimes','required','string','max:20','regex:/^[a-zA-Z0-9\s]+$/'],
+            'customer_name' => ['sometimes','required','string','max:20','regex:/^[a-zA-Z0-9\sぁ-んァ-ン一-龥]+$/'],
             'closing_date' => [
                 'sometimes',
                 'required',

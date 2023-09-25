@@ -101,7 +101,7 @@ class CourseRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^[a-zA-Z0-9\s]+$/'
+                'regex:/^[a-zA-Z0-9\sぁ-んァ-ン一-龥]+$/'
             ],
             'quantity' => 'nullable|numeric|digits_between:1,15',
             'price' => 'nullable|numeric|digits_between:1,15',

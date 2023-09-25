@@ -58,20 +58,21 @@ class DriverCourse extends Model
     }
     public function course(){
         return $this->belongsTo(Course::class,'course_id','id')
-            ->select('id',
-                'customer_id',
-                'course_name',
-                'ship_date',
-                'start_date', 'break_time', 'end_date',
-                'departure_place',
-                'arrival_place',
-                'ship_fee',
-                'associate_company_fee',
-                'expressway_fee',
-                'commission',
-                'meal_fee',
-                'status',
-            );
+            ->select('courses.id as id',
+                'courses.customer_id as customer_id',
+                'customers.customer_name as customer_name',
+                'courses.course_name as course_name',
+                'courses.ship_date as ship_date',
+                'courses.start_date as start_date', 'courses.break_time as break_time', 'courses.end_date as end_date',
+                'courses.departure_place as departure_place',
+                'courses.arrival_place as arrival_place',
+                'courses.ship_fee as ship_fee',
+                'courses.associate_company_fee as associate_company_fee',
+                'courses.expressway_fee as expressway_fee',
+                'courses.commission as commission',
+                'courses.meal_fee as meal_fee',
+                'courses.status as status',
+            )->leftJoin('customers', 'courses.customer_id', '=', 'customers.id');
     }
 
 }

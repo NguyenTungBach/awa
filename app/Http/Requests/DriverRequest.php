@@ -46,7 +46,7 @@ class DriverRequest extends FormRequest
                   return  [
                       "type" => ["required", "in:1,2,3,4"],
                       "driver_code" => ["required", "min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^[0-9]+$/"],
-                      "driver_name" => ['required','string','max:20','regex:/^[a-zA-Z0-9\s]+$/'],
+                      "driver_name" => ['required','string','max:20','regex:/^[a-zA-Z0-9\sぁ-んァ-ン一-龥]+$/'],
                       "car" => "required|numeric|digits_between:1,20",
                       "start_date" => "nullable|date|date_format:Y-m-d",
                       "end_date" => "nullable|date|date_format:Y-m-d|after_or_equal:start_date",
@@ -56,7 +56,7 @@ class DriverRequest extends FormRequest
                     return [
                         "type" => ["required", "in:1,2,3,4"],
                         "driver_code" => ["min:1", "max:15", "unique:drivers,driver_code,null,driver_code,deleted_at,NULL", "regex:/^[0-9]+$/"],
-                        "driver_name" => ['required','string','max:20','regex:/^[a-zA-Z0-9\s]+$/'],
+                        "driver_name" => ['required','string','max:20','regex:/^[a-zA-Z0-9\sぁ-んァ-ン一-龥]+$/'],
                         "car" => "required|numeric|digits_between:1,20",
                         "start_date" => "nullable|date|date_format:Y-m-d",
                         "end_date" => "nullable|date|date_format:Y-m-d|after_or_equal:start_date",
