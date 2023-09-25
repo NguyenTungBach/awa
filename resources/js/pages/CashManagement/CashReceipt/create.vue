@@ -243,7 +243,7 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListCashDisbursement' });
+			this.$router.push({ name: 'ListCashReceiptDetail' });
 		},
 
 		async initData() {
