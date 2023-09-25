@@ -291,7 +291,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                             "course_names_color"=> $checkData['course_names_color']
                         ];
 
-                        $dataByCalendar['course_names_special_and_customer_names'] = $checkData['course_names_special'] == null || $checkData['course_names_special'] == '' ? $checkData['customer_names'] : $checkData['course_names_special'].','.$checkData['customer_names'];
+                        $dataByCalendar['course_names_special_and_customer_names'] = $checkData['course_names_special'] == null || $checkData['course_names_special'] == '' ? rtrim($checkData['customer_names'],',') : rtrim($checkData['course_names_special'].','.$checkData['customer_names'], ',');
                         $dataByCalendar['course_names_special_and_customer_names_array'] = explode(",", $dataByCalendar['course_names_special_and_customer_names']);
 
                         break;
@@ -890,7 +890,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
     public function getDetalDriverCourse($driver_id,$request){
         // Tìm đến tất cả course của driver theo ngày trong request
-        $driver_courses = $this->model->with("course")
+        $driver_courses = DriverCourse::with("course")
             ->where("driver_id",$driver_id)
             ->where("date",$request->date)->get()->filter(function ($data) {
                 $data->start_time = Carbon::createFromFormat('H:i:s', $data->start_time)->format('H:i');
@@ -1685,7 +1685,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
 //        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
 //        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
@@ -1852,7 +1852,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
@@ -2300,7 +2300,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         ])->getAlignment()->setWrapText(true);
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
         $sheet->mergeCells([$colCalendar+1,3,$colCalendar+1,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月額合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
         $sheet->setCellValueExplicitByColumnAndRow($colCalendar+1, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
         $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
@@ -2336,11 +2336,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $colCalendarDriver++;
             }
             //Truyền dữ liệu tổng vào
-            if ($value['total_ship_fee_by_closing_date'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_ship_fee_by_closing_date'] == '' ? '' : number_format($value['total_ship_fee_by_closing_date']),DataType::TYPE_STRING);
-            }
             if ($value['total_ship_fee_by_month'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,$value['total_ship_fee_by_month'] == '' ? '' : number_format($value['total_ship_fee_by_month']),DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_ship_fee_by_month'] == '' ? '' : number_format($value['total_ship_fee_by_month']),DataType::TYPE_STRING);
+            }
+            if ($value['total_ship_fee_by_closing_date'] != ""){
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,$value['total_ship_fee_by_closing_date'] == '' ? '' : number_format($value['total_ship_fee_by_closing_date']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -2364,10 +2364,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             }
             $colCalendarTotal ++;
         }
-        // Cập nhật nốt tổng closing date
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_closing_date'] == '' || $dataForListSales['total_all_data_sales_by_closing_date'] == "0" ? '' : number_format($dataForListSales['total_all_data_sales_by_closing_date']),DataType::TYPE_STRING);
         // Cập nhật nốt tổng month
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_month'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_month']),DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListSales['total_all_data_sales_by_month'] == '' ? '' : number_format($dataForListSales['total_all_data_sales_by_month']),DataType::TYPE_STRING);
+        // Cập nhật nốt tổng closing date
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListSales['total_all_data_sales_by_closing_date'] == '' || $dataForListSales['total_all_data_sales_by_closing_date'] == "0" ? '' : number_format($dataForListSales['total_all_data_sales_by_closing_date']),DataType::TYPE_STRING);
         //Đặt style
         $sheet->getStyle([4,$index,$colCalendarTotal+1,$index])->applyFromArray($styleArrayShiftList)->getAlignment()->setWrapText(true);
 
@@ -2653,7 +2653,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"歩合・食事補助 締日別合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver

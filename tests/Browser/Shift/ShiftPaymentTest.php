@@ -18,9 +18,9 @@ class ShiftPaymentTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(5000);
-            $this->list($browser);
-            $this->finalClosing($browser);
-            $this->exportExcel($browser);
+            $this->listShiftPayment($browser);
+            $this->finalClosingShiftPayment($browser);
+            $this->exportExcelShiftPayment($browser);
         });
     }
 
@@ -39,19 +39,19 @@ class ShiftPaymentTest extends DuskTestCase
 //            ->assertSee('社員区分')->pause(2000);
 //    }
 
-    private function list(Browser $browser)
+    private function listShiftPayment(Browser $browser)
     {
-        $browser->click('div:nth-child(1) > div > div > button:nth-child(4)')->pause(6000);
+        $browser->click('div:nth-child(1) > div > div > button:nth-child(5)')->pause(6000);
     }
 
-    private function finalClosing($browser)
+    private function finalClosingShiftPayment($browser)
     {
         $browser->waitFor('div:nth-child(2) > .btn-temporary')->pause(2000);
         $browser->click('div:nth-child(2) > .btn-temporary')->pause(4000);
         $browser->click('div:nth-child(2) > .btn.btn-final')->pause(4000);
     }
 
-    private function exportExcel($browser)
+    private function exportExcelShiftPayment($browser)
     {
         $browser->waitFor('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(3) > div')->pause(2000);
         $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(3) > div')->pause(10000);

@@ -59,53 +59,53 @@ const DataManagement = {
 			component: () => import(/* webpackChunkName: "Driver Edit" */ '@/pages/DataManagement/ListDriver/edit.vue'),
 		},
 		{
-			path: 'consignor',
-			name: 'LayoutCourse',
+			path: 'customer',
+			name: 'LayoutCustomer',
 			meta: {
 				title: 'ROUTER.LIST_COURSE',
 				roles: ['admin'],
 			},
-			component: () => import(/* webpackChunkName: "Layout Course" */ '@/pages/DataManagement/LayoutCourse/index.vue'),
-			redirect: { name: 'ListCourseIndex' },
+			component: () => import(/* webpackChunkName: "Layout Course" */ '@/pages/DataManagement/LayoutCustomer/index.vue'),
+			redirect: { name: 'ListCustomerIndex' },
 			children: [
 				{
 					path: 'index',
-					name: 'ListCourseIndex',
+					name: 'ListCustomerIndex',
 					meta: {
 						title: 'ROUTER.LIST_COURSE',
 						roles: ['admin'],
 					},
-					component: () => import(/* webpackChunkName: "List Course" */ '@/pages/DataManagement/ListCourse/index.vue'),
+					component: () => import(/* webpackChunkName: "List Course" */ '@/pages/DataManagement/ListCustomer/index.vue'),
 					hidden: true,
 				},
 				{
 					path: 'create',
-					name: 'CourseCreate',
+					name: 'CustomerCreate',
 					meta: {
 						title: 'ROUTER.LIST_COURSE',
 						roles: ['admin'],
 					},
-					component: () => import(/* webpackChunkName: "Course Create" */ '@/pages/DataManagement/ListCourse/create.vue'),
+					component: () => import(/* webpackChunkName: "Course Create" */ '@/pages/DataManagement/ListCustomer/create.vue'),
 					hidden: true,
 				},
 				{
 					path: 'detail/:id',
-					name: 'CourseDetail',
+					name: 'CustomerDetail',
 					meta: {
 						title: 'ROUTER.LIST_COURSE',
 						roles: ['admin'],
 					},
-					component: () => import(/* webpackChunkName: "Course Detail" */ '@/pages/DataManagement/ListCourse/detail.vue'),
+					component: () => import(/* webpackChunkName: "Course Detail" */ '@/pages/DataManagement/ListCustomer/detail.vue'),
 					hidden: true,
 				},
 				{
 					path: 'edit/:id',
-					name: 'CourseEdit',
+					name: 'CustomerEdit',
 					meta: {
 						title: 'ROUTER.LIST_COURSE',
 						roles: ['admin'],
 					},
-					component: () => import(/* webpackChunkName: "Course Edit" */ '@/pages/DataManagement/ListCourse/edit.vue'),
+					component: () => import(/* webpackChunkName: "Course Edit" */ '@/pages/DataManagement/ListCustomer/edit.vue'),
 					hidden: true,
 				},
 

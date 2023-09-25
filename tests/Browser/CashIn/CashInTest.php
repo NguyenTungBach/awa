@@ -31,45 +31,45 @@ class CashInTest extends DuskTestCase
         DB::table('cash_ins')->truncate();
         DB::table('cash_in_histories')->truncate();
         DB::table('cash_in_statisticals')->truncate();
-        // Tạo một customer mới
-        $customer = Customer::create([
-            "customer_code" => "0006",
-            "customer_name" => "Customer 06",
-            "closing_date" => 4,
-            "person_charge" => "Person charge 06",
-            "post_code" => "456-7890",
-            "address" => "Address 06",
-            "phone" => "01212341234",
-        ]);
-
-        // Tạo một course mới cho customer
-        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
-        $course = Course::create([
-            "customer_id"=> $customer->id,
-            "course_name"=> "Course name 6",
-            "ship_date"=> $dayForCourse6,
-            "start_date"=> "09:00",
-            "break_time"=> "00:00",
-            "end_date"=> "10:00",
-            "departure_place"=> "Departure place 06",
-            "arrival_place"=> "Arrival place 0 6",
-            "ship_fee"=> 6000,
-            "associate_company_fee"=> 60,
-            "expressway_fee"=> 60,
-            "commission"=> 60,
-            "meal_fee"=> 60,
-        ]);
-
-        // Tạo driver course
-        DriverCourse::create([
-            "driver_id" => 1,
-            "course_id" => $course->id,
-            "date" => $course->ship_date,
-            "start_time" => $course->start_date,
-            "break_time" => $course->break_time,
-            "end_time" => $course->end_date,
-            "status" => 1,
-        ]);
+//        // Tạo một customer mới
+//        $customer = Customer::create([
+//            "customer_code" => "0006",
+//            "customer_name" => "Customer 06",
+//            "closing_date" => 4,
+//            "person_charge" => "Person charge 06",
+//            "post_code" => "456-7890",
+//            "address" => "Address 06",
+//            "phone" => "01212341234",
+//        ]);
+//
+//        // Tạo một course mới cho customer
+//        $dayForCourse6 = Carbon::now()->addDay()->format("Y-m-d");
+//        $course = Course::create([
+//            "customer_id"=> $customer->id,
+//            "course_name"=> "Course name 6",
+//            "ship_date"=> $dayForCourse6,
+//            "start_date"=> "09:00",
+//            "break_time"=> "00:00",
+//            "end_date"=> "10:00",
+//            "departure_place"=> "Departure place 06",
+//            "arrival_place"=> "Arrival place 0 6",
+//            "ship_fee"=> 6000,
+//            "associate_company_fee"=> 60,
+//            "expressway_fee"=> 60,
+//            "commission"=> 60,
+//            "meal_fee"=> 60,
+//        ]);
+//
+//        // Tạo driver course
+//        DriverCourse::create([
+//            "driver_id" => 1,
+//            "course_id" => $course->id,
+//            "date" => $course->ship_date,
+//            "start_time" => $course->start_date,
+//            "break_time" => $course->break_time,
+//            "end_time" => $course->end_date,
+//            "status" => 1,
+//        ]);
 
         $this->browse(function ($browser) {
             $browser->maximize();
@@ -78,6 +78,8 @@ class CashInTest extends DuskTestCase
             $this->createCashIn($browser);
             $this->editCashIn($browser);
             $this->deleteCashIn($browser);
+            $this->listCashIn($browser);
+            $this->exportCashIn($browser);
         });
     }
 
@@ -91,13 +93,20 @@ class CashInTest extends DuskTestCase
             ->pause(2000);
     }
 
+    private function exportCashIn(Browser $browser)
+    {
+        $browser->waitFor('.page-list-cashCiept')->pause(2000)
+            ->click('.btn-excel')
+            ->pause(8000);
+    }
+
     private function createCashIn($browser){
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
-        $browser->click('tbody > tr:nth-child(6) > td.text-center.td-control > i')->pause(6000);
+        $browser->click('tbody > tr:nth-child(1) > td.text-center.td-control')->pause(6000);
         $browser->click('.btn-edit')->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $getDate = Carbon::now()->format('Y-m-d');
+        $getDate = Carbon::now()->firstOfMonth()->format('Y-m-d');
         $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
         $browser->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
@@ -110,20 +119,7 @@ class CashInTest extends DuskTestCase
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->pause(6000);
-//        $browser->type('#input-fullname','Bach Driver')->pause(1000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-//        $browser->type('#input-character','29E2-12362')->pause(1000);
-//        //Validate
-//        $browser->type('#input-date-hire-date','2023/01-08')->pause(1000);
-//        $getDate = Carbon::now()->format('Y-m-d');
-//        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
-//        $browser->pause(1000);
-//        $browser->type('#input-fullname','Bach Driverzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')->pause(1000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-//        $browser->type('#input-fullname','Bach Driver')->pause(1000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')
-//            ->assertSee('Create driver success')->pause(4000);
+        $browser->pause(8000);
     }
 
     private function editCashIn($browser){

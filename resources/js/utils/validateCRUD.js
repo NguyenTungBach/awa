@@ -65,7 +65,7 @@ function validateDriver(driver, list = ['type', 'driver_code', 'driver_name', 's
 	if (
 		// !driver.driver_code && list.includes('driver_code') ||
 		!driver.driver_name && list.includes('driver_name') ||
-        !driver.start_date && list.includes('start_date') ||
+        // !driver.start_date && list.includes('start_date') ||
         !driver.type && list.includes('type') ||
         !driver.car && list.includes('car')
 	) {

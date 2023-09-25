@@ -19,7 +19,8 @@ class ShiftTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(5000);
-            $this->exportExcel($browser);
+            $this->editShift($browser);
+            $this->exportExcelShift($browser);
         });
     }
 
@@ -30,18 +31,28 @@ class ShiftTest extends DuskTestCase
 //        $browser->click('div:nth-child(2) > div > div.show-icon > i')->pause(6000);
 //    }
 
-    private function exportExcel($browser)
+    private function editShift($browser)
+    {
+        $browser->waitFor('div:nth-child(2) > div:nth-child(1) > button')->pause(2000);
+        $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(4000);
+        $browser->click('#node-1-1-0001')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(1)')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-control > button.btn.btn-save.btn-secondary.rounded-pill')->pause(2000);
+        $browser->click('div.list-shift > div.list-shift__control > div > div > div > .btn-save')->pause(2000);
+        $browser->waitFor('.zone-table')->pause(4000);
+    }
+
+    private function exportExcelShift($browser)
     {
         $browser->waitFor('div:nth-child(1) > .btn-excel')->pause(2000);
         $browser->click('div:nth-child(1) > .btn-excel')->pause(10000);
-        $browser->click('div > div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(1) > div:nth-child(1)')->pause(10000);
-        $browser->click('#input-closing-date')->pause(2000);
-        $browser->click('#input-closing-date > option:nth-child(2)')->pause(2000);
-        $browser->click('div:nth-child(3) > .btn-color-active-import')->pause(2000);
-        $browser->waitFor('div:nth-child(1) > .btn-excel')->pause(2000);
-        $browser->click('div:nth-child(1) > .btn-excel')->pause(10000);
-//        $browser->waitFor('div.show-menu > ul > li:nth-child(2) > span');
-//        $browser->click('div:nth-child(2) > div > div.show-icon > i')->pause(6000);
+//        $browser->click('#input-closing-date')->pause(2000);
+//        $browser->click('#input-closing-date > option:nth-child(2)')->pause(2000);
+//        $browser->click('div:nth-child(3) > .btn-color-active-import')->pause(2000);
+//        $browser->waitFor('div:nth-child(1) > .btn-excel')->pause(2000);
+//        $browser->click('div:nth-child(1) > .btn-excel')->pause(10000);
     }
 
 //    private function loginDriver($browser)

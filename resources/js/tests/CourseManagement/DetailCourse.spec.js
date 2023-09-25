@@ -1,6 +1,6 @@
 import store from '@/store';
 import router from '@/router';
-import CourseDetail from '@/pages/DataManagement/ListCourse/detail';
+import CourseDetail from '@/pages/DataManagement/ListCustomer/detail';
 import { mount, createLocalVue } from '@vue/test-utils';
 
 describe('TEST COMPONENT COURSE DETAIL', () => {

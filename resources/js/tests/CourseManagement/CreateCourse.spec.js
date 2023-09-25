@@ -1,6 +1,6 @@
 import store from '@/store';
 import router from '@/router';
-import CreateCourse from '@/pages/DataManagement/ListCourse/create';
+import CreateCourse from '@/pages/DataManagement/ListCustomer/create';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { validateCourseCode, validString } from '@/utils/validate';
 

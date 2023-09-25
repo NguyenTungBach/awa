@@ -5,7 +5,7 @@ namespace Tests\Browser\Shift;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class ShiftHightWayFeeTest extends DuskTestCase
+class ShiftMealTest extends DuskTestCase
 {
     /**
      * A Dusk test example.
@@ -18,8 +18,8 @@ class ShiftHightWayFeeTest extends DuskTestCase
             $browser->maximize();
             $this->loginAdminGeneral($browser);
             $browser->pause(3000);
-            $this->listHighWayFee($browser);
-            $this->exportExcelHighWayFee($browser);
+            $this->listMeal($browser);
+            $this->exportExcelMeal($browser);
         });
     }
 
@@ -38,14 +38,19 @@ class ShiftHightWayFeeTest extends DuskTestCase
 //            ->assertSee('社員区分')->pause(2000);
 //    }
 
-    private function listHighWayFee(Browser $browser)
+    private function listMeal(Browser $browser)
     {
-        $browser->click('div:nth-child(1) > div > div > button:nth-child(2)')->pause(6000);
+        $browser->click('div:nth-child(1) > div > div > button:nth-child(3)')->pause(6000);
     }
 
-    private function exportExcelHighWayFee($browser)
+    private function exportExcelMeal($browser)
     {
-        $browser->waitFor('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(2) > div')->pause(2000);
-        $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(2) > div')->pause(10000);
+        $browser->waitFor('div:nth-child(4) > .btn-excel')->pause(2000);
+        $browser->click('div:nth-child(4) > .btn-excel')->pause(10000);
+        $browser->click('#select-closing-date')->pause(2000);
+        $browser->click('#input-closing-date > option:nth-child(2)')->pause(2000);
+        $browser->click('div:nth-child(3) > .btn-color-active-import')->pause(2000);
+        $browser->waitFor('div:nth-child(4) > .btn-excel')->pause(2000);
+        $browser->click('div:nth-child(4) > .btn-excel')->pause(10000);
     }
 }

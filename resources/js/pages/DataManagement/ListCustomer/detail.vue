@@ -215,7 +215,7 @@ import { convertValueToText } from '@/utils/handleSelect';
 import { formartPhoneNumber } from '@/utils/formatNumber';
 
 export default {
-	name: 'CourseCreate',
+	name: 'CustomerDetail',
 	components: {
 		LineGray,
 		TitlePathForm,
@@ -307,11 +307,11 @@ export default {
 		},
 
 		onClickReturn() {
-			this.$router.push({ name: 'ListCourseIndex' });
+			this.$router.push({ name: 'ListCustomerIndex' });
 		},
 
 		onClickEdit() {
-			this.$router.push({ name: 'CourseEdit', params: { id: this.idCourse }});
+			this.$router.push({ name: 'CustomerEdit', params: { id: this.idCourse }});
 		},
 
 		// formatFlagAndPot(flag, pot) {

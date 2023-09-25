@@ -1,6 +1,6 @@
 import store from '@/store';
 import router from '@/router';
-import ListCourse from '@/pages/DataManagement/ListCourse/index';
+import ListCourse from '@/pages/DataManagement/ListCustomer/index';
 import { mount, createLocalVue } from '@vue/test-utils';
 
 describe('TEST COMPONENT LIST COURSE', () => {

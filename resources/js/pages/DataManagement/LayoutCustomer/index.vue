@@ -4,7 +4,7 @@
 
 <script>
 export default {
-	name: 'LayoutCourse',
+	name: 'LayoutCustomer',
 	computed: {
 		key() {
 			return this.$route.fullPath;
