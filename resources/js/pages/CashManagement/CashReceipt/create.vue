@@ -243,7 +243,7 @@ export default {
 
 	methods: {
 		onClickReturn() {
-			this.$router.push({ name: 'ListCashReceiptDetail' });
+			this.$router.push({ name: 'ListCashReceiptDetail', params: { id: this.isForm.id }});
 		},
 
 		async initData() {

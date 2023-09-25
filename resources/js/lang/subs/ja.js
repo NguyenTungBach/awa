@@ -624,7 +624,7 @@ export default {
 		TABLE_DELETE: '削除',
 		MESSAGE_DELETE: 'このデータを削除してもよろしいですか？',
 
-		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 登録',
+		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 編集',
 		CASH_DISBURSEMENT_PAYMENT_DAY: '出金日',
 		NOTE_CASH_DISBURSEMENT: '備考',
 	},

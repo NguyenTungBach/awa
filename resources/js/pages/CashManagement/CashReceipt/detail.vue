@@ -352,7 +352,7 @@ export default {
 		},
 
 		handlePaymentMethod(cashIn) {
-			return cashIn === 1 ? '銀行振込' : '振込';
+			return cashIn === 1 ? '銀行振込' : '手形';
 		},
 
 		onClickReturn() {
