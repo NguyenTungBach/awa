@@ -23,7 +23,7 @@
                                     class="btn-return"
                                     @click="onClickReturn()"
                                 >
-                                    {{ $t('APP.BUTTON_RETURN') }}
+                                    {{ $t('APP.BUTTON_BACK') }}
                                 </b-button>
                                 <b-button
                                     pill
