@@ -79,8 +79,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         // Truy vấn tất cả cash in statics theo customer
         $cashInsByCustomers = [];
         foreach ($customers as $customer){
-            $closing_dateStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
-            $closing_dateEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+//            $closing_dateStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
+//            $closing_dateEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+
+            $closing_dateStart = Carbon::parse($request->month_year)->firstOfMonth()->format('Y-m-d');
+            $closing_dateEnd = Carbon::parse($request->month_year)->lastOfMonth()->format('Y-m-d');
 
             $cashIn = CashIn::select(
                 'cash_ins.customer_id',
