@@ -506,8 +506,8 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 //        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
 //        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
 
-        $closing_dateStart = Carbon::createFromFormat('Y-m', $date)->startOfMonth();
-        $closing_dateEnd = Carbon::createFromFormat('Y-m', $date)->endOfMonth();
+        $closing_dateStart = Carbon::parse($date)->startOfMonth();
+        $closing_dateEnd = Carbon::parse($date)->endOfMonth();
 
         // Vì đang theo date nên cần lấy ra closing_date cho tháng này
         $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
