@@ -427,8 +427,9 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 //                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
 //                                break;
 //                        }
-                        $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
-                        $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
+                        $updateStartDateByClosingDate = Carbon::parse($cashInStaticalUpdate->month_line)->firstOfMonth()->format('Y-m-d');
+                        $updateEndDateByClosingDate = Carbon::parse($cashInStaticalUpdate->month_line)->lastOfMonth()->format('Y-m-d');
+
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
                         $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
@@ -506,11 +507,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 //        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
 //        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
 
-        $closing_dateStart = Carbon::parse($date)->startOfMonth();
-        $closing_dateEnd = Carbon::parse($date)->endOfMonth();
+        $closing_dateStart = Carbon::parse($date)->firstOfMonth()->format('Y-m-d');
+        $closing_dateEnd = Carbon::parse($date)->lastOfMonth()->format('Y-m-d');
 
         // Vì đang theo date nên cần lấy ra closing_date cho tháng này
-        $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
+//        $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
+        $checkMonthForThisDate = Carbon::parse($date)->format('Y-m');
 
         $driverCourse = DriverCourse::
         select(
@@ -631,8 +633,9 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 //                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
 //                                break;
 //                        }
-                        $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
-                        $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
+                        $updateStartDateByClosingDate = Carbon::parse($cashInStaticalUpdate->month_line)->firstOfMonth()->format('Y-m-d');
+                        $updateEndDateByClosingDate = Carbon::parse($cashInStaticalUpdate->month_line)->lastOfMonth()->format('Y-m-d');
+
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
                         $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
