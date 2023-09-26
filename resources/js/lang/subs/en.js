@@ -120,6 +120,7 @@ export default {
 		BUTTON_SIGN_UP: 'Sign up',
 		BUTTON_BULK_DELETE: 'Bulk delete',
 		BUTTON_RETURN: 'Return',
+		BUTTON_BACK: 'Back',
 		BUTTON_EDIT: 'Edit',
 		BUTTON_CREATE: 'Create',
 		BUTTON_SAVE: 'Save',
@@ -676,7 +677,8 @@ export default {
 		TABLE_MONTHLY_DEPOSIT_AMOUNT: 'Monthly deposit amount',
 		TABLE_CURRENT_MONTH_BALANCE: 'current month balance',
 		TABLE_DETAIL: 'Detail',
-		BUTTON_RETURN: 'Return',
+		BUTTON_RETURN: 'Cancle',
+		BUTTON_SAVE: 'Register',
 		BUTTON_KEEP: 'Keep',
 
 		TITLE_CASH_DETAIL: 'Deposit Information Details',

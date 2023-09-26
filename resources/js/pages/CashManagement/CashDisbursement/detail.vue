@@ -24,7 +24,7 @@
                                         class="btn-return"
                                         @click="onClickReturn()"
                                     >
-                                        {{ $t('APP.BUTTON_RETURN') }}
+                                        {{ $t('APP.BUTTON_BACK') }}
                                     </b-button>
                                     <b-button
                                         pill
@@ -305,24 +305,7 @@ export default {
 			totalCashOut: '',
 			scopeID: '',
 
-			listCashDeital: [
-				{
-					no: 1,
-					id: 1,
-					date: '22/1/2019',
-					deposit_amount: '122,33',
-					payment_method: '233,22',
-					remarks: '331,31',
-				},
-				{
-					no: 2,
-					id: 2,
-					date: '15/3/2020',
-					deposit_amount: '155,33',
-					payment_method: '144,22',
-					remarks: '331,31',
-				},
-			],
+			listCashDeital: [],
 		};
 	},
 
@@ -424,6 +407,10 @@ export default {
 			try {
 				const URL = `${CONSTANT.URL_API.GET_LIST_CASH_OUT}/${this.idCash}/cash-out`;
 				const params = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				params.filter_month = YEAR_MONTH;
 				const response = await getListCashOut(URL, params);
 				if (response.code === 200) {
 					this.listCashDeital = response.data.data_list_cash_out.list_cash_out;

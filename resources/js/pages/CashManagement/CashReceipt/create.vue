@@ -24,14 +24,14 @@
                                         class="btn-return"
                                         @click="onClickReturn()"
                                     >
-                                        {{ $t('APP.BUTTON_RETURN') }}
+                                        {{ $t('LIST_CASH.BUTTON_RETURN') }}
                                     </b-button>
                                     <b-button
                                         pill
                                         class="btn-color-active btn-save"
                                         @click="handleOnClickSave()"
                                     >
-                                        {{ $t('APP.BUTTON_SAVE') }}
+                                        {{ $t('LIST_CASH.BUTTON_SAVE') }}
                                     </b-button>
                                 </div>
                             </b-col>

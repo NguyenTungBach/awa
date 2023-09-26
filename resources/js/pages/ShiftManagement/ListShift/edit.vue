@@ -33,7 +33,7 @@
                                 class="btn-return"
                                 @click="goToListShift()"
                             >
-                                {{ $t("LIST_SHIFT.BUTTON_RETURN") }}
+                                {{ $t("APP.TEXT_CANCEL") }}
                             </b-button>
                             <b-button
                                 pill

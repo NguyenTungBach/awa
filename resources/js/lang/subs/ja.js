@@ -87,6 +87,7 @@ export default {
 		BUTTON_SIGN_UP: '新規登録',
 		BUTTON_BULK_DELETE: '一括削除',
 		BUTTON_RETURN: '戻る',
+		BUTTON_BACK: '戻る',
 		BUTTON_EDIT: '編集',
 		BUTTON_SAVE: '保存',
 		BUTTON_CREATE: '作成',
@@ -311,7 +312,7 @@ export default {
 		WEIGHT: '重量',
 		NOTE: 'メモ:',
 		BUTTON_RETURN: 'キャンセル',
-		BUTTON_SAVE: '登録',
+		BUTTON_SAVE: '保存',
 	},
 	DETAIL_SCHEDULE: {
 		TITLE_DETAIL_SCHEDULE: '運行情報詳細',
@@ -585,7 +586,8 @@ export default {
 		TABLE_MONTHLY_DEPOSIT_AMOUNT: '当月入金金額',
 		TABLE_CURRENT_MONTH_BALANCE: '当月残高',
 		TABLE_DETAIL: '詳細',
-		BUTTON_RETURN: '戻る',
+		BUTTON_RETURN: 'キャンセル ',
+		BUTTON_SAVE: '登録',
 		BUTTON_KEEP: '保存',
 
 		TITLE_CASH_DETAIL: '入金情報 詳細',
@@ -600,6 +602,7 @@ export default {
 		TABLE_TOTAL: '当月入金金額合計',
 
 		TITLE_CASH_CREATE: '入金情報 登録',
+		TITLE_CASH_EDIT: '入金情報 編集',
 		PAYMENT_DAY: '入金日',
 
 		TITLE_LIST_CASH_DISBURSEMENT: '出金情報 一覧',
@@ -624,7 +627,7 @@ export default {
 		TABLE_DELETE: '削除',
 		MESSAGE_DELETE: 'このデータを削除してもよろしいですか？',
 
-		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 編集',
+		TITLE_CASH_DISBURSEMENT_CREATE: '出金情報 登録',
 		CASH_DISBURSEMENT_PAYMENT_DAY: '出金日',
 		NOTE_CASH_DISBURSEMENT: '備考',
 	},

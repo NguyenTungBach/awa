@@ -42,7 +42,7 @@
                                         class="btn-return"
                                         @click="onClickReturn()"
                                     >
-                                        {{ $t('APP.BUTTON_RETURN') }}
+                                        {{ $t('APP.TEXT_CANCEL') }}
                                     </b-button>
                                     <b-button
                                         pill
@@ -136,8 +136,7 @@
                                                         <b-form-input
                                                             id="input-empolyee-number"
                                                             v-model="isForm.employeeNumber"
-                                                            type="text"
-                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                            type="number"
                                                             @keydown.native="validInputNumber"
                                                         />
                                                     </b-col>
@@ -170,9 +169,6 @@
                                                     >
                                                         <label for="input-date-hire-date">
                                                             {{ $t('CREATE_DRIVER.HIRE_DATE') }}
-                                                            <!-- <span class="text-danger">
-                                                                *
-                                                            </span> -->
                                                         </label>
                                                         <b-input-group class="mb-3">
                                                             <b-form-input
@@ -322,7 +318,6 @@
                                                         <b-form-input
                                                             id="input-character"
                                                             v-model="isForm.character"
-                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                                         />
                                                     </b-col>
                                                 </b-row>
@@ -603,9 +598,6 @@ export default {
 				start_date: this.isForm.hireDate,
 				car: this.isForm.character,
 				end_date: this.isForm.retirementDate,
-				// birth_day: this.isForm.dateOfBirth,
-				// working_day: this.isForm.availableDays,
-				// day_of_week: this.handleDayOfWeek(seletedDateInWeek),
 				note: this.isForm.notes,
 			};
 
