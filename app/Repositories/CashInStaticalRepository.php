@@ -303,8 +303,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         /*
          * Truy vấn tổng số tiền driver_code của customer có trong tháng này theo closing_date
          * */
-        $closing_dateStart = $this->getClosingDateByMonthStart($customer->closing_date,$month_year);
-        $closing_dateEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$month_year);
+//        $closing_dateStart = $this->getClosingDateByMonthStart($customer->closing_date,$month_year);
+//        $closing_dateEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$month_year);
+
+        $closing_dateStart = Carbon::parse($month_year)->firstOfMonth()->format('Y-m-d');
+        $closing_dateEnd = Carbon::parse($month_year)->lastOfMonth()->format('Y-m-d');
 
         $driverCourse = DriverCourse::
         select(
@@ -404,26 +407,28 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     foreach ($checkCashInStaticalUpdates as $cashInStaticalUpdate){
                         // 1. Truy vấn tổng số tiền trong theo từng tháng theo closing date
                         // 1.1 Lấy ra khoảng thời gian theo closing_date
-                        $updateStartDateByClosingDate = "";
-                        $updateEndDateByClosingDate = "";
-                        switch ($customer->closing_date){
-                            case 1:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."16";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."15";
-                                break;
-                            case 2:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."21";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."20";
-                                break;
-                            case 3:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."26";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."25";
-                                break;
-                            case 4:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
-                                break;
-                        }
+//                        $updateStartDateByClosingDate = "";
+//                        $updateEndDateByClosingDate = "";
+//                        switch ($customer->closing_date){
+//                            case 1:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."16";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."15";
+//                                break;
+//                            case 2:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."21";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."20";
+//                                break;
+//                            case 3:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."26";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."25";
+//                                break;
+//                            case 4:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
+//                                break;
+//                        }
+                        $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
+                        $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
                         $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
@@ -498,8 +503,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         /*
          * Truy vấn tổng số tiền driver_code của customer có trong tháng này theo closing_date
          * */
-        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
-        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
+//        $closing_dateStart = $this->getClosing_dateStart($customer->closing_date,$date);
+//        $closing_dateEnd = $this->getClosing_dateEnd($customer->closing_date,$date);
+
+        $closing_dateStart = Carbon::createFromFormat('Y-m', $date)->startOfMonth();
+        $closing_dateEnd = Carbon::createFromFormat('Y-m', $date)->endOfMonth();
+
         // Vì đang theo date nên cần lấy ra closing_date cho tháng này
         $checkMonthForThisDate = $this->checkClosing_dateForCashInStatical($customer->closing_date,$date);
 
@@ -602,26 +611,28 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     foreach ($checkCashInStaticalUpdates as $cashInStaticalUpdate){
                         // 1. Truy vấn tổng số tiền trong theo từng tháng theo closing date
                         // 1.1 Lấy ra khoảng thời gian theo closing_date
-                        $updateStartDateByClosingDate = "";
-                        $updateEndDateByClosingDate = "";
-                        switch ($customer->closing_date){
-                            case 1:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."16";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."15";
-                                break;
-                            case 2:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."21";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."20";
-                                break;
-                            case 3:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."26";
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."25";
-                                break;
-                            case 4:
-                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
-                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
-                                break;
-                        }
+//                        $updateStartDateByClosingDate = "";
+//                        $updateEndDateByClosingDate = "";
+//                        switch ($customer->closing_date){
+//                            case 1:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."16";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."15";
+//                                break;
+//                            case 2:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."21";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."20";
+//                                break;
+//                            case 3:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->subMonth()->format("Y-m")."26";
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->format("Y-m")."25";
+//                                break;
+//                            case 4:
+//                                $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
+//                                $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
+//                                break;
+//                        }
+                        $updateStartDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->startOfMonth();
+                        $updateEndDateByClosingDate = Carbon::createFromFormat('Y-m', $cashInStaticalUpdate->month_line)->endOfMonth();
                         // 1.2 truy vấn tổng số tiền cần nhận trong tháng cần update lại theo closing date
                         $update_receivable_this_month = 0;
                         $updateByDriverCourseTotal = DriverCourse::
