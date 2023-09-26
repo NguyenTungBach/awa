@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser\SomeThing;
+namespace Tests\Browser\St;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -186,7 +186,7 @@ class SystemNewTest extends DuskTestCase
         $browser->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-character','29E2-12362')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         //Validate
         $browser->type('#input-date-hire-date','2023/01-08')->pause(1000);
         $getDate = Carbon::now()->format('Y-m-d');
@@ -195,8 +195,6 @@ class SystemNewTest extends DuskTestCase
         $browser->type('#input-fullname','New Driverzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-fullname','New Driver')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-character','12362')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000)
             ->waitFor('.zone-table')
 //            ->assertSee('Create driver success')

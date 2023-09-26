@@ -52,8 +52,11 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
     public function listCashIn($request){
         $customer = Customer::find($request->customer_id);
 
-        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
-        $getClosingDateByMonthEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+//        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
+//        $getClosingDateByMonthEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+
+        $getClosingDateByMonthStart = Carbon::parse($request->month_year)->firstOfMonth()->format('Y-m-d');
+        $getClosingDateByMonthEnd = Carbon::parse($request->month_year)->lastOfMonth()->format('Y-m-d');
 
         // Lấy ra danh sách Cash In của customer trong tháng
         $listCashIn = $this->model->query()
