@@ -23,8 +23,8 @@
                 @foreach ($calendar as $item)
                     <th style="{{ $styleRow }}">{{ date('j', strtotime($item['date'])).'('.$item['week'].')' }}</th>
                 @endforeach
-                {{-- 月額合計 --}}
-                <th style="{{ $styleColumnLast }} width: 120px" rowspan="2">月額合計</th>
+                {{-- 月別合計 --}}
+                <th style="{{ $styleColumnLast }} width: 120px" rowspan="2">月別合計</th>
             </tr>
             <tr>
                 <th style="{{ $styleRow }}">協力会社ID</th>
