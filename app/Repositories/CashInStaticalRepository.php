@@ -110,6 +110,16 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         // Nhóm tất cả dữ liệu theo mỗi tổng tiền cashIn theo customer
         $dataResults = [];
+        // Kiểm tra xem có temporary tháng trước để cho xem tháng này
+        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
+        $checkCashInStaticalMonthPrev = CashInStatical::where("month_line",$monthPrev)->first();
+        $checkTemporary = false;
+        // Kiểm tra xem tháng trước có không, nếu
+        if ($checkCashInStaticalMonthPrev != null){
+            if($checkCashInStaticalMonthPrev->status == 2){
+                $checkTemporary = true;
+            }
+        }
         foreach ($cashInsByCustomers as $cashInsByCustomer){
             // nhóm dữ liệu từ danh sách cashInStatic theo month_year
             foreach ($cashInStatics as $cashInStatic){
@@ -119,7 +129,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         'customer_code' => $cashInsByCustomer['customer_code'] ,
                         'customer_name' => $cashInsByCustomer['customer_name'] ,
                         'month_line' => $cashInStatic->month_line,
-                        'balance_previous_month' => $cashInStatic->balance_previous_month, // Tiền nợ tháng trước
+                        'balance_previous_month' => $checkTemporary ? $cashInStatic->balance_previous_month : 0, // Tiền nợ tháng trước
                         'receivable_this_month' => $cashInStatic->receivable_this_month, // Tiền sẽ nhận tháng này
                         'total_account_receivable' => $cashInStatic->total_account_receivable, // Tổng tiền phải nhận tháng này
                         'total_cash_in_of_current_month' => $cashInsByCustomer['total_cash_in'], // Tiền trả tháng này
@@ -302,6 +312,18 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         $cashInStatical->total_cash_in = $totalCashIn->total_cash_in ?? 0;
 
+        // Kiểm tra xem có temporary tháng trước để cho xem tháng này
+        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
+        $checkCashInStaticalMonthPrev = CashInStatical::where("month_line",$monthPrev)->first();
+        $checkTemporary = false;
+        // Kiểm tra xem tháng trước có không, nếu
+        if ($checkCashInStaticalMonthPrev != null){
+            if($checkCashInStaticalMonthPrev->status == 2){
+                $checkTemporary = true;
+            }
+        }
+        $cashInStatical->balance_previous_month = $checkTemporary ? $cashInStatical->balance_previous_month : "0";
+
         return $this->responseJson(200, new BaseResource($cashInStatical));
     }
 
@@ -360,7 +382,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 "month_line" => $month_year,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
+                "total_cash_in_current" => 0 - ($receivable_this_month - $totalCashIn),
                 "status" => 1,
             ]);
 
@@ -392,7 +414,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     "month_line" => $month_year,
                     "balance_previous_month" => $balance_previous_month, // tiền nhận tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền tổng tiền phải nhận tháng này
-                    "total_cash_in_current" => $balance_previous_month + $receivable_this_month - $totalCashIn,
+                    "total_cash_in_current" => $balance_previous_month - ($receivable_this_month - $totalCashIn),
                     "status" => 1,
                 ]);
             } else{
@@ -401,7 +423,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 $cashInThisDate->update([
                     'balance_previous_month' => $balance_previous_month, // tiền tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                    'total_cash_in_current' => $balance_previous_month + $receivable_this_month - $totalCashIn,
+                    'total_cash_in_current' => $balance_previous_month - ($receivable_this_month - $totalCashIn),
                 ]);
                 // Kiểm tra xem có tháng các tháng còn lại không để cập nhật
                 $checkCashInStaticalUpdates = CashInStatical::
@@ -472,7 +494,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
                             "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
+                            'total_cash_in_current' => $update_balance_previous_month - ($update_receivable_this_month - $update_by_total_cash_in),
                         ]);
                     }
                 }
@@ -564,7 +586,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 "month_line" => $checkMonthForThisDate,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
+                "total_cash_in_current" => 0 - ($receivable_this_month - $totalCashIn),
                 "status" => 1,
             ]);
 
@@ -598,7 +620,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     "month_line" => $checkMonthForThisDate,
                     "balance_previous_month" => $balance_previous_month, // tiền nhận tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền tổng tiền phải nhận tháng này
-                    "total_cash_in_current" => $balance_previous_month + $receivable_this_month - $totalCashIn,
+                    "total_cash_in_current" => $balance_previous_month - ($receivable_this_month - $totalCashIn),
                     "status" => 1,
                 ]);
             } else{
@@ -607,7 +629,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 $cashInThisDate->update([
                     'balance_previous_month' => $balance_previous_month, // tiền tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                    'total_cash_in_current' => $balance_previous_month + $receivable_this_month - $totalCashIn,
+                    'total_cash_in_current' => $balance_previous_month - ($receivable_this_month - $totalCashIn),
                 ]);
                 // Kiểm tra xem có tháng các tháng còn lại không để cập nhật
                 $checkCashInStaticalUpdates = CashInStatical::
@@ -678,7 +700,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
                             "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
+                            'total_cash_in_current' => $update_balance_previous_month - ($update_receivable_this_month - $update_by_total_cash_in),
                         ]);
                     }
                 }
