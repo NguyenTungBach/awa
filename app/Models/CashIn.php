@@ -22,6 +22,7 @@ class CashIn extends Model
         "cash_in",
         "payment_method",
         "payment_date",
+        "note",
         "status",
         "created_at",
         "updated_at",
