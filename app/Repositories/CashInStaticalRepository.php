@@ -51,15 +51,23 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             where("customer_id",$customer->id)
             ->where("month_line",$request->month_year)->first();
             // Trường hợp nếu chưa có thì tạo CashInStatical
-            if ($cashInStatic == null){
-                try {
-                    DB::beginTransaction();
-                    $this->saveCashInStaticMonth($customer->id,$request->month_year);
-                    DB::commit();
-                } catch (\Exception $exception){
-                    DB::rollBack();
-                    return $exception;
-                }
+//            if ($cashInStatic == null){
+//                try {
+//                    DB::beginTransaction();
+//                    $this->saveCashInStaticMonth($customer->id,$request->month_year);
+//                    DB::commit();
+//                } catch (\Exception $exception){
+//                    DB::rollBack();
+//                    return $exception;
+//                }
+//            }
+            try {
+                DB::beginTransaction();
+                $this->saveCashInStaticMonth($customer->id,$request->month_year);
+                DB::commit();
+            } catch (\Exception $exception){
+                DB::rollBack();
+                return $exception;
             }
         }
         // Sau khi kiểm tra đủ cashInStatic mới truy vấn
