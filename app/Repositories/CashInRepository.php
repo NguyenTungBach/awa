@@ -151,6 +151,7 @@ class CashInRepository extends BaseRepository implements CashInRepositoryInterfa
                 "cash_in" => $attributes["cash_in"],
                 "payment_method" => $attributes["payment_method"],
                 "payment_date" => $attributes["payment_date"],
+                "note" => $attributes["note"],
                 "status" => 1,
             ]);
             $this->cashInStaticalRepository->saveCashInStatic($attributes["customer_id"],$attributes['payment_date']);
