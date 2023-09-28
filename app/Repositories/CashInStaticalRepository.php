@@ -382,7 +382,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 "month_line" => $month_year,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => 0 - ($receivable_this_month - $totalCashIn),
+                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
                 "status" => 1,
             ]);
 
@@ -414,7 +414,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     "month_line" => $month_year,
                     "balance_previous_month" => $balance_previous_month, // tiền nhận tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền tổng tiền phải nhận tháng này
-                    "total_cash_in_current" => $balance_previous_month - ($receivable_this_month - $totalCashIn),
+                    "total_cash_in_current" => $balance_previous_month + $receivable_this_month - $totalCashIn,
                     "status" => 1,
                 ]);
             } else{
@@ -423,7 +423,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 $cashInThisDate->update([
                     'balance_previous_month' => $balance_previous_month, // tiền tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                    'total_cash_in_current' => $balance_previous_month - ($receivable_this_month - $totalCashIn),
+                    'total_cash_in_current' => $balance_previous_month + $receivable_this_month - $totalCashIn,
                 ]);
                 // Kiểm tra xem có tháng các tháng còn lại không để cập nhật
                 $checkCashInStaticalUpdates = CashInStatical::
@@ -494,7 +494,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
                             "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month - ($update_receivable_this_month - $update_by_total_cash_in),
+                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
                         ]);
                     }
                 }
@@ -586,7 +586,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 "month_line" => $checkMonthForThisDate,
                 "balance_previous_month" => 0, // tiền nhận tháng trước
                 "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                "total_cash_in_current" => 0 - ($receivable_this_month - $totalCashIn),
+                "total_cash_in_current" => $receivable_this_month - $totalCashIn,
                 "status" => 1,
             ]);
 
@@ -620,7 +620,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                     "month_line" => $checkMonthForThisDate,
                     "balance_previous_month" => $balance_previous_month, // tiền nhận tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền tổng tiền phải nhận tháng này
-                    "total_cash_in_current" => $balance_previous_month - ($receivable_this_month - $totalCashIn),
+                    "total_cash_in_current" => $balance_previous_month + $receivable_this_month - $totalCashIn,
                     "status" => 1,
                 ]);
             } else{
@@ -629,7 +629,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 $cashInThisDate->update([
                     'balance_previous_month' => $balance_previous_month, // tiền tháng trước
                     "receivable_this_month" => $receivable_this_month, // tiền phải nhận tháng này
-                    'total_cash_in_current' => $balance_previous_month - ($receivable_this_month - $totalCashIn),
+                    'total_cash_in_current' => $balance_previous_month + $receivable_this_month - $totalCashIn,
                 ]);
                 // Kiểm tra xem có tháng các tháng còn lại không để cập nhật
                 $checkCashInStaticalUpdates = CashInStatical::
@@ -700,7 +700,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         $cashInStaticalUpdate->update([
                             'balance_previous_month' => $update_balance_previous_month, // tiền tháng trước
                             "receivable_this_month" => $update_receivable_this_month, // tiền phải nhận tháng này
-                            'total_cash_in_current' => $update_balance_previous_month - ($update_receivable_this_month - $update_by_total_cash_in),
+                            'total_cash_in_current' => $update_balance_previous_month + $update_receivable_this_month - $update_by_total_cash_in,
                         ]);
                     }
                 }
