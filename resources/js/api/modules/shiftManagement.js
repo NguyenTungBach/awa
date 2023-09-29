@@ -52,6 +52,10 @@ function CheckFinalClosingDate(url, data) {
 	return request.getRequest(url, data);
 }
 
+function CheckTemporory(url, data) {
+	return request.postRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -65,5 +69,6 @@ export {
 	editShift,
 	putShift,
 	getDataUpdate,
-	CheckFinalClosingDate
+	CheckFinalClosingDate,
+	CheckTemporory
 };
