@@ -2956,7 +2956,7 @@ export default {
 					align-items: center;
 
 					.title-page {
-						font-size: 25px;
+						font-size: 22px;
 					}
 				}
 
@@ -3078,6 +3078,9 @@ export default {
 			.button-text-left {
 				width: 220px;
 				height: 52px;
+				span {
+					font-size: 11px;
+				}
 			}
 			.btn-temporary {
 				padding: 10px;
