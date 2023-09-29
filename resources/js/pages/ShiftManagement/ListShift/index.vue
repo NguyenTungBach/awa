@@ -762,7 +762,7 @@
                                     </b-td>
 
                                     <b-td v-for="(value, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center total_sale_list">
-                                        {{ value.total_all_ship_fee_by_date }}
+                                        {{ Number(value.total_all_ship_fee_by_date) }}
                                     </b-td>
                                     <b-td class="td-total-month total_sale_list">
                                         {{ total_all_data_sale_by_month }}
@@ -1060,7 +1060,7 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-shift">
-                                            {{ emp.total_courses_expressway_fee }}
+                                            {{ Number(emp.total_courses_expressway_fee) }}
                                         </b-td>
                                     </tr>
                                 </template>
@@ -1203,10 +1203,10 @@
                                     </b-td> -->
 
                                     <b-td v-for="(value, idx) in total_payment" :key="`total-${idx}`" class="text-center total_payment">
-                                        {{ value.pay }}
+                                        {{ Number(value.pay) }}
                                     </b-td>
                                     <b-td class="td-total-month total_payment">
-                                        {{ total_payment_of_month }}
+                                        {{ Number(total_payment_of_month) }}
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
@@ -1989,8 +1989,8 @@ export default {
 				if (code === 200) {
 					this.listSaleAmount = data.data;
 					this.listToatalSaleByDate = data.total_all_sales_by_date;
-					this.total_all_sale_by_closing_date = data.total_all_data_sales_by_closing_date;
-					this.total_all_data_sale_by_month = data.total_all_data_sales_by_month;
+					this.total_all_sale_by_closing_date = Number(data.total_all_data_sales_by_closing_date);
+					this.total_all_data_sale_by_month = Number(data.total_all_data_sales_by_month);
 					this.reloadTable();
 				}
 				setLoading(false);
