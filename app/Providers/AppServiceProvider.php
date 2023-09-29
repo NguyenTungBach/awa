@@ -18,6 +18,7 @@ use App\Repositories\Contracts\CashInHistoryRepositoryInterface;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use App\Repositories\Contracts\CashOutStatisticalRepositoryInterface;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
+use App\Repositories\Contracts\TemporaryClosingHistoriesRepositoryInterface;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use Repository\BaseRepository;
@@ -36,6 +37,7 @@ use Repository\CashInHistoryRepository;
 use Repository\CashInStaticalRepository;
 use Repository\CashOutStatisticalRepository;
 use Repository\PaymentRepository;
+use Repository\TemporaryClosingHistoriesRepository;
 
 class  AppServiceProvider extends ServiceProvider
 {
@@ -61,6 +63,7 @@ class  AppServiceProvider extends ServiceProvider
         $this->app->bind(CashInStaticalRepositoryInterface::class, CashInStaticalRepository::class);
         $this->app->bind(CashOutStatisticalRepositoryInterface::class, CashOutStatisticalRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
+        $this->app->bind(TemporaryClosingHistoriesRepositoryInterface::class, TemporaryClosingHistoriesRepository::class);
 
         //Customer
         if ($this->app->environment('local', 'testing')) {
