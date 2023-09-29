@@ -79,6 +79,7 @@ const POST_CLOSING_DATE = '/final-closing';
 const GET_DETAIL_SHIFT = '/driver-course';
 const UPDATE_SHIFT = '/driver-course/update-course';
 const GET_MESSAGE_RESPONSE_AI = '/shift/get-message-response-ai';
+const POST_TEMPORORY = '/temporary-closing';
 
 // Cash Disbusement
 const GET_LIST_CASH_DISBUSEMENT = '/driver-cash-out-statistical';
@@ -179,6 +180,7 @@ export default {
 	GET_DETAIL_SHIFT,
 	GET_MESSAGE_RESPONSE_AI,
 	POST_CLOSING_DATE,
+	POST_TEMPORORY,
 
 	// Cash Disbusement
 	GET_LIST_CASH_DISBUSEMENT,
