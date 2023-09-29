@@ -13,6 +13,7 @@ use App\Models\CashInStatical;
 use App\Models\Course;
 use App\Models\Customer;
 use App\Models\DriverCourse;
+use App\Models\TemporaryClosingHistories;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -112,13 +113,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         $dataResults = [];
         // Kiểm tra xem có temporary tháng trước để cho xem tháng này
         $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
-        $checkCashInStaticalMonthPrev = CashInStatical::where("month_line",$monthPrev)->first();
+        $checkTemporaryMonthPrev = TemporaryClosingHistories::where("month_year",$monthPrev)->first();
         $checkTemporary = false;
         // Kiểm tra xem tháng trước có không, nếu
-        if ($checkCashInStaticalMonthPrev != null){
-            if($checkCashInStaticalMonthPrev->status == 2){
-                $checkTemporary = true;
-            }
+        if ($checkTemporaryMonthPrev != null){
+            $checkTemporary = true;
         }
         foreach ($cashInsByCustomers as $cashInsByCustomer){
             // nhóm dữ liệu từ danh sách cashInStatic theo month_year
@@ -314,13 +313,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         // Kiểm tra xem có temporary tháng trước để cho xem tháng này
         $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
-        $checkCashInStaticalMonthPrev = CashInStatical::where("month_line",$monthPrev)->first();
+        $checkTemporaryMonthPrev = TemporaryClosingHistories::where("month_year",$monthPrev)->first();
         $checkTemporary = false;
         // Kiểm tra xem tháng trước có không, nếu
-        if ($checkCashInStaticalMonthPrev != null){
-            if($checkCashInStaticalMonthPrev->status == 2){
-                $checkTemporary = true;
-            }
+        if ($checkTemporaryMonthPrev != null){
+            $checkTemporary = true;
         }
         $cashInStatical->balance_previous_month = $checkTemporary ? $cashInStatical->balance_previous_month : "0";
 
