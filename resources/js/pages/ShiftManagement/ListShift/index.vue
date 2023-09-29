@@ -1779,6 +1779,7 @@ export default {
 				}
 				setLoading(false);
 			} catch (error) {
+				setLoading(false);
 				console.log(error);
 			}
 		},
@@ -1801,6 +1802,7 @@ export default {
 				}
 				setLoading(false);
 			} catch (error) {
+				setLoading(false);
 				console.log(error);
 			}
 		},
