@@ -602,6 +602,7 @@ export default {
 		TABLE_TOTAL: '当月入金金額合計',
 
 		TITLE_CASH_CREATE: '入金情報 登録',
+		TITLE_CASH_DISBURSEMENT_EDIT: '出金情報 編集',
 		TITLE_CASH_EDIT: '入金情報 編集',
 		PAYMENT_DAY: '入金日',
 

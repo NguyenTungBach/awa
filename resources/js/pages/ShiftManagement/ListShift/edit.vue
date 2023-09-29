@@ -157,7 +157,7 @@
                         class="item-node"
                     >
                         <span v-if="item.course" class="type-node">
-                            {{ item.course.course_name }}
+                            {{ item.course.customer_id !== 0 ? item.course.customer_name : item.course.course_name }}
                         </span>
                         <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
 
