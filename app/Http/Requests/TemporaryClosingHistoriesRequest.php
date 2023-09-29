@@ -37,10 +37,6 @@ class TemporaryClosingHistoriesRequest extends FormRequest
 
     public function getCustomRuleStore(){
         $rules = [
-            'date' => [
-                'required',
-                'date_format:Y-m-d',
-            ],
             'month_year' => [
                 'required',
                 'date_format:Y-m',
