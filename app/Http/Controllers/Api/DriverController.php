@@ -343,7 +343,7 @@ class DriverController extends Controller
      *   path="/api/driver/driver_for_course",
      *   tags={"Driver"},
      *   summary="List Driver",
-     *   operationId="driver_index",
+     *   operationId="driver_for_course",
      *   @OA\Response(
      *     response=200,
      *     description="Send request success",

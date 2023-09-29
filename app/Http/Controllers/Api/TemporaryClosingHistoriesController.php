@@ -24,9 +24,50 @@ class TemporaryClosingHistoriesController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *   path="/api/temporary-closing",
+     *   tags={"Temporary"},
+     *   summary="List Temporary",
+     *   operationId="temporary_closing_index",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{{"id": 1,"name": "..........."}}}
+     *     )
+     *   ),
+     *  @OA\Parameter(
+     *     name="date",
+     *     description = "Y-m-d",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(TemporaryClosingHistoriesRequest $request)
     {
@@ -41,10 +82,42 @@ class TemporaryClosingHistoriesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *   path="/api/temporary-closing",
+     *   tags={"Temporary"},
+     *   summary="Create Temporary",
+     *   operationId="temporary_closing_create",
+     *   @OA\RequestBody(
+     *       @OA\MediaType(
+     *          mediaType="application/json",
+     *          example={"date": "2023-09-29","month_year": "2023-09"},
+     *          @OA\Schema(
+     *            required={"date","month_year"},
+     *            @OA\Property(
+     *              property="date",
+     *              format="string",
+     *              description="Y-m-d"
+     *            ),
+     *            @OA\Property(
+     *              property="month_year",
+     *              format="string",
+     *              description="Y-m"
+     *            ),
+     *         )
+     *      )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{"id": 1,"name": "......"}}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store(TemporaryClosingHistoriesRequest $request)
     {
@@ -63,10 +136,40 @@ class TemporaryClosingHistoriesController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *   path="/api/temporary-closing/{id}",
+     *   tags={"Temporary"},
+     *   summary="Detail Temporary",
+     *   operationId="temporary_closing_show",
+     *   @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{"id": 1,"name":"......"}}
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -81,10 +184,32 @@ class TemporaryClosingHistoriesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Delete(
+     *   path="/api/temporary-closing/{id}",
+     *   tags={"Temporary"},
+     *   summary="Delete Temporary",
+     *   operationId="temporary_closing_delete",
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":"Send request success"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy($id)
     {
