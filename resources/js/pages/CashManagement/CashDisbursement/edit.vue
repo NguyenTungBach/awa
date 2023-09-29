@@ -7,7 +7,7 @@
                         <b-col>
                             <div class="zone-title">
                                 <span class="title-page">
-                                    {{ $t('LIST_CASH.TITLE_CASH_DISBURSEMENT_CREATE') }}
+                                    {{ $t('LIST_CASH.TITLE_CASH_DISBURSEMENT_EDIT') }}
                                 </span>
                             </div>
                         </b-col>
