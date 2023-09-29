@@ -712,10 +712,10 @@
                                                 />
                                             </template>
                                         </template>
-                                        <b-td class="td-total-month">
+                                        <b-td class="td-total-month total_sale_list">
                                             {{ Number(emp.total_ship_fee_by_month) }}
                                         </b-td>
-                                        <b-td class="td-total-closing-date">
+                                        <b-td class="td-total-closing-date total_sale_list">
                                             {{ Number(emp.total_ship_fee_by_closing_date) }}
                                         </b-td>
                                         <b-td class="img-pdf">
@@ -761,13 +761,13 @@
                                         </span>
                                     </b-td>
 
-                                    <b-td v-for="(total, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center">
-                                        {{ total.total_all_ship_fee_by_date }}
+                                    <b-td v-for="(value, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center total_sale_list">
+                                        {{ value.total_all_ship_fee_by_date }}
                                     </b-td>
-                                    <b-td class="td-total-month">
+                                    <b-td class="td-total-month total_sale_list">
                                         {{ total_all_data_sale_by_month }}
                                     </b-td>
-                                    <b-td class="td-total-closing-date">
+                                    <b-td class="td-total-closing-date total_sale_list">
                                         {{ total_all_sale_by_closing_date }}
                                     </b-td>
                                     <b-td class="img-pdf">
@@ -1185,7 +1185,7 @@
                                                 />
                                             </template>
                                         </template>
-                                        <b-td class="td-total-shift">
+                                        <b-td class="td-total-shift total_payment">
                                             {{ emp.payable_this_month }}
                                         </b-td>
                                     </tr>
@@ -1202,10 +1202,10 @@
                                         <span />
                                     </b-td> -->
 
-                                    <b-td v-for="(total, idx) in total_payment" :key="`total-${idx}`" class="text-center">
-                                        {{ total.pay }}
+                                    <b-td v-for="(value, idx) in total_payment" :key="`total-${idx}`" class="text-center total_payment">
+                                        {{ value.pay }}
                                     </b-td>
-                                    <b-td class="td-total-month">
+                                    <b-td class="td-total-month total_payment">
                                         {{ total_payment_of_month }}
                                     </b-td>
                                 </b-tr>
@@ -3161,7 +3161,7 @@ export default {
                                 top: 0;
                                 left: 300px;
 
-                                min-width: 240px;
+                                min-width: 200px;
 
                                 cursor: pointer;
 							}
@@ -3170,7 +3170,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 41px;
+                            top: 42px;
                         }
 					}
 
@@ -3289,7 +3289,7 @@ export default {
                                 top: 0;
                                 left: 300px;
 
-                                min-width: 240px;
+                                min-width: 200px;
 
                                 cursor: pointer;
 							}
@@ -3298,7 +3298,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 43px;
+                            top: 42px;
                         }
 					}
 
@@ -3413,7 +3413,7 @@ export default {
                                 top: 0;
                                 left: 300px;
 
-                                width: 240px;
+                                width: 200px;
 
                                 cursor: pointer;
 							}
@@ -3433,7 +3433,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 43px;
+                            top: 42px;
                         }
 					}
 
@@ -3484,6 +3484,9 @@ export default {
 
 							td.img-pdf {
 								cursor: pointer;
+							}
+							td.total_sale_list {
+								font-size: 16px;
 							}
 
                             td.td-total {
@@ -3565,7 +3568,7 @@ export default {
                                 top: 0;
                                 left: 300px;
 
-                                min-width: 240px;
+                                min-width: 200px;
 
                                 cursor: pointer;
 							}
@@ -3574,7 +3577,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 43px;
+                            top: 42px;
                         }
 					}
 
@@ -3687,7 +3690,7 @@ export default {
 								position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 540px;
+                                left: 500px;
 
                                 width: 150px;
 
@@ -3700,7 +3703,7 @@ export default {
                                 top: 0;
                                 left: 300px;
 
-                                width: 240px;
+                                width: 200px;
 
                                 cursor: pointer;
 							}
@@ -3720,7 +3723,7 @@ export default {
                         tr:nth-child(2) {
                             position: sticky;
                             z-index: 10;
-                            top: 43px;
+                            top: 42px;
                         }
 					}
 
@@ -3774,11 +3777,15 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 540px;
+								left: 500px;
                             }
 
 							td.img-pdf {
 								cursor: pointer;
+							}
+
+							td.total_payment {
+								font-size: 16px;
 							}
 
                             td.td-total {
