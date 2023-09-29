@@ -689,6 +689,7 @@ export default {
 		TABLE_DATE: 'Date',
 		TABLE_DEPOSIT_AMOUNT: 'Deposit Amount',
 		TABLE_PAYMENT_METHOD: 'Payment Method',
+		TITLE_CASH_DISBURSEMENT_EDIT: 'Withdrawal information Edit',
 		TABLE_REMARKS: 'Remarks',
 		TABLE_TOTAL: 'Total deposit amount for the current month',
 
@@ -713,6 +714,7 @@ export default {
 		TABLE_CASH_DISBURSEMENT_DEPOSIT_AMOUNT: 'Withdrawal amount',
 		TABLE_CASH_DISBURSEMENT_PAYMENT_METHOD: 'Withdrawal method',
 		TABLE_CASH_DISBURSEMENT_REMARKS: 'Remarks',
+		TITLE_CASH_EDIT: 'Deposit Information Edit',
 		TABLE_CASH_DISBURSEMENT_TOTAL: 'Withdrawal amount for the current month',
 		TABLE_EDIT: 'Edit',
 		TABLE_DELETE: 'Delete',

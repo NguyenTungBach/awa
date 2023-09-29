@@ -3150,7 +3150,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                min-width: 180px;
+                                min-width: 150px;
 
                                 cursor: pointer;
                             }
@@ -3159,7 +3159,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 330px;
+                                left: 300px;
 
                                 min-width: 240px;
 
@@ -3219,7 +3219,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 330px;
+								left: 300px;
                             }
 						}
 					}
@@ -3278,7 +3278,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                min-width: 180px;
+                                min-width: 150px;
 
                                 cursor: pointer;
                             }
@@ -3287,7 +3287,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 330px;
+                                left: 300px;
 
                                 min-width: 240px;
 
@@ -3347,7 +3347,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 330px;
+								left: 300px;
                             }
 						}
 					}
@@ -3402,7 +3402,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                width: 180px;
+                                width: 150px;
 
                                 cursor: pointer;
                             }
@@ -3411,7 +3411,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 330px;
+                                left: 300px;
 
                                 width: 240px;
 
@@ -3479,7 +3479,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 330px;
+								left: 300px;
                             }
 
 							td.img-pdf {
@@ -3554,7 +3554,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                min-width: 180px;
+                                min-width: 150px;
 
                                 cursor: pointer;
                             }
@@ -3563,7 +3563,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 330px;
+                                left: 300px;
 
                                 min-width: 240px;
 
@@ -3623,7 +3623,7 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 330px;
+								left: 300px;
                             }
 						}
 					}
@@ -3678,7 +3678,7 @@ export default {
                                 z-index: 10;
                                 left: 150px;
 
-                                width: 180px;
+                                width: 150px;
 
                                 cursor: pointer;
                             }
@@ -3687,7 +3687,7 @@ export default {
 								position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 570px;
+                                left: 540px;
 
                                 width: 150px;
 
@@ -3698,7 +3698,7 @@ export default {
                                 position: sticky;
                                 z-index: 10;
                                 top: 0;
-                                left: 330px;
+                                left: 300px;
 
                                 width: 240px;
 
@@ -3767,14 +3767,14 @@ export default {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 330px;
+								left: 300px;
                             }
 
 							td.td-vehicle-name {
                                 position: sticky;
                                 z-index: 9;
                                 top: 0;
-								left: 570px;
+								left: 540px;
                             }
 
 							td.img-pdf {
