@@ -22,3 +22,8 @@ export default {
 	},
 };
 </script>
+<style lang="scss" scoped>
+    .app-layout {
+        font-size: 14px;
+    }
+</style>

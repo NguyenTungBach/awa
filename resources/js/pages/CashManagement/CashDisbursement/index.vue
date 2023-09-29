@@ -626,7 +626,7 @@ export default {
                                 td.td-control {
                                     i {
                                         color: $dusty-gray;
-                                        font-size: 24;
+                                        font-size: 20;
 
                                         cursor: pointer;
                                     }
