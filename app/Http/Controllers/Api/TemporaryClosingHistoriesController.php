@@ -90,14 +90,9 @@ class TemporaryClosingHistoriesController extends Controller
      *   @OA\RequestBody(
      *       @OA\MediaType(
      *          mediaType="application/json",
-     *          example={"date": "2023-09-29","month_year": "2023-09"},
+     *          example={"month_year": "2023-09"},
      *          @OA\Schema(
-     *            required={"date","month_year"},
-     *            @OA\Property(
-     *              property="date",
-     *              format="string",
-     *              description="Y-m-d"
-     *            ),
+     *            required={"month_year"},
      *            @OA\Property(
      *              property="month_year",
      *              format="string",
