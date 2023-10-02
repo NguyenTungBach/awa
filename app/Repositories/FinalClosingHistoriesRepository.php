@@ -78,8 +78,8 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
     {
         $result = FinalClosingHistories::where('month_year',$request->month_year)->first();
         if ($result){
-            return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>false]), SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>true]), SUCCESS);
         }
-        return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>true]), SUCCESS);
+        return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>false]), SUCCESS);
     }
 }
