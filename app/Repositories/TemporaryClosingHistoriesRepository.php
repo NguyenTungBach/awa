@@ -3,6 +3,7 @@ namespace Repository;
 
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\TemporaryClosingHistoriesResource;
+use App\Models\FinalClosingHistories;
 use App\Models\TemporaryClosingHistories;
 use App\Repositories\Contracts\TemporaryClosingHistoriesRepositoryInterface;
 use Illuminate\Http\Response;
@@ -67,11 +68,17 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
     // Bach add
     public function checkTemporary($request)
     {
-        // Kiểm tra xem có Temporary trong tháng này không
-        $result = TemporaryClosingHistories::where("month_year",$request->month_year)->first();
-        if ($result){
+        // Kiểm tra xem tháng này đã final closing chưa nếu có rồi thì checkTemporary là false
+        $resultFinalClosingHistories = FinalClosingHistories::where('month_year',$request->month_year)->first();
+        if ($resultFinalClosingHistories){
             return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>true]), SUCCESS);
         }
+
+//        // Kiểm tra xem có Temporary trong tháng này không
+//        $resultTemporaryClosingHistories = TemporaryClosingHistories::where("month_year",$request->month_year)->first();
+//        if ($resultTemporaryClosingHistories){
+//            return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>true]), SUCCESS);
+//        }
         return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>false]), SUCCESS);
     }
 }
