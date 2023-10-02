@@ -71,7 +71,7 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
         // Kiểm tra xem tháng này đã final closing chưa nếu có rồi thì checkTemporary là false
         $resultFinalClosingHistories = FinalClosingHistories::where('month_year',$request->month_year)->first();
         if ($resultFinalClosingHistories){
-            return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>true]), SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>false]), SUCCESS);
         }
 
 //        // Kiểm tra xem có Temporary trong tháng này không
@@ -79,6 +79,6 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
 //        if ($resultTemporaryClosingHistories){
 //            return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>true]), SUCCESS);
 //        }
-        return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>false]), SUCCESS);
+        return $this->responseJson(Response::HTTP_OK, new BaseResource(['checkTemporary'=>true]), SUCCESS);
     }
 }
