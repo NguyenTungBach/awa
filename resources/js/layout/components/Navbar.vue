@@ -185,7 +185,6 @@ export default {
             width: 110px;
             height: 40px;
             margin: 10px 40px;
-
             img {
                 height: 50px;
                 padding-right: 20px;

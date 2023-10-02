@@ -29,6 +29,7 @@
                                     <b-button
                                         pill
                                         class="btn-edit btn-color-active"
+                                        :disabled="disableCreate"
                                         @click="onClickCreate()"
                                     >
                                         {{ $t('APP.BUTTON_CREATE') }}
@@ -209,13 +210,24 @@
                                                         {{ course.note }}
                                                     </b-td>
                                                     <b-td class="td-cash-edit td-control" :colspan="1">
-                                                        <i class="fas fa-pen" @click="onClickEdit(course.id)" />
+                                                        <b-button
+                                                            pill
+                                                            class="button_edit"
+                                                            :disabled="disableEdit"
+                                                            @click="onClickEdit(course.id)"
+                                                        >
+                                                            <i class="fas fa-pen" />
+                                                        </b-button>
                                                     </b-td>
                                                     <b-td class="td-cash-delete td-control" :colspan="1">
-                                                        <i
-                                                            class="fas fa-trash-alt"
+                                                        <b-button
+                                                            pill
+                                                            class="button_delete"
+                                                            :disabled="disableDelete"
                                                             @click="onClickShowModalDelete(course.id)"
-                                                        />
+                                                        >
+                                                            <i class="fas fa-trash-alt" />
+                                                        </b-button>
                                                     </b-td>
                                                 </b-tr>
                                             </template>
@@ -278,7 +290,9 @@ import { setLoading } from '@/utils/handleLoading';
 import CONSTANT from '@/const';
 import TOAST_CASH_MANAGEMENT from '@/toast/modules/cashManagement';
 import { getDetailCashReciept, getCashIn, deleteCashIn } from '@/api/modules/cashDisbursement';
+import { CheckButtonTemporary } from '@/api/modules/shiftManagement';
 import { format2Digit } from '@/utils/generateTime';
+import { cleanObject } from '@/utils/handleObject';
 export default {
 	name: 'CashDetail',
 	components: {
@@ -303,6 +317,9 @@ export default {
 			},
 
 			scopeID: '',
+			disableCreate: false,
+			disableEdit: false,
+			disableDelete: false,
 
 			listCashDeital: [
 				{
@@ -348,6 +365,7 @@ export default {
 			setLoading(true);
 			await this.handleGetListCashIn();
 			await this.handleGetDetailReciept();
+			await this.handleCheckButtonTemporary();
 			setLoading(false);
 		},
 
@@ -444,6 +462,30 @@ export default {
 				console.log(error);
 			}
 		},
+
+		// API CHECK TEMPORARY
+		async handleCheckButtonTemporary() {
+			try {
+				let PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_TEMPORARY;
+				const response = await CheckButtonTemporary(URL, PARAMS);
+				if (response.code === 200) {
+					this.disableCreate = response.data.checkTemporary;
+					this.disableEdit = response.data.checkTemporary;
+					this.disableDelete = response.data.checkTemporary;
+				}
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
 	},
 };
 </script>
@@ -505,10 +547,15 @@ export default {
                     }
                     td.td-control {
                         text-align: center;
-                        i {
-                            color: $dusty-gray;
-                            font-size: 18px;
-                            cursor: pointer;
+                        .button_edit, .button_delete {
+                            background-color: white;
+                            border-color: white;
+                            padding: 0;
+                            i {
+                                color: $dusty-gray;
+                                font-size: 18px;
+                                cursor: pointer;
+                            }
                         }
                     }
                     td.td-cash-balance {
