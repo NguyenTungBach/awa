@@ -1839,8 +1839,9 @@ export default {
 			await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
-			await this.handleCheckFinalClosing();
-			await this.handleCheckButtonTemporary();
+			if (hasRole(this.role)) {
+				await this.handleCheckButtonTemporary();
+			}
 			setLoading(false);
 		},
 
