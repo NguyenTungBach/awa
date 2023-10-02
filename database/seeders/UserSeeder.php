@@ -30,5 +30,11 @@ class UserSeeder extends Seeder
             'password' => Hash::make('abc12345678'),
             'role' => 'driver',
         ]);
+        User::factory()->create([
+            'user_code' => '1112',
+            'user_name' => 'Driver',
+            'password' => Hash::make('123456789'),
+            'role' => 'driver',
+        ]);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace Tests;
 
+use App\Models\Calendar;
 use App\Models\User;
 use Carbon\Carbon;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
@@ -107,7 +109,35 @@ abstract class DuskTestCase extends BaseTestCase
             ->pause(5000)
             ->waitFor('.zone-table')->pause(1000)
             ->assertPathIs('/shift-management/list-shift')
-            ->waitFor('div.show-menu > ul > li:nth-child(2) > span');
+            ->waitFor('div.show-menu > ul > li:nth-child(1) > span');
+    }
+
+    public function loginDriverCaseAGeneral(Browser $browser)
+    {
+        $browser->visit('/')->waitFor('.login-btn')
+            ->type('#user_id', '1111')->pause(1000)
+            ->type('#password', '123456789')->pause(1000)
+            ->press('.login-btn')
+            ->waitFor('.toast-body')->assertSee('Login success')
+            ->assertSeeIn('.toast-body', 'Login success')
+            ->pause(5000)
+            ->waitFor('.zone-table')->pause(1000)
+            ->assertPathIs('/shift-management/list-shift')
+            ->waitFor('div.show-menu > ul > li:nth-child(1) > span');
+    }
+
+    public function loginDriverCaseBGeneral(Browser $browser)
+    {
+        $browser->visit('/')->waitFor('.login-btn')
+            ->type('#user_id', '2233')->pause(1000)
+            ->type('#password', 'abc12345678')->pause(1000)
+            ->press('.login-btn')
+            ->waitFor('.toast-body')->assertSee('Login success')
+            ->assertSeeIn('.toast-body', 'Login success')
+            ->pause(5000)
+            ->waitFor('.zone-table')->pause(1000)
+            ->assertPathIs('/shift-management/list-shift')
+            ->waitFor('div.show-menu > ul > li:nth-child(1) > span');
     }
 
     public function logOut($browser) {

@@ -21,7 +21,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');
         Route::get('calendar/index', 'CalendarController@index');
         Route::group(['middleware' => 'admin'], function () {
-            Route::post('calendar/setup-data', 'CalendarController@store');
+            Route::post('calendar/setup-data', 'CalendarController@store')->withoutMiddleware('admin');
             Route::post('calendar/delete', 'CalendarController@destroy');
             Route::apiResource('user', 'UserController');
             Route::get('driver/driver-for-course', 'DriverController@driver_for_course');
