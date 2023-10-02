@@ -56,6 +56,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('/final-closing', 'FinalClosingHistoriesController');
             Route::get('/payment/export', 'PaymentController@export');
             Route::apiResource('/payment', 'PaymentController');
+            Route::get('/temporary-closing/check-temporary', 'TemporaryClosingHistoriesController@checkTemporary');
             Route::apiResource('/temporary-closing', 'TemporaryClosingHistoriesController');
         });
         Route::group(['prefix' => 'auth'], function () {

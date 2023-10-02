@@ -215,4 +215,45 @@ class TemporaryClosingHistoriesController extends Controller
 
         return $this->responseJsonError(Response::HTTP_METHOD_NOT_ALLOWED, DELETE_ERROR);
     }
+
+    /**
+     * @OA\Get(
+     *   path="/api/temporary-closing/check-temporary",
+     *   tags={"Temporary"},
+     *   summary="Check Temporary",
+     *   operationId="temporary_check",
+     *   @OA\Parameter(
+     *     name="month_year",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *      type="string",
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{"id": 1,"name":"......"}}
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkTemporary(TemporaryClosingHistoriesRequest $request)
+    {
+        return $this->repository->checkTemporary($request);
+    }
 }
