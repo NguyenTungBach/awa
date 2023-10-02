@@ -110,6 +110,6 @@ class SystemCaseBTest extends DuskTestCase
 
     public function logOutCaseB($browser) {
         $browser->mouseover('.icon-dropdown')->pause(2000);
-        $browser->press('.reset menu-profile')->pause(5000);
+        $browser->press('div.show-profile > ul')->pause(5000);
     }
 }
