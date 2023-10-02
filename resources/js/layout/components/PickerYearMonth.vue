@@ -25,7 +25,7 @@ const URL_API = {
 };
 import { postSetupDataCalendar } from '@/api/modules/calendar';
 import { convertMonth, convertYear, getFullText } from '@/utils/convertTime';
-import { hasRole } from '@/utils/hasRole';
+// import { hasRole } from '@/utils/hasRole';
 
 export default {
 	name: 'PickerYearMonth',
@@ -210,20 +210,20 @@ export default {
 		},
 
 		async handleSetupDataCalendar(year) {
-			const ROLE = this.$store.getters.profile.role;
+			// const ROLE = this.$store.getters.profile.role;
+			try {
+				const BODY = {
+					password: 'veho1234567890',
+					targetyyyy: year,
+				};
 
-			if (hasRole(ROLE)) {
-				try {
-					const BODY = {
-						password: 'veho1234567890',
-						targetyyyy: year,
-					};
-
-					await postSetupDataCalendar(URL_API.setupData, BODY);
-				} catch {
-					console.log('ERROR : Setup data calendar');
-				}
+				await postSetupDataCalendar(URL_API.setupData, BODY);
+			} catch {
+				console.log('ERROR : Setup data calendar');
 			}
+			// if (hasRole(ROLE)) {
+
+			// }
 		},
 	},
 };
