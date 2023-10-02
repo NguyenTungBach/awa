@@ -80,7 +80,7 @@
                         lg="4"
                         xl="4"
                     >
-                        <div v-if="selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE" class="zone-right">
+                        <div v-if="hasRole(role) && selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE" class="zone-right">
                             <!-- <template v-if="!(isLoading.show)">
                                 <div
                                     v-if="hasRole(role) && selectWeekMonth === CONSTANT.LIST_SHIFT.MONTH"
@@ -1354,7 +1354,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckFinalClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1363,7 +1363,7 @@ import axios from 'axios';
 // import TOAST_SUCCESS_FINAL from '@/toast/modules/scheduleShift';
 // import CalendarMultipleWeek from '@/components/CalendarMultipleWeek';
 // import CalendarMonth from '@/components/CalendarMonth';
-// import Notification from '@/toast/notification';
+import Notification from '@/toast/notification';
 // import CalendarFreeMonth from '@/components/CalendarFreeMonth';
 
 export default {
@@ -1761,27 +1761,6 @@ export default {
 			}
 		},
 
-		async handleCheckFinalClosing() {
-			try {
-				let PARAMS = {};
-				const YEAR = this.pickerYearMonth.year;
-				const MONTH = this.pickerYearMonth.month;
-
-				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
-
-				PARAMS.month_line = YEAR_MONTH;
-				PARAMS = cleanObject(PARAMS);
-				const URL = CONSTANT.URL_API.GET_LIST_CASH_DISBUSEMENT;
-				const response = await CheckFinalClosingDate(URL, PARAMS);
-				if (response.code === 200) {
-					this.disableEditShift = response.data.finalClosing;
-				}
-			} catch (error) {
-				setLoading(false);
-				console.log(error);
-			}
-		},
-
 		async handleTemmporary() {
 			try {
 				setLoading(true);
@@ -1796,7 +1775,7 @@ export default {
 				const URL = CONSTANT.URL_API.POST_TEMPORORY;
 				const response = await CheckTemporory(URL, PARAMS);
 				if (response.code === 200) {
-					this.disableEditShift = response.data.finalClosing;
+					Notification.success(response.message);
 				}
 				setLoading(false);
 			} catch (error) {
@@ -2072,7 +2051,7 @@ export default {
 				const URL = CONSTANT.URL_API.POST_CLOSING_DATE;
 				const data = await postClosingDate(URL, PARAMS);
 				if (data.code === 200) {
-					// TOAST_SUCCESS_FINAL.closingDate(data.message);
+					Notification.success(data.message);
 					this.disableTem = true;
 					this.disableFinal = true;
 				}
