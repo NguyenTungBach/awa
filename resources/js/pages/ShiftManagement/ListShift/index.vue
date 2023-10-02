@@ -1763,7 +1763,6 @@ export default {
 
 		async handleCheckFinalClosing() {
 			try {
-				setLoading(true);
 				let PARAMS = {};
 				const YEAR = this.pickerYearMonth.year;
 				const MONTH = this.pickerYearMonth.month;
@@ -1777,7 +1776,6 @@ export default {
 				if (response.code === 200) {
 					this.disableEditShift = response.data.finalClosing;
 				}
-				setLoading(false);
 			} catch (error) {
 				setLoading(false);
 				console.log(error);
@@ -1810,7 +1808,6 @@ export default {
 		// API CHECK TEMPORARY
 		async handleCheckButtonTemporary() {
 			try {
-				setLoading(true);
 				let PARAMS = {};
 				const YEAR = this.pickerYearMonth.year;
 				const MONTH = this.pickerYearMonth.month;
@@ -1824,7 +1821,6 @@ export default {
 				if (response.code === 200) {
 					this.disableTem = response.data.checkTemporary;
 				}
-				setLoading(false);
 			} catch (error) {
 				setLoading(false);
 				console.log(error);
@@ -1860,12 +1856,13 @@ export default {
 
 		async initData() {
 			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
-
+			setLoading(true);
 			await this.onClickSelectWeekMonth(TYPE);
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
 			await this.handleCheckFinalClosing();
 			await this.handleCheckButtonTemporary();
+			setLoading(false);
 		},
 
 		async handleGetListCalendar() {
@@ -2310,7 +2307,6 @@ export default {
 
 			this.$store.dispatch('listShift/setIsWeekOrMonth', this.selectWeekMonth)
 				.then(async() => {
-					setLoading(true);
 					if (this.selectTable === CONSTANT.LIST_SHIFT.SHIFT_TABLE) {
 						await this.handleGetListCalendar();
 						await this.handleGetListShift();
@@ -2324,8 +2320,6 @@ export default {
 					if (hasRole(this.role)) {
 						await this.handleGetListPractical(false);
 					}
-
-					setLoading(false);
 				});
 		},
 
