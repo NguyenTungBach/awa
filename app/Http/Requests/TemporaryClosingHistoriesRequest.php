@@ -30,6 +30,8 @@ class TemporaryClosingHistoriesRequest extends FormRequest
                 return $this->getCustomRuleStore();
             case 'index':
                 return $this->getCustomRuleIndex();
+            case 'checkTemporary':
+                return $this->getCustomRuleCheckTemporary();
             default:
                 return [];
         }
@@ -52,6 +54,17 @@ class TemporaryClosingHistoriesRequest extends FormRequest
             'month_year' => [
                 'sometimes',
                 'date_format:Y-m'
+            ],
+        ];
+
+        return $rules;
+    }
+
+    public function getCustomRuleCheckTemporary(){
+        $rules = [
+            'month_year' => [
+                'required',
+                'date_format:Y-m',
             ],
         ];
 
