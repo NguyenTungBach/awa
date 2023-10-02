@@ -1799,6 +1799,7 @@ export default {
 				const response = await CheckButtonTemporary(URL, PARAMS);
 				if (response.code === 200) {
 					this.disableTem = response.data.checkTemporary;
+					this.disableEditShift = response.data.checkTemporary;
 				}
 			} catch (error) {
 				setLoading(false);
