@@ -1354,7 +1354,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckFinalClosingDate, CheckTemporory } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckFinalClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1807,6 +1807,30 @@ export default {
 			}
 		},
 
+		// API CHECK TEMPORARY
+		async handleCheckButtonTemporary() {
+			try {
+				setLoading(true);
+				let PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_TEMPORARY;
+				const response = await CheckButtonTemporary(URL, PARAMS);
+				if (response.code === 200) {
+					this.disableTem = response.data.checkTemporary;
+				}
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
 		turnOnButtonFinal() {
 			this.disableFinal = false;
 			this.handleTemmporary();
@@ -1841,6 +1865,7 @@ export default {
 			// await this.handleGetListShift();
 			await this.onClickSelectTable();
 			await this.handleCheckFinalClosing();
+			await this.handleCheckButtonTemporary();
 		},
 
 		async handleGetListCalendar() {

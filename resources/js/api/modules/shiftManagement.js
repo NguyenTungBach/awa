@@ -56,6 +56,10 @@ function CheckTemporory(url, data) {
 	return request.postRequest(url, data);
 }
 
+function CheckButtonTemporary(url, data) {
+	return request.getRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -70,5 +74,6 @@ export {
 	putShift,
 	getDataUpdate,
 	CheckFinalClosingDate,
-	CheckTemporory
+	CheckTemporory,
+	CheckButtonTemporary
 };
