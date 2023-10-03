@@ -212,6 +212,7 @@
                                                     <b-td class="td-cash-edit td-control" :colspan="1">
                                                         <b-button
                                                             pill
+                                                            :style="handleCusor(disableEdit)"
                                                             class="button_edit"
                                                             :disabled="disableEdit"
                                                             @click="onClickEdit(course.id)"
@@ -222,6 +223,7 @@
                                                     <b-td class="td-cash-delete td-control" :colspan="1">
                                                         <b-button
                                                             pill
+                                                            :style="handleCusor(disableDelete)"
                                                             class="button_delete"
                                                             :disabled="disableDelete"
                                                             @click="onClickShowModalDelete(course.id)"
@@ -367,6 +369,10 @@ export default {
 			await this.handleGetDetailReciept();
 			await this.handleCheckButtonTemporary();
 			setLoading(false);
+		},
+
+		handleCusor(check) {
+			return check ? 'cursor: default;' : 'cursor: pointer;';
 		},
 
 		handlePaymentMethod(cashIn) {
@@ -554,7 +560,6 @@ export default {
                             i {
                                 color: $dusty-gray;
                                 font-size: 18px;
-                                cursor: pointer;
                             }
                         }
                     }

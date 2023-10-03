@@ -1775,7 +1775,7 @@ export default {
 				const URL = CONSTANT.URL_API.POST_TEMPORORY;
 				const response = await CheckTemporory(URL, PARAMS);
 				if (response.code === 200) {
-					Notification.success(response.message);
+					Notification.success(`${YEAR}年${MONTH}月の仮締めが完了しました。`);
 				}
 				setLoading(false);
 			} catch (error) {
@@ -2053,7 +2053,7 @@ export default {
 				const URL = CONSTANT.URL_API.POST_CLOSING_DATE;
 				const data = await postClosingDate(URL, PARAMS);
 				if (data.code === 200) {
-					Notification.success(data.message);
+					Notification.success(`${YEAR}年${MONTH}月の本締めが完了しました。`);
 					this.disableTem = true;
 					this.disableFinal = true;
 				}
