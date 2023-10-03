@@ -13,5 +13,5 @@ return [
         3 => '契約社員',
         4 => '協力会社',
     ],
-    'end_date_not_before_now' => 'end date 今までではない',
+    'end_date_not_before_now' => '退職日は明日以降の日付を選択してください',
 ];

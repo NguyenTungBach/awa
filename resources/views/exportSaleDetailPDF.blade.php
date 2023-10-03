@@ -158,6 +158,7 @@ FAX (088) 662-2216
             <th>発地</th>
             <th>着地</th>
             <th>品名</th>
+            <th>数量</th>
             <th>重量/Kg</th>
             <th>基本運賃</th>
             <th>摘要</th>
@@ -172,6 +173,7 @@ FAX (088) 662-2216
             <td style="text-align: center">{{$course['departure_place']}}</td>
             <td style="text-align: center">{{$course['arrival_place']}}</td>
             <td style="text-align: center"></td>
+            <td style="text-align: center">{{number_format($course['quantity'])}}</td>
             <td style="text-align: center">{{$course['weight']}}</td>
             <td style="text-align: center">{{$course['ship_fee'] == '' ? '' : number_format($course['ship_fee'])}}</td>
             <td style="text-align: center"></td>
@@ -195,6 +197,7 @@ FAX (088) 662-2216
             <td style="text-align: center">
                 <p>合計</p>
             </td>
+            <td style="text-align: center"></td>
             <td style="text-align: center"></td>
             <td style="text-align: center">{{number_format($dem)}}</td>
             <td style="text-align: center"></td>

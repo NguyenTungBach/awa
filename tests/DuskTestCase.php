@@ -115,8 +115,8 @@ abstract class DuskTestCase extends BaseTestCase
     public function loginDriverCaseAGeneral(Browser $browser)
     {
         $browser->visit('/')->waitFor('.login-btn')
-            ->type('#user_id', '1111')->pause(1000)
-            ->type('#password', '123456789')->pause(1000)
+            ->type('#user_id', '1122')->pause(1000)
+            ->type('#password', 'abc12345678')->pause(1000)
             ->press('.login-btn')
             ->waitFor('.toast-body')->assertSee('Login success')
             ->assertSeeIn('.toast-body', 'Login success')
