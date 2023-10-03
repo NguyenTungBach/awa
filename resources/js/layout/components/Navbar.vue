@@ -127,6 +127,8 @@ export default {
 		currentRouter() {
 			const ROUTER_NAME = this.$route.name;
 			const PAGE_Mobile = ['ListShift'];
+			const PAGE = ['ListShift', 'ListShiftEdit', 'ListScheduleCreate', 'ListScheduleDetail', 'ListScheduleEdit', 'ListSchedule', 'ListCashReceipt', 'ListCashReceiptCreate', 'ListCashReceiptDetail', 'ListCashReceiptEdit', 'ListCashDisbursement', 'ListCashDisbursementCreate', 'ListCashDisbursementDetail', 'ListCashDisbursementEdit'];
+			this.showPickYearMonth = PAGE.includes(ROUTER_NAME);
 
 			this.showYearMonthForMobile = PAGE_Mobile.includes(ROUTER_NAME);
 		},

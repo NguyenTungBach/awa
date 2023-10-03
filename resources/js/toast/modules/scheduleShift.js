@@ -23,4 +23,7 @@ export default {
 	server(message) {
 		Notification.error(message);
 	},
+	closingDate(message) {
+		Notification.success(message);
+	},
 };

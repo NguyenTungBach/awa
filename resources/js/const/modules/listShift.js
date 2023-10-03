@@ -117,7 +117,6 @@ const LIST_DAY_OFF = [
 	// },
 ];
 
-// const LIST_VALUE_DAY_OFF = ['D-1', 'D-2', 'D-3', 'D-4', 'S-1'];
 const LIST_VALUE_DAY_OFF = [4, 5, 6, 7];
 
 const LIST_VALUE_SPECIAL_DAY = [1, 2, 3];
