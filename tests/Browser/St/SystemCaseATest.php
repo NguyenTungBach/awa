@@ -29,159 +29,143 @@ class SystemCaseATest extends DuskTestCase
         Artisan::call('db:seed --class=CustomerSeeder');
         Artisan::call('db:seed --class=CourseSeeder');
 
-        $now = Carbon::now()->firstOfMonth()->format('Y-m-d');
-
-        $checkCalendar = Calendar::where('date',$now)->first();
-
-        if ($checkCalendar == null){
-            $getYearNow = Carbon::now()->format("Y");
-            $client = new Client();
-            $apiUrl = url("/api/calendar/setup-data?targetyyyy=$getYearNow");
-            $client->get($apiUrl);
-        }
-
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginDriverCaseAGeneral($browser);
 
-            // Customer
-            $this->listUser($browser);
-            $this->createCustomer($browser);
-            $this->editCustomer($browser);
-            $this->listCustomer($browser);
-//            $this->deleteCustomer($browser);
+//            // User
+//            $this->listUser($browser);
+//            $this->createUser($browser);
+//            $this->detailUser($browser);
+//            $this->editUser($browser);
+//            $this->deleteUser($browser);
 
-            // Customer
-            $this->listCustomer($browser);
-            $this->createCustomer($browser);
-            $this->editCustomer($browser);
-            $this->listCustomer($browser);
-//            $this->deleteCustomer($browser);
-
-            // Driver
-            $this->listDriver($browser);
-            $this->createDriver($browser);
-            $this->editDriver($browser);
-            $this->listDriver($browser);
+//            // Driver
+//            $this->listDriver($browser);
+//            $this->createDriver($browser);
+//            $this->editDriver($browser);
+//            $this->listDriver($browser);
 //            $this->deleteDriver($browser);
 
-            // Course
-            $this->listCourse($browser);
-            $this->createCourse($browser);
-            $this->exportCourse($browser);
-            $this->editCourse($browser);
-            $this->listCourse($browser);
-//            $this->deleteCourse($browser);
+            // Customer
+            $this->listCustomer($browser);
+//            $this->createCustomer($browser);
+            $this->editCustomer($browser);
+//            $this->listCustomer($browser);
+//            $this->deleteCustomer($browser);
 
-            // Shift
-            $browser->pause(3000);
-            $this->listShift($browser);
-            $this->editShift($browser);
-            $this->exportExcelShift($browser);
 
-            // Shift High Way Fee
-            $browser->pause(3000);
-            $this->listShift($browser);
-            $this->listHighWayFee($browser);
-            $this->exportExcelHighWayFee($browser);
-
-            // Shift High Way Fee
-            $browser->pause(3000);
-            $this->listShift($browser);
-            $this->listMeal($browser);
-            $this->exportExcelMeal($browser);
-
-            //CashIn
-            $this->listCashIn($browser);
-            $this->createCashIn($browser);
-            $this->editCashIn($browser);
-//            $this->deleteCashIn($browser);
-            $this->listCashIn($browser);
-            $this->exportCashIn($browser);
-
-            //CashOut
-            $this->listCashOut($browser);
-            $this->createCashOut($browser);
-            $this->editCashOut($browser);
-//            $this->deleteCashOut($browser);
-            $this->listCashOut($browser);
-            $this->exportCashOut($browser);
-
-            // Shift Sales
-            $browser->pause(3000);
-            $this->listShift($browser);
-            $this->listShiftSales($browser);
-            $this->invoiceShiftSales($browser);
-            $this->finalClosingShiftSales($browser);
-            $this->exportExcelShiftSales($browser);
-
-            // Shift Payment
-            $browser->pause(3000);
-            $this->listShift($browser);
-            $this->listShiftPayment($browser);
-//            $this->finalClosingShiftPayment($browser);
-            $this->exportExcelShiftPayment($browser);
-
-            $this->logOutCaseA($browser);
+//            // Course
+//            $this->listCourse($browser);
+//            $this->createCourse($browser);
+//            $this->exportCourse($browser);
+//            $this->editCourse($browser);
+//            $this->listCourse($browser);
+////            $this->deleteCourse($browser);
+//
+//            // Shift
+//            $browser->pause(3000);
+//            $this->listShift($browser);
+//            $this->editShift($browser);
+//            $this->exportExcelShift($browser);
+//
+//            // Shift High Way Fee
+//            $browser->pause(3000);
+//            $this->listShift($browser);
+//            $this->listHighWayFee($browser);
+//            $this->exportExcelHighWayFee($browser);
+//
+//            // Shift High Way Fee
+//            $browser->pause(3000);
+//            $this->listShift($browser);
+//            $this->listMeal($browser);
+//            $this->exportExcelMeal($browser);
+//
+//            //CashIn
+//            $this->listCashIn($browser);
+//            $this->createCashIn($browser);
+//            $this->editCashIn($browser);
+////            $this->deleteCashIn($browser);
+//            $this->listCashIn($browser);
+//            $this->exportCashIn($browser);
+//
+//            //CashOut
+//            $this->listCashOut($browser);
+//            $this->createCashOut($browser);
+//            $this->editCashOut($browser);
+////            $this->deleteCashOut($browser);
+//            $this->listCashOut($browser);
+//            $this->exportCashOut($browser);
+//
+//            // Shift Sales
+//            $browser->pause(3000);
+//            $this->listShift($browser);
+//            $this->listShiftSales($browser);
+//            $this->invoiceShiftSales($browser);
+//            $this->finalClosingShiftSales($browser);
+//            $this->exportExcelShiftSales($browser);
+//
+//            // Shift Payment
+//            $browser->pause(3000);
+//            $this->listShift($browser);
+//            $this->listShiftPayment($browser);
+////            $this->finalClosingShiftPayment($browser);
+//            $this->exportExcelShiftPayment($browser);
+//
+//            $this->logOutCaseA($browser);
         });
     }
 
-    //////////// Customer Start //////////////
-    private function listCustomer(Browser $browser)
+    //////////// User Start //////////////
+    private function listUser(Browser $browser)
     {
         $browser->pause(2000)
             ->mouseover('div.show-menu > ul > li:nth-child(2) > span')
             ->pause(2000)
-            ->click('div.show-menu > ul > li:nth-child(2) > ul > li:nth-child(2) > a')
+            ->click('div.show-menu > ul > li:nth-child(2) > ul > li:nth-child(3) > a')
             ->waitFor('div.show-menu')
             ->pause(2000);
     }
 
-    private function createCustomer($browser){
+    private function createUser($browser){
         $browser->pause(2000);
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
-        $browser->type('#input-course-id',"001122")->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-name','New Customer')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->click('#customer-closing-day')->pause(1000);
-        $browser->click('#customer-closing-day > option:nth-child(4)')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-//        $browser->click('#customer-tax')->pause(1000);
-//        $browser->click('#customer-tax > option:nth-child(2)')->pause(1000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-manager','123')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#postCode-first','123')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#postCode-second','4544')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-address','address test create')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-phone','01234567892')->pause(1000);
-        $browser->type('#input-course-name','New Customerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-name','New Customer')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->assertSee('Create customer success')
-            ->pause(4000);
-    }
-    private function editCustomer($browser){
-        $browser->click('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(5000)
-            ->click(".btn-edit")->pause(2000)
-            ->type('#input-course-name','Customer Update')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')
+        $browser->type('#input-user-id','1111')->pause(1000);
+        $browser->type('#input-user-name','A')->pause(1000);
+        $browser->click('#input-user-authority')->pause(1000);
+        $browser->click('#input-user-authority > option:nth-child(3)')->pause(1000);
+        $browser->type('#input-user-password','123456789a')->pause(1000);
+        $browser->click('div > .btn-save')->waitFor('.toast-body')
             ->pause(4000);
     }
 
-    private function deleteCustomer($browser){
+    private function detailUser($browser){
+        $browser->waitFor('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(2000);
+        $browser->click('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(2000);
+    }
+
+    private function editUser($browser){
+        $browser->click(".btn-edit")->pause(2000);
+
+        $browser->type('#input-user-name','B')->pause(1000);
+
+        $browser->click('#input-user-authority')->pause(1000);
+        $browser->click('#input-user-authority > option:nth-child(2)')->pause(1000);
+
+        $browser->type('#input-user-password','123456789b')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')
+            ->pause(4000);
+        //Back
+        $browser->click('div > .btn-return')->pause(3000);
+    }
+
+    private function deleteUser($browser){
         $browser
             ->click('tbody > tr:nth-child(1) > td:nth-child(5) > i')->pause(3000)
             ->click("footer > button.btn.btn-primary")
             ->waitFor('.toast-body')->pause(4000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')
-//            ->assertSee('Update driver success')->pause(4000);
     }
-    //////////// Customer End //////////////
+    //////////// User End //////////////
 
     //////////// Driver Start //////////////
     private function listDriver(Browser $browser)
@@ -198,12 +182,11 @@ class SystemCaseATest extends DuskTestCase
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
-        $browser->click('#select-type-driver > div:nth-child(1) > label')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-empolyee-number',"001122")->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-fullname','New Driver')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('#select-type-driver > div:nth-child(2) > label')->pause(2000);
+        $browser->type('#input-empolyee-number',"1111")->pause(1000);
+        $browser->type('#input-fullname','Driver A')->pause(1000);
+        $browser->type('#input-date-hire-date','1993-10-01')->pause(1000);
+
         $getDate = Carbon::now()->format('Y-m-d');
         $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
         $browser->pause(1000);
@@ -243,6 +226,73 @@ class SystemCaseATest extends DuskTestCase
     }
     //////////// Driver End //////////////
 
+    //////////// Customer Start //////////////
+    private function listCustomer(Browser $browser)
+    {
+        $browser->pause(2000)
+            ->mouseover('div.show-menu > ul > li:nth-child(2) > span')
+            ->pause(2000)
+            ->click('div.show-menu > ul > li:nth-child(2) > ul > li:nth-child(2) > a')
+            ->waitFor('div.show-menu')
+            ->pause(2000);
+    }
+
+    private function createCustomer($browser){
+        $browser->pause(2000);
+        $browser->click('div:nth-child(2) > div > button')->pause(2000);
+
+        $browser->type('#input-course-id',"0006")->pause(1000);
+
+        $browser->type('#input-course-name','Customer A')->pause(1000);
+
+        $browser->click('#customer-closing-day')->pause(1000);
+        $browser->click('#customer-closing-day > option:nth-child(1)')->pause(1000);
+
+        $browser->type('#input-course-manager','PIC A')->pause(1000);
+
+        $browser->type('#postCode-first','123')->pause(1000);
+
+        $browser->type('#postCode-second','4567')->pause(1000);
+
+        $browser->type('#input-course-address','xx県yy市zz町1-2-3')->pause(1000);
+
+        $browser->type('#input-course-phone','09012345678')->pause(1000);
+
+        $browser->click('.btn-save')->waitFor('.toast-body')
+            ->pause(4000);
+    }
+    private function editCustomer($browser){
+        $browser->click('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(5000)
+            ->click(".btn-edit")->pause(2000);
+
+        $browser->type('#input-course-name','Customer B')->pause(1000);
+
+        $browser->click('#customer-closing-day')->pause(1000);
+        $browser->click('#customer-closing-day > option:nth-child(4)')->pause(3000);
+
+        $browser->type('#input-course-manager','PIC B')->pause(1000);
+
+        $browser->type('#postCode-first','321')->pause(1000);
+
+        $browser->type('#postCode-second','7654')->pause(1000);
+
+        $browser->type('#input-course-address','xx県yy市zz町3-2-1')->pause(1000);
+
+        $browser->type('#input-course-phone','09087654321')->pause(1000);
+
+        $browser->click('.btn-save')->waitFor('.toast-body')
+            ->pause(4000);
+    }
+
+    private function deleteCustomer($browser){
+        $browser
+            ->click('tbody > tr:nth-child(1) > td:nth-child(5) > i')->pause(3000)
+            ->click("footer > button.btn.btn-primary")
+            ->waitFor('.toast-body')->pause(4000);
+//        $browser->click('.btn-save')->waitFor('.toast-body')
+//            ->assertSee('Update driver success')->pause(4000);
+    }
+    //////////// Customer End //////////////
 
     //////////// Course Start //////////////
     private function listCourse(Browser $browser)
