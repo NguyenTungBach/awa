@@ -288,7 +288,7 @@
                                 class="btn-final"
                                 :style="`background-color: ${handleChangeBackgroundFinal()}`"
                                 :disabled="disableFinal"
-                                @click="handleClosingDate()"
+                                @click="handleShowModalFinalClosing()"
                             >
                                 {{ $t("LIST_SHIFT.BUTTON_FINAL_CLOSING_DATE") }}
                             </b-button>
@@ -728,31 +728,6 @@
                                     </tr>
                                 </template>
                             </b-tbody>
-                            <!-- <b-tbody>
-                                    <b-tr v-for="(driverSalary, index) in listSalary" :key="driverSalary.id">
-                                        <b-td class="td-employee-number">
-                                            {{ driverSalary.driver_code }}
-                                        </b-td>
-
-                                        <b-td class="td-type-employee">
-                                            25 日
-                                        </b-td>
-
-                                        <b-td class="td-full-name text-center">
-                                            {{ driverSalary.driver_name }}
-                                        </b-td>
-
-                                        <b-td v-for="salary in driverSalary.shift_list" :id="salary.date" :key="`salary-${salary.date}`">
-                                            {{ salary.value }}
-                                        </b-td>
-
-                                        <b-td>
-                                            {{ listTotalSalaryMonth[index].value }}
-                                        </b-td>
-                                        <b-td>0</b-td>
-                                        <b-td><img :src="require('@/assets/images/payment.png')" alt="Logo"></b-td>
-                                    </b-tr>
-                                </b-tbody> -->
                             <b-tbody>
                                 <b-tr>
                                     <b-td class="td-total" colspan="3">
@@ -769,9 +744,6 @@
                                     </b-td>
                                     <b-td class="td-total-closing-date total_sale_list">
                                         {{ total_all_sale_by_closing_date }}
-                                    </b-td>
-                                    <b-td class="img-pdf">
-                                        <img :src="require('@/assets/images/payment.png')" alt="Logo">
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
@@ -1262,6 +1234,76 @@
             </div>
         </b-modal>
         <b-modal
+            id="modal-temporary"
+            v-model="showModalTemporary"
+            body-class="modal-temporary"
+            hide-header
+            hide-footer
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+            @close="handleCloseModalTemporary()"
+        >
+            <div class="text-center body-item">
+                <h5 class="font-weight-bolde">
+                    {{
+                        `${pickerYearMonth.year}年${pickerYearMonth.month}月を仮締めします。`
+                    }}
+                </h5>
+                <h5>本当に良いですか？</h5>
+            </div>
+            <div class="text-center">
+                <b-button
+                    pill
+                    @click="handleCloseModalTemporary()"
+                >
+                    キャンセル
+                </b-button>
+                <b-button
+                    pill
+                    class="mr-2 btn-color-active-import"
+                    @click="handleTemporary()"
+                >
+                    OK
+                </b-button>
+            </div>
+        </b-modal>
+        <b-modal
+            id="modal-final-closing"
+            v-model="showModalFinalClosing"
+            body-class="modal-final-closing"
+            hide-header
+            hide-footer
+            no-close-on-esc
+            no-close-on-backdrop
+            static
+            @close="handleCloseFinalClosing()"
+        >
+            <div class="text-center body-item">
+                <h5 class="font-weight-bolde">
+                    {{
+                        `${pickerYearMonth.year}年${pickerYearMonth.month}月を仮締めします。`
+                    }}
+                </h5>
+                <h5>本当に良いですか？</h5>
+            </div>
+            <div class="text-center">
+                <b-button
+                    pill
+                    @click="handleCloseFinalClosing()"
+                >
+                    キャンセル
+                </b-button>
+                <b-button
+                    pill
+                    class="mr-2 btn-color-active-import"
+                    @click="handleFinalClosing()"
+                >
+                    OK
+                </b-button>
+            </div>
+        </b-modal>
+        <b-modal
             id="modal-tax"
             v-model="showModalExportPDF"
             body-class="modal-tax"
@@ -1384,37 +1426,8 @@ export default {
 			closingDate: '',
 			showModalClosingDate: false,
 			showModalExportPDF: false,
-			// optionsClosingDate: [
-			// 	{
-			// 		value: '15',
-			// 		text: '15日',
-			// 	},
-			// 	{
-			// 		value: '20',
-			// 		text: '20日',
-			// 	},
-			// 	{
-			// 		value: '25',
-			// 		text: '25日',
-			// 	},
-			// 	{
-			// 		value: '28',
-			// 		text: '28日',
-			// 	},
-			// 	{
-			// 		value: '29',
-			// 		text: '29日',
-			// 	},
-			// 	{
-			// 		value: '30',
-			// 		text: '30日',
-			// 	},
-			// 	{
-			// 		value: '31',
-			// 		text: '31日',
-			// 	},
-			// ],
-
+			showModalTemporary: false,
+			showModalFinalClosing: false,
 			totalShift: '',
 
 			CONSTANT,
@@ -1657,20 +1670,24 @@ export default {
 
 					case CONSTANT.LIST_SHIFT.SALES_AMOUNT_TABLE:
 						setLoading(true);
+						await this.handleGetListCalendar();
 						await this.handleGetSaleList();
 						setLoading(false);
 						break;
 					case CONSTANT.LIST_SHIFT.HIGHT_WAY_FEE:
 						setLoading(true);
+						await this.handleGetListCalendar();
 						await this.handleGetHightWay();
 						setLoading(false);
 						break;
 					case CONSTANT.LIST_SHIFT.PAYMENT_TABLE:
 						setLoading(true);
+						await this.handleGetListCalendar();
 						await this.handleGetPayment();
 						setLoading(false);
 						break;
 				}
+				await this.handleCheckButtonTemporary();
 			},
 
 			deep: true,
@@ -1809,7 +1826,29 @@ export default {
 
 		turnOnButtonFinal() {
 			this.disableFinal = false;
+			this.showModalTemporary = true;
+		},
+
+		handleShowModalFinalClosing() {
+			this.showModalFinalClosing = true;
+		},
+
+		handleCloseModalTemporary() {
+			this.showModalTemporary = false;
+		},
+
+		handleCloseFinalClosing() {
+			this.showModalFinalClosing = false;
+		},
+
+		handleFinalClosing() {
+			this.handleClosingDate();
+			this.showModalFinalClosing = false;
+		},
+
+		handleTemporary() {
 			this.handleTemmporary();
+			this.showModalTemporary = false;
 		},
 
 		handleChangeToMonth(index) {
@@ -3958,6 +3997,19 @@ export default {
             margin-bottom: 30px;
         }
     }
+
+	.modal-final-closing {
+		.body-item {
+			margin: 30px 0;
+		}
+	}
+
+	.modal-temporary {
+		.body-item {
+			margin: 30px 0;
+		}
+	}
+
 	.modal-tax {
 		.body-item {
 			margin-top: 40px;
