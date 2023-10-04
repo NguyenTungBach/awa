@@ -1793,6 +1793,7 @@ export default {
 				const response = await CheckTemporory(URL, PARAMS);
 				if (response.code === 200) {
 					Notification.success(`${YEAR}年${MONTH}月の仮締めが完了しました。`);
+					this.disableFinal = false;
 				}
 				setLoading(false);
 			} catch (error) {
@@ -1825,7 +1826,6 @@ export default {
 		},
 
 		turnOnButtonFinal() {
-			this.disableFinal = false;
 			this.showModalTemporary = true;
 		},
 
