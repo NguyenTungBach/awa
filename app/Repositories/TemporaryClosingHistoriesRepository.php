@@ -31,10 +31,14 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
 
     public function createTemporaryClosing($input)
     {
-        $result = TemporaryClosingHistories::create([
-            'date' => $input['date'],
-            'month_year' => $input['month_year'],
-        ]);
+        $result = [];
+        $checkTemp = TemporaryClosingHistories::where('month_year', $input['month_year'])->first();
+        if (empty($checkTemp)) {
+            $result = TemporaryClosingHistories::create([
+                'date' => $input['date'],
+                'month_year' => $input['month_year'],
+            ]);
+        }
 
         return $result;
     }

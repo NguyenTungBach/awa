@@ -152,15 +152,21 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
             DB::beginTransaction();
             $result = [];
             $cashOut = CashOut::where('driver_id', $input['driver_id'])->where('id', $input['cash_out_id'])->first();
-            if (!empty($cashOut)) {
+            $check = $this->checkFinalClosing($input['cash_out_id']);
+            if (!empty($cashOut) && $check == false) {
                 $cashOutHistory = $this->createCashOutHistory($cashOut);
                 $driverId = $input['driver_id'];
                 unset($input['_method'], $input['driver_id']);
-                $result = CashOutRepository::find($input['cash_out_id'])->delete();
+                $result ['code']= Response::HTTP_OK;
+                $result ['message']= CashOutRepository::find($input['cash_out_id'])->delete();
 
                 $input['driver_id'] = $driverId;
                 $input['payment_date'] = $cashOut->payment_date;
                 $cashOutDelete = $this->cashOutStatisticalRepository->updateCashOutStatisticalByCashOut($input);
+            }
+            if ($check) {
+                $result['code'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+                $result['message'] = '「'.$cashOut->payment_date.'は既に本締めされています」';
             }
             DB::commit();
 
@@ -203,6 +209,20 @@ class CashOutRepository extends BaseRepository implements CashOutRepositoryInter
     {
         $arrDriverAssociate = Driver::where('type', 4)->pluck('id')->toArray();
         $result = in_array($driverId, $arrDriverAssociate);
+
+        return $result;
+    }
+
+    public function checkFinalClosing($cashOutId)
+    {
+        $result = false;
+        $arrFinal = FinalClosingHistories::get()->pluck('month_year')->toArray();
+        $cashOut = CashOut::find($cashOutId);
+        if (empty($cashOut)) {
+            return $result;
+        }
+        $date = date('Y-m', strtotime($cashOut->payment_date));
+        $result = in_array($date, $arrFinal);
 
         return $result;
     }

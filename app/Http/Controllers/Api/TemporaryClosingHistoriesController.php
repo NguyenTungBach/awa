@@ -119,9 +119,6 @@ class TemporaryClosingHistoriesController extends Controller
         try {
             $request['date'] = Carbon::now()->format('Y-m-d');
             $result = $this->repository->createTemporaryClosing($request->all());
-            if (empty($result)) {
-                return $this->responseJsonError(Response::HTTP_NOT_FOUND, CREATE_ERROR, 'NOT FOUND DRIVER IN DRIVER COURSE');
-            }
 
             return $this->responseJson(Response::HTTP_OK, new TemporaryClosingHistoriesResource($result), CREATE_SUCCESS);
         } catch (\Exception $exception) {

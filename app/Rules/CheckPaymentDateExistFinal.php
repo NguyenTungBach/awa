@@ -4,6 +4,8 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\FinalClosingHistories;
+use App\Models\CashOut;
+use Illuminate\Support\Facades\Route;
 
 class CheckPaymentDateExistFinal implements Rule
 {
@@ -29,6 +31,15 @@ class CheckPaymentDateExistFinal implements Rule
     public function passes($attribute, $value)
     {
         $arrFinalMonth = FinalClosingHistories::get()->pluck('month_year')->toArray();
+        if (Route::getCurrentRoute()->getActionMethod() == 'update') {
+            $cashOut = CashOut::find(request()->route('cash_out'));
+            $date = !empty($cashOut) ? date('Y-m', strtotime($cashOut->payment_date)) : '';
+            $check = in_array($date, $arrFinalMonth);
+            if ($check) {
+                $this->attribute = $cashOut;
+                return false;
+            }
+        }
         $value = date('Y-m', strtotime($value));
         $result = in_array($value, $arrFinalMonth);
         if ($result) {
@@ -45,6 +56,6 @@ class CheckPaymentDateExistFinal implements Rule
      */
     public function message()
     {
-        return '入金日が最終締め切り時間と重なった';
+        return '「'.$this->attribute.'は既に本締めされています」';
     }
 }

@@ -42,7 +42,6 @@ class TemporaryClosingHistoriesRequest extends FormRequest
             'month_year' => [
                 'required',
                 'date_format:Y-m',
-                'unique:temporary_closing_histories,month_year,NULL,id,deleted_at,NULL'
             ],
         ];
 
