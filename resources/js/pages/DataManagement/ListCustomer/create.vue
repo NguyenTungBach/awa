@@ -179,7 +179,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-manager">
+                                                    <label for="input-customer-client_manager">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_MANAGER') }}
                                                         <span class="text-danger">
                                                             *
@@ -187,7 +187,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-manager"
+                                                            id="input-customer-client_manager"
                                                             v-model="isForm.customer_manager"
                                                         />
                                                     </b-input-group>
@@ -235,7 +235,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-address">
+                                                    <label for="input-customer-address">
                                                         {{ $t('CUSTOMER_CREATE.ADDRESS_OF_CLIENT') }}
                                                         <span class="text-danger">
                                                             *
@@ -243,7 +243,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-address"
+                                                            id="input-customer-address"
                                                             v-model="isForm.customer_address"
                                                         />
                                                     </b-input-group>
@@ -260,7 +260,7 @@
                                                 :xl="12"
                                             >
                                                 <div class="item-form">
-                                                    <label for="input-course-phone">
+                                                    <label for="input-customer-phone">
                                                         {{ $t('CUSTOMER_CREATE.CLIENT_PHONE') }}
                                                         <span class="text-danger">
                                                             *
@@ -268,7 +268,7 @@
                                                     </label>
                                                     <b-input-group>
                                                         <b-form-input
-                                                            id="input-course-phone"
+                                                            id="input-customer-phone"
                                                             v-model="isForm.customer_phone"
                                                             type="text"
                                                             maxlength="13"

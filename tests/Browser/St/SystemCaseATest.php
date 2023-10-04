@@ -25,35 +25,34 @@ class SystemCaseATest extends DuskTestCase
     {
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed --class=UserSeeder');
-        Artisan::call('db:seed --class=DriverSeeder');
-        Artisan::call('db:seed --class=CustomerSeeder');
-        Artisan::call('db:seed --class=CourseSeeder');
+//        Artisan::call('db:seed --class=DriverSeeder');
+//        Artisan::call('db:seed --class=CustomerSeeder');
+//        Artisan::call('db:seed --class=CourseSeeder');
 
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginDriverCaseAGeneral($browser);
 
 //            // User
-//            $this->listUser($browser);
-//            $this->createUser($browser);
-//            $this->detailUser($browser);
-//            $this->editUser($browser);
-//            $this->deleteUser($browser);
+            $this->listUser($browser);
+            $this->createUser($browser);
+            $this->editUser($browser);
+            $this->deleteUser($browser);
 
-//            // Driver
-//            $this->listDriver($browser);
-//            $this->createDriver($browser);
-//            $this->editDriver($browser);
-//            $this->listDriver($browser);
-//            $this->deleteDriver($browser);
+            // Driver
+            $this->listDriver($browser);
+            $this->createDriver($browser);
+            $this->editDriver($browser);
+            $this->deleteDriver($browser);
 
             // Customer
             $this->listCustomer($browser);
-//            $this->createCustomer($browser);
+            $this->createCustomer($browser);
+            $this->listDriver($browser);
+            $this->createDriver($browser);
+            $this->listCustomer($browser);
             $this->editCustomer($browser);
-//            $this->listCustomer($browser);
-//            $this->deleteCustomer($browser);
-
+            $this->deleteCustomer($browser);
 
 //            // Course
 //            $this->listCourse($browser);
@@ -135,16 +134,13 @@ class SystemCaseATest extends DuskTestCase
         $browser->click('#input-user-authority')->pause(1000);
         $browser->click('#input-user-authority > option:nth-child(3)')->pause(1000);
         $browser->type('#input-user-password','123456789a')->pause(1000);
-        $browser->click('div > .btn-save')->waitFor('.toast-body')
+        $browser->click('div > .btn-save')->waitFor('.toast-body')->waitFor('div.show-menu')
             ->pause(4000);
     }
 
-    private function detailUser($browser){
+    private function editUser($browser){
         $browser->waitFor('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(2000);
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(2000);
-    }
-
-    private function editUser($browser){
         $browser->click(".btn-edit")->pause(2000);
 
         $browser->type('#input-user-name','B')->pause(1000);
@@ -187,37 +183,43 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-fullname','Driver A')->pause(1000);
         $browser->type('#input-date-hire-date','1993-10-01')->pause(1000);
 
-        $getDate = Carbon::now()->format('Y-m-d');
-        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
-        $browser->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $getDate = Carbon::now()->format('Y-m-d');
+//        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
+//        $browser->pause(1000);
+
         $browser->type('#input-character','29E2-12362')->pause(1000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        //Validate
-        $browser->type('#input-date-hire-date','2023/01-08')->pause(1000);
-        $getDate = Carbon::now()->format('Y-m-d');
-        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
-        $browser->pause(1000);
-        $browser->type('#input-fullname','New Driverzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-fullname','New Driver')->pause(1000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000)
-            ->waitFor('.zone-table')
+
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000)->waitFor('div.show-menu')
 //            ->assertSee('Create driver success')
             ->pause(4000);
     }
     private function editDriver($browser){
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(5) > i')->pause(5000)
-            ->click(".btn-edit")->pause(2000)
-            ->type('#input-fullname','Driver Edit')->pause(2000);
+            ->click(".btn-edit")->pause(2000);
+
+        $browser->click('#select-type-driver > div:nth-child(2) > label')->pause(2000);
+
+        $browser->type('#input-fullname','Driver B')->pause(1000);
+        $browser->type('#input-date-hire-date','1996-01-01')->pause(1000);
+
+//        $getDate = Carbon::now()->format('Y-m-d');
+//        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
+//        $browser->pause(1000);
+
+        $browser->type('#input-character','29E2-12363')->pause(1000);
+        $browser->type('#input-retirement-date','2023-09-01')->pause(1000);
+
         $browser->click('.btn-save')->waitFor('.toast-body')
 //            ->assertSee('Update driver success')
             ->pause(4000);
+
+        //Back
+        $browser->click('div > .btn-return')->pause(3000);
     }
 
     private function deleteDriver($browser){
-        $browser->pause(5000)
-            ->click('tbody > tr:nth-child(5) > td:nth-child(6) > i')->pause(3000)
+        $browser
+            ->click('tbody > tr:nth-child(1) > td:nth-child(6) > i')->pause(3000)
             ->click("footer > button.btn.btn-primary")
             ->waitFor('.toast-body')
             ->pause(4000);
@@ -241,27 +243,29 @@ class SystemCaseATest extends DuskTestCase
         $browser->pause(2000);
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
 
-        $browser->type('#input-course-id',"0006")->pause(1000);
+        $browser->type('#input-course-id',"0001")->pause(1000);
 
         $browser->type('#input-course-name','Customer A')->pause(1000);
 
         $browser->click('#customer-closing-day')->pause(1000);
         $browser->click('#customer-closing-day > option:nth-child(1)')->pause(1000);
 
-        $browser->type('#input-course-manager','PIC A')->pause(1000);
+        $browser->type('#input-customer-client_manager','PIC A')->pause(1000);
 
         $browser->type('#postCode-first','123')->pause(1000);
 
         $browser->type('#postCode-second','4567')->pause(1000);
 
-        $browser->type('#input-course-address','xx県yy市zz町1-2-3')->pause(1000);
+        $browser->type('#input-customer-address','xx県yy市zz町1-2-3')->pause(1000);
 
-        $browser->type('#input-course-phone','09012345678')->pause(1000);
+        $browser->type('#input-customer-phone','09012345678')->pause(1000);
 
-        $browser->click('.btn-save')->waitFor('.toast-body')
+        $browser->click('.btn-save')->waitFor('.toast-body')->waitFor('div.show-menu')
             ->pause(4000);
     }
+
     private function editCustomer($browser){
+        $browser->waitFor('tbody > tr:nth-child(1) > td:nth-child(4) > i');
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(4) > i')->pause(5000)
             ->click(".btn-edit")->pause(2000);
 
@@ -270,18 +274,21 @@ class SystemCaseATest extends DuskTestCase
         $browser->click('#customer-closing-day')->pause(1000);
         $browser->click('#customer-closing-day > option:nth-child(4)')->pause(3000);
 
-        $browser->type('#input-course-manager','PIC B')->pause(1000);
+        $browser->type('#input-customer-client_manager','PIC B')->pause(1000);
 
         $browser->type('#postCode-first','321')->pause(1000);
 
         $browser->type('#postCode-second','7654')->pause(1000);
 
-        $browser->type('#input-course-address','xx県yy市zz町3-2-1')->pause(1000);
+        $browser->type('#input-customer-address','xx県yy市zz町3-2-1')->pause(1000);
 
-        $browser->type('#input-course-phone','09087654321')->pause(1000);
+        $browser->type('#input-customer-phone','09087654321')->pause(1000);
 
         $browser->click('.btn-save')->waitFor('.toast-body')
             ->pause(4000);
+
+        //Back
+        $browser->click('div > .btn-return')->pause(3000);
     }
 
     private function deleteCustomer($browser){

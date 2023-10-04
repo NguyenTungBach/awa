@@ -58,13 +58,13 @@ class CustomerCrudTest extends DuskTestCase
 //        $browser->click('#customer-tax')->pause(1000);
 //        $browser->click('#customer-tax > option:nth-child(2)')->pause(1000);
 //        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-manager','123')->pause(1000);
+        $browser->type('#input-customer-client_manager','123')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-first','123')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-second','4544')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-address','address test create')->pause(1000);
+        $browser->type('#input-customer-address','address test create')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-phone','01234567892')->pause(1000);
         $browser->type('#input-course-name','Bach Customerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')->pause(1000);

@@ -9,6 +9,7 @@ namespace Repository;
 use App\Models\Customer;
 use App\Models\Course;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
+use Carbon\Carbon;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -40,17 +41,35 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
             $input['phone'] = str_replace('-', '', $input['phone']);
         }
 
-        $customer = Customer::create([
-            'customer_code' => $input['customer_code'],
-            'customer_name' => $input['customer_name'],
-            'closing_date' => $input['closing_date'],
-            'person_charge' => $input['person_charge'],
+        //Kiểm tra customer_code này đã từng bị xóa hay chưa. Nếu có thì dùng luôn
+        $checkDriverByCustomerCode = Customer::where('customer_code',$input['customer_code'])->whereNotNull('deleted_at')->withoutGlobalScopes()->first();
+        if ($checkDriverByCustomerCode){
+            $checkDriverByCustomerCode->customer_name = $input['customer_name'];
+            $checkDriverByCustomerCode->closing_date = $input['closing_date'];
+            $checkDriverByCustomerCode->person_charge = $input['person_charge'];
+            $checkDriverByCustomerCode->post_code = $input['post_code'];
+            $checkDriverByCustomerCode->address = $input['address'];
+            $checkDriverByCustomerCode->phone = $input['phone'];
+            $checkDriverByCustomerCode->note = $note;
+            $checkDriverByCustomerCode->status = 1;
+            $checkDriverByCustomerCode->created_at = Carbon::now();
+            $checkDriverByCustomerCode->updated_at = null;
+            $checkDriverByCustomerCode->deleted_at = null;
+            $checkDriverByCustomerCode->save();
+            $customer = $input;
+        } else{
+            $customer = Customer::create([
+                'customer_code' => $input['customer_code'],
+                'customer_name' => $input['customer_name'],
+                'closing_date' => $input['closing_date'],
+                'person_charge' => $input['person_charge'],
 //            'tax' => $input['tax'],
-            'post_code' => $input['post_code'],
-            'address' => $input['address'],
-            'phone' => $input['phone'],
-            'note' => $note,
-        ]);
+                'post_code' => $input['post_code'],
+                'address' => $input['address'],
+                'phone' => $input['phone'],
+                'note' => $note,
+            ]);
+        }
 
         return $customer;
     }

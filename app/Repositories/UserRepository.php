@@ -80,13 +80,26 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function create($attributes)
     {
-        $user = User::create([
-            'user_code' => $attributes['user_code'],
-            'user_name' => $attributes['user_name'],
-            'password' => Hash::make($attributes['password']),
-            'role' => $attributes['role'],
-        ]);
-
+        //Kiểm tra user_code này đã từng bị xóa hay chưa. Nếu có thì dùng luôn
+        $checkDriverByUserCode = User::where('user_code',$attributes['user_code'])->whereNotNull('deleted_at')->withoutGlobalScopes()->first();
+        if ($checkDriverByUserCode){
+            $checkDriverByUserCode->user_name = $attributes['user_name'];
+            $checkDriverByUserCode->password = Hash::make($attributes['password']);
+            $checkDriverByUserCode->role = $attributes['role'];
+            $checkDriverByUserCode->status = 1;
+            $checkDriverByUserCode->created_at = Carbon::now();
+            $checkDriverByUserCode->updated_at = null;
+            $checkDriverByUserCode->deleted_at = null;
+            $checkDriverByUserCode->save();
+            $user = $attributes;
+        } else{
+            $user = User::create([
+                'user_code' => $attributes['user_code'],
+                'user_name' => $attributes['user_name'],
+                'password' => Hash::make($attributes['password']),
+                'role' => $attributes['role'],
+            ]);
+        }
         return $user;
     }
 
