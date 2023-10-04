@@ -25,43 +25,44 @@ class SystemCaseATest extends DuskTestCase
     {
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed --class=UserSeeder');
-//        Artisan::call('db:seed --class=DriverSeeder');
-//        Artisan::call('db:seed --class=CustomerSeeder');
-//        Artisan::call('db:seed --class=CourseSeeder');
+        Artisan::call('db:seed --class=DriverSeeder');
+        Artisan::call('db:seed --class=CustomerSeeder');
+        Artisan::call('db:seed --class=CourseSeeder');
 
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginDriverCaseAGeneral($browser);
 
 //            // User
-            $this->listUser($browser);
-            $this->createUser($browser);
-            $this->editUser($browser);
-            $this->deleteUser($browser);
+//            $this->listUser($browser);
+//            $this->createUser($browser);
+//            $this->editUser($browser);
+//            $this->deleteUser($browser);
+//
+//            // Driver
+//            $this->listDriver($browser);
+//            $this->createDriver($browser);
+//            $this->editDriver($browser);
+//            $this->deleteDriver($browser);
+//
+//            // Customer
+//            $this->listCustomer($browser);
+//            $this->createCustomer($browser);
+//            $this->listDriver($browser);
+//            $this->createDriver($browser);
+//            $this->listCustomer($browser);
+//            $this->editCustomer($browser);
+//            $this->deleteCustomer($browser);
+//            $this->createCustomer($browser);
 
-            // Driver
-            $this->listDriver($browser);
-            $this->createDriver($browser);
-            $this->editDriver($browser);
-            $this->deleteDriver($browser);
-
-            // Customer
-            $this->listCustomer($browser);
-            $this->createCustomer($browser);
-            $this->listDriver($browser);
-            $this->createDriver($browser);
-            $this->listCustomer($browser);
-            $this->editCustomer($browser);
-            $this->deleteCustomer($browser);
-
-//            // Course
-//            $this->listCourse($browser);
-//            $this->createCourse($browser);
+            // Course
+            $this->listCourse($browser);
+            $this->createCourse($browser);
 //            $this->exportCourse($browser);
 //            $this->editCourse($browser);
 //            $this->listCourse($browser);
-////            $this->deleteCourse($browser);
-//
+//            $this->deleteCourse($browser);
+
 //            // Shift
 //            $browser->pause(3000);
 //            $this->listShift($browser);
@@ -321,84 +322,144 @@ class SystemCaseATest extends DuskTestCase
 
     private function createCourse($browser){
         $browser->click('.title-edit')->pause(4000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         // Ship date
-        $getDate = Carbon::now()->format('Y-m-d');
-        $this->mapDate($browser, '.input-group-append', $getDate);
-        $browser->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-//        $browser->type('#input-course-name',"New Test Course")->pause(2000);
-//        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+//        $getDate = Carbon::now()->format('Y-m-d');
+//        $this->mapDate($browser, '.input-group-append', $getDate);
+//        $browser->pause(2000);
+        // Ship date
+        $browser->type('#input-date-date-of-birth',"2023-09-01")->pause(2000);
+
+        // Driver Name
         $browser->click('#input-driver-name')->pause(2000);
         $browser->click('#input-driver-name > option:nth-child(1)')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+
         // Vihicle number
         $browser->type('#input-vihicle-number',"1234")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Start Time
-        $browser->click('div.row > div:nth-child(1) > div > div > div')->pause(2000);
-        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(9)')->pause(2000);
-        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1) > div')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // End Time
-        $browser->click('div:nth-child(1) > div.col-sm-12> div > div.row > div:nth-child(2) > div > div > div')->pause(2000);
-        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(19)')->pause(2000);
-        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Break Time
-        $browser->click('div.row > div:nth-child(3) > div > div > div')->pause(2000);
-        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(16)')->pause(2000);
-        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+
+//        // Start Time
+//        $browser->click('div.row > div:nth-child(1) > div > div > div')->pause(2000);
+//        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(9)')->pause(2000);
+//        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1) > div')->pause(2000);
+//
+//        // End Time
+//        $browser->click('div:nth-child(1) > div.col-sm-12> div > div.row > div:nth-child(2) > div > div > div')->pause(2000);
+//        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(19)')->pause(2000);
+//        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+//
+//        // Break Time
+//        $browser->click('div.row > div:nth-child(3) > div > div > div')->pause(2000);
+//        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(16)')->pause(2000);
+//        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+
         // Customer name
         $browser->click('#input-customer-name')->pause(2000);
         $browser->click('#input-customer-name > option:nth-child(1)')->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+
         // Depature place
-        $browser->type('#input-depature-place',"Dong Da")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-depature-place',"Departure A")->pause(2000);
+
         // Arrival place
-        $browser->type('#input-arrival_place',"Kim Ma")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Item name
-        $browser->type('#input-item-name',"Milk")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Quantity
-        $browser->type('#input-quantity',"1")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Unit Price
-        $browser->type('#input-unitPrice',"1000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Weight
-        $browser->type('#input-unitPrice',"10")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-arrival_place',"Arrival A")->pause(2000);
+
+//        // Item name
+//        $browser->type('#input-item-name',"Milk")->pause(2000);
+//
+//        // Quantity
+//        $browser->type('#input-quantity',"1")->pause(2000);
+//
+//        // Unit Price
+//        $browser->type('#input-unitPrice',"1000")->pause(2000);
+//
+//        // Weight
+//        $browser->type('#input-weight',"10")->pause(2000);
+
         // Freight cost
-        $browser->type('#input-freight-cost',"2000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Freight cost
-        $browser->type('#input-freight-cost',"2000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // cooperating company payment amount
-        $browser->type('#input-freight-cost',"0")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // cooperating company payment amount
-        $browser->type('#input-freight-cost',"0")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        // Expressway/ferry fee
-        $browser->type('#input-hight-way',"3000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->type('#input-freight-cost',"100000")->pause(2000);
+
+//        // cooperating company payment amount
+//        $browser->type('#input-freight-cost',"0")->pause(2000);
+//
+//        // Expressway/ferry fee
+//        $browser->type('#input-hight-way',"3000")->pause(2000);
+
         // Commission
         $browser->type('#input-expenses',"1000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+
         // Meal subsidy amount
         $browser->type('#input-bunus-amount',"1000")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->pause(10000);
+
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(3000);
     }
+
     private function editCourse($browser){
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(8) > i')->pause(4000)
-            ->click(".btn-save")->pause(2000)
-            ->type('#input-item-name',"Milk new")->pause(2000);
+            ->click(".btn-save")->pause(2000);
+
+        // Ship date
+        $browser->type('#input-date-date-of-birth',"2023-09-05")->pause(2000);
+
+        // Driver Name
+        $browser->click('#input-driver-name')->pause(2000);
+        $browser->click('#input-driver-name > option:nth-child(2)')->pause(2000);
+
+        // Vihicle number
+        $browser->type('#input-vihicle-number',"1234")->pause(2000);
+
+        // Start Time
+        $browser->click('div.row > div:nth-child(1) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(7)')->pause(2000);
+        $browser->click('div:nth-child(1) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(2) > div')->pause(2000);
+
+        // End Time
+        $browser->click('div:nth-child(1) > div.col-sm-12> div > div.row > div:nth-child(2) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(19)')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(2)')->pause(2000);
+
+        // Break Time
+        $browser->click('div.row > div:nth-child(3) > div > div > div')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(2)')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+
+        // Customer name
+        $browser->click('#input-customer-name')->pause(2000);
+        $browser->click('#input-customer-name > option:nth-child(2)')->pause(2000);
+
+        // Depature place
+        $browser->type('#input-depature-place',"Departure B")->pause(2000);
+
+        // Arrival place
+        $browser->type('#input-arrival_place',"Arrival B")->pause(2000);
+
+        // Item name
+        $browser->type('#input-item-name',"しいたけ")->pause(2000);
+
+        // Quantity
+        $browser->type('#input-quantity',"50")->pause(2000);
+
+        // Unit Price
+        $browser->type('#input-unitPrice',"1000")->pause(2000);
+
+        // Weight
+        $browser->type('#input-weight',"3")->pause(2000);
+
+        // Freight cost
+        $browser->type('#input-freight-cost',"100000")->pause(2000);
+
+        // cooperating company payment amount
+        $browser->type('#input-freight-cost',"20000")->pause(2000);
+
+        // Expressway/ferry fee
+        $browser->type('#input-hight-way',"200000")->pause(2000);
+
+        // Commission
+        $browser->type('#input-expenses',"1000")->pause(2000);
+
+        // Meal subsidy amount
+        $browser->type('#input-bunus-amount',"2000")->pause(2000);
+
+        // Note
+        $browser->type('#input-notes',"memo")->pause(2000);
+
         $browser->click('.btn-save')->waitFor('.toast-body')
             ->pause(4000);
     }
