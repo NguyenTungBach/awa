@@ -133,9 +133,9 @@ class SystemNewTest extends DuskTestCase
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#postCode-second','4544')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-address','address test create')->pause(1000);
+        $browser->type('#input-customer-address','address test create')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
-        $browser->type('#input-course-phone','01234567892')->pause(1000);
+        $browser->type('#input-customer-phone','01234567892')->pause(1000);
         $browser->type('#input-course-name','New Customerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')->pause(1000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->type('#input-course-name','New Customer')->pause(1000);
