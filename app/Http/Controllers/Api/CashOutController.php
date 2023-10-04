@@ -112,10 +112,11 @@ class CashOutController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(CashOutRequest $request, $id)
     {
         try {
             $input['driver_id'] = request()->route('driver');
@@ -124,11 +125,14 @@ class CashOutController extends Controller
             if (empty($result)) {
                 return $this->responseJsonError(Response::HTTP_NOT_FOUND, ERROR, 'NOT FOUND');
             }
+            if ($result['code'] != 200) {
+                return $this->responseJsonError(Response::HTTP_UNPROCESSABLE_ENTITY, ERROR, $result['message']);
+            }
 
-            return $this->responseJson(Response::HTTP_OK, $result, DELETE_SUCCESS);
+            return $this->responseJson(Response::HTTP_OK, $result['message'], DELETE_SUCCESS);
         } catch (\Exception $exception) {
 
-            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR, $exception->getMessage());
+            return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, DELETE_ERROR, $exception);
         }
     }
 }

@@ -56,7 +56,7 @@ class CashOutRequest extends FormRequest
             'payment_date' => [
                 'required',
                 'date_format:Y-m-d',
-                new CheckPaymentDateExistFinal(__('cash_outs.payment_date')),
+                new CheckPaymentDateExistFinal($this->get('payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
         ];
@@ -92,7 +92,7 @@ class CashOutRequest extends FormRequest
                 'sometimes',
                 'required',
                 'date_format:Y-m-d',
-                new CheckPaymentDateExistFinal(__('cash_outs.payment_date')),
+                new CheckPaymentDateExistFinal($this->get('payment_date')),
             ],
             'note' => 'nullable|string|max:1000',
         ];
