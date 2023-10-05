@@ -5,6 +5,7 @@ const state = {
 	listUpdate: [],
 
 	reLoadTable: 0,
+	checkFinal: true,
 };
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
 	SET_RELOAD_TABLE: (state) => {
 		state.reLoadTable = state.reLoadTable + 1;
 	},
+	SET_FINAL_CLOSING: (state, check) => {
+		state.checkFinal = check;
+	},
 };
 
 const actions = {
@@ -34,6 +38,9 @@ const actions = {
 	},
 	setReloadTable({ commit }) {
 		commit('SET_RELOAD_TABLE');
+	},
+	setCheckFinalClosing({ commit }, check) {
+		commit('SET_FINAL_CLOSING', check);
 	},
 };
 
