@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
+use App\Rules\CheckTempExistsFinalRule;
 
 class TemporaryClosingHistoriesRequest extends FormRequest
 {
@@ -42,6 +43,7 @@ class TemporaryClosingHistoriesRequest extends FormRequest
             'month_year' => [
                 'required',
                 'date_format:Y-m',
+                new CheckTempExistsFinalRule($this->get('month_year')),
             ],
         ];
 
@@ -76,9 +78,6 @@ class TemporaryClosingHistoriesRequest extends FormRequest
             // month_year
             'month_year.required' => __('validation.required', ['attribute' => 'month_year']),
             'month_year.date_format' => __('validation.date_format', ['attribute' => 'month_year', 'format' => 'Y-m']),
-            // type
-            'type.required' => __('validation.required', ['attribute' => 'type']),
-            'type.in' => __('validation.in', ['attribute' => 'type']),
         ];
     }
 }
