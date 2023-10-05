@@ -46,10 +46,10 @@
                         @if (!empty($value['total_payable_day']) && array_key_exists($item['date'], $value['total_payable_day']))
                             <td style="{{ $styleDefault }}">{{ $value['total_payable_day'][$item['date']] }}</td>
                         @else
-                            <td style="{{ $styleDefault }}">0</td>
+                            <td style="{{ $styleDefault }}"></td>
                         @endif
                     @endforeach
-                    <td style="{{ $styleDefault }}">{{ $value['payable_this_month'] }}</td>
+                    <td style="{{ $styleDefault }}">{{ $value['payable_this_month'] == 0 ? '' : $value['payable_this_month'] }}</td>
                 </tr>
             @endforeach
 
@@ -59,10 +59,10 @@
                     @if (array_key_exists($item['date'], $result['sum_total_day']))
                         <td style="{{ $styleDefault }}">{{ $result['sum_total_day'][$item['date']] }}</td>
                     @else
-                        <td style="{{ $styleDefault }}">0</td>
+                        <td style="{{ $styleDefault }}"></td>
                     @endif
                 @endforeach
-                <td style="{{ $styleDefault }}">{{ $result['sum_total_month'] }}</td>
+                <td style="{{ $styleDefault }}">{{ $result['sum_total_month'] == 0 ? '' : $result['sum_total_month'] }}</td>
             </tr>
         </tbody>
     </table>
