@@ -448,7 +448,7 @@
                                     </label>
                                     <b-input-group class="mb-3">
                                         <b-form-input
-                                            id="input-cooperating-company-payment-amount"
+                                            id="input-freight-cost"
                                             v-model="isForm.freight_cost"
                                             type="number"
                                         />
