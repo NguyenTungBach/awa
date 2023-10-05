@@ -1175,10 +1175,10 @@
                                     </b-td> -->
 
                                     <b-td v-for="(value, idx) in total_payment" :key="`total-${idx}`" class="text-center total_payment">
-                                        {{ Number(value.pay) }}
+                                        {{ value.pay ? Number(value.pay) : value.pay }}
                                     </b-td>
                                     <b-td class="td-total-month total_payment">
-                                        {{ Number(total_payment_of_month) }}
+                                        {{ total_payment_of_month ? Number(total_payment_of_month) : total_payment_of_month }}
                                     </b-td>
                                 </b-tr>
                             </b-tbody>

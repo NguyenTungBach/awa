@@ -158,10 +158,10 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
                     $listDataResult[$kItem]['total_payable_day'][$kCalendar]['payment'] = $item['total_payable_day'][$calendar];
                 } else {
                     $listDataResult[$kItem]['total_payable_day'][$kCalendar]['date'] = $calendar;
-                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['payment'] = 0;
+                    $listDataResult[$kItem]['total_payable_day'][$kCalendar]['payment'] = '';
                 }
             }
-            $listDataResult[$kItem]['payable_this_month'] = $item['payable_this_month'];
+            $listDataResult[$kItem]['payable_this_month'] = $item['payable_this_month'] == 0 ? '' : $item['payable_this_month'];
         }
 
         $totalPayableDayResult = [];
@@ -172,14 +172,14 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             } else {
                 // $totalPayableDayResult[$calendar] = 0;
                 $totalPayableDayResult[$kCalendar]['date'] = $calendar;
-                $totalPayableDayResult[$kCalendar]['pay'] = 0;
+                $totalPayableDayResult[$kCalendar]['pay'] = '';
             }
         }
 
         $result = [
             'list_data' => $listDataResult,
             'sum_total_day' => $totalPayableDayResult,
-            'sum_total_month' => $totalPayable
+            'sum_total_month' => $totalPayable == 0 ? '' : $totalPayable,
         ];
 
         return $result;
@@ -292,6 +292,8 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             $payableThisMonth = floatval($data[$key]['payable_this_month']);
             $totalPayable += $payableThisMonth;
         }
+
+        // dd('data', $data);
 
         $result = [
             'list_data' => $data,
