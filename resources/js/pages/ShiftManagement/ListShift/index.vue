@@ -1396,7 +1396,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary, CheckButtonFinalClosing } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1688,6 +1688,7 @@ export default {
 						break;
 				}
 				await this.handleCheckButtonTemporary();
+				await this.handleCheckButtonFinalClosing();
 			},
 
 			deep: true,
@@ -1825,6 +1826,29 @@ export default {
 			}
 		},
 
+		// API CHECK FINAL CLOSING DATE
+		async handleCheckButtonFinalClosing() {
+			try {
+				let PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
+
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_FINALCLOSING;
+				const response = await CheckButtonFinalClosing(URL, PARAMS);
+				if (response.code === 200) {
+					this.disableFinal = response.data.checkFinalClosing;
+					// this.disableEditShift = response.data.checkTemporary;
+				}
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
+
 		turnOnButtonFinal() {
 			this.showModalTemporary = true;
 		},
@@ -1881,6 +1905,7 @@ export default {
 			await this.onClickSelectTable();
 			if (hasRole(this.role)) {
 				await this.handleCheckButtonTemporary();
+				await this.handleCheckButtonFinalClosing();
 			}
 			setLoading(false);
 		},
