@@ -35,6 +35,7 @@ const getters = {
 	warningNotSaveCourse: state => state.course.warningNotSave,
 	warningNotSaveCoursePattern: state => state.listCoursePattern.warningNotSave,
 	idRouter: state => state.listCash.idRouter,
+	checkFinal: state => state.listShift.checkFinal,
 };
 
 export default getters;

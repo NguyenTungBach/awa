@@ -1396,7 +1396,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary, CheckButtonFinalClosing } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1534,6 +1534,10 @@ export default {
 	computed: {
 		role() {
 			return this.$store.getters.profile.role;
+		},
+
+		checkFinal() {
+			return this.$store.getters.checkFinal;
 		},
 
 		pickerYearMonth() {
@@ -1688,7 +1692,7 @@ export default {
 						break;
 				}
 				await this.handleCheckButtonTemporary();
-				await this.handleCheckButtonFinalClosing();
+				// await this.handleCheckButtonFinalClosing();
 			},
 
 			deep: true,
@@ -1737,6 +1741,7 @@ export default {
 
 	created() {
 		this.initData();
+		this.disableFinal = this.checkFinal;
 	},
 
 	methods: {
@@ -1795,6 +1800,7 @@ export default {
 				if (response.code === 200) {
 					Notification.success(`${YEAR}年${MONTH}月の仮締めが完了しました。`);
 					this.disableFinal = false;
+					this.$store.dispatch('listShift/setCheckFinalClosing', false);
 				}
 				setLoading(false);
 			} catch (error) {
@@ -1827,27 +1833,27 @@ export default {
 		},
 
 		// API CHECK FINAL CLOSING DATE
-		async handleCheckButtonFinalClosing() {
-			try {
-				let PARAMS = {};
-				const YEAR = this.pickerYearMonth.year;
-				const MONTH = this.pickerYearMonth.month;
+		// async handleCheckButtonFinalClosing() {
+		// 	try {
+		// 		let PARAMS = {};
+		// 		const YEAR = this.pickerYearMonth.year;
+		// 		const MONTH = this.pickerYearMonth.month;
 
-				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+		// 		const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-				PARAMS.month_year = YEAR_MONTH;
-				PARAMS = cleanObject(PARAMS);
-				const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_FINALCLOSING;
-				const response = await CheckButtonFinalClosing(URL, PARAMS);
-				if (response.code === 200) {
-					this.disableFinal = response.data.checkFinalClosing;
-					// this.disableEditShift = response.data.checkTemporary;
-				}
-			} catch (error) {
-				setLoading(false);
-				console.log(error);
-			}
-		},
+		// 		PARAMS.month_year = YEAR_MONTH;
+		// 		PARAMS = cleanObject(PARAMS);
+		// 		const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_FINALCLOSING;
+		// 		const response = await CheckButtonFinalClosing(URL, PARAMS);
+		// 		if (response.code === 200) {
+		// 			this.disableFinal = response.data.checkFinalClosing;
+		// 			// this.disableEditShift = response.data.checkTemporary;
+		// 		}
+		// 	} catch (error) {
+		// 		setLoading(false);
+		// 		console.log(error);
+		// 	}
+		// },
 
 		turnOnButtonFinal() {
 			this.showModalTemporary = true;
@@ -1898,6 +1904,7 @@ export default {
 		},
 
 		async initData() {
+			console.log('checkFinal', this.checkFinal);
 			const TYPE = this.$store.getters.weekOrMonthListShift || CONSTANT.LIST_SHIFT.MONTH;
 			setLoading(true);
 			await this.onClickSelectWeekMonth(TYPE);
@@ -1905,7 +1912,7 @@ export default {
 			await this.onClickSelectTable();
 			if (hasRole(this.role)) {
 				await this.handleCheckButtonTemporary();
-				await this.handleCheckButtonFinalClosing();
+				// await this.handleCheckButtonFinalClosing();
 			}
 			setLoading(false);
 		},
@@ -2120,6 +2127,7 @@ export default {
 					Notification.success(`${YEAR}年${MONTH}月の本締めが完了しました。`);
 					this.disableTem = true;
 					this.disableFinal = true;
+					this.$store.dispatch('listShift/setCheckFinalClosing', true);
 				}
 				setLoading(false);
 			} catch (error) {
