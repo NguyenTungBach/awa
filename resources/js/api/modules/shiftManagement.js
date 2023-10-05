@@ -60,6 +60,10 @@ function CheckButtonTemporary(url, data) {
 	return request.getRequest(url, data);
 }
 
+function CheckButtonFinalClosing(url, data) {
+	return request.getRequest(url, data);
+}
+
 export {
 	getListPractical,
 	getListShift,
@@ -75,5 +79,6 @@ export {
 	getDataUpdate,
 	CheckFinalClosingDate,
 	CheckTemporory,
-	CheckButtonTemporary
+	CheckButtonTemporary,
+	CheckButtonFinalClosing
 };
