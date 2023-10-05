@@ -54,14 +54,21 @@ class SystemCaseATest extends DuskTestCase
 //            $this->editCustomer($browser);
 //            $this->deleteCustomer($browser);
 //            $this->createCustomer($browser);
+//
+//            // Course
+//            // Before create course create driver B + customer B
+//            $this->listDriver($browser);
+//            $this->createDriverB($browser);
+//            $this->listCustomer($browser);
+//            $this->createCustomerB($browser);
 
-            // Course
             $this->listCourse($browser);
-            $this->createCourse($browser);
-//            $this->exportCourse($browser);
-//            $this->editCourse($browser);
-//            $this->listCourse($browser);
+//            $this->createCourse($browser);
+            $this->editCourse($browser);
+            $browser->pause(100000);
 //            $this->deleteCourse($browser);
+//            $this->createCourse($browser);
+//            $this->exportCourse($browser);
 
 //            // Shift
 //            $browser->pause(3000);
@@ -303,6 +310,49 @@ class SystemCaseATest extends DuskTestCase
     //////////// Customer End //////////////
 
     //////////// Course Start //////////////
+    private function createDriverB(Browser $browser)
+    {
+        $browser->pause(2000);
+        $browser->click('div:nth-child(2) > div > button')->pause(2000);
+
+        $browser->click('#select-type-driver > div:nth-child(2) > label')->pause(2000);
+
+        $browser->type('#input-empolyee-number',"1113")->pause(1000);
+        $browser->type('#input-fullname','Driver B')->pause(1000);
+        $browser->type('#input-date-hire-date','1996-01-01')->pause(1000);
+
+        $browser->type('#input-character','29E2-12363')->pause(1000);
+
+        $browser->click('.btn-save')->waitFor('.toast-body')->waitFor('div.show-menu')
+            ->pause(3000);
+    }
+
+    private function createCustomerB(Browser $browser)
+    {
+        $browser->pause(2000);
+        $browser->click('div:nth-child(2) > div > button')->pause(2000);
+
+        $browser->type('#input-course-id',"0002")->pause(1000);
+
+        $browser->type('#input-course-name','Customer B')->pause(1000);
+
+        $browser->click('#customer-closing-day')->pause(1000);
+        $browser->click('#customer-closing-day > option:nth-child(4)')->pause(3000);
+
+        $browser->type('#input-customer-client_manager','PIC B')->pause(1000);
+
+        $browser->type('#postCode-first','321')->pause(1000);
+
+        $browser->type('#postCode-second','7654')->pause(1000);
+
+        $browser->type('#input-customer-address','xx県yy市zz町3-2-1')->pause(1000);
+
+        $browser->type('#input-customer-phone','09087654321')->pause(1000);
+
+        $browser->click('.btn-save')->waitFor('.toast-body')->waitFor('div.show-menu')
+            ->pause(3000);
+    }
+
     private function listCourse(Browser $browser)
     {
         $browser->pause(2000)
@@ -323,11 +373,11 @@ class SystemCaseATest extends DuskTestCase
     private function createCourse($browser){
         $browser->click('.title-edit')->pause(4000);
         // Ship date
-//        $getDate = Carbon::now()->format('Y-m-d');
+        $getDate = Carbon::now()->format('Y-m-d');
 //        $this->mapDate($browser, '.input-group-append', $getDate);
 //        $browser->pause(2000);
         // Ship date
-        $browser->type('#input-date-date-of-birth',"2023-09-01")->pause(2000);
+        $browser->type('#input-date-date-of-birth',$getDate)->pause(2000);
 
         // Driver Name
         $browser->click('#input-driver-name')->pause(2000);
@@ -353,7 +403,7 @@ class SystemCaseATest extends DuskTestCase
 
         // Customer name
         $browser->click('#input-customer-name')->pause(2000);
-        $browser->click('#input-customer-name > option:nth-child(1)')->pause(2000);
+        $browser->click('#input-customer-name > option:nth-child(2)')->pause(2000);
 
         // Depature place
         $browser->type('#input-depature-place',"Departure A")->pause(2000);
@@ -377,7 +427,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-freight-cost',"100000")->pause(2000);
 
 //        // cooperating company payment amount
-//        $browser->type('#input-freight-cost',"0")->pause(2000);
+//        $browser->type('#input-cooperating-company-payment-amount',"0")->pause(2000);
 //
 //        // Expressway/ferry fee
 //        $browser->type('#input-hight-way',"3000")->pause(2000);
@@ -392,11 +442,13 @@ class SystemCaseATest extends DuskTestCase
     }
 
     private function editCourse($browser){
-        $browser->click('tbody > tr:nth-child(1) > td:nth-child(8) > i')->pause(4000)
-            ->click(".btn-save")->pause(2000);
+        $browser->click('tbody > tr:nth-child(1) > td:nth-child(8) > i')->pause(2000)
+            ->click("div > .btn-save")
+            ->pause(3000);
 
+        $getDate = Carbon::now()->addDay()->format('Y-m-d');
         // Ship date
-        $browser->type('#input-date-date-of-birth',"2023-09-05")->pause(2000);
+        $browser->type('#input-date-date-of-birth',$getDate)->pause(2000);
 
         // Driver Name
         $browser->click('#input-driver-name')->pause(2000);
@@ -418,11 +470,11 @@ class SystemCaseATest extends DuskTestCase
         // Break Time
         $browser->click('div.row > div:nth-child(3) > div > div > div')->pause(2000);
         $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(1) > ul > li:nth-child(2)')->pause(2000);
-        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
+//        $browser->click('div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > ul > li:nth-child(1)')->pause(2000);
 
         // Customer name
         $browser->click('#input-customer-name')->pause(2000);
-        $browser->click('#input-customer-name > option:nth-child(2)')->pause(2000);
+        $browser->click('#input-customer-name > option:nth-child(1)')->pause(2000);
 
         // Depature place
         $browser->type('#input-depature-place',"Departure B")->pause(2000);
@@ -446,7 +498,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-freight-cost',"100000")->pause(2000);
 
         // cooperating company payment amount
-        $browser->type('#input-freight-cost',"20000")->pause(2000);
+        $browser->type('#input-cooperating-company-payment-amount',"20000")->pause(2000);
 
         // Expressway/ferry fee
         $browser->type('#input-hight-way',"200000")->pause(2000);
@@ -461,7 +513,10 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-notes',"memo")->pause(2000);
 
         $browser->click('.btn-save')->waitFor('.toast-body')
-            ->pause(4000);
+            ->pause(2000);
+
+        //Back
+        $browser->click('div > .btn-return')->pause(3000);
     }
 
     private function deleteCourse($browser){

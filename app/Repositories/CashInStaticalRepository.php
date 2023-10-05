@@ -298,8 +298,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             ->where("month_line",$request->month_year)->first();
         // Truy vấn tổng tiền khách đã trả trong tháng closing date
 
-        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
-        $getClosingDateByMonthEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+//        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
+//        $getClosingDateByMonthEnd = $this->getClosingDateByMonthEnd($customer->closing_date,$request->month_year);
+
+        $getClosingDateByMonthStart = Carbon::parse($request->month_year)->firstOfMonth()->format('Y-m-d');
+        $getClosingDateByMonthEnd = Carbon::parse($request->month_year)->endOfMonth()->format('Y-m-d');
 
         //Truy vấn lại lấy ra tổng tiền Cash In của customer trong tháng
         $totalCashIn = CashIn::query()
