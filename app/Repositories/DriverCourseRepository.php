@@ -146,8 +146,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $getMonth_year = explode("-",$request->month_year);
         $month_year = $request->month_year;
 
-        // Nhóm tất cả những course nằm trong driver
-        $datas = $this->model->query()
+        // Nhóm tất cả những course nằm trong driver theo tháng
+        $datas = DriverCourse::query()
             ->select(
                 "driver_courses.id as driver_courses_id",
                 "driver_courses.driver_id",
@@ -165,8 +165,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->SortByForDriverCourse($request)
             ->groupBy("driver_courses.driver_id","driver_courses.date")
             ->whereYear("driver_courses.date",$getMonth_year[0])
-            ->whereMonth("driver_courses.date",$getMonth_year[1])
-            ->whereNull('driver_courses.deleted_at');
+            ->whereMonth("driver_courses.date",$getMonth_year[1]);
 
         $dataTotalByDriverIds = [];
         if ($request->has('closing_date')){
@@ -358,15 +357,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $dataConvertForDriver = [];
         foreach ($listDrivers as $driver){
-//            // Kiểm tra xem có rơi vào ngày final_closing
-//            if ($final_closing){
-//                $checkDateFinal = Carbon::parse($final_closing->date);
-//                $checkDate = Carbon::parse($driver->start_date != null ? $driver->start_date : $driver->created_at);
-//                //Bỏ nếu driver ngày bắt đầu làm việc mà chưa qua ngày chốt
-//                if ($checkDate->gt($checkDateFinal)){
-//                    continue;
-//                }
-//            }
             $driverConvert = [
                 'driver_code' => $driver->driver_code,
                 'driver_id' => $driver->id,
@@ -436,7 +426,44 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $dataConvertForDriver[] = $driverConvert;
         }
 
-        return $dataConvertForDriver;
+        // Tính tổng tiền ship hàng ngày theo date và theo những driver đã cho
+        $listDriverIds = $listDrivers->pluck('id')->toArray();
+
+        $totalDataByDates = DriverCourse::query()
+            ->select(
+                "driver_courses.id as driver_courses_id",
+                "driver_courses.date",
+            )
+            ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission'))
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->SortByForDriverCourse($request)
+            ->whereIn('driver_courses.driver_id', $listDriverIds)
+            ->groupBy("driver_courses.date") // hàng ngày theo date
+            ->whereYear("driver_courses.date",$getMonth_year[0])
+            ->whereMonth("driver_courses.date",$getMonth_year[1])->get();
+
+        $arrTotalByDate = [];
+        foreach ($calendars as $calendar){
+            $dataByCalendar = [
+                "ship_date"=> $calendar->date,
+                "course_meal_fee_commission"=> "",
+            ];
+            foreach ($totalDataByDates as $totalDataByDate){
+                if ($calendar->date == $totalDataByDate->date){
+                    $dataByCalendar['course_meal_fee_commission'] = $totalDataByDate->course_meal_fee_commission;
+                    break;
+                }
+            }
+            $arrTotalByDate[] = $dataByCalendar;
+        }
+
+        $data = [
+            'data' => $dataConvertForDriver,
+            'total_all_meal_fee_by_date' => $arrTotalByDate
+        ];
+
+        return $data;
     }
 
     public function totalOfExtraCost($request)
@@ -510,7 +537,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // Ngày cuối tháng
         $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
 
-        // Tìm tất cả các course để nhóm theo customer_id
+        // Tìm tất cả các course nhóm theo customer_id và ship_date để tính từng ngày của customer
         $datas = Course::
             select(
                 "customers.id as customer_id",
@@ -521,16 +548,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             )
             ->addSelect(\DB::raw('SUM(courses.expressway_fee) as courses_expressway_fee'))
             ->join('customers', 'customers.id', '=', 'courses.customer_id')
-            ->groupBy("customers.id","courses.ship_date")
+            ->groupBy("customers.id","courses.ship_date") // Từng ngày customer
             ->SortByForCourse($request)
             ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
-            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
-            ->whereNull('courses.deleted_at');
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)->get();
 
-        $datas = $datas->get();
 
-        // Tìm tất cả các course để nhóm theo customer_id
-        $dataTotal = Course::
+        // Tìm tất cả các course nhóm theo customer_id để tính tổng tiền customer cả tháng đó
+        $dataTotalCustomer = Course::
         select(
             "customers.id as customer_id",
             "customers.customer_code",
@@ -540,11 +565,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         )
             ->addSelect(\DB::raw('SUM(courses.expressway_fee) as total_courses_expressway_fee'))
             ->join('customers', 'customers.id', '=', 'courses.customer_id')
-            ->groupBy("customers.id")
+            ->groupBy("customers.id") // Tổng tiền customer cả tháng đó
             ->SortByForCourse($request)
             ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
-            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)
-            ->whereNull('courses.deleted_at')->get();
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)->get();
 
         $groupedDatas = collect($datas)->groupBy('customer_id');
 
@@ -606,7 +630,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $dataConvertForCustomer = [];
         foreach ($listCustomer as $customer){
-            $driverConvert = [
+            $customerConvert = [
                 'customer_code' => $customer->customer_code,
                 'customer_id' => $customer->id,
                 'customer_name' => $customer->customer_name,
@@ -617,11 +641,11 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ];
             foreach ($listDataConverts as $dataConvert){
                 if ($customer->id == $dataConvert['customer_id']){
-                    $driverConvert['dataShiftExpress'] = $dataConvert;
+                    $customerConvert['dataShiftExpress'] = $dataConvert;
                 }
             }
-            if (count($driverConvert['dataShiftExpress']) == 0){
-                $driverConvert['dataShiftExpress'] = [
+            if (count($customerConvert['dataShiftExpress']) == 0){
+                $customerConvert['dataShiftExpress'] = [
                     'customer_id' => $customer->id,
                     'customer_code' => $customer->customer_code,
                     'customer_name' => $customer->customer_name,
@@ -629,25 +653,59 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     'data_ship_date' => [],
                 ];
                 foreach ($calendars as $calendar){
-                    $driverConvert['dataShiftExpress']['data_ship_date'][] = [
+                    $customerConvert['dataShiftExpress']['data_ship_date'][] = [
                         "ship_date"=> $calendar->date,
                         "courses_expressway_fee"=> "",
                     ];
                 }
             }
-            if (count($dataTotal) != 0){
-                foreach ($dataTotal as $dataTotalByCustomerId){
+            if (count($dataTotalCustomer) != 0){
+                foreach ($dataTotalCustomer as $dataTotalByCustomerId){
                     if($dataTotalByCustomerId->customer_id == $customer->id){
-                        $driverConvert['total_courses_expressway_fee'] = $dataTotalByCustomerId->total_courses_expressway_fee;
+                        $customerConvert['total_courses_expressway_fee'] = $dataTotalByCustomerId->total_courses_expressway_fee;
                         break;
                     }
                 }
             }
-            $dataConvertForDriver[] = $driverConvert;
+            $dataConvertForCustomer[] = $customerConvert;
         }
 
+        // Lấy tổng số tiền mỗi ngày
+        // Tìm tất cả các course nhóm theo ship_date để tính tổng số tiền trong ngày đó
+        $datasTotalDays = Course::
+        select(
+            "courses.ship_date",
+        )
+            ->addSelect(\DB::raw('SUM(courses.expressway_fee) as courses_expressway_fee'))
+            ->groupBy("courses.ship_date") // Tổng số tiền trong ngày đó
+            ->SortByForCourse($request)
+            ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)->get();
 
-        return $dataConvertForDriver;
+        $totalDataByDate = [];
+        foreach ($calendars as $calendar){
+            // Truy vấn tổng số tiền ship_fee theo ngày
+            $dataByCalendar = [
+                "total_express_by_date" => "",
+                "date" => $calendar->date
+            ];
+
+            foreach ($datasTotalDays as $dataTotalDay){
+                if ($dataTotalDay->ship_date == $dataByCalendar['date']){
+                    $dataByCalendar['total_express_by_date'] = $dataTotalDay->courses_expressway_fee;
+                    break;
+                }
+            }
+
+            $totalDataByDate[] = $dataByCalendar;
+        }
+
+        $data = [
+            'data' => $dataConvertForCustomer,
+            'total_all_express_by_date' => $totalDataByDate
+        ];
+
+        return $data;
     }
 
     public function totalOfExpressChargeCost($request)

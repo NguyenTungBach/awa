@@ -879,6 +879,8 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         try {
             DB::beginTransaction();
+            // Tìm đến tất cả CashInStatic trong tháng sau năm này để cập nhật lại temp
+            $afterMonth = Carbon::parse($request->month_year)->addMonth()->format("Y-m");
             //Cập nhật lại tất cả cashInStatical
             foreach ($customers as $customer){
                 $cashInStatic = CashInStatical::
@@ -887,11 +889,12 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 // Trường hợp nếu chưa có thì tạo CashInStatical
 
                 // Cập nhật lại tiền trước rồi mới được phép cập nhật lại tiền sau cho đảm bảo
+                // Cập nhật tiền tháng hiện tại
                 $this->saveCashInStaticMonth($customer->id,$request->month_year);
+                // Cập nhật tiền tháng sau
+                $this->saveCashInStaticMonth($customer->id,$afterMonth);
             }
             // Sau khi cập nhật xong thì mới cập nhật lại CashInStatical
-            // Tìm đến tất cả CashInStatic trong tháng sau năm này để cập nhật lại temp
-            $afterMonth = Carbon::parse($request->month_year)->addMonth()->format("Y-m");
             $cashInStaticalUpdateTemps = CashInStatical::
                 where("month_line",$afterMonth)->get();
 
