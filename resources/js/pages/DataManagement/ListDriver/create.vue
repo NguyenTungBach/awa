@@ -137,6 +137,8 @@
                                                             id="input-empolyee-number"
                                                             v-model="isForm.employeeNumber"
                                                             type="number"
+                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                            maxlength="15"
                                                             @keydown.native="validInputNumber"
                                                         />
                                                     </b-col>
@@ -154,6 +156,7 @@
                                                         <b-form-input
                                                             id="input-fullname"
                                                             v-model="isForm.fullname"
+                                                            maxlength="20"
                                                         />
                                                     </b-col>
                                                 </b-row>
@@ -319,6 +322,7 @@
                                                             id="input-character"
                                                             v-model="isForm.character"
                                                             onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                            maxlength="20"
                                                         />
                                                     </b-col>
                                                 </b-row>
