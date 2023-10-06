@@ -87,6 +87,6 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
         if ($resultFinal){
             return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>true]), SUCCESS);
         }
-        return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>false]), SUCCESS);
+        return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>true]), SUCCESS);
     }
 }
