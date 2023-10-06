@@ -713,10 +713,10 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-month total_sale_list">
-                                            {{ Number(emp.total_ship_fee_by_month) }}
+                                            {{ emp.total_ship_fee_by_month ? Number(emp.total_ship_fee_by_month) : emp.total_ship_fee_by_month }}
                                         </b-td>
                                         <b-td class="td-total-closing-date total_sale_list">
-                                            {{ Number(emp.total_ship_fee_by_closing_date) }}
+                                            {{ emp.total_ship_fee_by_closing_date ? Number(emp.total_ship_fee_by_closing_date) : emp.total_ship_fee_by_closing_date }}
                                         </b-td>
                                         <b-td class="img-pdf">
                                             <img
@@ -737,13 +737,13 @@
                                     </b-td>
 
                                     <b-td v-for="(value, idx) in listToatalSaleByDate" :key="`total-${idx}`" class="text-center total_sale_list">
-                                        {{ Number(value.total_all_ship_fee_by_date) }}
+                                        {{ value.total_all_ship_fee_by_date ? Number(value.total_all_ship_fee_by_date) : value.total_all_ship_fee_by_date }}
                                     </b-td>
                                     <b-td class="td-total-month total_sale_list">
-                                        {{ total_all_data_sale_by_month }}
+                                        {{ total_all_data_sale_by_month ? Number(total_all_data_sale_by_month) : '' }}
                                     </b-td>
                                     <b-td class="td-total-closing-date total_sale_list">
-                                        {{ total_all_sale_by_closing_date }}
+                                        {{ total_all_sale_by_closing_date ? Number(total_all_sale_by_closing_date) : '' }}
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
@@ -1411,7 +1411,7 @@ import { getCalendar } from '@/api/modules/calendar';
 import NodeListShift from '@/components/NodeListShift';
 // import NodeCourseBase from '@/components/NodeCourseBase';
 import { convertValueToText } from '@/utils/handleSelect';
-import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary } from '@/api/modules/shiftManagement';
+import { getListPractical, getListShift, getListMessageResponseAI, postClosingDate, CheckTemporory, CheckButtonTemporary, CheckButtonFinalClosing } from '@/api/modules/shiftManagement';
 import { getTextDayInWeek, getTextDay } from '@/utils/convertTime';
 import { cleanObject } from '@/utils/handleObject';
 import { getToken } from '@/utils/handleToken';
@@ -1709,7 +1709,7 @@ export default {
 						break;
 				}
 				await this.handleCheckButtonTemporary();
-				// await this.handleCheckButtonFinalClosing();
+				await this.handleCheckButtonFinalClosing();
 			},
 
 			deep: true,
@@ -1850,27 +1850,27 @@ export default {
 		},
 
 		// API CHECK FINAL CLOSING DATE
-		// async handleCheckButtonFinalClosing() {
-		// 	try {
-		// 		let PARAMS = {};
-		// 		const YEAR = this.pickerYearMonth.year;
-		// 		const MONTH = this.pickerYearMonth.month;
+		async handleCheckButtonFinalClosing() {
+			try {
+				let PARAMS = {};
+				const YEAR = this.pickerYearMonth.year;
+				const MONTH = this.pickerYearMonth.month;
 
-		// 		const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
+				const YEAR_MONTH = `${YEAR}-${format2Digit(MONTH)}`;
 
-		// 		PARAMS.month_year = YEAR_MONTH;
-		// 		PARAMS = cleanObject(PARAMS);
-		// 		const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_FINALCLOSING;
-		// 		const response = await CheckButtonFinalClosing(URL, PARAMS);
-		// 		if (response.code === 200) {
-		// 			this.disableFinal = response.data.checkFinalClosing;
-		// 			// this.disableEditShift = response.data.checkTemporary;
-		// 		}
-		// 	} catch (error) {
-		// 		setLoading(false);
-		// 		console.log(error);
-		// 	}
-		// },
+				PARAMS.month_year = YEAR_MONTH;
+				PARAMS = cleanObject(PARAMS);
+				const URL = CONSTANT.URL_API.GET_CHECK_BUTTON_FINALCLOSING;
+				const response = await CheckButtonFinalClosing(URL, PARAMS);
+				if (response.code === 200) {
+					this.disableFinal = response.data.checkFinalClosing;
+					// this.disableEditShift = response.data.checkTemporary;
+				}
+			} catch (error) {
+				setLoading(false);
+				console.log(error);
+			}
+		},
 
 		turnOnButtonFinal() {
 			this.showModalTemporary = true;
@@ -1929,7 +1929,7 @@ export default {
 			await this.onClickSelectTable();
 			if (hasRole(this.role)) {
 				await this.handleCheckButtonTemporary();
-				// await this.handleCheckButtonFinalClosing();
+				await this.handleCheckButtonFinalClosing();
 			}
 			setLoading(false);
 		},
