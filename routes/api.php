@@ -34,6 +34,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::apiResource('customer', 'CustomerController');
             Route::apiResource('cash-in', 'CashInController');
             Route::get('cash-in-statical/export-cash-in-statical','CashInStaticalController@exportCashInStatical');
+            Route::post('cash-in-statical/cash-in-statical-temp','CashInStaticalController@cashInStaticalTemp');
             Route::apiResource('cash-in-statical', 'CashInStaticalController');
             Route::get('driver-course/sales-list', 'DriverCourseController@salesList');
             Route::get('driver-course/sales-detail/{id}', 'DriverCourseController@salesDetail');

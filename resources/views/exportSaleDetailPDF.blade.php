@@ -172,7 +172,7 @@ FAX (088) 662-2216
             <td style="text-align: center">{{$course['vehicle_number']}}</td>
             <td style="text-align: center">{{$course['departure_place']}}</td>
             <td style="text-align: center">{{$course['arrival_place']}}</td>
-            <td style="text-align: center"></td>
+            <td style="text-align: center">{{$course['item_name']}}</td>
             <td style="text-align: center">{{number_format($course['quantity'])}}</td>
             <td style="text-align: center">{{$course['weight']}}</td>
             <td style="text-align: center">{{$course['ship_fee'] == '' ? '' : number_format($course['ship_fee'])}}</td>

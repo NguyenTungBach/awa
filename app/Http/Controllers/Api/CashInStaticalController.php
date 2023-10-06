@@ -328,4 +328,46 @@ class CashInStaticalController extends Controller
 //        $this->repository->delete($id);
 //        return $this->responseJson(200, null, trans('messages.mes.delete_success'));
 //    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/cash-in-statical/cash-in-statical-temp",
+     *   tags={"CashInStatical"},
+     *   summary="Cash receipt temp CashInStatical",
+     *   operationId="cash_in_statical_temp",
+     *  @OA\Parameter(
+     *     name="month_year",
+     *     description = "Y-m",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(
+     *     type="string",
+     *     ),
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Send request success",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":200,"data":{"id": 1,"name":"......"}}
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Login false",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      example={"code":401,"message":"Username or password invalid"}
+     *     )
+     *   ),
+     *   security={{"auth": {}}},
+     * )
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cashInStaticalTemp(CashInStaticalRequest $request)
+    {
+        return $this->repository->cashInStaticalTemp($request);
+    }
 }

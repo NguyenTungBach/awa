@@ -23,6 +23,7 @@ class CashInStatical extends Model
         "balance_previous_month",
         "receivable_this_month",
         "total_cash_in_current",
+        "balance_temp",
         "status",
         "created_at",
         "updated_at",
