@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class TemporaryClosingHistoriesRepository extends BaseRepository implements TemporaryClosingHistoriesRepositoryInterface
 {
-    public function __construct(Application $app)
+    public function __construct(Application $app, CashInStaticalRepository $cashInStaticalRepository)
     {
         parent::__construct($app);
+        $this->cashInStaticalRepository = $cashInStaticalRepository;
     }
 
     /**
@@ -39,6 +40,9 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
                 'month_year' => $input['month_year'],
             ]);
         }
+
+        // Bach cập nhật lại Temp
+        $this->cashInStaticalRepository->cashInStaticalTemp($input);
 
         return $result;
     }
