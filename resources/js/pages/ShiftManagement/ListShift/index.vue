@@ -2010,7 +2010,7 @@ export default {
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					this.listShift = data;
+					this.listShift = data.data;
 					console.log('data', this.listShift);
 					this.reloadTable();
 				}
@@ -2045,7 +2045,7 @@ export default {
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_HIGHT_WAY, PARAMS);
 
 				if (code === 200) {
-					this.listHighWay = data;
+					this.listHighWay = data.data;
 					this.reloadTable();
 				}
 				setLoading(false);
