@@ -44,6 +44,6 @@ class CheckDriverCourseExists implements Rule
      */
     public function message()
     {
-        return 'Can not update course in shift list.';
+        return 'NOT FOUND COURSE';
     }
 }

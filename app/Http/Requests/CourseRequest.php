@@ -73,7 +73,7 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrDriverId)
             ],
-            'vehicle_number' => 'nullable|numeric|digits_between:1,20',
+            'vehicle_number' => 'nullable|string|max:20',
             'ship_date' => [
                 'required',
                 'date_format:Y-m-d',
@@ -179,7 +179,7 @@ class CourseRequest extends FormRequest
                 'required',
                 Rule::in($arrDriverId)
             ],
-            'vehicle_number' => 'nullable|numeric|digits_between:1,15',
+            'vehicle_number' => 'nullable|string|max:20',
             'ship_date' => [
                 'sometimes',
                 'required',
@@ -241,7 +241,7 @@ class CourseRequest extends FormRequest
             'driver_id.required' => __('validation.custom.required_custom'),
             'driver_id.in' => __('validation.in', ['attribute' => __('courses.driver_id')]),
             // vehicle_number
-            'vehicle_number.integer' => __('validation.integer', ['attribute' => __('courses.vehicle_number')]),
+            'vehicle_number.string' => __('validation.string', ['attribute' => __('courses.vehicle_number')]),
             'vehicle_number.max' => __('validation.max.string', ['attribute' => __('courses.vehicle_number')]),
             // ship_date
             'ship_date.required' => __('validation.custom.required_custom'),
