@@ -39,6 +39,8 @@ class CashInStaticalRequest extends FormRequest
                   return $this->getCustomRule();
               case 'exportCashInStatical':
                   return $this->getCustomRule();
+              case 'cashInStaticalTemp':
+                  return $this->getCustomRule();
                 default:
                     return [];
           }
@@ -81,6 +83,14 @@ class CashInStaticalRequest extends FormRequest
                  ],
                  "field" => "in:customer_code,customer_name,balance_previous_month,receivable_this_month,total_account_receivable,total_cash_in_of_current_month,total_cash_in_current",
                  "sortby" => "in:asc,desc"
+             ];
+         }
+         if(Route::getCurrentRoute()->getActionMethod() == 'cashInStaticalTemp'){
+             return  [
+                 "month_year" => [
+                     'required',
+                     "date_format:Y-m",
+                 ],
              ];
          }
      }

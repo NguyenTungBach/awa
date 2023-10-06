@@ -505,10 +505,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
     {
         $month_year = $request->month_year;
         // Ngày đầu tháng
-        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth();
+        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth()->format("Y-m-d");
 
         // Ngày cuối tháng
-        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth();
+        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
 
         // Tìm tất cả các course để nhóm theo customer_id
         $datas = Course::
@@ -654,10 +654,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
     {
         $month_year = $request->month_year;
         // Ngày đầu tháng
-        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth();
+        $firstDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->startOfMonth()->format("Y-m-d");
 
         // Ngày cuối tháng
-        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth();
+        $lastDayOfMonth = Carbon::createFromFormat('Y-m', $month_year)->endOfMonth()->format("Y-m-d");
 
         // Tìm tất cả các course để nhóm theo customer_id
         $datas = Course::
