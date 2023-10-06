@@ -827,4 +827,8 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 //        }
     }
 
+    ////////////////
+    public function cashInStaticalTemp($request){
+        return $this->responseJson(200, new BaseResource("OK"));
+    }
 }
