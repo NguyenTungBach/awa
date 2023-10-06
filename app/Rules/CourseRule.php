@@ -5,6 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
+use App\Models\FinalClosingHistories;
 
 class CourseRule implements Rule
 {
@@ -29,7 +30,11 @@ class CourseRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($value < Carbon::now()->format('Y-m-d')) {
+        $arrFinal = FinalClosingHistories::get()->pluck('month_year')->toArray();
+        $value = date('Y-m', strtotime($value));
+
+        $result = in_array($value, $arrFinal);
+        if ($result) {
             return false;
         }
 

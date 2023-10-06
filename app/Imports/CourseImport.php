@@ -88,7 +88,7 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.1' => ['required', 'string', Rule::in($arrDriverName)],
 
             // 2 vehicle_number
-            '*.2' => ['nullable', 'numeric', 'digits_between:1,20'],
+            '*.2' => ['nullable', 'string', 'max:20'],
 
             // 3 start_date
             '*.3' => ['nullable', 'date_format:H:i'],
@@ -165,8 +165,8 @@ class CourseImport implements ToCollection, WithHeadings, WithStartRow, WithVali
             '*.1.in'  => __('validation.custom.csv.in', ['attribute' => $this->headings()[1]]),
 
             // 2 vehicle_number
-            '*.2.numeric'  => __('validation.custom.csv.numeric', ['attribute' => $this->headings()[2]]),
-            '*.2.digits_between'  => __('validation.custom.csv.digits_between', ['attribute' => $this->headings()[2], 'min' => 1, 'max' => 20]),
+            '*.2.string'  => __('validation.custom.csv.string', ['attribute' => $this->headings()[2]]),
+            '*.2.max'  => __('validation.custom.csv.max', ['attribute' => $this->headings()[2], 'max' => 20]),
 
             // 3 start_date
             '*.3.required'  => __('validation.custom.csv.required', ['attribute' => $this->headings()[3]]),

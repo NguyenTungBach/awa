@@ -299,7 +299,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            return $exception->getMessage();
+            return $exception;
         }
     }
 
