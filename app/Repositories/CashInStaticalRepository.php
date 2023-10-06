@@ -13,6 +13,7 @@ use App\Models\CashInStatical;
 use App\Models\Course;
 use App\Models\Customer;
 use App\Models\DriverCourse;
+use App\Models\FinalClosingHistories;
 use App\Models\TemporaryClosingHistories;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use Carbon\Carbon;
@@ -71,19 +72,46 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 return $exception;
             }
         }
+
+        // Kiểm tra xem có final tháng trước để cho xem tháng này
+        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
+        $checkFinalMonthPrev = FinalClosingHistories::where("month_year",$monthPrev)->first();
+        $checkFinal = false;
+        // Kiểm tra xem tháng trước có không
+        if ($checkFinalMonthPrev != null){
+            $checkFinal = true;
+        }
+
         // Sau khi kiểm tra đủ cashInStatic mới truy vấn
         // Truy vấn tất cả cashInStatic theo month_year
-        $cashInStatics = CashInStatical::query()
-            ->select(
-                'customer_id',
-                'month_line',
-                'balance_previous_month',
-                'receivable_this_month',
-                'total_cash_in_current',
-            )
-            ->addSelect(DB::raw('(balance_previous_month+receivable_this_month) as total_account_receivable'))
-            ->where("month_line",$request->month_year)
-            ->get();
+        // Trường hợp truy vấn tháng trước đã có finnal thì lấy theo balance_previous_month không thì theo balance_temp
+        if ($checkFinal){
+            $cashInStatics = CashInStatical::query()
+                ->select(
+                    'customer_id',
+                    'month_line',
+                    'balance_previous_month',
+                    'receivable_this_month',
+                    'total_cash_in_current',
+                    'balance_temp',
+                )
+                ->addSelect(DB::raw('(balance_previous_month+receivable_this_month) as total_account_receivable'))
+                ->where("month_line",$request->month_year)
+                ->get();
+        } else{
+            $cashInStatics = CashInStatical::query()
+                ->select(
+                    'customer_id',
+                    'month_line',
+                    'balance_previous_month',
+                    'receivable_this_month',
+                    'total_cash_in_current',
+                    'balance_temp',
+                )
+                ->addSelect(DB::raw('(balance_temp+receivable_this_month) as total_account_receivable'))
+                ->where("month_line",$request->month_year)
+                ->get();
+        }
 
         // Truy vấn tất cả cash in statics theo customer
         $cashInsByCustomers = [];
@@ -111,14 +139,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         // Nhóm tất cả dữ liệu theo mỗi tổng tiền cashIn theo customer
         $dataResults = [];
-        // Kiểm tra xem có temporary tháng trước để cho xem tháng này
-        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
-        $checkTemporaryMonthPrev = TemporaryClosingHistories::where("month_year",$monthPrev)->first();
-        $checkTemporary = false;
-        // Kiểm tra xem tháng trước có không, nếu
-        if ($checkTemporaryMonthPrev != null){
-            $checkTemporary = true;
-        }
+
         foreach ($cashInsByCustomers as $cashInsByCustomer){
             // nhóm dữ liệu từ danh sách cashInStatic theo month_year
             foreach ($cashInStatics as $cashInStatic){
@@ -128,11 +149,11 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                         'customer_code' => $cashInsByCustomer['customer_code'] ,
                         'customer_name' => $cashInsByCustomer['customer_name'] ,
                         'month_line' => $cashInStatic->month_line,
-                        'balance_previous_month' => $checkTemporary ? $cashInStatic->balance_previous_month : 0, // Tiền nợ tháng trước
+                        'balance_previous_month' => $checkFinal ? $cashInStatic->balance_previous_month : $cashInStatic->balance_temp, // Tiền nợ tháng trước
                         'receivable_this_month' => $cashInStatic->receivable_this_month, // Tiền sẽ nhận tháng này
                         'total_account_receivable' => $cashInStatic->total_account_receivable, // Tổng tiền phải nhận tháng này
                         'total_cash_in_of_current_month' => $cashInsByCustomer['total_cash_in'], // Tiền trả tháng này
-                        'total_cash_in_current' => $cashInStatic->total_cash_in_current, // Tiền nợ còn lại
+                        'total_cash_in_current' => $checkFinal ? $cashInStatic->total_cash_in_current : ($cashInStatic->balance_temp + $cashInStatic->receivable_this_month - $cashInsByCustomer['total_cash_in']), // Tiền nợ còn lại
                     ];
                     $dataResults[] = $dataConverts;
                 }
@@ -281,8 +302,20 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
             }
         }
 
+        // Kiểm tra xem có final tháng trước để cho xem tháng này
+        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
+        $checkFinalMonthPrev = FinalClosingHistories::where("month_year",$monthPrev)->first();
+        $checkFinal = false;
+        // Kiểm tra xem tháng trước có không, nếu
+        if ($checkFinalMonthPrev != null){
+            $checkFinal = true;
+        }
+
         // Tạo xong thì truy vấn lại
-        $cashInStatical = CashInStatical::
+
+        // Trường hợp truy vấn tháng trước đã có finnal thì lấy theo balance_previous_month không thì theo balance_temp
+        if ($checkFinal){
+            $cashInStatical = CashInStatical::
             select(
                 "cash_in_statisticals.customer_id",
                 "customers.customer_code",
@@ -290,12 +323,32 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 "cash_in_statisticals.month_line",
                 "cash_in_statisticals.balance_previous_month",
                 "cash_in_statisticals.receivable_this_month",
+                "cash_in_statisticals.balance_temp",
             )
-            ->addSelect(DB::raw('(cash_in_statisticals.balance_previous_month + cash_in_statisticals.receivable_this_month) as total_account_receivable'))
-            ->addSelect("cash_in_statisticals.total_cash_in_current")
-            ->where("cash_in_statisticals.customer_id",$id)
-            ->join('customers', 'customers.id', '=', 'cash_in_statisticals.customer_id')
-            ->where("month_line",$request->month_year)->first();
+                ->addSelect(DB::raw('(cash_in_statisticals.balance_previous_month + cash_in_statisticals.receivable_this_month) as total_account_receivable'))
+                ->addSelect("cash_in_statisticals.total_cash_in_current")
+                ->where("cash_in_statisticals.customer_id",$id)
+                ->join('customers', 'customers.id', '=', 'cash_in_statisticals.customer_id')
+                ->where("month_line",$request->month_year)->first();
+        } else{
+            $cashInStatical = CashInStatical::
+            select(
+                "cash_in_statisticals.customer_id",
+                "customers.customer_code",
+                "customers.customer_name",
+                "cash_in_statisticals.month_line",
+                "cash_in_statisticals.balance_previous_month",
+                "cash_in_statisticals.receivable_this_month",
+                "cash_in_statisticals.balance_temp",
+            )
+                ->addSelect(DB::raw('(cash_in_statisticals.balance_temp + cash_in_statisticals.receivable_this_month) as total_account_receivable'))
+                ->addSelect("cash_in_statisticals.total_cash_in_current")
+                ->where("cash_in_statisticals.customer_id",$id)
+                ->join('customers', 'customers.id', '=', 'cash_in_statisticals.customer_id')
+                ->where("month_line",$request->month_year)->first();
+        }
+
+
         // Truy vấn tổng tiền khách đã trả trong tháng closing date
 
 //        $getClosingDateByMonthStart = $this->getClosingDateByMonthStart($customer->closing_date,$request->month_year);
@@ -314,15 +367,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
         $cashInStatical->total_cash_in = $totalCashIn->total_cash_in ?? 0;
 
-        // Kiểm tra xem có temporary tháng trước để cho xem tháng này
-        $monthPrev = Carbon::parse($request->month_year)->subMonth()->format('Y-m'); // Lấy tháng trước
-        $checkTemporaryMonthPrev = TemporaryClosingHistories::where("month_year",$monthPrev)->first();
-        $checkTemporary = false;
-        // Kiểm tra xem tháng trước có không, nếu
-        if ($checkTemporaryMonthPrev != null){
-            $checkTemporary = true;
-        }
-        $cashInStatical->balance_previous_month = $checkTemporary ? $cashInStatical->balance_previous_month : "0";
+        $cashInStatical->balance_previous_month = $checkFinal ? $cashInStatical->balance_previous_month : $cashInStatical->balance_temp;
 
         return $this->responseJson(200, new BaseResource($cashInStatical));
     }
@@ -829,6 +874,39 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
 
     ////////////////
     public function cashInStaticalTemp($request){
+        // Tìm đến tất cả customer
+        $customers = Customer::all();
+
+        try {
+            DB::beginTransaction();
+            //Cập nhật lại tất cả cashInStatical
+            foreach ($customers as $customer){
+                $cashInStatic = CashInStatical::
+                where("customer_id",$customer->id)
+                    ->where("month_line",$request->month_year)->first();
+                // Trường hợp nếu chưa có thì tạo CashInStatical
+
+                // Cập nhật lại tiền trước rồi mới được phép cập nhật lại tiền sau cho đảm bảo
+                $this->saveCashInStaticMonth($customer->id,$request->month_year);
+            }
+            // Sau khi cập nhật xong thì mới cập nhật lại CashInStatical
+            // Tìm đến tất cả CashInStatic trong tháng sau năm này để cập nhật lại temp
+            $afterMonth = Carbon::parse($request->month_year)->addMonth()->format("Y-m");
+            $cashInStaticalUpdateTemps = CashInStatical::
+                where("month_line",$afterMonth)->get();
+
+            // Cập nhật lại cho tháng sau
+            foreach ($cashInStaticalUpdateTemps as $cashInStatical){
+                $cashInStatical->balance_temp = $cashInStatical->balance_previous_month;
+                $cashInStatical->save();
+            }
+
+            DB::commit();
+        } catch (\Exception $exception){
+            DB::rollBack();
+            return $exception;
+        }
+
         return $this->responseJson(200, new BaseResource("OK"));
     }
 }

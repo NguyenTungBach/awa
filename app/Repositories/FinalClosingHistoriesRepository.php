@@ -8,6 +8,7 @@ namespace Repository;
 
 use App\Http\Resources\FinalClosingHistoriesResource;
 use App\Models\FinalClosingHistories;
+use App\Models\TemporaryClosingHistories;
 use App\Repositories\Contracts\FinalClosingHistoriesRepositoryInterface;
 use Illuminate\Http\Response;
 use Repository\DriverRepository;
@@ -76,8 +77,14 @@ class FinalClosingHistoriesRepository extends BaseRepository implements FinalClo
 
     public function checkFinalClosing($request)
     {
-        $result = FinalClosingHistories::where('month_year',$request->month_year)->first();
-        if ($result){
+        $resultCashIn = TemporaryClosingHistories::where('month_year',$request->month_year)->first();
+        $resultFinal = FinalClosingHistories::where('month_year',$request->month_year)->first();
+
+        if ($resultCashIn && !$resultFinal){
+            return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>false]), SUCCESS);
+        }
+
+        if ($resultFinal){
             return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>true]), SUCCESS);
         }
         return $this->responseJson(Response::HTTP_OK, new FinalClosingHistoriesResource(['checkFinalClosing'=>false]), SUCCESS);
