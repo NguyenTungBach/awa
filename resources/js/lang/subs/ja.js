@@ -247,7 +247,7 @@ export default {
 		MESSAGE_AI_SUCCESS: 'シフト表生成が完了しました。',
 		MESSAGE_AI_ERROR: 'シフト表生成に失敗しました。実行履歴でエラー内容を確認してください。',
 
-		SALES_TOTAL: '合計',
+		SALES_TOTAL: '日別合計',
 		SALES_MONTH: '月別合計',
 		SALES_CLOSING_DATE: ' 締日別合計',
 		SALES_INVOICE: ' 請求書',

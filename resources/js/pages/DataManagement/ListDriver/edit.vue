@@ -172,6 +172,7 @@
                                                         <b-form-input
                                                             id="input-fullname"
                                                             v-model="isForm.fullname"
+                                                            maxlength="20"
                                                         />
                                                     </b-col>
                                                 </b-row>
@@ -343,6 +344,7 @@
                                                             id="input-character"
                                                             v-model="isForm.character"
                                                             onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                                            maxlength="20"
                                                         />
                                                     </b-col>
                                                 </b-row>
