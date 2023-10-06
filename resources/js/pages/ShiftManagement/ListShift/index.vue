@@ -881,6 +881,21 @@
                                     </tr>
                                 </template>
                             </b-tbody>
+                            <b-tbody>
+                                <b-tr>
+                                    <b-td class="td-total" colspan="3">
+                                        <span>
+                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                        </span>
+                                    </b-td>
+                                    <b-td v-for="(value, idx) in total_expenses" :key="`total-${idx}`" class="text-center total_expenses">
+                                        {{ value.total ? Number(value.total) : value.total }}
+                                    </b-td>
+                                    <b-td class="td-total-month total_payment">
+                                        {{ total_expenses_of_month ? Number(total_expenses_of_month) : total_expenses_of_month }}
+                                    </b-td>
+                                </b-tr>
+                            </b-tbody>
                         </b-table-simple>
 
                         <!-- table Hight way -->
@@ -1519,6 +1534,8 @@ export default {
 			total_all_data_sale_by_month: '',
 			total_payment: '',
 			total_payment_of_month: '',
+			total_expenses: [],
+			total_expenses_of_month: '',
 
 			listTotalSalaryDay: [],
 			listTotalSalaryMonth: [],
@@ -3692,7 +3709,8 @@ export default {
 
 							td.td-employee-number,
 							td.td-type-employee,
-							td.td-full-name {
+							td.td-full-name,
+							td.td-total {
 								background-color: $sub-main;
 
 								font-weight: bold;
@@ -3727,6 +3745,17 @@ export default {
                                 z-index: 9;
                                 top: 0;
 								left: 300px;
+                            }
+							td.td-total {
+                                position: sticky;
+                                z-index: 9;
+                                top: 0;
+								left: 0;
+								padding: 25px 50px;
+                                span {
+                                    float: right;
+                                    margin-right: 50px;
+                                }
                             }
 						}
 					}

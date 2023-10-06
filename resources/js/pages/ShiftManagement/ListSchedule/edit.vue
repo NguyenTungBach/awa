@@ -323,6 +323,7 @@
                                             id="input-depature-place"
                                             v-model="isForm.departure_place"
                                             type="text"
+                                            maxlength="20"
                                         />
 
                                     </b-input-group>
@@ -346,6 +347,7 @@
                                             id="input-arrival_place"
                                             v-model="isForm.arrival_place"
                                             type="text"
+                                            maxlength="20"
                                         />
 
                                     </b-input-group>
@@ -369,6 +371,7 @@
                                             id="input-item-name"
                                             v-model="isForm.itemName"
                                             type="text"
+                                            maxlength="20"
                                         />
                                     </b-input-group>
 
@@ -389,6 +392,8 @@
                                             id="input-quantity"
                                             v-model="isForm.quantity"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                     </b-input-group>
 
@@ -409,6 +414,8 @@
                                             id="input-unitPrice"
                                             v-model="isForm.unitPrice"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -430,6 +437,8 @@
                                             id="input-weight"
                                             v-model="isForm.weight"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> kg </span>
                                     </b-input-group>
@@ -451,6 +460,8 @@
                                             id="input-freight-cost"
                                             v-model="isForm.freight_cost"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -471,6 +482,8 @@
                                             id="input-cooperating-company-payment-amount"
                                             v-model="isForm.payment_amount"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -492,6 +505,8 @@
                                             id="input-hight-way"
                                             v-model="isForm.hight_way"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -516,6 +531,8 @@
                                             id="input-expenses"
                                             v-model="isForm.expenses"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
@@ -563,6 +580,8 @@
                                             id="input-bunus-amount"
                                             v-model="isForm.bonus_amount"
                                             type="number"
+                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
+                                            maxlength="15"
                                         />
                                         <span class="freight-cost"> 円 </span>
                                     </b-input-group>
