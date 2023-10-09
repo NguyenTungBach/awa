@@ -437,7 +437,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->SortByForDriverCourse($request)
             ->whereIn('driver_courses.driver_id', $listDriverIds)
             ->groupBy("driver_courses.date") // hàng ngày theo date
             ->whereYear("driver_courses.date",$getMonth_year[0])
@@ -458,9 +457,21 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $arrTotalByDate[] = $dataByCalendar;
         }
 
+        // Tính tổng toàn bộ tiền ship trong tháng và theo những driver đã cho
+        $listDriverIds = $listDrivers->pluck('id')->toArray();
+
+        $totalDataByMonth = DriverCourse::query()
+            ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as total_all_meal_fee_by_month'))
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->whereIn('driver_courses.driver_id', $listDriverIds)
+            ->whereYear("driver_courses.date",$getMonth_year[0])
+            ->whereMonth("driver_courses.date",$getMonth_year[1])->first();
+
         $data = [
             'data' => $dataConvertForDriver,
-            'total_all_meal_fee_by_date' => $arrTotalByDate
+            'total_all_meal_fee_by_date' => $arrTotalByDate,
+            'total_all_meal_fee_by_month' => $totalDataByMonth['total_all_meal_fee_by_month'] ?? 0
         ];
 
         return $data;
@@ -547,7 +558,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 "courses.ship_date",
             )
             ->addSelect(\DB::raw('SUM(courses.expressway_fee) as courses_expressway_fee'))
-            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->leftJoin('customers', 'customers.id', '=', 'courses.customer_id')
             ->groupBy("customers.id","courses.ship_date") // Từng ngày customer
             ->SortByForCourse($request)
             ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
@@ -564,7 +575,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             "courses.ship_date",
         )
             ->addSelect(\DB::raw('SUM(courses.expressway_fee) as total_courses_expressway_fee'))
-            ->join('customers', 'customers.id', '=', 'courses.customer_id')
+            ->leftJoin('customers', 'customers.id', '=', 'courses.customer_id')
             ->groupBy("customers.id") // Tổng tiền customer cả tháng đó
             ->SortByForCourse($request)
             ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
@@ -678,7 +689,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         )
             ->addSelect(\DB::raw('SUM(courses.expressway_fee) as courses_expressway_fee'))
             ->groupBy("courses.ship_date") // Tổng số tiền trong ngày đó
-            ->SortByForCourse($request)
             ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
             ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)->get();
 
@@ -700,9 +710,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $totalDataByDate[] = $dataByCalendar;
         }
 
+        // Tính tổng toàn bộ số tiền trong tháng
+        $datasTotalInMonth = Course::
+        addSelect(\DB::raw('SUM(courses.expressway_fee) as total_all_express_by_month'))
+            ->whereBetween('courses.ship_date', [$firstDayOfMonth, $lastDayOfMonth])
+            ->whereNotIn('courses.id', DriverCourse::ALL_ID_SPECIAL)->first();
+
         $data = [
             'data' => $dataConvertForCustomer,
-            'total_all_express_by_date' => $totalDataByDate
+            'total_all_express_by_date' => $totalDataByDate,
+            'total_all_express_by_month' => $datasTotalInMonth['total_all_express_by_month'] ?? 0
         ];
 
         return $data;
@@ -1757,7 +1774,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForListShifts as $key => $value){
+        foreach ($dataForListShifts['data'] as $key => $value){
             $sheet->setCellValue('A'.$index, $value['driver_code']);
             $sheet->setCellValue('B'.$index, $value['typeName']);
             $sheet->setCellValue('C'.$index, $value['driver_name']);
@@ -1791,7 +1808,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForListShifts as $key => $value){
+        foreach ($dataForListShifts['data'] as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
@@ -1922,9 +1939,9 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ],
         ];
 
-        // Truyền dữ thông tin từng driver
+        // Truyền dữ thông tin từng customer
         $index = 5;
-        foreach ($dataForListShiftsExpressCharge as $key => $value){
+        foreach ($dataForListShiftsExpressCharge['data'] as $key => $value){
             $sheet->setCellValue('A'.$index, $value['customer_code']);
             $sheet->setCellValue('B'.$index, $value['closing_dateName']);
             $sheet->setCellValue('C'.$index, $value['customer_name']);
@@ -1938,15 +1955,16 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['dataShiftExpress']['data_ship_date'] as $dataForListShift){
                         // Nếu course này cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataForListShift['ship_date']){
-                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'] == '' ? '' : number_format($dataForListShift['courses_expressway_fee']),DataType::TYPE_STRING);
+                            $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataForListShift['courses_expressway_fee'] == '' || number_format($dataForListShift['courses_expressway_fee']) == 0 ? '' : number_format($dataForListShift['courses_expressway_fee']),DataType::TYPE_STRING);
                         }
                     }
                 }
                 $colCalendarDriver++;
             }
-            //Truyền dữ liệu tổng vào
+            //Truyền dữ liệu tổng customer vào
             if ($value['total_courses_expressway_fee'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_courses_expressway_fee']),DataType::TYPE_STRING);
+                $value['total_courses_expressway_fee'] = $value['total_courses_expressway_fee'] == '0.00' ? 0 : $value['total_courses_expressway_fee'];
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$value['total_courses_expressway_fee'] == '' ? '' : number_format($value['total_courses_expressway_fee']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -1957,13 +1975,36 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForListShiftsExpressCharge as $key => $value){
+        foreach ($dataForListShiftsExpressCharge['data'] as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $sheet->getStyle('C'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $indexCheckStyle ++;
         }
+
+        // Tổng từng ngày
+        // Thêm cột tổng
+        $sheet->mergeCells([1,$index,3,$index]);
+        $sheet->setCellValue('A'.$index, '日別合計');
+        $sheet->getStyle('A'.$index)->applyFromArray($styleArrayDriver)->getAlignment();
+
+        $colCalendarTotal = 4;
+        // Kiểm tra từng cột Calendar
+        foreach ($dataCalendars as $dataCalendar){
+            foreach ($dataForListShiftsExpressCharge['total_all_express_by_date'] as $key => $value){
+                // Nếu trùng ngày thì truyền vào
+                if ($dataCalendar['date'] == $value['date']){
+                    $value['total_express_by_date'] = $value['total_express_by_date'] == "0.00" ? "0" : $value['total_express_by_date'];
+                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_express_by_date'] == '' ? '' : number_format($value['total_express_by_date']),DataType::TYPE_STRING);
+                    break;
+                }
+            }
+            $colCalendarTotal ++;
+        }
+
+        // Truyền dữ liệu tổng tất cả trong tháng
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShiftsExpressCharge['total_all_express_by_month'] == "0" ? '' : number_format($dataForListShiftsExpressCharge['total_all_express_by_month']),DataType::TYPE_STRING);
 
         header("Pragma: public");
         header("Expires: 0");
@@ -2724,7 +2765,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         // Truyền dữ thông tin từng driver
         $index = 5;
-        foreach ($dataForListShifts as $key => $value){
+        foreach ($dataForListShifts['data'] as $key => $value){
             $sheet->setCellValue('A'.$index, $value['driver_code']);
             $sheet->setCellValue('B'.$index, $value['typeName']);
             $sheet->setCellValue('C'.$index, $value['driver_name']);
@@ -2758,13 +2799,37 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
 
         $indexCheckStyle = 5;
 
-        foreach ($dataForListShifts as $key => $value){
+        foreach ($dataForListShifts['data'] as $key => $value){
             $sheet->getStyle('A'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
 //            dd($sheet->getStyle('D3')->getFill()->getStartColor()->getRGB());
             $sheet->getStyle('B'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $sheet->getStyle('C'.$indexCheckStyle)->applyFromArray($styleArrayDriver)->getAlignment();
             $indexCheckStyle ++;
         }
+
+        // Tổng từng ngày
+        // Thêm cột tổng
+        $sheet->mergeCells([1,$index,3,$index]);
+        $sheet->setCellValue('A'.$index, '日別合計');
+        $sheet->getStyle('A'.$index)->applyFromArray($styleArrayDriver)->getAlignment();
+
+        $colCalendarTotal = 4;
+        // Kiểm tra từng cột Calendar
+        foreach ($dataCalendars as $dataCalendar){
+            foreach ($dataForListShifts['total_all_meal_fee_by_date'] as $key => $value){
+                // Nếu trùng ngày thì truyền vào
+                if ($dataCalendar['date'] == $value['ship_date']){
+                    $value['course_meal_fee_commission'] = $value['course_meal_fee_commission'] == "0.00" ? "0" : $value['course_meal_fee_commission'];
+                    $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['course_meal_fee_commission'] == '' ? '' : number_format($value['course_meal_fee_commission']),DataType::TYPE_STRING);
+                    break;
+                }
+            }
+            $colCalendarTotal ++;
+        }
+
+//        // Truyền dữ liệu tổng tất cả trong tháng
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShifts['total_all_meal_fee_by_month'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_month']),DataType::TYPE_STRING);
+
 
         header("Pragma: public");
         header("Expires: 0");
