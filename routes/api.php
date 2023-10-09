@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     Route::post('auth/login', 'AuthController@login');
     Route::get('auth/bothutesthoi/ahii', 'AuthController@testAI');
-    Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/save-token-fcm', 'UserController@saveTokenFCM');
         Route::get('calendar/index', 'CalendarController@index');
@@ -46,7 +45,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
             Route::get('driver-course/detail-edit-shift','DriverCourseController@detailEditShift');
             Route::get('driver-course/export-driver-meal-shift','DriverCourseController@export_driver_meal_shift');
             Route::get('driver-course/export-shift','DriverCourseController@export_shift');
-
+            Route::get('driver-course/export-shift-express-charge','DriverCourseController@export_shift_express_charge');
             Route::get('driver-course/export-sales-list', 'DriverCourseController@exportSalesList');
             Route::get('driver-course/export-sale-detail-pdf/{id}', 'DriverCourseController@exportSalesDetailPDF');
             Route::apiResource('driver-course', 'DriverCourseController');
