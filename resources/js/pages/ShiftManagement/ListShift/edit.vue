@@ -776,7 +776,7 @@ export default {
 				const { code, data } = await getListShift(CONSTANT.URL_API.GET_LIST_SHIFT_TABLE, PARAMS);
 
 				if (code === 200) {
-					this.listShift = data;
+					this.listShift = data.data;
 				}
 				setLoading(false);
 			} catch (error) {
