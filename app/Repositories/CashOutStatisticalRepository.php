@@ -70,6 +70,7 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
         $create = CashOutStatistical::create([
             'driver_id' => $driverId,
             'month_line' => $monthLine,
+            'balance_temp' => 0,
             'balance_previous_month' => $balancePreviousMonth,
             'payable_this_month' => $payableThisMonth,
             'total_cash_out_current' => $totalCashOutCurrent,
@@ -141,28 +142,28 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
 
     public function getAllCashOutStatisticalByDriver($input)
     {
-        $input['order_by'] = Arr::get($input, 'order_by', 'id');
-        $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
-        $input['month_line'] = Arr::get($input, 'month_line', Carbon::now()->format('Y-m'));
-
-        $monthLine = $input['month_line'];
-
-        $previousMonthLine = Carbon::parse($monthLine)->subMonth()->format('Y-m');
-        $checkTemporary = $this->checkTemporary($previousMonthLine);
-
-        // dieu kien de fillter month
-        // 1: cashOutStatistical.month_line thuoc input['month_year']: where('cashOutStatistical.month_line', $monthYear)
-
-        $drivers = Driver::where('type', 4)
-                    ->with(['cashOutStatistical' => function ($query) use($monthLine) {
-                        $query->where('month_line', $monthLine);
-                    }]);
-
-        $drivers = $drivers->get();
-
-        $data = [];
         try {
             DB::beginTransaction();
+            $input['order_by'] = Arr::get($input, 'order_by', 'id');
+            $input['sort_by'] = Arr::get($input, 'sort_by', 'desc');
+            $input['month_line'] = Arr::get($input, 'month_line', Carbon::now()->format('Y-m'));
+
+            $monthLine = $input['month_line'];
+
+            $previousMonthLine = Carbon::parse($monthLine)->subMonth()->format('Y-m');
+            $checkTemporary = $this->checkTemporary($previousMonthLine);
+
+            // dieu kien de fillter month
+            // 1: cashOutStatistical.month_line thuoc input['month_year']: where('cashOutStatistical.month_line', $monthYear)
+
+            $drivers = Driver::where('type', 4)
+                        ->with(['cashOutStatistical' => function ($query) use($monthLine) {
+                            $query->where('month_line', $monthLine);
+                        }]);
+
+            $drivers = $drivers->get();
+
+            $data = [];
             foreach ($drivers as $key => $value) {
                 // drivers
                 $data[$key]['id'] = $value->id;
@@ -178,30 +179,32 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
                         // empty
                         $data[$key]['month_line'] = $createCashOutStatistical['month_line'];
                         // no cuoi thang truoc
-                        ($checkTemporary == true) ? ($data[$key]['balance_previous_month'] = $createCashOutStatistical['balance_previous_month']) : ($data[$key]['balance_previous_month'] = 0);
+                        // ($checkTemporary == true) ? ($data[$key]['balance_previous_month'] = $createCashOutStatistical['balance_previous_month']) : ($data[$key]['balance_previous_month'] = 0);
+                        $data[$key]['balance_previous_month'] = $createCashOutStatistical['balance_temp'];
                         // no thang nay
                         $data[$key]['payable_this_month'] = $createCashOutStatistical['payable_this_month'];
                         // tong no thang nay
-                        $data[$key]['total_payable'] = $createCashOutStatistical['balance_previous_month'] + $createCashOutStatistical['payable_this_month'];
+                        $data[$key]['total_payable'] = $createCashOutStatistical['balance_temp'] + $createCashOutStatistical['payable_this_month'];
                         // so tien da tra thang nay
                         $data[$key]['total_cash_out_current'] = $createCashOutStatistical['total_cash_out_current'];
                         // no lai thang nay
-                        $data[$key]['balance_current'] = $createCashOutStatistical['balance_previous_month'] + $createCashOutStatistical['payable_this_month'] - $createCashOutStatistical['total_cash_out_current'];
+                        $data[$key]['balance_current'] = $createCashOutStatistical['balance_temp'] + $createCashOutStatistical['payable_this_month'] - $createCashOutStatistical['total_cash_out_current'];
                     }
                 } else {
                     // not empty
                     foreach ($value->cashOutStatistical as $k => $item) {
                         $data[$key]['month_line'] = $item['month_line'];
                         // no cuoi thang truoc
-                        ($checkTemporary == true) ? ($data[$key]['balance_previous_month'] = $item['balance_previous_month']) : ($data[$key]['balance_previous_month'] = 0);
+                        // ($checkTemporary == true) ? ($data[$key]['balance_previous_month'] = $item['balance_previous_month']) : ($data[$key]['balance_previous_month'] = 0);
+                        $data[$key]['balance_previous_month'] = $item['balance_temp'];
                         // no thang nay
                         $data[$key]['payable_this_month'] = $item['payable_this_month'];
                         // tong no thang nay
-                        $data[$key]['total_payable'] = $item['balance_previous_month'] + $item['payable_this_month'];
+                        $data[$key]['total_payable'] = $item['balance_temp'] + $item['payable_this_month'];
                         // so tien da tra thang nay
                         $data[$key]['total_cash_out_current'] = $item['total_cash_out_current'];
                         // no lai thang nay
-                        $data[$key]['balance_current'] = $item['balance_previous_month'] + $item['payable_this_month'] - $item['total_cash_out_current'];
+                        $data[$key]['balance_current'] = $item['balance_temp'] + $item['payable_this_month'] - $item['total_cash_out_current'];
                     }
                 }
             }
@@ -319,5 +322,27 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
             return false;
         }
         return true;
+    }
+
+    public function cashOutTemporary($input) {
+        try {
+            DB::beginTransaction();
+            $nextMonth = Carbon::parse($input['month_year'])->addMonth()->format('Y-m');
+            $cashOuts = CashOutStatistical::where('month_line', $nextMonth)->get();
+            // update balance_temp
+            foreach ($cashOuts as $key => $cashOut) {
+                $update = CashOutStatistical::where('driver_id', $cashOut['driver_id'])
+                                            ->where('month_line', $nextMonth)
+                                            ->update([
+                                                'balance_temp' => $cashOut['balance_previous_month'],
+                                            ]);
+            }
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception->getMessage();
+        }
+
     }
 }
