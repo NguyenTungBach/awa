@@ -42,7 +42,10 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
         }
 
         // Bach cập nhật lại Temp
-        $this->cashInStaticalRepository->cashInStaticalTemp($input);
+        $check = $this->cashInStaticalRepository->cashInStaticalTemp(request());
+        if ($check['status'] == "error"){
+            $result = $check;
+        }
 
         return $result;
     }

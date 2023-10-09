@@ -10,6 +10,7 @@ use App\Http\Resources\BaseResource;
 use App\Http\Resources\TemporaryClosingHistoriesResource;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class TemporaryClosingHistoriesController extends Controller
 {
@@ -120,6 +121,9 @@ class TemporaryClosingHistoriesController extends Controller
             $request['date'] = Carbon::now()->format('Y-m-d');
             $result = $this->repository->createTemporaryClosing($request->all());
 
+            if (Arr::get($result, 'status') != null){
+                return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, CREATE_ERROR, $result);
+            }
             return $this->responseJson(Response::HTTP_OK, new TemporaryClosingHistoriesResource($result), CREATE_SUCCESS);
         } catch (\Exception $exception) {
 
