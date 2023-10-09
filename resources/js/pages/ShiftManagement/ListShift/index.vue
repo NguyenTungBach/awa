@@ -888,11 +888,11 @@
                                             {{ $t("LIST_SHIFT.SALES_TOTAL") }}
                                         </span>
                                     </b-td>
-                                    <b-td v-for="(value, idx) in total_expenses" :key="`total-${idx}`" class="text-center total_expenses">
-                                        {{ value.total ? Number(value.total) : value.total }}
+                                    <b-td v-for="(value, idx) in listTotal_all_meal_fee_by_date" :key="`total-${idx}`" class="text-center total_expenses">
+                                        {{ value.course_meal_fee_commission ? Number(value.course_meal_fee_commission) : '' }}
                                     </b-td>
                                     <b-td class="td-total-month total_payment">
-                                        {{ total_expenses_of_month ? Number(total_expenses_of_month) : total_expenses_of_month }}
+                                        {{ total_all_meal_fee_by_month ? Number(total_all_meal_fee_by_month) : '' }}
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
@@ -1051,6 +1051,21 @@
                                         </b-td>
                                     </tr>
                                 </template>
+                            </b-tbody>
+							<b-tbody>
+                                <b-tr>
+                                    <b-td class="td-total" colspan="3">
+                                        <span>
+                                            {{ $t("LIST_SHIFT.SALES_TOTAL") }}
+                                        </span>
+                                    </b-td>
+                                    <b-td v-for="(value, idx) in ListTotal_all_express_by_date" :key="`total-${idx}`" class="text-center total_expenses">
+                                        {{ value.total_express_by_date ? Number(value.total_express_by_date) : '' }}
+                                    </b-td>
+                                    <b-td class="td-total-month total_payment">
+                                        {{ total_all_express_by_month ? Number(total_all_express_by_month) : '' }}
+                                    </b-td>
+                                </b-tr>
                             </b-tbody>
                         </b-table-simple>
 
@@ -1483,6 +1498,10 @@ export default {
 			listTotalExtraCost: [],
 			listTableCourse: [],
 			listSalary: [],
+			listTotal_all_meal_fee_by_date: [],
+			total_all_meal_fee_by_month: '',
+			ListTotal_all_express_by_date: [],
+			total_all_express_by_month: '',
 
 			listPractical: [],
 			disableTem: false,
@@ -2011,6 +2030,8 @@ export default {
 
 				if (code === 200) {
 					this.listShift = data.data;
+					this.listTotal_all_meal_fee_by_date = data.total_all_meal_fee_by_date;
+					this.total_all_meal_fee_by_month = data.total_all_meal_fee_by_month;
 					console.log('data', this.listShift);
 					this.reloadTable();
 				}
@@ -2046,6 +2067,8 @@ export default {
 
 				if (code === 200) {
 					this.listHighWay = data.data;
+					this.ListTotal_all_express_by_date = data.total_all_express_by_date;
+					this.total_all_express_by_month = data.total_all_express_by_month;
 					this.reloadTable();
 				}
 				setLoading(false);
