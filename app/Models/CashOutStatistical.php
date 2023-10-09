@@ -16,6 +16,7 @@ class CashOutStatistical extends Model
     protected $fillable = [
         'driver_id',
         'month_line',
+        'balance_temp',
         'balance_previous_month',
         'payable_this_month',
         'total_cash_out_current',

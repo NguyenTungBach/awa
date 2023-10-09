@@ -10,13 +10,19 @@ use Illuminate\Http\Response;
 use Repository\BaseRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
+use Repository\CashOutStatisticalRepository;
+use Illuminate\Support\Facades\DB;
 
 class TemporaryClosingHistoriesRepository extends BaseRepository implements TemporaryClosingHistoriesRepositoryInterface
 {
-    public function __construct(Application $app, CashInStaticalRepository $cashInStaticalRepository)
-    {
+    public function __construct(
+        Application $app,
+        CashInStaticalRepository $cashInStaticalRepository,
+        CashOutStatisticalRepository $cashOutStatisticalRepository
+    ){
         parent::__construct($app);
         $this->cashInStaticalRepository = $cashInStaticalRepository;
+        $this->cashOutStatisticalRepository = $cashOutStatisticalRepository;
     }
 
     /**
@@ -32,22 +38,35 @@ class TemporaryClosingHistoriesRepository extends BaseRepository implements Temp
 
     public function createTemporaryClosing($input)
     {
-        $result = [];
-        $checkTemp = TemporaryClosingHistories::where('month_year', $input['month_year'])->first();
-        if (empty($checkTemp)) {
-            $result = TemporaryClosingHistories::create([
-                'date' => $input['date'],
-                'month_year' => $input['month_year'],
-            ]);
-        }
+        try {
+            DB::beginTransaction();
+            $result = [];
 
-        // Bach cập nhật lại Temp
-        $check = $this->cashInStaticalRepository->cashInStaticalTemp(request());
-        if ($check['status'] == "error"){
-            $result = $check;
-        }
+            $checkTemp = TemporaryClosingHistories::where('month_year', $input['month_year'])->first();
+            if (empty($checkTemp)) {
+                $result = TemporaryClosingHistories::create([
+                    'date' => $input['date'],
+                    'month_year' => $input['month_year'],
+                ]);
+            }
 
-        return $result;
+            // Bach cập nhật lại Temp
+            $check = $this->cashInStaticalRepository->cashInStaticalTemp(request());
+            if ($check['status'] == "error"){
+                $result = $check;
+            }
+
+            // update cashout
+            $a = $this->cashOutStatisticalRepository->cashOutTemporary($input);
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $exception->getMessage();
+        }
     }
 
     public function getAll($input)
