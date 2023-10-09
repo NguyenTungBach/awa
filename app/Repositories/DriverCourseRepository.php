@@ -97,6 +97,60 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         // Gọi đến tất cả
         $getMonth_year = explode("-",$request->month_year);
 
+        // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
+        // Kiểm tra xem ngày tạo có rơi vào final_closing không, nếu có thì lấy tất cả driver theo final_closing
+        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
+
+        if ($final_closing){
+            $listDrivers = Driver::query()
+                ->whereIn('id', json_decode($final_closing->driver_ids))
+                ->SortByForDriver($request)->get()->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    }
+                    return $data;
+                });
+        } else{
+            $listDrivers = Driver::query()
+                ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
+                ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
+                ->orWhere(function ($query) use ($getMonth_year) {
+                    $query->whereYear('end_date', $getMonth_year[0])
+                        ->whereMonth('end_date',">=", $getMonth_year[1]);
+                })
+                ->SortByForDriver($request)->get()
+                ->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    }
+                    return $data;
+                });
+        }
+
+        $listDriverIds = $listDrivers->pluck('id')->toArray();
+
         // Tìm tất cả những course nằm trong driver
         $datas = $this->model->query()
             ->select(
@@ -116,6 +170,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->SortByForDriverCourse($request)
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1])
+            ->whereIn('driver_courses.driver_id', $listDriverIds)
             ->whereNull('driver_courses.deleted_at')->get();
         $groupedDatas = collect($datas)->groupBy('driver_id');
         $dataCustom =[

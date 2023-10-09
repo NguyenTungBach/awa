@@ -17,6 +17,7 @@ use App\Models\FinalClosingHistories;
 use App\Models\TemporaryClosingHistories;
 use App\Repositories\Contracts\CashInStaticalRepositoryInterface;
 use Carbon\Carbon;
+use Helper\ResponseService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -903,13 +904,13 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
                 $cashInStatical->balance_temp = $cashInStatical->balance_previous_month;
                 $cashInStatical->save();
             }
-
             DB::commit();
         } catch (\Exception $exception){
             DB::rollBack();
-            return $exception;
+            return ResponseService::responseData(Response::HTTP_UNPROCESSABLE_ENTITY,'error',$exception->getMessage(),
+                $exception->getMessage());
         }
 
-        return $this->responseJson(200, new BaseResource("OK"));
+        return ResponseService::responseData(CODE_SUCCESS, 'success');
     }
 }

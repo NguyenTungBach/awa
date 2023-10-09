@@ -343,7 +343,6 @@
                                                         <b-form-input
                                                             id="input-character"
                                                             v-model="isForm.character"
-                                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                                             maxlength="20"
                                                         />
                                                     </b-col>

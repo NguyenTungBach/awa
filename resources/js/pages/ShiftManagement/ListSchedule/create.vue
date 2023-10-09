@@ -133,7 +133,6 @@
                                             id="input-vihicle-number"
                                             v-model="isForm.vihicle_number"
                                             type="text"
-                                            onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"
                                         />
                                     </b-input-group>
                                 </b-col>

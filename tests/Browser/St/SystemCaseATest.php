@@ -25,69 +25,67 @@ class SystemCaseATest extends DuskTestCase
     {
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed --class=UserSeeder');
-        Artisan::call('db:seed --class=DriverSeeder');
-        Artisan::call('db:seed --class=CustomerSeeder');
-        Artisan::call('db:seed --class=CourseSeeder');
+//        Artisan::call('db:seed --class=DriverSeeder');
+//        Artisan::call('db:seed --class=CustomerSeeder');
+//        Artisan::call('db:seed --class=CourseSeeder');
+//        Artisan::call('db:seed --class=DriverCourseSeeder');
 
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginDriverCaseAGeneral($browser);
 
-//            // User
-//            $this->listUser($browser);
-//            $this->createUser($browser);
-//            $this->editUser($browser);
-//            $this->deleteUser($browser);
-//
-//            // Driver
-//            $this->listDriver($browser);
-//            $this->createDriver($browser);
-//            $this->editDriver($browser);
-//            $this->deleteDriver($browser);
-//
-//            // Customer
-//            $this->listCustomer($browser);
-//            $this->createCustomer($browser);
-//            $this->listDriver($browser);
-//            $this->createDriver($browser);
-//            $this->listCustomer($browser);
-//            $this->editCustomer($browser);
-//            $this->deleteCustomer($browser);
-//            $this->createCustomer($browser);
-//
-//            // Course
-//            // Before create course create driver B + customer B
-//            $this->listDriver($browser);
-//            $this->createDriverB($browser);
-//            $this->listCustomer($browser);
-//            $this->createCustomerB($browser);
+            // User
+            $this->listUser($browser);
+            $this->createUser($browser);
+            $this->editUser($browser);
+            $this->deleteUser($browser);
 
+            // Driver
+            $this->listDriver($browser);
+            $this->createDriver($browser);
+            $this->editDriver($browser);
+            $this->deleteDriver($browser);
+
+            // Customer
+            $this->listCustomer($browser);
+            $this->createCustomer($browser);
+            $this->listDriver($browser);
+            $this->createDriver($browser);
+            $this->listCustomer($browser);
+            $this->editCustomer($browser);
+            $this->deleteCustomer($browser);
+            $this->createCustomer($browser);
+
+            // Course
+            // Before create course create driver B + customer B
+            $this->listDriver($browser);
+            $this->createDriverB($browser);
+            $this->listCustomer($browser);
+            $this->createCustomerB($browser);
             $this->listCourse($browser);
-//            $this->createCourse($browser);
+            $this->createCourse($browser);
             $this->editCourse($browser);
-            $browser->pause(100000);
-//            $this->deleteCourse($browser);
-//            $this->createCourse($browser);
-//            $this->exportCourse($browser);
+            $this->deleteCourse($browser);
+            $this->createCourse($browser);
+            $this->exportCourse($browser);
 
-//            // Shift
-//            $browser->pause(3000);
-//            $this->listShift($browser);
-//            $this->editShift($browser);
-//            $this->exportExcelShift($browser);
-//
-//            // Shift High Way Fee
-//            $browser->pause(3000);
-//            $this->listShift($browser);
-//            $this->listHighWayFee($browser);
-//            $this->exportExcelHighWayFee($browser);
-//
-//            // Shift High Way Fee
-//            $browser->pause(3000);
-//            $this->listShift($browser);
-//            $this->listMeal($browser);
-//            $this->exportExcelMeal($browser);
-//
+            // Shift
+            $this->listShift($browser);
+            $this->editShift($browser);
+            $this->exportExcelShift($browser);
+
+            // Shift High Way Fee
+            $browser->pause(3000);
+            $this->listShift($browser);
+            $this->listHighWayFee($browser);
+            $this->exportExcelHighWayFee($browser);
+
+            // Shift Meal
+            $browser->pause(3000);
+            $this->listShift($browser);
+            $this->listMeal($browser);
+            $this->exportExcelMeal($browser);
+
 //            //CashIn
 //            $this->listCashIn($browser);
 //            $this->createCashIn($browser);
@@ -103,22 +101,21 @@ class SystemCaseATest extends DuskTestCase
 ////            $this->deleteCashOut($browser);
 //            $this->listCashOut($browser);
 //            $this->exportCashOut($browser);
-//
-//            // Shift Sales
-//            $browser->pause(3000);
-//            $this->listShift($browser);
-//            $this->listShiftSales($browser);
-//            $this->invoiceShiftSales($browser);
+
+            // Shift Sales
+            $browser->pause(3000);
+            $this->listShift($browser);
+            $this->listShiftSales($browser);
+            $this->invoiceShiftSales($browser);
 //            $this->finalClosingShiftSales($browser);
-//            $this->exportExcelShiftSales($browser);
-//
-//            // Shift Payment
-//            $browser->pause(3000);
-//            $this->listShift($browser);
-//            $this->listShiftPayment($browser);
-////            $this->finalClosingShiftPayment($browser);
-//            $this->exportExcelShiftPayment($browser);
-//
+            $this->exportExcelShiftSales($browser);
+
+            // Shift Payment
+            $browser->pause(3000);
+            $this->listShift($browser);
+            $this->listShiftPayment($browser);
+            $this->exportExcelShiftPayment($browser);
+
 //            $this->logOutCaseA($browser);
         });
     }
@@ -164,6 +161,7 @@ class SystemCaseATest extends DuskTestCase
     }
 
     private function deleteUser($browser){
+        $browser->waitFor('tbody > tr:nth-child(1) > td:nth-child(5) > i');
         $browser
             ->click('tbody > tr:nth-child(1) > td:nth-child(5) > i')->pause(3000)
             ->click("footer > button.btn.btn-primary")
@@ -226,6 +224,7 @@ class SystemCaseATest extends DuskTestCase
     }
 
     private function deleteDriver($browser){
+        $browser->waitFor('tbody > tr:nth-child(1) > td:nth-child(6) > i')->pause(2000);
         $browser
             ->click('tbody > tr:nth-child(1) > td:nth-child(6) > i')->pause(3000)
             ->click("footer > button.btn.btn-primary")
@@ -315,7 +314,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->pause(2000);
         $browser->click('div:nth-child(2) > div > button')->pause(2000);
 
-        $browser->click('#select-type-driver > div:nth-child(2) > label')->pause(2000);
+        $browser->click('#select-type-driver > div:nth-child(4) > label')->pause(2000);
 
         $browser->type('#input-empolyee-number',"1113")->pause(1000);
         $browser->type('#input-fullname','Driver B')->pause(1000);
@@ -539,11 +538,12 @@ class SystemCaseATest extends DuskTestCase
     private function editShift($browser)
     {
         $browser->waitFor('div:nth-child(2) > div:nth-child(1) > button')->pause(2000);
-        $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(4000);
-        $browser->click('#node-1-1-0001')->pause(2000);
+        $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(3000);
+        $browser->waitFor('.list-shift__table .zone-table td:nth-child(4)')->pause(2000);
+        $browser->click('.list-shift__table .zone-table td:nth-child(4)')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div')->pause(2000);
-        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(1)')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(2)')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-control > button.btn.btn-save.btn-secondary.rounded-pill')->pause(2000);
         $browser->click('div.list-shift > div.list-shift__control > div > div > div > .btn-save')->pause(2000);
         $browser->waitFor('.zone-table')->pause(4000);
@@ -580,7 +580,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->waitFor('div:nth-child(4) > .btn-excel')->pause(2000);
         $browser->click('div:nth-child(4) > .btn-excel')->pause(10000);
         $browser->click('#select-closing-date')->pause(2000);
-        $browser->click('#input-closing-date > option:nth-child(2)')->pause(2000);
+        $browser->click('#input-closing-date > option:nth-child(3)')->pause(2000);
         $browser->click('div:nth-child(3) > .btn-color-active-import')->pause(2000);
         $browser->waitFor('div:nth-child(4) > .btn-excel')->pause(2000);
         $browser->click('div:nth-child(4) > .btn-excel')->pause(10000);
