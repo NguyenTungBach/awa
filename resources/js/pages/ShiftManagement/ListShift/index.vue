@@ -876,7 +876,7 @@
                                             </template>
                                         </template>
                                         <b-td class="td-total-shift">
-                                            {{ emp.total_money }}
+                                            {{ Number(emp.total_money) }}
                                         </b-td>
                                     </tr>
                                 </template>
@@ -1052,7 +1052,7 @@
                                     </tr>
                                 </template>
                             </b-tbody>
-							<b-tbody>
+                            <b-tbody>
                                 <b-tr>
                                     <b-td class="td-total" colspan="3">
                                         <span>
