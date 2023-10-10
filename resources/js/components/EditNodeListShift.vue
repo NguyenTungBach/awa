@@ -6,9 +6,51 @@
                 class="edit-item"
                 @click="onClickSelect(idxEdit)"
             >
-                <div v-if="itemEdit.type">
+                <div v-if="[null,1,2,3,4,5,6,7].includes(itemEdit.type)" class="select-type">
+                    <b-input-group>
+                        <template #prepend>
+                            <b-input-group-text
+                                class="icon-delete"
+                                @click="onClickRemove(itemEdit, idxEdit)"
+                            >
+                                <i class="fas fa-times-circle" />
+                            </b-input-group-text>
+                        </template>
+
+                        <b-form-select v-model="itemEdit.type" @change="handleSelectChange">
+                            <b-form-select-option
+                                v-for="(item, idx) in listSelect"
+                                :key="`select-dayoff-${idx + 1}`"
+                                :value="item.value"
+                                :disabled="item.disabled"
+                            >
+                                {{ $t(item.text) }}
+                            </b-form-select-option>
+
+                            <b-form-select-option
+                                v-for="(item, idx) in halfDayOff"
+                                :key="`select-halfdayoff-${idx + 1}`"
+                                :value="item.value"
+                                :disabled="item.disabled"
+                            >
+                                {{ $t(item.text) }}
+                            </b-form-select-option>
+
+                            <b-form-select-option
+                                v-for="(course, idxCourse) in listCourse"
+                                :key="`select-course-${idxCourse + 1}`"
+                                :value="course.value"
+                                :disabled="course.disabled"
+                            >
+                                {{ course.text }}
+                            </b-form-select-option>
+                        </b-form-select>
+                    </b-input-group>
+                </div>
+
+                <div v-if="[1,2,3].includes(itemEdit.type)">
                     <div class="select-time">
-                        <!-- <div v-if="itemEdit.type !== null">
+                        <div v-if="itemEdit.type !== null">
                             <div class="item-time">
                                 <b-row>
                                     <b-col sm="3">
@@ -60,9 +102,9 @@
                                     </b-col>
                                 </b-row>
                             </div>
-                        </div> -->
-                        <!-- <div v-if="itemEdit.course.flag !== 'yes'"> -->
-                        <!-- <div>
+                        </div>
+                        <!-- <div v-if="itemEdit.course.flag !== 'yes'">
+                             <div>
                             <div class="course_name text-center">
                                 <span>
                                     {{ itemEdit.name }}
@@ -85,48 +127,6 @@
                             </div>
                         </div> -->
                     </div>
-                </div>
-
-                <div v-if="[null,1,2,3,4,5,6,7].includes(itemEdit.type)" class="select-type">
-                    <b-input-group>
-                        <template #prepend>
-                            <b-input-group-text
-                                class="icon-delete"
-                                @click="onClickRemove(itemEdit, idxEdit)"
-                            >
-                                <i class="fas fa-times-circle" />
-                            </b-input-group-text>
-                        </template>
-
-                        <b-form-select v-model="itemEdit.type" @change="handleSelectChange">
-                            <b-form-select-option
-                                v-for="(item, idx) in listSelect"
-                                :key="`select-dayoff-${idx + 1}`"
-                                :value="item.value"
-                                :disabled="item.disabled"
-                            >
-                                {{ $t(item.text) }}
-                            </b-form-select-option>
-
-                            <b-form-select-option
-                                v-for="(item, idx) in halfDayOff"
-                                :key="`select-halfdayoff-${idx + 1}`"
-                                :value="item.value"
-                                :disabled="item.disabled"
-                            >
-                                {{ $t(item.text) }}
-                            </b-form-select-option>
-
-                            <b-form-select-option
-                                v-for="(course, idxCourse) in listCourse"
-                                :key="`select-course-${idxCourse + 1}`"
-                                :value="course.value"
-                                :disabled="course.disabled"
-                            >
-                                {{ course.text }}
-                            </b-form-select-option>
-                        </b-form-select>
-                    </b-input-group>
                 </div>
             </div>
         </template>
@@ -154,14 +154,14 @@
 
 <script>
 import CONSTANT from '@/const';
-// import SelectMultiple from '@/components/SelectMultiple';
+import SelectMultiple from '@/components/SelectMultiple';
 import { convertBreakTimeNumberToTime, formatArray2Time } from '@/utils/convertTime';
 
 export default {
 	name: 'EditNodeListShift',
-	// components: {
-	// 	SelectMultiple,
-	// },
+	components: {
+		SelectMultiple,
+	},
 
 	props: {
 		halfDayOff: {

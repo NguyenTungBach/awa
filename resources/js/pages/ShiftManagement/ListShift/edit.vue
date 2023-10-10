@@ -975,8 +975,8 @@ export default {
 					result.push({
 						type: 7,
 						name: this.$t(CONSTANT.LIST_SHIFT.TEXT_HALF_DAY_OF),
-						start_time: '09:00',
-						end_time: '18:00',
+						start_time: '00:00',
+						end_time: '00:00',
 						break_time: '0.00',
 					});
 				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(dataUpdate[idx].type)) {
@@ -984,8 +984,8 @@ export default {
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
 						// course_status: null,
-						start_time: '09:00',
-						end_time: '18:00',
+						start_time: '00:00',
+						end_time: '00:00',
 						break_time: '0.00',
 					});
 				} else if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(dataUpdate[idx].type)) {
@@ -993,8 +993,8 @@ export default {
 						type: dataUpdate[idx].type,
 						name: this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]),
 						// course_status: this.listCourse[COURSE].status,
-						start_time: '09:00',
-						end_time: '18:00',
+						start_time: '00:00',
+						end_time: '00:00',
 						break_time: '0.00',
 					});
 				} else {
@@ -1339,8 +1339,8 @@ export default {
 				if (COURSE) {
 					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
 						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].start_time = ['00', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].course = {
 							start_time: null,
@@ -1364,8 +1364,8 @@ export default {
 					console.log('list not:', this.listNodeEditSelected);
 					if ((CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF).includes(value)) {
 						this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-						this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-						this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+						this.listNodeEditSelected[idxChange].start_time = ['00', '00'];
+						this.listNodeEditSelected[idxChange].end_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 						this.listNodeEditSelected[idxChange].course = {
 							start_time: null,
@@ -1376,8 +1376,8 @@ export default {
 					} else {
 						if ((CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY).includes(value)) {
 							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[value]);
-							this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-							this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+							this.listNodeEditSelected[idxChange].start_time = ['00', '00'];
+							this.listNodeEditSelected[idxChange].end_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].course = {
 								start_time: null,
@@ -1387,8 +1387,8 @@ export default {
 							this.listNodeEditSelected[idxChange].course_status = null;
 						} else if (value === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
 							this.listNodeEditSelected[idxChange].name = this.$t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK]);
-							this.listNodeEditSelected[idxChange].start_time = ['09', '00'];
-							this.listNodeEditSelected[idxChange].end_time = ['18', '00'];
+							this.listNodeEditSelected[idxChange].start_time = ['00', '00'];
+							this.listNodeEditSelected[idxChange].end_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].break_time = ['00', '00'];
 							this.listNodeEditSelected[idxChange].course = {
 								start_time: null,
