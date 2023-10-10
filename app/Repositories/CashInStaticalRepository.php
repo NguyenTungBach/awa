@@ -369,6 +369,7 @@ class CashInStaticalRepository extends BaseRepository implements CashInStaticalR
         $cashInStatical->total_cash_in = $totalCashIn->total_cash_in ?? 0;
 
         $cashInStatical->balance_previous_month = $checkFinal ? $cashInStatical->balance_previous_month : $cashInStatical->balance_temp;
+        $cashInStatical->total_cash_in_current = $checkFinal ? $cashInStatical->total_cash_in_current : strval($cashInStatical->balance_temp + $cashInStatical->receivable_this_month - $cashInStatical->total_cash_in);
 
         return $this->responseJson(200, new BaseResource($cashInStatical));
     }

@@ -892,7 +892,7 @@
                                         {{ value.course_meal_fee_commission ? Number(value.course_meal_fee_commission) : '' }}
                                     </b-td>
                                     <b-td class="td-total-month total_payment">
-                                        {{ total_all_meal_fee_by_month ? Number(total_all_meal_fee_by_month) : '' }}
+                                        <!--{{ total_all_meal_fee_by_month ? Number(total_all_meal_fee_by_month) : '' }}-->
                                     </b-td>
                                 </b-tr>
                             </b-tbody>
