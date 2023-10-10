@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use App\Http\Resources\CashOutStatisticalResource;
 use App\Exports\CashOutStatisticalExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Repository\CashOutStatisticalRepository;
 
 class CashOutStatisticalController extends Controller
 {
@@ -68,10 +69,12 @@ class CashOutStatisticalController extends Controller
     {
         try {
             $input = $request->all();
-
-            return Excel::download(new CashOutStatisticalExport($input), '出金情報一覧.xlsx');
+            $cashOutStaticalRepository = new CashOutStatisticalRepository(app());
+            $cashOutExport = new CashOutStatisticalExport($input, $cashOutStaticalRepository);
+            return Excel::download($cashOutExport, '出金情報一覧.xlsx');
         } catch (\Exception $exception) {
 
+            dd($exception);
             return $this->responseJsonError(Response::HTTP_INTERNAL_SERVER_ERROR, ERROR, $exception->getMessage());
         }
     }
