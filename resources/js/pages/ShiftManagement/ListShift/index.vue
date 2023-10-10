@@ -3449,6 +3449,7 @@ export default {
 								padding: 0;
 
 								min-width: 150px;
+								vertical-align: middle;
 							}
 
 							td.td-employee-number,
@@ -3728,6 +3729,7 @@ export default {
 								padding: 0;
 
 								min-width: 150px;
+								vertical-align: middle;
 							}
 
 							td.td-employee-number,
