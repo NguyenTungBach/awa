@@ -145,7 +145,7 @@ return [
         'phone_number' => [
             'regex' => ':attributeには数字とハイフン (-) のみを指定ください。'
         ],
-        'check_date' => ':attribute時間は作成日以降である必要があります',
+        'check_date' => ':attributeは本締めを実行していない月を選択してください',
         'check_minute' => ':attributeが無効です',
         'compare_date' => '始業時間は終業時間より早い時間に設定してください',
         'required_custom' => '入力または選択されていない項目があります。',
@@ -162,7 +162,7 @@ return [
             'numeric' => ':row行目の項目『:attribute』には、数字を指定してください。',
             'exists' =>  ':row行目の項目『:attribute』は登録されていません。',
             'unique' => ':row行目の項目『:attribute』は既に存在しています。',
-            'check_date' => ':row行目の『:attribute』時間は作成日以降である必要があります',
+            'check_date' => ':row行目の『:attribute』は本締めを実行していない月を選択してください',
             'compare_date' => ':row行目の始業時間は終業時間より早い時間に設定してください',
             'digits_between' => ':row行目の『:attribute』は、:min桁から:max桁にしてください。',
             'headings' => [
