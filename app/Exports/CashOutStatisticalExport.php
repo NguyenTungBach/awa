@@ -25,10 +25,14 @@ class CashOutStatisticalExport implements FromView, ShouldAutoSize, WithStyles
     use Exportable;
 
     protected array $input;
+    protected $cashOutStaticalRepository;
 
-    public function __construct(array $input)
-    {
+    public function __construct(
+        array $input,
+        CashOutStatisticalRepository $cashOutStaticalRepository
+    ){
         $this->input = $input;
+        $this->cashOutStaticalRepository = $cashOutStaticalRepository;
     }
 
     public function view(): View
@@ -48,7 +52,7 @@ class CashOutStatisticalExport implements FromView, ShouldAutoSize, WithStyles
 
         $title = $startDate.'('.$startDateJapan.')'.'〜'.$endDate.'('.$endDateJapan.')';
         return view('exports.cash_out_statistical', [
-            'result' => CashOutStatisticalRepository::getAllCashOutStatisticalByDriver($this->input),
+            'result' => $this->cashOutStaticalRepository->getAllCashOutStatisticalByDriver($this->input),
             'title' => $title,
         ]);
     }
