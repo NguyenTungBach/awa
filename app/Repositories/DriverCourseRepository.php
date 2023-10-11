@@ -201,6 +201,62 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $getMonth_year = explode("-",$request->month_year);
         $month_year = $request->month_year;
 
+        // (Before) Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
+        // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
+        $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
+        // Kiểm tra xem ngày tạo có rơi vào final_closing không, nếu có thì lấy tất cả driver theo final_closing
+        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
+
+        if ($final_closing){
+            $listDrivers = Driver::query()
+                ->whereIn('id', json_decode($final_closing->driver_ids))
+                ->SortByForDriver($request)->get()->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    }
+                    return $data;
+                });
+        } else{
+            $listDrivers = Driver::query()
+                ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
+                ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
+                ->orWhere(function ($query) use ($getMonth_year) {
+                    $query->whereYear('end_date', $getMonth_year[0])
+                        ->whereMonth('end_date',">=", $getMonth_year[1]);
+                })
+                ->SortByForDriver($request)->get()
+                ->filter(function ($data) {
+                    switch ($data['type']){
+                        case 1:
+                            $data['typeName'] = trans('drivers.type.1');
+                            break;
+                        case 2:
+                            $data['typeName'] = trans('drivers.type.2');
+                            break;
+                        case 3:
+                            $data['typeName'] = trans('drivers.type.3');
+                            break;
+                        case 4:
+                            $data['typeName'] = trans('drivers.type.4');
+                            break;
+                    }
+                    return $data;
+                });
+        }
+
+        $driverIds = $listDrivers->pluck('id')->toArray();
+
         // Nhóm tất cả những course nằm trong driver theo tháng
         $datas = DriverCourse::query()
             ->select(
@@ -218,11 +274,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
             ->leftJoin('customers', 'courses.customer_id', '=', 'customers.id')
             ->SortByForDriverCourse($request)
+            ->whereIn('driver_courses.driver_id', $driverIds)
             ->groupBy("driver_courses.driver_id","driver_courses.date")
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1]);
 
-        $dataTotalByDriverIds = [];
+        $dataTotalClosingDateByDriverIds = [];
         if ($request->has('closing_date')){
             $checkArrayClosingDate = [29,28,30,31];
             if (in_array($request->closing_date,$checkArrayClosingDate)){
@@ -244,16 +301,15 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 $startDate = Carbon::parse($month_year."-".($request->closing_date+1))->subMonth()->format('Y-m-d');
                 $endDate = Carbon::parse($month_year."-".$request->closing_date)->format('Y-m-d');
             }
-            // Tổng tiền những course nằm trong driver
-            $dataTotalByDriverIds = $this->model->query()
+            // Tổng tiền những course nằm trong driver theo closing date
+            $dataTotalClosingDateByDriverIds = DriverCourse::query()
                 ->select(
                     "driver_courses.driver_id",
                     "drivers.driver_name",
                     "drivers.driver_code",
                     "drivers.type",
                 )
-                ->addSelect(\DB::raw("GROUP_CONCAT(driver_courses.course_id) as course_ids,GROUP_CONCAT(`courses`.`course_name`) as course_names
-            ,SUM(CASE WHEN
+                ->addSelect(\DB::raw("SUM(CASE WHEN
             `driver_courses`.`date` BETWEEN '$startDate' AND '$endDate'
             THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
             as `total_money`"))
@@ -261,9 +317,41 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
                 ->groupBy("driver_courses.driver_id")
                 ->SortByForDriverCourse($request)
+                ->whereIn('driver_courses.driver_id', $driverIds)
                 ->whereBetween('driver_courses.date', [$startDate, $endDate])
                 ->whereNull('driver_courses.deleted_at')->get();
+
+            // Tính tổng toàn bộ tiền ship theo closing date và theo những driver đã cho
+            $totalDataByClosingDate = DriverCourse::query()
+                ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as total_all_meal_fee_by_closing_date'))
+                ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+                ->whereIn('driver_courses.driver_id', $driverIds)
+                ->whereBetween('driver_courses.date', [$startDate, $endDate])
+                ->first();
         }
+
+        // Tính tổng mỗi customer trong tháng
+        $firstMonth = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
+        $lastMonth = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+        $dataTotalMonthByDriverIds = DriverCourse::query()
+            ->select(
+                "driver_courses.driver_id",
+                "drivers.driver_name",
+                "drivers.driver_code",
+                "drivers.type",
+            )
+            ->addSelect(\DB::raw("SUM(CASE WHEN
+            `driver_courses`.`date` BETWEEN '$firstMonth' AND '$lastMonth'
+            THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
+            as `total_money_by_month`"))
+            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+            ->groupBy("driver_courses.driver_id")
+            ->SortByForDriverCourse($request)
+            ->whereIn('driver_courses.driver_id', $driverIds)
+            ->whereBetween('driver_courses.date', [$firstMonth, $lastMonth])
+            ->get();
 
         $datas = $datas->get()->filter(function ($data) {
 //            $data->driver->start_date = explode(" ",$data->driver->start_date)[0];
@@ -356,60 +444,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $listDataConverts[] = $dataConverts;
         }
 
-        // (Before) Tìm tất cả driver còn làm việc (trong tháng đó) hoặc những driver <= tháng nghỉ hưu
-        // (Now) Tìm tất cả driver còn làm việc và những driver có nghỉ hưu nhưng chưa đến ngày
-        $getMonth_year = explode("-",$request->month_year); // Dành cho trường hợp kiểm tra nghỉ hưu
-        // Kiểm tra xem ngày tạo có rơi vào final_closing không, nếu có thì lấy tất cả driver theo final_closing
-        $final_closing = FinalClosingHistories::where('month_year',$request->month_year)->first();
-
-        if ($final_closing){
-            $listDrivers = Driver::query()
-                ->whereIn('id', json_decode($final_closing->driver_ids))
-                ->SortByForDriver($request)->get()->filter(function ($data) {
-                switch ($data['type']){
-                    case 1:
-                        $data['typeName'] = trans('drivers.type.1');
-                        break;
-                    case 2:
-                        $data['typeName'] = trans('drivers.type.2');
-                        break;
-                    case 3:
-                        $data['typeName'] = trans('drivers.type.3');
-                        break;
-                    case 4:
-                        $data['typeName'] = trans('drivers.type.4');
-                        break;
-                }
-                return $data;
-            });
-        } else{
-            $listDrivers = Driver::query()
-                ->whereRaw("IF (start_date IS NOT NULL,DATE_FORMAT(start_date,'%Y-%m') <=?,DATE_FORMAT(created_at,'%Y-%m') <=?)",[$request->month_year,$request->month_year])
-                ->whereNull('end_date') // Tìm những driver chưa nghỉ hưu kể từ ngày bắt đầu tức start_date phải rơi vào hoặc là quá khứ năm tháng đó
-                ->orWhere(function ($query) use ($getMonth_year) {
-                    $query->whereYear('end_date', $getMonth_year[0])
-                        ->whereMonth('end_date',">=", $getMonth_year[1]);
-                })
-                ->SortByForDriver($request)->get()
-                ->filter(function ($data) {
-                    switch ($data['type']){
-                        case 1:
-                            $data['typeName'] = trans('drivers.type.1');
-                            break;
-                        case 2:
-                            $data['typeName'] = trans('drivers.type.2');
-                            break;
-                        case 3:
-                            $data['typeName'] = trans('drivers.type.3');
-                            break;
-                        case 4:
-                            $data['typeName'] = trans('drivers.type.4');
-                            break;
-                    }
-                    return $data;
-                });
-        }
-
         $dataConvertForDriver = [];
         foreach ($listDrivers as $driver){
             $driverConvert = [
@@ -421,6 +455,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 'end_date' => $driver->end_date,
                 'dataShift' => [],
                 'total_money' => '',
+                'total_money_by_month' => '',
             ];
             foreach ($listDataConverts as $dataConvert){
                 // Nếu driver đó có lịch trình thì gán vào còn không thì để ngày lịch rỗng
@@ -470,10 +505,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     ];
                 }
             }
-            if (count($dataTotalByDriverIds) != 0){
-                foreach ($dataTotalByDriverIds as $dataTotalByDriverId){
-                    if($dataTotalByDriverId->driver_id == $driver->id){
-                        $driverConvert['total_money'] = $dataTotalByDriverId->total_money;
+            if (count($dataTotalClosingDateByDriverIds) != 0){
+                foreach ($dataTotalClosingDateByDriverIds as $dataTotalClosingDateByDriverId){
+                    if($dataTotalClosingDateByDriverId->driver_id == $driver->id){
+                        $driverConvert['total_money'] = $dataTotalClosingDateByDriverId->total_money;
+                        break;
+                    }
+                }
+            }
+            if (count($dataTotalMonthByDriverIds) != 0){
+                foreach ($dataTotalMonthByDriverIds as $dataTotalMonthByDriverId){
+                    if($dataTotalMonthByDriverId->driver_id == $driver->id){
+                        $driverConvert['total_money_by_month'] = $dataTotalMonthByDriverId->total_money_by_month;
                         break;
                     }
                 }
@@ -482,8 +525,6 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
 
         // Tính tổng tiền ship hàng ngày theo date và theo những driver đã cho
-        $listDriverIds = $listDrivers->pluck('id')->toArray();
-
         $totalDataByDates = DriverCourse::query()
             ->select(
                 "driver_courses.id as driver_courses_id",
@@ -492,7 +533,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as course_meal_fee_commission'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->whereIn('driver_courses.driver_id', $listDriverIds)
+            ->whereIn('driver_courses.driver_id', $driverIds)
             ->groupBy("driver_courses.date") // hàng ngày theo date
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1])->get();
@@ -513,19 +554,18 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         }
 
         // Tính tổng toàn bộ tiền ship trong tháng và theo những driver đã cho
-        $listDriverIds = $listDrivers->pluck('id')->toArray();
-
         $totalDataByMonth = DriverCourse::query()
             ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as total_all_meal_fee_by_month'))
             ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
             ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->whereIn('driver_courses.driver_id', $listDriverIds)
+            ->whereIn('driver_courses.driver_id', $driverIds)
             ->whereYear("driver_courses.date",$getMonth_year[0])
             ->whereMonth("driver_courses.date",$getMonth_year[1])->first();
 
         $data = [
             'data' => $dataConvertForDriver,
             'total_all_meal_fee_by_date' => $arrTotalByDate,
+            'total_all_meal_fee_by_closing_date' => $totalDataByClosingDate['total_all_meal_fee_by_closing_date'] ?? 0,
             'total_all_meal_fee_by_month' => $totalDataByMonth['total_all_meal_fee_by_month'] ?? 0
         ];
 
@@ -2050,7 +2090,7 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             foreach ($dataForListShiftsExpressCharge['total_all_express_by_date'] as $key => $value){
                 // Nếu trùng ngày thì truyền vào
                 if ($dataCalendar['date'] == $value['date']){
-                    $value['total_express_by_date'] = $value['total_express_by_date'] == "0.00" ? "0" : $value['total_express_by_date'];
+                    $value['total_express_by_date'] = $value['total_express_by_date'] == "0.00" ? "" : $value['total_express_by_date'];
                     $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$value['total_express_by_date'] == '' ? '' : number_format($value['total_express_by_date']),DataType::TYPE_STRING);
                     break;
                 }
