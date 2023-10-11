@@ -626,6 +626,9 @@ class SystemCaseATest extends DuskTestCase
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(2)')->pause(2000);
+        $browser->click('div:nth-child(1) > ul > li:nth-child(7) > div')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div.col-sm-9 > div > div > div > div:nth-child(1) > ul > li:nth-child(15) > div')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div.col-sm-9 > div > div > div > div:nth-child(1) > ul > li:nth-child(3) > div')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-control > button.btn.btn-save.btn-secondary.rounded-pill')->pause(2000);
         $browser->click('div.list-shift > div.list-shift__control > div > div > div > .btn-save')->pause(2000);
         $browser->waitFor('.zone-table')->pause(4000);
@@ -740,7 +743,7 @@ class SystemCaseATest extends DuskTestCase
     private function createCashIn($browser){
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
-        $browser->click('thead > tr > th.th-sort.th-id.th-course-id')->pause(2000);
+//        $browser->click('thead > tr > th.th-sort.th-id.th-course-id')->pause(2000);
         $browser->click('tbody > tr:nth-child(1) > td.text-center.td-control')->pause(6000);
         $browser->click('.btn-edit')->pause(2000);
         $getDate = Carbon::now()->firstOfMonth()->format('Y-m-d');
@@ -764,7 +767,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
 //        $this->mapDate($browser, '.input-group.mb-3 .input-group-append', $getDate);
 //        $browser->pause(1000);
-        $browser->type('#input-deposit-day',"350000")->pause(1000);
+        $browser->type('#input-deposit-day',"120000")->pause(1000);
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
 //        $browser->type('#input-notes',"test cash in")->pause(2000);
