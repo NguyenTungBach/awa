@@ -17,7 +17,6 @@ class ShiftMealTest extends DuskTestCase
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginAdminGeneral($browser);
-            $browser->pause(3000);
             $this->listMeal($browser);
             $this->exportExcelMeal($browser);
         });

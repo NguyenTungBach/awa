@@ -124,9 +124,12 @@ class SystemCaseATest extends DuskTestCase
             $this->listShift($browser);
             $this->listShiftSales($browser);
             $this->finalClosingShiftSales($browser);
+            $this->listCashIn($browser);
+            $this->checkPickerMonthYear($browser);
+            $this->listCashOut($browser);
+            $this->checkPickerMonthYear($browser);
 
             $this->logOutCaseA($browser);
-            $browser->pause(10000000);
         });
     }
 
@@ -764,7 +767,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
 //        $browser->type('#input-notes',"test cash in")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(4000);
     }
 
     private function createCashIn2($browser){
@@ -781,7 +784,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
 //        $browser->type('#input-notes',"test cash in")->pause(2000);
-        $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
+        $browser->click('.btn-save')->waitFor('.toast-body')->pause(4000);
     }
 
     private function editCashIn($browser){
@@ -899,5 +902,23 @@ class SystemCaseATest extends DuskTestCase
     public function logOutCaseA($browser) {
         $browser->mouseover('.icon-dropdown')->pause(2000);
         $browser->press('div.show-profile > ul')->pause(5000);
+    }
+
+    public function checkPickerMonthYear($browser) {
+        // Tháng sau
+        $browser->waitFor('.picker-month-year > div > div.picker-month-year__next')->pause(2000);
+        $browser->click('.picker-month-year > div > div.picker-month-year__next')->pause(3000);
+
+        // Về tháng chính
+        $browser->waitFor('.picker-month-year > div > div.picker-month-year__back')->pause(2000);
+        $browser->click('.picker-month-year > div > div.picker-month-year__back')->pause(3000);
+
+        // Tháng trước
+        $browser->waitFor('.picker-month-year > div > div.picker-month-year__back')->pause(2000);
+        $browser->click('.picker-month-year > div > div.picker-month-year__back')->pause(3000);
+
+        // Về tháng chính
+        $browser->waitFor('.picker-month-year > div > div.picker-month-year__next')->pause(2000);
+        $browser->click('.picker-month-year > div > div.picker-month-year__next')->pause(3000);
     }
 }

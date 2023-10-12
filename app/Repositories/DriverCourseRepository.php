@@ -2846,8 +2846,12 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
         $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
         $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+
+        $sheet->mergeCells([$colCalendar+1,3,$colCalendar+1,4]);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar+1, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
+        $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
 
@@ -2881,9 +2885,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 }
                 $colCalendarDriver++;
             }
-            //Truyền dữ liệu tổng vào
+            //Truyền dữ liệu tổng theo tháng vào
+            if ($value['total_money_by_month'] != ""){
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money_by_month']),DataType::TYPE_STRING);
+            }
+
+            //Truyền dữ liệu tổng theo closing date vào
             if ($value['total_money'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,number_format($value['total_money']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -2922,8 +2931,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $colCalendarTotal ++;
         }
 
-//        // Truyền dữ liệu tổng tất cả trong tháng
-//        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShifts['total_all_meal_fee_by_month'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_month']),DataType::TYPE_STRING);
+        // Truyền dữ liệu tổng tất cả trong tháng
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShifts['total_all_meal_fee_by_month'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_month']),DataType::TYPE_STRING);
+        // Truyền dữ liệu tổng tất cả trong closing_date
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListShifts['total_all_meal_fee_by_closing_date'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_closing_date']),DataType::TYPE_STRING);
 
 
         header("Pragma: public");

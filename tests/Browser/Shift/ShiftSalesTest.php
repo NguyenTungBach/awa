@@ -58,8 +58,12 @@ class ShiftSalesTest extends DuskTestCase
     private function finalClosingShiftSales($browser)
     {
         $browser->waitFor('div:nth-child(2) > .btn-temporary')->pause(2000);
-        $browser->click('div:nth-child(2) > .btn-temporary')->pause(4000);
+        $browser->click('div:nth-child(2) > .btn-temporary')->pause(2000);
+        $browser->waitFor('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
+        $browser->click('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
         $browser->click('div:nth-child(2) > .btn.btn-final')->pause(4000);
+        $browser->waitFor('#modal-final-closing___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(4000);
+        $browser->click('#modal-final-closing___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(4000);
     }
 
     private function exportExcelShiftSales($browser)
