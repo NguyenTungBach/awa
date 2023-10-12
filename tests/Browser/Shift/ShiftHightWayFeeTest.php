@@ -17,7 +17,6 @@ class ShiftHightWayFeeTest extends DuskTestCase
         $this->browse(function ($browser) {
             $browser->maximize();
             $this->loginAdminGeneral($browser);
-            $browser->pause(3000);
             $this->listHighWayFee($browser);
             $this->exportExcelHighWayFee($browser);
         });

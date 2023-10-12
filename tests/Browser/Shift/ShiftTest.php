@@ -34,11 +34,25 @@ class ShiftTest extends DuskTestCase
     private function editShift($browser)
     {
         $browser->waitFor('div:nth-child(2) > div:nth-child(1) > button')->pause(2000);
-        $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(4000);
-        $browser->click('#node-1-1-0001')->pause(2000);
+        $browser->click('div:nth-child(2) > div:nth-child(1) > button')->pause(3000);
+        $browser->waitFor('.list-shift__table .zone-table td:nth-child(4)')->pause(2000);
+        $browser->click('.list-shift__table .zone-table td:nth-child(4)')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div')->pause(2000);
-        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(1)')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div > div > .custom-select > option:nth-child(2)')->pause(2000);
+        // Chọn start time
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(1) > div > div.col-sm-9 > div')->pause(2000);
+        $browser->click('div:nth-child(1) > ul > li:nth-child(7) > div')->pause(2000);
+        // Chọn end time
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(2) > div > div.col-sm-3')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(2) > div > div.col-sm-9 > div')->pause(2000);
+        $browser->click('div:nth-child(2) > div > div.col-sm-9 > div > div > div > div:nth-child(1) > ul > li:nth-child(15) > div')->pause(2000);
+        // Chọn break time
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(3) > div > div.col-sm-3')->pause(2000);
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(3) > div > div.col-sm-9 > div')->pause(2000);
+        $browser->click('div:nth-child(3) > div > div.col-sm-9 > div > div > div > div:nth-child(1) > ul > li:nth-child(3) > div')->pause(2000);
+        // OK
+        $browser->click('#modal-edit___BV_modal_body_ > div.edit-node-list-shift > div.edit-item > div:nth-child(2) > div > div > div:nth-child(3) > div > div.col-sm-3')->pause(2000);
         $browser->click('#modal-edit___BV_modal_body_ > div.edit-control > button.btn.btn-save.btn-secondary.rounded-pill')->pause(2000);
         $browser->click('div.list-shift > div.list-shift__control > div > div > div > .btn-save')->pause(2000);
         $browser->waitFor('.zone-table')->pause(4000);
