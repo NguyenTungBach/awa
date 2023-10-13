@@ -216,10 +216,9 @@ class CashOutStatisticalRepository extends BaseRepository implements CashOutStat
             ]);
 
             $result = $collection;
+            DB::commit();
 
             return $result;
-
-            DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
 
