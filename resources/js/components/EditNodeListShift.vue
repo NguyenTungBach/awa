@@ -104,32 +104,32 @@
                             </div>
                         </div>
                         <!-- <div v-if="itemEdit.course.flag !== 'yes'">
-                             <div>
-                            <div class="course_name text-center">
-                                <span>
-                                    {{ itemEdit.name }}
-                                </span>
-                            </div>
-                            <div class="item-time text-center">
-                                <span>
-                                    <b>始業時間: </b>{{ formatArray2Time(itemEdit.start_time) }}
-                                </span>
-                            </div>
-                            <div class="item-time text-center">
-                                <span>
-                                    <b>終業時間: </b>{{ formatArray2Time(itemEdit.end_time) }}
-                                </span>
-                            </div>
-                            <div class="item-time text-center">
-                                <span>
-                                    <b>休憩時間: </b>{{ formatArray2Time(itemEdit.break_time) }}
-                                </span>
+                            <div>
+                                <div class="course_name text-center">
+                                    <span>
+                                        {{ itemEdit.name }}
+                                    </span>
+                                </div>
+                                <div class="item-time text-center">
+                                    <span>
+                                        <b>始業時間: </b>{{ formatArray2Time(itemEdit.start_time) }}
+                                    </span>
+                                </div>
+                                <div class="item-time text-center">
+                                    <span>
+                                        <b>終業時間: </b>{{ formatArray2Time(itemEdit.end_time) }}
+                                    </span>
+                                </div>
+                                <div class="item-time text-center">
+                                    <span>
+                                        <b>休憩時間: </b>{{ formatArray2Time(itemEdit.break_time) }}
+                                    </span>
+                                </div>
                             </div>
                         </div> -->
                     </div>
                 </div>
-            </div>
-        </template>
+            </div></template>
 
         <!-- <div :class="{ 'zone-add': true, 'disabled': handleDisabledAdd() }">
             <div class="zone-icon-add">
@@ -265,6 +265,7 @@ export default {
 
 		onClickAdd() {
 			this.$emit('add');
+			console.log('list selected', this.listSelected);
 			// if (this.listSelected.length === 0) {
 			// 	this.$emit('add');
 			// } else {

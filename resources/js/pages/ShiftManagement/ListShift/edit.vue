@@ -158,6 +158,7 @@
                     >
                         <span v-if="item.course" class="type-node">
                             {{ item.course.customer_id !== 0 ? item.course.customer_name : item.course.course_name }}
+                            <!-- {{ $t(CONSTANT.LIST_SHIFT.MAP_TYPE_TEXT_DAY_OFF[dataUpdate[idx].type]) }} -->
                         </span>
                         <b-row v-if="!CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF.includes(item.course_id) && !CONSTANT.LIST_SHIFT.LIST_VALUE_SPECIAL_DAY.includes(item.course_id)">
 
@@ -461,7 +462,8 @@ export default {
 
 		async createdEmit() {
 			this.$bus.on('LIST_SHITF_CLICK_NODE', async(data) => {
-				this.listNodeEditSelected = [];
+				console.log('data khi truyen:', this.listNodeEditSelected);
+				// this.listNodeEditSelected = [];
 				this.listNodeEdit = CONSTANT.LIST_SHIFT.LIST_DAY_OFF;
 				await this.handleGetListCourse(data.dateDriver);
 				await this.detailShift(data.id, data.dateDriver);
@@ -534,15 +536,43 @@ export default {
 				// }
 
 				// check course choosed
+				console.log('thist', this.listUpdate);
 
 				this.listNodeEditSelected.length = 0;
 
 				const OLD_SELECTED = this.nodeEmit.listShift || [];
+				const SELECTED = this.listUpdate;
 
 				const lenOldSelected = OLD_SELECTED.length;
 				let idxOldSelected = 0;
-				console.log('this nodeEdit', OLD_SELECTED);
+				console.log('this nodeEdit', this.listNodeEditSelected);
+				SELECTED.forEach((item, idx) => {
+					if (item.driver_id === data.id) {
+						item.listShift.forEach((itemShift, idxs) => {
+							if (itemShift.date === data.dateDriver) {
+								const OLD_DATA = {
+									name: null,
+									type: null,
+									start_time: [null, null],
+									end_time: [null, null],
+									break_time: [null, null],
+								};
 
+								OLD_DATA.name = itemShift.course_id;
+								OLD_DATA.type = itemShift.course_id;
+								OLD_DATA.start_time = convertTextToSelectTime(convertTimeForDetail(itemShift.start_time));
+								OLD_DATA.end_time = convertTextToSelectTime(convertTimeForDetail(itemShift.end_time));
+								OLD_DATA.break_time = convertTextToSelectTime(convertTimeForDetail(itemShift.break_time));
+								console.log('dữ liệu chuẩn bị push:', OLD_DATA.start_time);
+								this.listNodeEditSelected.push(OLD_DATA);
+							} else {
+								this.listNodeEditSelected = [];
+							}
+						});
+					} else {
+						this.listNodeEditSelected = [];
+					}
+				});
 				while (idxOldSelected < lenOldSelected) {
 					const OLD_DATA = {
 						name: null,
@@ -562,7 +592,7 @@ export default {
 
 					idxOldSelected++;
 				}
-				console.log('datalisNote:', this.listNodeEditSelected);
+				console.log('datalisNote:', this.listNodeEditSelected.length);
 
 				const lenListSelected = this.listNodeEditSelected.length;
 				let idxListSelected = 0;
@@ -572,6 +602,7 @@ export default {
 
 					const SELECTED_TYPE = SELECTED.type;
 					const FIND_SELECTED = this.listCourse.find((item) => item.value === SELECTED_TYPE);
+					console.log('course');
 
 					if (FIND_SELECTED) {
 						const DATA_COURSE = {
@@ -583,23 +614,16 @@ export default {
 
 						this.listNodeEditSelected[idxListSelected].course = DATA_COURSE;
 					} else {
-						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_WAIT_BETWEEN_TASK) {
+						if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.LIST_VALUE_DAY_OFF) {
 							this.listNodeEditSelected[idxListSelected].course = {
-								// flag: 'yes',
-								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
-								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
-								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
-							};
-						} else if (SELECTED_TYPE === CONSTANT.LIST_SHIFT.DATE_LEADER_CHIEF) {
-							this.listNodeEditSelected[idxListSelected].course = {
-								// flag: 'yes',
+								flag: 'yes',
 								start_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].start_time),
 								end_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].end_time),
 								break_time: formatArray2Time(this.listNodeEditSelected[idxListSelected].break_time),
 							};
 						} else {
 							this.listNodeEditSelected[idxListSelected].course = {
-								// flag: null,
+								flag: null,
 								start_time: null,
 								end_time: null,
 								break_time: null,
@@ -864,7 +888,7 @@ export default {
 			// 	Notification.warning(this.$t(VALIDATE.message));
 			// }
 			// this.modalEdit = false;
-			console.log('list node:', FILTER_LIST_SELECTED);
+			console.log('list node:', this.listNodeEditSelected);
 
 			const DRIVER_CODE = Number(this.nodeEmit.driver_id);
 			const INDEX_OF_DRIVER = this.findIndexOfDriverCode(this.listShift, DRIVER_CODE);
