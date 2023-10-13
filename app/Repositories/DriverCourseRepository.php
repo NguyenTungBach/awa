@@ -321,37 +321,37 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                 ->whereBetween('driver_courses.date', [$startDate, $endDate])
                 ->whereNull('driver_courses.deleted_at')->get();
 
-            // Tính tổng toàn bộ tiền ship theo closing date và theo những driver đã cho
-            $totalDataByClosingDate = DriverCourse::query()
-                ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as total_all_meal_fee_by_closing_date'))
-                ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
-                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-                ->whereIn('driver_courses.driver_id', $driverIds)
-                ->whereBetween('driver_courses.date', [$startDate, $endDate])
-                ->first();
+//            // Tính tổng toàn bộ tiền ship theo closing date và theo những driver đã cho
+//            $totalDataByClosingDate = DriverCourse::query()
+//                ->addSelect(\DB::raw('SUM(`courses`.`meal_fee`+`courses`.`commission`) as total_all_meal_fee_by_closing_date'))
+//                ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+//                ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+//                ->whereIn('driver_courses.driver_id', $driverIds)
+//                ->whereBetween('driver_courses.date', [$startDate, $endDate])
+//                ->first();
         }
 
-        // Tính tổng mỗi customer trong tháng
-        $firstMonth = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
-        $lastMonth = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
-        $dataTotalMonthByDriverIds = DriverCourse::query()
-            ->select(
-                "driver_courses.driver_id",
-                "drivers.driver_name",
-                "drivers.driver_code",
-                "drivers.type",
-            )
-            ->addSelect(\DB::raw("SUM(CASE WHEN
-            `driver_courses`.`date` BETWEEN '$firstMonth' AND '$lastMonth'
-            THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
-            as `total_money_by_month`"))
-            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
-            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
-            ->groupBy("driver_courses.driver_id")
-            ->SortByForDriverCourse($request)
-            ->whereIn('driver_courses.driver_id', $driverIds)
-            ->whereBetween('driver_courses.date', [$firstMonth, $lastMonth])
-            ->get();
+//        // Tính tổng mỗi customer trong tháng
+//        $firstMonth = Carbon::parse($month_year)->startOfMonth()->format('Y-m-d');
+//        $lastMonth = Carbon::parse($month_year)->endOfMonth()->format('Y-m-d');
+//        $dataTotalMonthByDriverIds = DriverCourse::query()
+//            ->select(
+//                "driver_courses.driver_id",
+//                "drivers.driver_name",
+//                "drivers.driver_code",
+//                "drivers.type",
+//            )
+//            ->addSelect(\DB::raw("SUM(CASE WHEN
+//            `driver_courses`.`date` BETWEEN '$firstMonth' AND '$lastMonth'
+//            THEN (`courses`.`meal_fee` + `courses`.`commission`) ELSE 0 END)
+//            as `total_money_by_month`"))
+//            ->join('drivers', 'drivers.id', '=', 'driver_courses.driver_id')
+//            ->join('courses', 'courses.id', '=', 'driver_courses.course_id')
+//            ->groupBy("driver_courses.driver_id")
+//            ->SortByForDriverCourse($request)
+//            ->whereIn('driver_courses.driver_id', $driverIds)
+//            ->whereBetween('driver_courses.date', [$firstMonth, $lastMonth])
+//            ->get();
 
         $datas = $datas->get()->filter(function ($data) {
 //            $data->driver->start_date = explode(" ",$data->driver->start_date)[0];
@@ -513,14 +513,14 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     }
                 }
             }
-            if (count($dataTotalMonthByDriverIds) != 0){
-                foreach ($dataTotalMonthByDriverIds as $dataTotalMonthByDriverId){
-                    if($dataTotalMonthByDriverId->driver_id == $driver->id){
-                        $driverConvert['total_money_by_month'] = $dataTotalMonthByDriverId->total_money_by_month;
-                        break;
-                    }
-                }
-            }
+//            if (count($dataTotalMonthByDriverIds) != 0){
+//                foreach ($dataTotalMonthByDriverIds as $dataTotalMonthByDriverId){
+//                    if($dataTotalMonthByDriverId->driver_id == $driver->id){
+//                        $driverConvert['total_money_by_month'] = $dataTotalMonthByDriverId->total_money_by_month;
+//                        break;
+//                    }
+//                }
+//            }
             $dataConvertForDriver[] = $driverConvert;
         }
 
@@ -565,8 +565,8 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $data = [
             'data' => $dataConvertForDriver,
             'total_all_meal_fee_by_date' => $arrTotalByDate,
-            'total_all_meal_fee_by_closing_date' => $totalDataByClosingDate['total_all_meal_fee_by_closing_date'] ?? 0,
-            'total_all_meal_fee_by_month' => $totalDataByMonth['total_all_meal_fee_by_month'] ?? 0
+//            'total_all_meal_fee_by_closing_date' => $totalDataByClosingDate['total_all_meal_fee_by_closing_date'] ?? 0,
+//            'total_all_meal_fee_by_month' => $totalDataByMonth['total_all_meal_fee_by_month'] ?? 0
         ];
 
         return $data;
@@ -2845,13 +2845,13 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
         $sheet->getStyle([4,3,$colCalendar-1,3])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
         $sheet->getStyle([4,4,$colCalendar-1,4])->applyFromArray($styleArrayDate)->getAlignment()->setWrapText(true);
 
-        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
-        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+//        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"月別合計",DataType::TYPE_STRING);
+//        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
-        $sheet->mergeCells([$colCalendar+1,3,$colCalendar+1,4]);
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendar+1, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
-        $sheet->getStyle([$colCalendar+1,3,$colCalendar+1,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
+        $sheet->mergeCells([$colCalendar,3,$colCalendar,4]);
+        $sheet->setCellValueExplicitByColumnAndRow($colCalendar, $rowCalendar,"締日別合計",DataType::TYPE_STRING);
+        $sheet->getStyle([$colCalendar,3,$colCalendar,3])->applyFromArray($styleArrayTotalExtraCost)->getAlignment()->setWrapText(true);
 
         // Truyền dữ liệu tổng vào từng driver
 
@@ -2879,20 +2879,22 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
                     foreach ($value['dataShift']['data_by_date'] as $dataByDate){
                         // Nếu course này cùng driver_id với driver và cùng date với calendar thì truyền giá trị
                         if ($dataCalendar['date'] == $dataByDate['date']){
+                            $dataByDate['course_meal_fee_commission'] = $dataByDate['course_meal_fee_commission'] == "0.00" ? '' : $dataByDate['course_meal_fee_commission'];
                             $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,$dataByDate['course_meal_fee_commission'] == ''? '' : number_format($dataByDate['course_meal_fee_commission']),DataType::TYPE_STRING);
                         }
                     }
                 }
                 $colCalendarDriver++;
             }
-            //Truyền dữ liệu tổng theo tháng vào
-            if ($value['total_money_by_month'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money_by_month']),DataType::TYPE_STRING);
-            }
+//            //Truyền dữ liệu tổng theo tháng vào
+//            if ($value['total_money_by_month'] != ""){
+//                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money_by_month']),DataType::TYPE_STRING);
+//            }
 
             //Truyền dữ liệu tổng theo closing date vào
+            $value['total_money'] = $value['total_money'] == 0 ? '' : $value['total_money'];
             if ($value['total_money'] != ""){
-                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver+1, $index,number_format($value['total_money']),DataType::TYPE_STRING);
+                $sheet->setCellValueExplicitByColumnAndRow($colCalendarDriver, $index,number_format($value['total_money']),DataType::TYPE_STRING);
             }
 
             //Đặt style
@@ -2931,10 +2933,10 @@ class DriverCourseRepository extends BaseRepository implements DriverCourseRepos
             $colCalendarTotal ++;
         }
 
-        // Truyền dữ liệu tổng tất cả trong tháng
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShifts['total_all_meal_fee_by_month'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_month']),DataType::TYPE_STRING);
-        // Truyền dữ liệu tổng tất cả trong closing_date
-        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListShifts['total_all_meal_fee_by_closing_date'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_closing_date']),DataType::TYPE_STRING);
+//        // Truyền dữ liệu tổng tất cả trong tháng
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal, $index,$dataForListShifts['total_all_meal_fee_by_month'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_month']),DataType::TYPE_STRING);
+//        // Truyền dữ liệu tổng tất cả trong closing_date
+//        $sheet->setCellValueExplicitByColumnAndRow($colCalendarTotal+1, $index,$dataForListShifts['total_all_meal_fee_by_closing_date'] == "0" ? '' : number_format($dataForListShifts['total_all_meal_fee_by_closing_date']),DataType::TYPE_STRING);
 
 
         header("Pragma: public");

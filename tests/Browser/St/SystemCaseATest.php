@@ -104,20 +104,24 @@ class SystemCaseATest extends DuskTestCase
             //CashIn
             $this->listCashIn($browser);
             $this->createCashIn($browser);
+            $this->listCashIn($browser);
             $this->createCashIn2($browser);
+            $this->listCashIn($browser);
             $this->editCashIn($browser);
             $this->deleteCashIn($browser);
-            $this->createCashIn($browser);
+//            $this->createCashIn($browser);
             $this->listCashIn($browser);
             $this->exportCashIn($browser);
 
             //CashOut
             $this->listCashOut($browser);
             $this->createCashOut($browser);
+            $this->listCashOut($browser);
             $this->createCashOut2($browser);
+            $this->listCashOut($browser);
             $this->editCashOut($browser);
             $this->deleteCashOut($browser);
-            $this->createCashOut($browser);
+//            $this->createCashOut($browser);
             $this->listCashOut($browser);
             $this->exportCashOut($browser);
 
@@ -129,6 +133,7 @@ class SystemCaseATest extends DuskTestCase
             $this->listCashOut($browser);
             $this->checkPickerMonthYear($browser);
 
+            $this->listShift($browser);
             $this->logOutCaseA($browser);
         });
     }
@@ -213,10 +218,11 @@ class SystemCaseATest extends DuskTestCase
             ->pause(4000);
     }
     private function editDriver($browser){
+        $browser->pause(3000);
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(5) > i')->pause(5000)
             ->click(".btn-edit")->pause(2000);
 
-        $browser->click('#select-type-driver > div:nth-child(2) > label')->pause(2000);
+//        $browser->click('#select-type-driver > div:nth-child(2)')->pause(2000);
 
         $browser->type('#input-fullname','Driver B')->pause(1000);
         $browser->type('#input-date-hire-date','1996-01-01')->pause(1000);
@@ -526,6 +532,7 @@ class SystemCaseATest extends DuskTestCase
     }
 
     private function editCourse($browser){
+        $browser->waitFor('.zone-table')->pause(1000);
         $browser->click('tbody > tr:nth-child(1) > td:nth-child(8) > i')->pause(2000)
             ->click("div > .btn-save")
             ->pause(3000);
@@ -699,10 +706,19 @@ class SystemCaseATest extends DuskTestCase
 
     private function finalClosingShiftSales($browser)
     {
+        // Nhấn temp lần 1
         $browser->waitFor('div:nth-child(2) > .btn-temporary')->pause(2000);
         $browser->click('div:nth-child(2) > .btn-temporary')->pause(2000);
         $browser->waitFor('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
         $browser->click('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
+
+        // Nhấn temp lần 2
+        $browser->waitFor('div:nth-child(2) > .btn-temporary')->pause(2000);
+        $browser->click('div:nth-child(2) > .btn-temporary')->pause(2000);
+        $browser->waitFor('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
+        $browser->click('#modal-temporary___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(2000);
+
+        // Nhấn final
         $browser->click('div:nth-child(2) > .btn.btn-final')->pause(4000);
         $browser->waitFor('#modal-final-closing___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(4000);
         $browser->click('#modal-final-closing___BV_modal_body_ > div:nth-child(2) > .btn-color-active-import')->pause(4000);
@@ -731,7 +747,7 @@ class SystemCaseATest extends DuskTestCase
     private function exportExcelShiftPayment($browser)
     {
         $browser->waitFor('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(3) > div')->pause(2000);
-        $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(3) > div')->pause(10000);
+        $browser->click('div.col-sm-12.col-md-4.col-lg-4.col-xl-4.col-12 > div:nth-child(3) > div')->pause(5000);
     }
     //////////// Shift Payment End ///////////////
 
@@ -774,7 +790,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
 //        $browser->click('thead > tr > th.th-sort.th-id.th-course-id')->pause(2000);
-//        $browser->click('tbody > tr:nth-child(1) > td.text-center.td-control')->pause(6000);
+        $browser->click('tbody > tr:nth-child(1) > td.text-center.td-control')->pause(6000);
         $browser->click('.btn-edit')->pause(2000);
         $getDate = Carbon::now()->firstOfMonth()->addDay()->addDay()->format('Y-m-d');
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
@@ -783,11 +799,12 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-deposit-day',"120000")->pause(1000);
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
-//        $browser->type('#input-notes',"test cash in")->pause(2000);
+        $browser->type('#input-notes',"memo")->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(4000);
     }
 
     private function editCashIn($browser){
+        $browser->click('tbody > tr:nth-child(1) > td.text-center.td-control')->pause(3000);
         $browser->waitFor('tr:nth-child(1) > td.td-cash-edit.td-control > button')->pause(1000);
         $browser->click('tr:nth-child(1) > td.td-cash-edit.td-control > button')->pause(4000);
         $getDate = Carbon::now()->firstOfMonth()->addDay()->format('Y-m-d');
@@ -837,7 +854,7 @@ class SystemCaseATest extends DuskTestCase
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
 //        $this->mapDate($browser, 'div.input-group-append', $getDate);
 //        $browser->pause(1000);
-        $browser->type('#input-deposit-day',"235000")->pause(1000);
+        $browser->type('#input-deposit-day',"20000")->pause(1000);
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
 //        $browser->type('#input-notes',"test cash out")->pause(2000);
@@ -848,30 +865,33 @@ class SystemCaseATest extends DuskTestCase
     private function createCashOut2($browser){
         $browser->pause(2000);
 //        $browser->visit('/data-management/list-driver-create');
-//        $browser->waitFor('tbody > tr > td.text-center.td-control')->pause(2000);
-//        $browser->click('tbody > tr > td.text-center.td-control')->pause(2000);
+        $browser->waitFor('tbody > tr > td.text-center.td-control')->pause(2000);
+        $browser->click('tbody > tr > td.text-center.td-control')->pause(2000);
         $browser->click('.btn-edit')->pause(2000);
         $getDate = Carbon::now()->firstOfMonth()->addDay()->addDay()->format('Y-m-d');
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
 //        $this->mapDate($browser, 'div.input-group-append', $getDate);
 //        $browser->pause(1000);
-        $browser->type('#input-deposit-day',"250000")->pause(1000);
+        $browser->type('#input-deposit-day',"10000")->pause(1000);
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
-//        $browser->type('#input-notes',"test cash out")->pause(2000);
+        $browser->type('#input-notes',"memo")->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->pause(4000);
     }
 
     private function editCashOut($browser){
+        $browser->waitFor('tbody > tr > td.text-center.td-control')->pause(2000);
+        $browser->click('tbody > tr > td.text-center.td-control')->pause(2000);
         $browser->click('tbody > tr:nth-child(1) > td.td-cash-edit.td-control > button')->pause(4000);
         $getDate = Carbon::now()->firstOfMonth()->format('Y-m-d');
         $browser->type('#input-payment-day',"$getDate")->pause(2000);
 //        $this->mapDate($browser, 'div.input-group-append', $getDate);
 //        $browser->pause(1000);
-        $browser->type('#input-deposit-day',"250000")->pause(1000);
+        $browser->type('#input-deposit-day',"10000")->pause(1000);
         $browser->click('#input-payment-method')->pause(1000);
         $browser->click('#input-payment-method > option:nth-child(1)')->pause(1000);
+        $browser->type('#input-notes',"aeiou")->pause(2000);
         $browser->click('.btn-save')->waitFor('.toast-body')->pause(1000);
         $browser->pause(4000);
     }
